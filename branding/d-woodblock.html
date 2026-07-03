@@ -20,11 +20,8 @@
   section{margin:0 0 44px}
   .h{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--sumi-soft);
     font-family:ui-monospace,monospace;border-bottom:1px solid var(--line);padding-bottom:8px;margin:0 0 20px}
-  /* seigaiha wave band */
-  .waveband{height:44px;background:
-    radial-gradient(circle at 12px 44px, transparent 13px, var(--indigo) 13px 15px, transparent 15px) 0 0/24px 22px repeat-x,
-    radial-gradient(circle at 12px 44px, transparent 17px, var(--indigo-2) 17px 19px, transparent 19px) 0 0/24px 22px repeat-x;
-    opacity:.5;border-radius:6px;margin:0 0 8px}
+  /* seigaiha-inspired wave band (inline SVG pattern — renders as true fish-scale arcs) */
+  .waveband{display:block;width:100%;height:40px;border-radius:6px;overflow:hidden;margin:0 0 10px}
   /* wordmark */
   .stage{display:flex;align-items:center;gap:30px;flex-wrap:wrap}
   .logo{font-size:62px;letter-spacing:.02em;font-weight:600;color:var(--sumi)}
@@ -35,7 +32,7 @@
   /* palette */
   .sw{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
   .chip{border-radius:8px;height:78px;border:1px solid rgba(0,0,0,.08);display:flex;align-items:flex-end;
-    padding:8px;font-family:ui-monospace,monospace;font-size:10px}
+    padding:8px;font-family:ui-monospace,monospace;font-size:11px}
   .chip span{background:rgba(255,255,255,.8);border-radius:4px;padding:1px 5px}
   /* type */
   .spec b{display:block;font-size:38px;font-weight:600}
@@ -70,27 +67,40 @@
   <h1 class="dir">Woodblock</h1>
 
   <section>
-    <div class="waveband"></div>
+    <svg class="waveband" width="100%" height="40" aria-hidden="true">
+      <defs>
+        <pattern id="sei" width="24" height="12" patternUnits="userSpaceOnUse">
+          <path d="M0,12 A12,12 0 0 1 24,12" fill="none" stroke="#2b4a6f" stroke-width="1.6"/>
+          <path d="M4,12 A8,8 0 0 1 20,12" fill="none" stroke="#3d6a97" stroke-width="1.4"/>
+          <path d="M8,12 A4,4 0 0 1 16,12" fill="none" stroke="#2b4a6f" stroke-width="1.2"/>
+        </pattern>
+      </defs>
+      <rect x="0" y="0" width="100%" height="40" fill="url(#sei)" opacity=".55"/>
+    </svg>
     <div class="stage">
       <div>
         <div class="logo">hayao<span class="js">.js</span></div>
         <p class="lead">A woodblock is a <span class="v">deterministic function</span>: carve it once, and every impression
-          it prints is identical — the first and the ten-thousandth.</p>
+          it prints is identical — the first and the thousandth.</p>
       </div>
-      <svg class="hanko" viewBox="0 0 100 100" aria-label="carved seal">
-        <rect x="6" y="6" width="88" height="88" rx="12" fill="none" stroke="#c0432b" stroke-width="4"/>
-        <path d="M28 30 h44 M50 30 v44 M32 52 q18 16 36 0" fill="none" stroke="#c0432b" stroke-width="5" stroke-linecap="round"/>
+      <svg class="hanko" viewBox="0 0 100 100" role="img" aria-label="abstract verified stamp">
+        <rect x="8" y="8" width="84" height="84" rx="12" fill="none" stroke="#c0432b" stroke-width="4"/>
+        <rect x="28" y="28" width="44" height="44" rx="6" fill="none" stroke="#c0432b" stroke-width="4"/>
+        <circle cx="50" cy="50" r="7" fill="#c0432b"/>
       </svg>
     </div>
   </section>
 
   <section>
     <div class="h">The idea</div>
-    <p style="max-width:700px;margin:0;font-size:16px;color:var(--sumi-soft)">The name is Japanese, and the engine's deepest
-      promise — <b style="color:var(--sumi)">same inputs, same output, forever</b> — is exactly the promise of the
-      <i>ukiyo-e</i> printmaker: one carved block yields perfectly reproducible impressions. Direction D borrows that
-      craft language — sumi ink, indigo, a single vermilion seal (<i>hanko</i>) as the "verified" mark, <i>seigaiha</i>
+    <p style="max-width:700px;margin:0;font-size:16px;color:var(--sumi-soft)">The name reads as Japanese, and the engine's
+      core promise — <b style="color:var(--sumi)">same seed and build, the same output every run</b> — rhymes with the
+      craft of the <i>ukiyo-e</i> printmaker: one carved block yields reproducible impressions. Direction D borrows that
+      craft language — sumi ink, indigo, a single vermilion stamp as the "verified" mark, <i>seigaiha</i>-inspired
       waves — as a genuine conceptual rhyme for determinism, not decoration.</p>
+    <p style="max-width:700px;margin:14px 0 0;font-size:13px;color:var(--sumi-soft)"><b style="color:var(--sumi)">Note:</b>
+      Hayao is an evocative, standalone name — not affiliated with or endorsed by any filmmaker or studio. This direction
+      borrows from a living culture and must be earned (see the duty of care below), not worn.</p>
   </section>
 
   <section>
@@ -99,8 +109,8 @@
       <div class="chip" style="background:#efe7d6"><span>#efe7d6 washi</span></div>
       <div class="chip" style="background:#20211d;color:#fff"><span style="color:#20211d">#20211d sumi</span></div>
       <div class="chip" style="background:#2b4a6f;color:#fff"><span style="color:#2b4a6f">#2b4a6f indigo</span></div>
-      <div class="chip" style="background:#3d6a97;color:#fff"><span style="color:#2b4a6f">#3d6a97 ai</span></div>
-      <div class="chip" style="background:#c0432b;color:#fff"><span style="color:#c0432b">#c0432b vermilion</span></div>
+      <div class="chip" style="background:#3d6a97;color:#fff"><span style="color:#2f527a">#3d6a97 ai</span></div>
+      <div class="chip" style="background:#c0432b;color:#fff"><span style="color:#a93a25">#c0432b vermilion</span></div>
       <div class="chip" style="background:#7d8a5c;color:#fff"><span style="color:#57544a">#7d8a5c tea</span></div>
     </div>
   </section>
@@ -108,7 +118,7 @@
   <section>
     <div class="h">Type — Mincho serif, mono for code</div>
     <div class="spec">
-      <b>Mincho / Georgia — brush-cut serif</b>
+      <b>Mincho — brush-cut serif <span style="font-size:13px;color:var(--sumi-soft)">(target face; bundle a webfont — falls back to Georgia off Apple/JP systems)</span></b>
       <div class="m">ui-monospace — carve(state) → print · print · print · … (identical)</div>
     </div>
   </section>
@@ -117,7 +127,7 @@
     <div class="h">Hero application</div>
     <div class="hero">
       <div class="art">
-        <svg viewBox="0 0 700 210" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" aria-label="woodblock landscape">
+        <svg viewBox="0 0 700 210" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
           <rect width="700" height="210" fill="#eee2ca"/>
           <circle cx="560" cy="66" r="40" fill="#c0432b" opacity=".85"/>
           <path d="M0 150 q120 -60 240 -10 t240 -6 t240 -18 v94 H0Z" fill="#3d6a97" opacity=".7"/>
@@ -128,8 +138,8 @@
         </svg>
       </div>
       <div class="body">
-        <h2>Carve once. Print forever.</h2>
-        <p class="sub">A deterministic engine whose every run is a perfect impression of the same block.</p>
+        <h2>Carve once. Print identical.</h2>
+        <p class="sub">A deterministic engine whose every run is a faithful impression of the same block.</p>
       </div>
     </div>
     <div class="prints">
@@ -144,11 +154,11 @@
     <div class="h">System in use — game cards</div>
     <div class="cards">
       <div class="card">
-        <svg class="han" viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="10" fill="none" stroke="#c0432b" stroke-width="6"/><path d="M50 26 v48 M30 40 h40" stroke="#c0432b" stroke-width="7" stroke-linecap="round"/></svg>
-        <h3>Sproutveil</h3><p>Metroidvania · gated world graph, proven traversable.</p>
+        <svg class="han" viewBox="0 0 100 100" aria-hidden="true"><rect x="8" y="8" width="84" height="84" rx="10" fill="none" stroke="#c0432b" stroke-width="6"/><rect x="30" y="30" width="40" height="40" rx="5" fill="none" stroke="#c0432b" stroke-width="6"/><circle cx="50" cy="50" r="6" fill="#c0432b"/></svg>
+        <h3>Sproutveil</h3><p>Metroidvania · gated world graph, machine-verified traversable.</p>
       </div>
       <div class="card">
-        <svg class="han" viewBox="0 0 100 100"><rect x="8" y="8" width="84" height="84" rx="10" fill="none" stroke="#c0432b" stroke-width="6"/><path d="M50 26 v48 M30 40 h40" stroke="#c0432b" stroke-width="7" stroke-linecap="round"/></svg>
+        <svg class="han" viewBox="0 0 100 100" aria-hidden="true"><rect x="8" y="8" width="84" height="84" rx="10" fill="none" stroke="#c0432b" stroke-width="6"/><rect x="30" y="30" width="40" height="40" rx="5" fill="none" stroke="#c0432b" stroke-width="6"/><circle cx="50" cy="50" r="6" fill="#c0432b"/></svg>
         <h3>Gleamvale</h3><p>Top-down action · sword-arc combat, telegraphed AI.</p>
       </div>
     </div>
@@ -157,12 +167,13 @@
   <section>
     <div class="h">When this is right — and the duty of care</div>
     <div class="note">
-      <p><b>Choose Woodblock</b> for the most distinctive, story-rich identity: it fuses the Japanese name, the craft
-        heritage, and the determinism thesis into one metaphor no competitor can copy.</p>
-      <p><b>Considerate use is mandatory.</b> This borrows from a living culture, so it must read as <i>homage, not
-        costume</i>: authentic geometry (real <i>seigaiha</i>, real seal proportions), no kanji we can't stand behind,
-        credit the ukiyo-e lineage in the about page, and ideally a review by a Japanese designer before launch. Done
-        carelessly it becomes pastiche — that risk is the price of the payoff.</p>
+      <p><b>Choose Woodblock</b> for the most distinctive, story-rich identity: it fuses the name, the printmaking
+        heritage, and the determinism thesis into one <i>distinctive</i> metaphor.</p>
+      <p><b>Considerate use is a precondition, not a caveat.</b> This borrows from a living culture, so it must read as
+        <i>homage, not costume</i>. This board already holds the line: <i>seigaiha</i>-inspired geometry (not passed off
+        as exact), and an <b>abstract, non-linguistic stamp — no invented kanji</b>. Before any public use it also
+        <b>requires</b>: a credited ukiyo-e lineage on the about page, and a paid review by a Japanese designer with the
+        authority to say no. Done carelessly this becomes pastiche — so the fix is to do the work, not to accept the risk.</p>
     </div>
   </section>
 </div>

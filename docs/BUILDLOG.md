@@ -425,6 +425,33 @@ a do-nothing defence loses everything (threat real); golden end-state.
   equally well from keys and from verify scripts — the VtCmd union is the
   sim's real API, input actions are just one binding of it.
 
+### 13 · Glimmerfall — match-3 (Puzzle Quest-ish) ✅
+
+**Shipped:** 8×8 six-color board, grab-and-swap input, line matches, gravity,
+rng refills, cascade combos (×combo scoring), dead-board reshuffles, a
+22-move / 1300-light goal. Verified: 100 fresh boards fair (no pre-matches,
+always a move), the resolve script accounts for every point, a greedy
+matcher hits the target on 13/20 seeds, scripted session golden-pinned.
+
+**Findings:**
+
+- **Instant-sim + animated-view is the right split for cascade games.** The
+  sim resolves a whole cascade in one deterministic step and RETURNS the
+  choreography script (what cleared at each combo depth); the view springs
+  gems toward their true slots and reads the script for bursts. Delete the
+  animation and the game is bit-identical — the strongest possible form of
+  the cosmetic-layer rule, and it makes cascade correctness trivially
+  testable (no animation timing in tests, ever).
+- **Score accounting as an invariant:** `score === Σ cleared×10×combo` over
+  the resolve script catches any double-count/refill-scoring bug forever.
+  Economies should always ship with their own bookkeeping audit.
+- **Match-3 winnability is a distribution, not a bound.** The greedy matcher
+  measures the luck-adjusted difficulty; the target was tuned by win-rate
+  (2/20 at 2200 → 13/20 at 1300). In luck-heavy genres, tune the GOAL to the
+  measured bot distribution rather than the mechanics to a fixed goal.
+- Board-generation fairness (no pre-matches + guaranteed move + reshuffle
+  rescue) is the genre's connectivity proof — same slot as Hollowdeep's BFS.
+
 ### 14 · Lumen Forge — incremental/idle (Paperclips × Cookie Clicker) ✅
 
 **Shipped:** 5-tier exponential economy (lantern → dawn engine), forge clicking,
