@@ -84,14 +84,17 @@ reasoning in [docs/ENGINE.md](docs/ENGINE.md).
 
 ## Status
 
-**v0.1 — complete and verified.** All layers are implemented and tested:
-`core/`, `scene/`, `input/`, `render/` (SVG + Canvas2D + headless backends),
-`audio/`, `ui/`, `verify/`, and `app/`. The flagship **Sokoban** example
-(`examples/sokoban/`) is solver-proven winnable on every level and plays in the
-browser. 40 tests pass; `npm run check`, `npm run verify`, and `npm run build`
-are all green. Roadmap: more node types (physics bodies, particles), an ECS
-option for large entity counts, additional example genres, and asset-free audio
-tracks. Contributions welcome.
+**v0.2 — the 20-genre campaign is complete.** Twenty-one games live under
+`examples/` — one for each of the most popular 2D indie genres (platformer,
+metroidvania, Zelda-like, stealth, horde survival, bullet hell, tower defense,
+RTS, roguelike, deckbuilder, tactics, match-3, idle, farming, horror, city
+builder, rhythm, physics arcade, racing, narrative — plus the original
+Sokoban). Every one ships a `verify.ts` suite that machine-proves its genre's
+truth: solver-proven puzzles, bot-beaten levels, duel-proven counter systems,
+win-rate-tuned balance, fairness gates for procgen, frame-exact timing
+windows, golden replay hashes. 180+ tests; `npm run verify` runs the whole
+portfolio. The campaign's findings — what each genre demanded of the engine
+and what generalized — live in [docs/BUILDLOG.md](docs/BUILDLOG.md).
 
 ## License
 

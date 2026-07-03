@@ -54,6 +54,39 @@ re-shuffled as lessons emerge.
 
 ## Entries
 
+## Campaign synthesis (all 20 genres complete)
+
+The portfolio's cross-genre laws, earned the hard way:
+
+1. **Every genre has a mechanical truth, and it is provable.** Puzzles have
+   solvers; movement has bots; economies have pacing windows; counter systems
+   have duels; procgen has connectivity; stealth has both-ways affordance
+   proofs; rhythm has frame-exact windows; narrative has content lints. The
+   verify suite IS the design document.
+2. **Skill-delta proofs are the closest thing to a fun proof:** drafting beats
+   skipping (17/20 vs 9/20), greedy beats random (158 vs 82), braking beats
+   flooring (26.2s vs 27.7s), judgement beats recklessness (19/20 vs 0/20),
+   counters beat spam. If a null strategy competes with intended play, the
+   game is broken — assert the delta.
+3. **Derive constraints, don't vibe them:** movement envelopes before levels,
+   season length ≥ growDays, turn radius vs corner radius, fuel arithmetic vs
+   night length, spike damage vs block ceilings. Every "feels wrong" traced to
+   a violated inequality.
+4. **Null-strategy baselines are the cheapest scenario test:** the undefended
+   lane, the do-nothing tactics turn, the never-draft climb, the camping
+   keeper. A threat that a null strategy survives isn't a threat.
+5. **Grace is a system, not polish:** coyote/buffers, i-frames, hit-stop input
+   buffering, wound-before-death, mercy clears, phase-transition clears — the
+   same shape at every timescale, and each is unit-testable.
+6. **The observer split held everywhere:** cosmetic views (pooled sprites,
+   spring choreography, particle bursts, spatial audio) were deleted-without-
+   diff throughout; the instant-sim/animated-view split (Glimmerfall) is its
+   purest form. The beat being sim time (Cadence) is its deepest consequence.
+7. **Pure-data state pays compound interest:** structuredClone-and-score
+   powered tactics options, Peggle aim search, and deckbuilder pilots; hashing
+   and goldens pinned 20 games; every sim doubles as its own planning model.
+
+
 ### 2 · Shard Ascent — precision platformer (Celeste × TowerFall) ✅
 
 **Shipped:** 6 teaching-ramp levels (run/jump → coyote gaps → drop-through +

@@ -66,4 +66,4 @@ export * from './app/game';
 export * from './app/browser';
 
 /** Engine version. */
-export const VERSION = '0.1.0';
+export const VERSION = '0.2.0';
