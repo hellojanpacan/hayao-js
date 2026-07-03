@@ -1,0 +1,35 @@
+name: Publish to npm
+
+# Trusted publishing (OIDC) — no NPM_TOKEN, no OTP. The registry verifies the
+# workflow's short-lived OIDC identity against a Trusted Publisher configured on
+# npmjs.com for the `hayao` package. One-time setup on npmjs.com:
+#   Package → Settings → Trusted Publisher → GitHub Actions
+#     Repository: hellojanpacan/hayao-js
+#     Workflow filename: publish.yml
+# After that, publishes run straight from CI with provenance attached.
+
+on:
+  release:
+    types: [published]      # create a GitHub Release (tag vX.Y.Z) → publishes
+  workflow_dispatch:        # or run manually from the Actions tab
+
+permissions:
+  contents: read
+  id-token: write           # required: mints the OIDC token npm exchanges for auth
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+          cache: npm
+      # Trusted publishing needs npm >= 11.5.1 (newer than the one bundled with Node 22).
+      - run: npm install -g npm@latest
+      - run: npm ci
+      # `npm publish` runs prepublishOnly (check + test + build:lib) first, then
+      # publishes via OIDC. --provenance records a signed build attestation.
+      - run: npm publish --provenance --access public
