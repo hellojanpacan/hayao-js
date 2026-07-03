@@ -87,6 +87,10 @@ for (const slug of slugs) {
     console.error(`  ✗ suite threw: ${err instanceof Error ? err.message : err}`);
     failures++;
   }
+  if (goldensDirty || (process.env.UPDATE_GOLDEN && Object.keys(goldens).length && !existsSync(goldenPath))) {
+    writeFileSync(goldenPath, JSON.stringify(goldens, null, 2) + '\n');
+    console.log(`  ▸ wrote ${join('examples', slug, 'golden.json')}`);
+  }
 }
 
 console.log(failures === 0 ? '\nAll checks passed.' : `\n${failures} check(s) FAILED.`);

@@ -25,6 +25,7 @@ export default async function verify(t: VerifyContext) {
   const log = movesToLog(solution.path!);
   for (const f of log.frames) world.step(f);
   t.check('scripted playthrough solves level 1', world.probe().solved === true);
+  t.golden('level-1 solve replay', world.hash());
 
   // 3. Determinism.
   const report = checkDeterministic(() => createWorld(sokobanGame), log);

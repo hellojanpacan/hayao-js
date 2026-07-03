@@ -23,8 +23,8 @@ const PLAN: [number, TowerKind][] = [
   [7, 'arrow'],
 ];
 
-/** Drive a full defence with a given plan; returns the end state. */
-function runDefence(plan: [number, TowerKind][], log?: string[][]): RwState {
+/** Drive a full defence with a given plan; returns the end state + world hash. */
+function runDefence(plan: [number, TowerKind][], log?: string[][]): RwState & { worldHash: string } {
   const world = createWorld(rootwardGame);
   let planIdx = 0;
   for (let f = 0; f < 60 * 60 * 14; f++) {
@@ -50,7 +50,7 @@ function runDefence(plan: [number, TowerKind][], log?: string[][]): RwState {
     log?.push(actions);
     world.step(actions);
   }
-  return rwState(world);
+  return { ...rwState(world), worldHash: world.hash() };
 }
 
 export default async function verify(t: VerifyContext) {
@@ -62,6 +62,7 @@ export default async function verify(t: VerifyContext) {
     end.won,
   );
   t.check(`defence holds with margin (${end.lives} ≥ 5 lives)`, end.lives >= 5);
+  t.golden('full defence', end.worldHash);
 
   // 2. Counter-system proof: an arrow-only build of the SAME budget leaks
   //    badly against the tank waves — tanks resist arrows by design.

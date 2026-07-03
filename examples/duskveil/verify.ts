@@ -80,6 +80,7 @@ export default async function verify(t: VerifyContext) {
   );
   t.check(`patterns are survivable with margin (deaths ${s.deaths} ≤ 2)`, s.deaths <= 2);
   t.check(`true bullet-hell density (peak ${peakBullets} ≥ 350 live bullets)`, peakBullets >= 350);
+  t.golden('full fight', world.hash());
   const avg = simMs / steps;
   t.check(`sim step averages ${avg.toFixed(2)}ms at peak density (budget 2.5ms)`, avg < 2.5);
 

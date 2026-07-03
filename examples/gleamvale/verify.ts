@@ -33,6 +33,7 @@ export default async function verify(t: VerifyContext) {
     frames >= 0 && deaths === 0,
   );
   t.check('enemies never escape their room bounds', contained);
+  t.golden('full combat run', world.hash());
 
   // 2. Negative gate proof — without the key, the door bars room 3.
   {

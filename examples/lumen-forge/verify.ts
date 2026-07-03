@@ -36,6 +36,7 @@ function greedyRun(world: World, minutes: number): { firstBuy: number[]; log: st
 export default async function verify(t: VerifyContext) {
   const world = createWorld(lumenForgeGame);
   const { firstBuy, log, prodSamples } = greedyRun(world, 12);
+  t.golden('12-minute greedy run', world.hash());
 
   // 1. Era milestones (tuned windows; retuning that breaks pacing fails here).
   const windows: [number, number][] = [

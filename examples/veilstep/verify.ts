@@ -81,6 +81,7 @@ export default async function verify(t: VerifyContext) {
     frames >= 0 && alarms === 0 ? `full heist: idol stolen and exfiltrated in ${(frames / 60).toFixed(1)}s, 0 alarms` : `heist ${frames < 0 ? 'DID NOT finish' : `raised ${alarms} alarm(s)`}`,
     frames >= 0 && alarms === 0,
   );
+  t.golden('full heist', world.hash());
 
   // 2. Negative: standing in the open in a patrol lane → spotted quickly.
   {

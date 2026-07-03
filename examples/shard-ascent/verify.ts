@@ -42,6 +42,8 @@ export default async function verify(t: VerifyContext) {
     if (i === 0) fullLog = log;
   }
 
+  t.golden('all-levels bot run', world.hash());
+
   // Determinism over the level-1 playthrough.
   const rep = checkDeterministic(() => createWorld(shardAscentGame), { frames: fullLog });
   t.check(rep.ok ? 'sim is deterministic across runs' : `sim diverged at frame ${rep.divergedAt}`, rep.ok);

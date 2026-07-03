@@ -56,7 +56,10 @@ card for the game to the root `index.html` hub (copy an existing
 3. `npm run verify` — invariants clean, all suites pass, including your new
    `verify.ts` proving the genre's truth (solver proof for puzzles; scripted
    playthrough asserting the win condition on probes for real-time; balance
-   sim / perf budget where that is the truth).
+   sim / perf budget where that is the truth). Pin the full run's hash with
+   `t.golden('full run', world.hash())`, record it via
+   `UPDATE_GOLDEN=1 npm run verify`, and commit `golden.json` — this is the
+   portfolio-wide refactor net (docs/VERIFICATION.md §Channel 1d).
 4. Headless SVG screenshot (`HeadlessRenderer.toSVGString()`) — judge palette,
    layering, contrast, legibility. Looks only, never correctness.
 5. Complete loop: start → play → win/lose → restart, keyboard-only.

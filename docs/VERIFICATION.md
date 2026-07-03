@@ -76,6 +76,30 @@ assertSnapshotStable(() => createWorld(myGame), inputLog, 20); // snapshot→res
 save/undo/time-travel. Mark pure-view nodes `cosmetic = true` so transient display
 (move counters, particles, tweened positions) never pollutes the canonical hash.
 
+## Channel 1d — the golden replay corpus (portfolio-wide refactor net)
+
+Every example pins its full scripted run's final `world.hash()` in a committed
+`examples/<slug>/golden.json`, checked by `t.golden(label, hash)` in its
+verify suite. This turns "did my engine refactor change ANY game's behavior?"
+into one command: `npm run verify` — a pure refactor leaves every golden hash
+untouched; any divergence names the game and the run that changed.
+
+```ts
+// in examples/<slug>/verify.ts, after the full run:
+t.golden('full run', world.hash());
+```
+
+**Re-record policy.** Golden divergence is a failing gate, on purpose. When a
+behavior change is *intentional* (tuning, new content, a deliberate engine
+change), re-record and say so:
+
+1. `UPDATE_GOLDEN=1 npm run verify` — rewrites the affected `golden.json`.
+2. Commit the new hashes IN THE SAME COMMIT as the change, with a line in the
+   message naming which games' behavior changed and why.
+
+Never re-record to silence a divergence you can't explain — an unexplained
+golden change IS the bug the corpus exists to catch.
+
 ## Channel 2 — the visual screenshot (looks only)
 
 ```ts

@@ -97,6 +97,7 @@ export default async function verify(t: VerifyContext) {
     outcome === 'won',
   );
   t.check(`the horde genuinely scales (peak ${peakAlive} ≥ 150 alive)`, peakAlive >= 150);
+  t.golden('full night', world.hash());
 
   // 2. Perf budget: average full-sim step under 2ms across the whole night.
   const avg = simMs / simSteps;

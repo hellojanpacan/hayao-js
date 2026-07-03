@@ -33,6 +33,7 @@ export default async function verify(t: VerifyContext) {
     frames >= 0 && deaths === 0 ? `full run reaches the Heart in ${(frames / 60).toFixed(1)}s, 0 deaths` : `full run ${frames < 0 ? 'DID NOT finish' : `finished with ${deaths} death(s)`}`,
     frames >= 0 && deaths === 0,
   );
+  t.golden('full run', world.hash());
 
   // 2. Negative gate proof — Shaft ledge1 (top y=480) without the double jump:
   // best single jump from the floor below, sim-measured true maximum.
