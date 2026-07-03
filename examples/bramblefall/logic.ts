@@ -3,7 +3,7 @@
 // through the SpatialHash, a spear→cavalry→archer→spear counter triangle,
 // keep-vs-keep victory, and a pulsing enemy commander.
 
-import { SpatialHash, TILE, tileAt, tilemapFromAscii, type TilemapData } from '@hayao';
+import { SpatialHash, TILE, tileAt, tilemapFromAscii, type TilemapData, dhypot } from '@hayao';
 
 export const TILE_SIZE = 32;
 export const COLS = 40;
@@ -264,7 +264,7 @@ export function stepBf(s: BfState, input: BfInput, dt: number): BfEvents {
       // Follow this unit's order field; attack the enemy keep when close.
       const target = { tx: u.tx, ty: u.ty };
       const enemyKeep = KEEPS[u.team === 0 ? 1 : 0];
-      const kd = Math.hypot(enemyKeep.x - u.x, enemyKeep.y - u.y);
+      const kd = dhypot(enemyKeep.x - u.x, enemyKeep.y - u.y);
       if (kd < T.range + 34) {
         if (u.cd <= 0) {
           u.cd = 1 / T.rate;
@@ -277,7 +277,7 @@ export function stepBf(s: BfState, input: BfInput, dt: number): BfEvents {
         if (!atTarget) {
           mx = f.dx[ti] * T.speed;
           my = f.dy[ti] * T.speed;
-          const ml = Math.hypot(mx, my) || 1;
+          const ml = dhypot(mx, my) || 1;
           mx = (mx / ml) * T.speed;
           my = (my / ml) * T.speed;
         }
@@ -289,7 +289,7 @@ export function stepBf(s: BfState, input: BfInput, dt: number): BfEvents {
       if (j === i || s.units[j].hp <= 0) continue;
       const ox = u.x - s.units[j].x;
       const oy = u.y - s.units[j].y;
-      const od = Math.hypot(ox, oy) || 1;
+      const od = dhypot(ox, oy) || 1;
       mx += (ox / od) * 46;
       my += (oy / od) * 46;
       break;

@@ -41,12 +41,16 @@
       .games-head h2 { font-family: var(--mincho); font-weight: 600; font-size: 26px; margin: 10px 0 8px; }
       .games-head p { margin: 0 0 26px; color: var(--sumi-soft); font-size: 16px; max-width: 62ch; }
       .games { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-bottom: 8px; }
-      a.card { display: block; color: inherit; background: var(--washi-2); border: 1px solid var(--line);
+      .card { display: flex; flex-direction: column; background: var(--washi-2); border: 1px solid var(--line);
         border-radius: 4px; padding: 18px 20px; transition: border-color .12s, background .12s; }
-      a.card:hover, a.card:focus { border-color: var(--ai-2); background: #fbf7ee; outline: none; }
-      a.card h3 { margin: 0 0 4px; font-family: var(--mincho); font-weight: 600; font-size: 18px; }
-      a.card .genre { font-family: var(--mono); font-size: 11px; color: var(--stone); letter-spacing: .05em; text-transform: uppercase; display: block; margin-bottom: 6px; }
-      a.card p { margin: 0; color: var(--sumi-soft); font-size: 13.5px; line-height: 1.55; }
+      .card:hover, .card:focus-within { border-color: var(--ai-2); background: #fbf7ee; }
+      .card h3 { margin: 0 0 4px; font-family: var(--mincho); font-weight: 600; font-size: 18px; }
+      .card h3 a { color: inherit; border-bottom: none; }
+      .card .genre { font-family: var(--mono); font-size: 11px; color: var(--stone); letter-spacing: .05em; text-transform: uppercase; display: block; margin-bottom: 6px; }
+      .card p { margin: 0; color: var(--sumi-soft); font-size: 13.5px; line-height: 1.55; }
+      .card .links { margin-top: auto; padding-top: 12px; display: flex; gap: 16px; font-size: 13.5px; }
+      .card .links a { border-bottom: none; }
+      .card .links a:hover { border-bottom: 1px solid var(--ai-2); }
 
       .build { border-top: 1px solid var(--line); margin-top: 44px; padding: 44px 0; }
       .build h2 { font-family: var(--mincho); font-weight: 600; font-size: 26px; margin: 10px 0 8px; }
@@ -96,90 +100,150 @@
           below is proven winnable by a solver or a bot before it ships — play them in your browser.</p>
       </section>
       <div class="games">
-        <a class="card" href="./examples/sokoban/index.html">
-          <h3>Sokoban</h3><span class="genre">box-pushing puzzle</span>
+        <div class="card">
+          <h3><a href="./examples/sokoban/index.html">Sokoban</a></h3><span class="genre">box-pushing puzzle</span>
           <p>Pure solver-provable logic + a scene-tree SVG view + undo. Every level is machine-verified winnable.</p>
-        </a>
-        <a class="card" href="./examples/shard-ascent/index.html">
-          <h3>Shard Ascent</h3><span class="genre">precision platformer</span>
+        
+          <div class="links"><a href="./examples/sokoban/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/sokoban">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/shard-ascent/index.html">Shard Ascent</a></h3><span class="genre">precision platformer</span>
           <p>Coyote time, jump buffering, dashes, corner correction, moving lifts. Every level is bot-proven beatable, deathless.</p>
-        </a>
-        <a class="card" href="./examples/thornspire/index.html">
-          <h3>Thornspire</h3><span class="genre">roguelike deckbuilder</span>
+        
+          <div class="links"><a href="./examples/shard-ascent/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/shard-ascent">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/thornspire/index.html">Thornspire</a></h3><span class="genre">roguelike deckbuilder</span>
           <p>Card DSL, telegraphed intents, drafts between fights — tuned to a proven 17/20 pilot win rate, with drafting proven to matter.</p>
-        </a>
-        <a class="card" href="./examples/vantage/index.html">
-          <h3>Vantage</h3><span class="genre">turn-based tactics</span>
+        
+          <div class="links"><a href="./examples/thornspire/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/thornspire">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/vantage/index.html">Vantage</a></h3><span class="genre">turn-based tactics</span>
           <p>Telegraphed attacks, push chains that rewrite the enemy's future — a perfect defence is machine-proven possible, and doing nothing proven fatal.</p>
-        </a>
-        <a class="card" href="./examples/duskveil/index.html">
-          <h3>Duskveil</h3><span class="genre">bullet hell</span>
+        
+          <div class="links"><a href="./examples/vantage/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/vantage">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/duskveil/index.html">Duskveil</a></h3><span class="genre">bullet hell</span>
           <p>A pattern DSL, 480+ live bullets, grazing, focus mode — every phase proven survivable by a predictive dodge bot.</p>
-        </a>
-        <a class="card" href="./examples/bramblefall/index.html">
-          <h3>Bramblefall</h3><span class="genre">real-time strategy</span>
+        
+          <div class="links"><a href="./examples/duskveil/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/duskveil">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/bramblefall/index.html">Bramblefall</a></h3><span class="genre">real-time strategy</span>
           <p>Flow-field pathfinding, 260+ units, a spear/cavalry/archer counter triangle — every counter edge is duel-proven and the war is bot-winnable.</p>
-        </a>
-        <a class="card" href="./examples/emberwake/index.html">
-          <h3>Emberwake</h3><span class="genre">horde survival</span>
+        
+          <div class="links"><a href="./examples/bramblefall/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/bramblefall">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/emberwake/index.html">Emberwake</a></h3><span class="genre">horde survival</span>
           <p>Auto-fire, level-up builds, 160+ enemies on the Canvas backend — the full night is bot-proven survivable and the sim steps in 0.02ms.</p>
-        </a>
-        <a class="card" href="./examples/hollowdeep/index.html">
-          <h3>Hollowdeep</h3><span class="genre">traditional roguelike</span>
+        
+          <div class="links"><a href="./examples/emberwake/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/emberwake">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/hollowdeep/index.html">Hollowdeep</a></h3><span class="genre">traditional roguelike</span>
           <p>Procgen floors proven connected across 50 seeds, raycast FOV with map memory, bump combat — every dungeon bot-proven winnable.</p>
-        </a>
-        <a class="card" href="./examples/gleamvale/index.html">
-          <h3>Gleamvale</h3><span class="genre">action-adventure</span>
+        
+          <div class="links"><a href="./examples/hollowdeep/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/hollowdeep">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/gleamvale/index.html">Gleamvale</a></h3><span class="genre">action-adventure</span>
           <p>Sword arcs, hit-stop, telegraphed enemies, a key-locked vault — the full combat run is bot-proven winnable without dying.</p>
-        </a>
-        <a class="card" href="./examples/sproutveil/index.html">
-          <h3>Sproutveil</h3><span class="genre">metroidvania</span>
+        
+          <div class="links"><a href="./examples/gleamvale/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/gleamvale">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/sproutveil/index.html">Sproutveil</a></h3><span class="genre">metroidvania</span>
           <p>Ability-gated exploration where every gate is machine-proven impassable without its ability — and the whole run bot-proven beatable.</p>
-        </a>
-        <a class="card" href="./examples/veilstep/index.html">
-          <h3>Veilstep</h3><span class="genre">stealth</span>
+        
+          <div class="links"><a href="./examples/sproutveil/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/sproutveil">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/veilstep/index.html">Veilstep</a></h3><span class="genre">stealth</span>
           <p>Raycast vision cones, detection meters, noise, bushes — the full idol run is bot-proven doable with zero alarms, and the punishments proven real.</p>
-        </a>
-        <a class="card" href="./examples/palewood/index.html">
-          <h3>Palewood</h3><span class="genre">survival horror</span>
+        
+          <div class="links"><a href="./examples/veilstep/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/veilstep">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/palewood/index.html">Palewood</a></h3><span class="genre">survival horror</span>
           <p>A raycast-lit lantern, panned growls in the dark, fuel pressure that forbids camping — the night proven survivable, the dark proven deadly.</p>
-        </a>
-        <a class="card" href="./examples/cadence/index.html">
-          <h3>Cadence Hollow</h3><span class="genre">rhythm dungeon</span>
+        
+          <div class="links"><a href="./examples/palewood/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/palewood">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/cadence/index.html">Cadence Hollow</a></h3><span class="genre">rhythm dungeon</span>
           <p>Move only on the pulse, foes dance in lockstep — the beat IS sim time, so even rhythm replays deterministically.</p>
-        </a>
-        <a class="card" href="./examples/glimmerfall/index.html">
-          <h3>Glimmerfall</h3><span class="genre">match-3</span>
+        
+          <div class="links"><a href="./examples/cadence/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/cadence">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/glimmerfall/index.html">Glimmerfall</a></h3><span class="genre">match-3</span>
           <p>Cascade combos, spring-tweened choreography over an instant sim — 100 boards proven fair, targets proven reachable.</p>
-        </a>
-        <a class="card" href="./examples/pinshine/index.html">
-          <h3>Pinshine</h3><span class="genre">physics arcade</span>
+        
+          <div class="links"><a href="./examples/glimmerfall/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/glimmerfall">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/pinshine/index.html">Pinshine</a></h3><span class="genre">physics arcade</span>
           <p>Swept-circle collision (no tunneling at any speed), restitution proven energy-honest, every board proven clearable by an aim-search bot.</p>
-        </a>
-        <a class="card" href="./examples/vellgrove/index.html">
-          <h3>Vellgrove Rally</h3><span class="genre">top-down racing</span>
+        
+          <div class="links"><a href="./examples/pinshine/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/pinshine">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/rookspire/index.html">Rookspire</a></h3><span class="genre">demolition slingshot</span>
+          <p>Rigid-body castles (stacks, planks, ropes) razed by a CCD cannonball — every castle proven to fall within its stone budget by a siege bot.</p>
+        
+          <div class="links"><a href="./examples/rookspire/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/rookspire">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/vellgrove/index.html">Vellgrove Rally</a></h3><span class="genre">top-down racing</span>
           <p>Understeer at speed, grass that punishes, cut-proof laps — braking proven faster than flooring it.</p>
-        </a>
-        <a class="card" href="./examples/rootward/index.html">
-          <h3>Rootward</h3><span class="genre">tower defense</span>
+        
+          <div class="links"><a href="./examples/vellgrove/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/vellgrove">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/fernclash/index.html">Fernclash</a></h3><span class="genre">2-player netplay duel</span>
+          <p>Sumo shoving on a fern ring — hot-seat or true lockstep netplay across tabs/machines, peers proven to agree bit-for-bit.</p>
+        
+          <div class="links"><a href="./examples/fernclash/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/fernclash">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/seamfold/index.html">Seamfold</a></h3><span class="genre">twisted-torus sokoban · benchmark B1</span>
+          <p>Sokoban with no outside — seams that shift you sideways, every level proven to NEED the fold (unsolvable without it).</p>
+        
+          <div class="links"><a href="./examples/seamfold/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/seamfold">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/rootward/index.html">Rootward</a></h3><span class="genre">tower defense</span>
           <p>Three counter-typed towers on an S-lane, ten ramping waves — the winning build is proven, and so is that arrow-spam LOSES to tanks.</p>
-        </a>
-        <a class="card" href="./examples/tarnholm/index.html">
-          <h3>Tarnholm</h3><span class="genre">town builder</span>
+        
+          <div class="links"><a href="./examples/rootward/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/rootward">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/tarnholm/index.html">Tarnholm</a></h3><span class="genre">town builder</span>
           <p>Every roof scores by its neighbours, with the gain shown live — placement skill proven to nearly double random play.</p>
-        </a>
-        <a class="card" href="./examples/fernrow/index.html">
-          <h3>Fernrow</h3><span class="genre">farming sim</span>
+        
+          <div class="links"><a href="./examples/tarnholm/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/tarnholm">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/fernrow/index.html">Fernrow</a></h3><span class="genre">farming sim</span>
           <p>Four seasons, energy-budgeted days, crops that wither out of season — the festival goal proven reachable, reinvestment proven to compound.</p>
-        </a>
-        <a class="card" href="./examples/lumen-forge/index.html">
-          <h3>Lumen Forge</h3><span class="genre">idle / incremental</span>
+        
+          <div class="links"><a href="./examples/fernrow/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/fernrow">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/lumen-forge/index.html">Lumen Forge</a></h3><span class="genre">idle / incremental</span>
           <p>DOM buttons flow through the deterministic input log; the whole pacing curve is simulation-verified.</p>
-        </a>
-        <a class="card" href="./examples/emberreign/index.html">
-          <h3>Emberreign</h3><span class="genre">narrative decisions</span>
+        
+          <div class="links"><a href="./examples/lumen-forge/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/lumen-forge">source →</a></div>
+        </div>
+        <div class="card">
+          <h3><a href="./examples/emberreign/index.html">Emberreign</a></h3><span class="genre">narrative decisions</span>
           <p>Four meters, double-edged cards, story arcs — judgement proven to matter (19/20 vs 0/20 reigns) and every doom proven honest.</p>
-        </a>
+        
+          <div class="links"><a href="./examples/emberreign/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/emberreign">source →</a></div>
+        </div>
       </div>
 
       <section class="build">

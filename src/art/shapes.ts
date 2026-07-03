@@ -2,6 +2,7 @@
 // deterministic (any randomness must be passed an Rng), producing point arrays
 // or SVG path strings usable directly in a Sprite.
 
+import { dcos, dsin } from '../core/dmath';
 import type { Rng } from '../core/rng';
 import { TAU, type Vec2 } from '../core/math';
 
@@ -10,7 +11,7 @@ export function regularPolygon(sides: number, radius: number, rotation = 0): num
   const pts: number[] = [];
   for (let i = 0; i < sides; i++) {
     const a = rotation + (i / sides) * TAU;
-    pts.push(Math.cos(a) * radius, Math.sin(a) * radius);
+    pts.push(dcos(a) * radius, dsin(a) * radius);
   }
   return pts;
 }
@@ -21,7 +22,7 @@ export function star(points: number, outer: number, inner: number, rotation = -M
   for (let i = 0; i < points * 2; i++) {
     const r = i % 2 === 0 ? outer : inner;
     const a = rotation + (i / (points * 2)) * TAU;
-    pts.push(Math.cos(a) * r, Math.sin(a) * r);
+    pts.push(dcos(a) * r, dsin(a) * r);
   }
   return pts;
 }
@@ -32,7 +33,7 @@ export function blobPath(rng: Rng, radius: number, wobble = 0.25, lobes = 7): st
   for (let i = 0; i < lobes; i++) {
     const a = (i / lobes) * TAU;
     const r = radius * (1 - wobble + rng.float() * wobble * 2);
-    pts.push({ x: Math.cos(a) * r, y: Math.sin(a) * r });
+    pts.push({ x: dcos(a) * r, y: dsin(a) * r });
   }
   return smoothClosedPath(pts);
 }

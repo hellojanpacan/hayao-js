@@ -3,6 +3,7 @@
 // (circle-vs-circle time-of-impact inside each substep), so even a screaming
 // ball never tunnels — continuous collision as closed-form arithmetic.
 
+import { dcos, dsin } from '@hayao';
 export const W = 1280;
 export const H = 704;
 export const BALL_R = 8;
@@ -113,7 +114,7 @@ export function stepPs(s: PsState, input: PsInput, dt: number): PsEvents {
     if (input.launch && s.ballsLeft > 0) {
       s.ballsLeft--;
       const a = s.aim + Math.PI / 2; // 0 aims straight down
-      s.ball = { x: W / 2, y: LAUNCH_Y, vx: Math.cos(a) * LAUNCH_SPEED, vy: Math.sin(a) * LAUNCH_SPEED };
+      s.ball = { x: W / 2, y: LAUNCH_Y, vx: dcos(a) * LAUNCH_SPEED, vy: dsin(a) * LAUNCH_SPEED };
       ev.launched = true;
     }
     return ev;

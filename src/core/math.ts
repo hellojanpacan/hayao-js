@@ -1,5 +1,8 @@
 // Deterministic 2D math. Plain data + pure functions (no classes with hidden
-// state) so everything serializes and hashes cleanly.
+// state) so everything serializes and hashes cleanly. Trig/hypot route through
+// dmath so results are bit-identical across JS engines (netplay-safe).
+
+import { dcos, dhypot, dsin } from './dmath';
 
 export interface Vec2 {
   x: number;
@@ -11,8 +14,8 @@ export const vadd = (a: Vec2, b: Vec2): Vec2 => ({ x: a.x + b.x, y: a.y + b.y })
 export const vsub = (a: Vec2, b: Vec2): Vec2 => ({ x: a.x - b.x, y: a.y - b.y });
 export const vscale = (a: Vec2, s: number): Vec2 => ({ x: a.x * s, y: a.y * s });
 export const vdot = (a: Vec2, b: Vec2): number => a.x * b.x + a.y * b.y;
-export const vlen = (a: Vec2): number => Math.hypot(a.x, a.y);
-export const vdist = (a: Vec2, b: Vec2): number => Math.hypot(a.x - b.x, a.y - b.y);
+export const vlen = (a: Vec2): number => dhypot(a.x, a.y);
+export const vdist = (a: Vec2, b: Vec2): number => dhypot(a.x - b.x, a.y - b.y);
 export function vnorm(a: Vec2): Vec2 {
   const l = vlen(a);
   return l === 0 ? { x: 0, y: 0 } : { x: a.x / l, y: a.y / l };
@@ -69,8 +72,8 @@ export function composeTransform(m: Transform, n: Transform): Transform {
 
 /** Build a transform from position, rotation (radians), scale. */
 export function makeTransform(pos: Vec2, rotation: number, scale: Vec2): Transform {
-  const cos = Math.cos(rotation);
-  const sin = Math.sin(rotation);
+  const cos = dcos(rotation);
+  const sin = dsin(rotation);
   return {
     a: cos * scale.x,
     b: sin * scale.x,

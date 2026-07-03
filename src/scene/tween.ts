@@ -3,30 +3,35 @@
 // polish — not part of the hashed logic state), Godot AnimationPlayer-style.
 
 import { clamp } from '../core/math';
+import { dcos, dexp2, dsin } from '../core/dmath';
 import { Node } from './node';
 
 export type Easing = (t: number) => number;
 
-const pow = Math.pow;
+// Integer powers are spelled out as multiplication and 2^x routes through
+// dexp2: Math.pow is implementation-defined, and eased values land in hashed
+// node props, so easings must be bit-identical across engines.
+const sq = (x: number) => x * x;
+const cube = (x: number) => x * x * x;
 export const EASINGS: Record<string, Easing> = {
   linear: (t) => t,
   quadIn: (t) => t * t,
   quadOut: (t) => 1 - (1 - t) * (1 - t),
-  quadInOut: (t) => (t < 0.5 ? 2 * t * t : 1 - pow(-2 * t + 2, 2) / 2),
+  quadInOut: (t) => (t < 0.5 ? 2 * t * t : 1 - sq(-2 * t + 2) / 2),
   cubicIn: (t) => t * t * t,
-  cubicOut: (t) => 1 - pow(1 - t, 3),
-  cubicInOut: (t) => (t < 0.5 ? 4 * t * t * t : 1 - pow(-2 * t + 2, 3) / 2),
-  sineIn: (t) => 1 - Math.cos((t * Math.PI) / 2),
-  sineOut: (t) => Math.sin((t * Math.PI) / 2),
-  sineInOut: (t) => -(Math.cos(Math.PI * t) - 1) / 2,
+  cubicOut: (t) => 1 - cube(1 - t),
+  cubicInOut: (t) => (t < 0.5 ? 4 * t * t * t : 1 - cube(-2 * t + 2) / 2),
+  sineIn: (t) => 1 - dcos((t * Math.PI) / 2),
+  sineOut: (t) => dsin((t * Math.PI) / 2),
+  sineInOut: (t) => -(dcos(Math.PI * t) - 1) / 2,
   backOut: (t) => {
     const c1 = 1.70158;
     const c3 = c1 + 1;
-    return 1 + c3 * pow(t - 1, 3) + c1 * pow(t - 1, 2);
+    return 1 + c3 * cube(t - 1) + c1 * sq(t - 1);
   },
   elasticOut: (t) => {
     const c4 = (2 * Math.PI) / 3;
-    return t === 0 ? 0 : t === 1 ? 1 : pow(2, -10 * t) * Math.sin((t * 10 - 0.75) * c4) + 1;
+    return t === 0 ? 0 : t === 1 ? 1 : dexp2(-10 * t) * dsin((t * 10 - 0.75) * c4) + 1;
   },
   bounceOut: (t) => {
     const n1 = 7.5625;

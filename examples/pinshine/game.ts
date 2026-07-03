@@ -1,7 +1,7 @@
 // Pinshine: aim line, glowing pegs, patrol bucket. Physics feel comes free —
 // the view just draws where the swept sim put things.
 
-import { Node, NodePool, PARTICLE_PRESETS, Particles, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
+import { Node, NodePool, PARTICLE_PRESETS, Particles, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World, dcos, dsin } from '@hayao';
 import { initialPs, stepPs, BALL_R, BUCKET, LAUNCH_Y, PEG_R, W, type PsState } from './logic';
 
 export const PS_INPUT_MAP: InputMap = {
@@ -84,8 +84,8 @@ class PsView extends Node {
       const a = s.aim + Math.PI / 2;
       let px = W / 2;
       let py = LAUNCH_Y;
-      let vx = Math.cos(a) * 620;
-      let vy = Math.sin(a) * 620;
+      let vx = dcos(a) * 620;
+      let vy = dsin(a) * 620;
       for (let i = 0; i < 9; i++) {
         px += vx * 0.045;
         py += vy * 0.045;

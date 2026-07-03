@@ -54,6 +54,45 @@ re-shuffled as lessons emerge.
 
 ## Entries
 
+### NET · Fernclash — deterministic multiplayer (lockstep + rollback netcode) ✅
+
+The engine was always a lockstep core (`step(inputs)` pure, seeded rng,
+`hash()`); this build added the missing transport and proved it with a
+2-player game. New `src/net/`: player-namespaced inputs (`p1:left` — merged
+frames are ordinary frames, the whole verify harness works on multiplayer
+unchanged), bus transports (BroadcastChannel tabs / zero-dep WebSocket relay
+in `scripts/relay.mjs` / deterministic LoopbackHub with latency+loss for
+tests), `LockstepSession` (input delay, redundancy windows, stall-not-desync),
+`RollbackSession` (snapshot-ring predict/rollback on the proven
+`snapshot()/restore()`), room layer (seed+roster handshake, mid-game join via
+snapshot shipped at an agreed future frame, leave cutoffs), periodic
+`hash()` exchange that freezes on desync and dumps a replayable input log.
+
+**Fernclash** (`examples/fernclash/`): sumo duel on a fern ring — the same
+game runs hot-seat (pre-namespaced input map) and true netplay with zero
+branches in game code. Verified: bot duel won 3–0; golden replay;
+deterministic; **two lockstep peers finish a full match over a lossy, laggy
+loopback and agree bit-for-bit**; real-socket relay covered in
+`src/net/relay.test.ts`.
+
+**Findings:**
+
+- **Cross-machine determinism is stronger than same-machine determinism.**
+  `Math.sin/cos/atan2/pow/hypot/log` are implementation-defined per JS engine.
+  New `core/dmath.ts` (fdlibm-style, exactly-rounded ops only) replaced every
+  sim-side call, and `npm run invariants` now bans the raw forms. Goldens
+  moved once (sub-ulp shifts) and are pinned to the deterministic forms.
+- **Registered custom nodes are the netplay-safe pattern.** Logic in a
+  `registerNode`'d class survives `restore()`; closure behaviors don't. The
+  fernclash rule: rematch flows through the *input stream* (`again` action),
+  never a DOM callback that mutates state on one peer only.
+- **A late joiner must not bootstrap-zero the veterans' inputs.** Only
+  genuinely-new players get empty bootstrap frames; the welcome also carries
+  still-pending joins. Caught by the room-level late-join test as a desync at
+  the first hash interval — exactly the failure mode the hash exchange exists
+  to catch.
+- Full doc: [NETWORKING.md](NETWORKING.md).
+
 ### B1 · Seamfold — benchmark reproduction of Edge Not Found (js13k 2020, #2) ✅
 
 First rung of the [BENCHMARK](BENCHMARK.md) ladder: reproduce a human-ranked

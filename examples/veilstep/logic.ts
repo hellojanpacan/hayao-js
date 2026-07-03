@@ -2,7 +2,7 @@
 // raycast), a detection meter with fill/drain, bush concealment, sprint noise,
 // and the heist objective. Alarm = reset, counted.
 
-import { inVisionCone, moveRect, tilemapFromAscii, asciiEntities, type TilemapData, type Vec2 } from '@hayao';
+import { inVisionCone, moveRect, tilemapFromAscii, asciiEntities, type TilemapData, type Vec2, dhypot } from '@hayao';
 import { BUSHES, BUSH_RADIUS, DETECT, GUARDS, LEVEL_ROWS, NOISE_RADIUS, PAUSE_AT_ENDS, SPEEDS, VISION } from './level';
 
 export const TILE_SIZE = 32;
@@ -73,7 +73,7 @@ export interface VsEvents {
   noise: boolean;
 }
 
-export const isHidden = (s: VsState): boolean => BUSHES.some((b) => Math.hypot(s.x - b.x, s.y - b.y) < BUSH_RADIUS);
+export const isHidden = (s: VsState): boolean => BUSHES.some((b) => dhypot(s.x - b.x, s.y - b.y) < BUSH_RADIUS);
 
 export function stepVs(s: VsState, input: VsInput, dt: number): VsEvents {
   const ev: VsEvents = { spotted: false, grabbed: false, won: false, noise: false };
@@ -81,7 +81,7 @@ export function stepVs(s: VsState, input: VsInput, dt: number): VsEvents {
   const map = levelMap();
 
   // ── Player ──
-  const il = Math.hypot(input.moveX, input.moveY) || 1;
+  const il = dhypot(input.moveX, input.moveY) || 1;
   const speed = input.sprint ? SPEEDS.sprint : SPEEDS.sneak;
   const res = moveRect(map, { x: s.x - 10, y: s.y - 10, w: 20, h: 20 }, (input.moveX / il) * speed * dt, (input.moveY / il) * speed * dt);
   s.x = res.x + 10;
@@ -92,12 +92,12 @@ export function stepVs(s: VsState, input: VsInput, dt: number): VsEvents {
   if (input.sprint && moving) {
     ev.noise = true;
     for (const g of s.guards) {
-      if (Math.hypot(g.x - s.x, g.y - s.y) < NOISE_RADIUS) {
+      if (dhypot(g.x - s.x, g.y - s.y) < NOISE_RADIUS) {
         g.state = 'investigate';
         g.t = 0;
         g.ix = s.x;
         g.iy = s.y;
-        const d = Math.hypot(s.x - g.x, s.y - g.y) || 1;
+        const d = dhypot(s.x - g.x, s.y - g.y) || 1;
         g.fx = (s.x - g.x) / d;
         g.fy = (s.y - g.y) / d;
       }
@@ -115,7 +115,7 @@ export function stepVs(s: VsState, input: VsInput, dt: number): VsEvents {
       const ty = g.dir > 0 ? def.by : def.ay;
       const dx = tx - g.x;
       const dy = ty - g.y;
-      const d = Math.hypot(dx, dy);
+      const d = dhypot(dx, dy);
       if (d < 4) {
         g.state = 'pause';
         g.t = 0;
@@ -133,14 +133,14 @@ export function stepVs(s: VsState, input: VsInput, dt: number): VsEvents {
         // Turn toward the return leg early (scans behind before walking).
         const tx = g.dir > 0 ? def.ax : def.bx;
         const ty = g.dir > 0 ? def.ay : def.by;
-        const d = Math.hypot(tx - g.x, ty - g.y) || 1;
+        const d = dhypot(tx - g.x, ty - g.y) || 1;
         g.fx = (tx - g.x) / d;
         g.fy = (ty - g.y) / d;
       }
     } else if (g.state === 'investigate') {
       const dx = g.ix - g.x;
       const dy = g.iy - g.y;
-      const d = Math.hypot(dx, dy);
+      const d = dhypot(dx, dy);
       if (d > 6) {
         g.x += (dx / d) * def.speed * 1.3 * dt;
         g.y += (dy / d) * def.speed * 1.3 * dt;
@@ -169,12 +169,12 @@ export function stepVs(s: VsState, input: VsInput, dt: number): VsEvents {
 
   // ── Objective ──
   const idol = idolPoint();
-  if (!s.idol && Math.hypot(s.x - idol.x, s.y - idol.y) < 28) {
+  if (!s.idol && dhypot(s.x - idol.x, s.y - idol.y) < 28) {
     s.idol = true;
     ev.grabbed = true;
   }
   const sp = spawnPoint();
-  if (s.idol && Math.hypot(s.x - sp.x, s.y - sp.y) < 30) {
+  if (s.idol && dhypot(s.x - sp.x, s.y - sp.y) < 30) {
     s.won = true;
     ev.won = true;
   }

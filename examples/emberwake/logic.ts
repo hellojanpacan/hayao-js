@@ -2,7 +2,7 @@
 // through the SpatialHash broad phase; auto-aim fire; kill-count level-ups
 // with pick-1-of-3 upgrades; survive to dawn (120 sim-seconds).
 
-import { SpatialHash, type Rng, type TilemapData, tilemapFromAscii, moveRect } from '@hayao';
+import { SpatialHash, type Rng, type TilemapData, tilemapFromAscii, moveRect, dhypot, dcos, dsin, datan2 } from '@hayao';
 
 export const TILE_SIZE = 32;
 export const ARENA_W = 1280;
@@ -129,7 +129,7 @@ export function stepEw(s: EwState, input: EwInput, dt: number, rng: Rng): EwEven
   const map = arenaMap();
 
   // ── Player movement ──
-  const il = Math.hypot(input.moveX, input.moveY) || 1;
+  const il = dhypot(input.moveX, input.moveY) || 1;
   const r = P_TUNE.radius;
   const res = moveRect(map, { x: s.x - r, y: s.y - r, w: r * 2, h: r * 2 }, (input.moveX / il) * s.speed * dt, (input.moveY / il) * s.speed * dt);
   s.x = res.x + r;
@@ -167,10 +167,10 @@ export function stepEw(s: EwState, input: EwInput, dt: number, rng: Rng): EwEven
       }
     }
     const e = s.enemies[best];
-    const baseA = Math.atan2(e.y - s.y, e.x - s.x);
+    const baseA = datan2(e.y - s.y, e.x - s.x);
     for (let k = 0; k < s.shots; k++) {
       const a = baseA + (k - (s.shots - 1) / 2) * 0.16;
-      s.bullets.push({ x: s.x, y: s.y, vx: Math.cos(a) * P_TUNE.bulletSpeed, vy: Math.sin(a) * P_TUNE.bulletSpeed, life: P_TUNE.bulletLife });
+      s.bullets.push({ x: s.x, y: s.y, vx: dcos(a) * P_TUNE.bulletSpeed, vy: dsin(a) * P_TUNE.bulletSpeed, life: P_TUNE.bulletLife });
     }
     s.fireCd = 1 / s.fireRate;
     ev.fired = true;
@@ -206,7 +206,7 @@ export function stepEw(s: EwState, input: EwInput, dt: number, rng: Rng): EwEven
     const T = E_TUNE[e.kind];
     const dx = s.x - e.x;
     const dy = s.y - e.y;
-    const d = Math.hypot(dx, dy) || 1;
+    const d = dhypot(dx, dy) || 1;
     let mx = (dx / d) * T.speed;
     let my = (dy / d) * T.speed;
     // Separation: push away from ONE near neighbour (cheap, looks organic).
@@ -214,7 +214,7 @@ export function stepEw(s: EwState, input: EwInput, dt: number, rng: Rng): EwEven
       if (j === i || s.enemies[j].hp <= 0) continue;
       const ox = e.x - s.enemies[j].x;
       const oy = e.y - s.enemies[j].y;
-      const od = Math.hypot(ox, oy) || 1;
+      const od = dhypot(ox, oy) || 1;
       mx += (ox / od) * 42;
       my += (oy / od) * 42;
       break;

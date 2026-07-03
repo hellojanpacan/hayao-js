@@ -57,10 +57,20 @@ const WALL_CLOCK = [
   { rule: 'wall-clock: argless new Date()', re: /\bnew Date\s*\(\s*\)/ },
 ];
 const MATH_RANDOM = { rule: 'nondeterminism: Math.random()', re: /\bMath\.random\s*\(/ };
+// Implementation-defined Math functions differ between JS engines (V8/JSC/SM),
+// which desyncs cross-machine netplay. Sim code must use the dmath equivalents
+// (dsin/dcos/datan2/dexp2/dhypot). sqrt/abs/floor/round/min/max are IEEE-exact
+// and stay allowed. Tests may reference Math.* to compare against dmath.
+const MATH_IMPL_DEFINED = {
+  rule: 'nondeterminism: implementation-defined Math.* (use dmath: dsin/dcos/datan2/dexp2/dhypot)',
+  re: /\bMath\.(sin|cos|tan|asin|acos|atan2?|hypot|pow|exp|expm1|log2|log10|log1p|log|sinh|cosh|tanh|cbrt)\s*\(/,
+};
 
 for (const file of files) {
   const rel = relative(root, file);
-  const isBrowserDriver = rel === join('src', 'app', 'browser.ts');
+  // Browser drivers feed wall-clock into the fixed-step accumulator — the one
+  // sanctioned use. app/browser.ts drives local play, net/browser.ts netplay.
+  const isBrowserDriver = rel === join('src', 'app', 'browser.ts') || rel === join('src', 'net', 'browser.ts');
   const isMeasurement =
     rel.endsWith('.test.ts') || /^examples\/[^/]+\/verify\.ts$/.test(rel.replaceAll('\\', '/'));
   const lines = stripComments(readFileSync(file, 'utf8')).split('\n');
@@ -69,6 +79,11 @@ for (const file of files) {
     // Math.random is banned everywhere — even tests must be deterministic.
     if (MATH_RANDOM.re.test(text)) {
       violations.push({ file: rel, line: i + 1, rule: MATH_RANDOM.rule, excerpt: text.trim() });
+    }
+    // dmath.ts is the one place allowed to reference the banned names (in docs);
+    // tests compare dmath against Math.* on purpose.
+    if (!isMeasurement && rel !== join('src', 'core', 'dmath.ts') && MATH_IMPL_DEFINED.re.test(text)) {
+      violations.push({ file: rel, line: i + 1, rule: MATH_IMPL_DEFINED.rule, excerpt: text.trim() });
     }
     if (!isBrowserDriver && !isMeasurement) {
       for (const { rule, re } of WALL_CLOCK) {

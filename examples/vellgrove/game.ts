@@ -1,7 +1,7 @@
 // Vellgrove Rally: tarmac ribbon, grass beyond, three tiny cars. The camera
 // stays fixed (Micro Machines-style whole-track view); readability first.
 
-import { Node, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
+import { Node, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World, dhypot, datan2 } from '@hayao';
 import { initialVg, playerPosition, stepVg, HALF_WIDTH, LAPS, TRACK, type VgState } from './logic';
 
 export const VG_INPUT_MAP: InputMap = {
@@ -32,8 +32,8 @@ class VgView extends Node {
     for (let i = 0; i < TRACK.length; i++) {
       const a = TRACK[i];
       const b = TRACK[(i + 1) % TRACK.length];
-      const len = Math.hypot(b.x - a.x, b.y - a.y);
-      this.layer.addChild(new Sprite({ pos: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, rotation: Math.atan2(b.y - a.y, b.x - a.x), z: 1, shape: { kind: 'rect', w: len + HALF_WIDTH, h: HALF_WIDTH * 2, r: HALF_WIDTH }, fill: PAL.tarmac }));
+      const len = dhypot(b.x - a.x, b.y - a.y);
+      this.layer.addChild(new Sprite({ pos: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, rotation: datan2(b.y - a.y, b.x - a.x), z: 1, shape: { kind: 'rect', w: len + HALF_WIDTH, h: HALF_WIDTH * 2, r: HALF_WIDTH }, fill: PAL.tarmac }));
     }
     // Start line.
     this.layer.addChild(new Sprite({ pos: { x: 240, y: 170 }, rotation: 1.35, z: 2, shape: { kind: 'rect', w: 12, h: HALF_WIDTH * 2 - 20, r: 4 }, fill: PAL.start, opacity: 0.7 }));

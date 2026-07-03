@@ -1,7 +1,7 @@
 // Emberreign: a card table of consequence — four meter columns, the speaker,
 // the dilemma, two fates. Text-forward; the meters ARE the drama.
 
-import { Node, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
+import { Node, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World, dsin } from '@hayao';
 import { choose, drawCard, initialEr, DECK, DOOMS, METERS, SEASONS_PER_YEAR, YEARS_TO_WIN, type ErState } from './logic';
 
 export const ER_INPUT_MAP: InputMap = {
@@ -78,7 +78,7 @@ class ErView extends Node {
       const f = this.meterFills[i];
       f.shape = { kind: 'rect', w: 18, h, r: 6 };
       f.pos = { x: 400 + i * 160, y: 120 + (126 - h) / 2 };
-      f.paint.opacity = v <= 15 || v >= 85 ? 0.55 + 0.45 * Math.abs(Math.sin(s.season)) : 1; // warning shimmer
+      f.paint.opacity = v <= 15 || v >= 85 ? 0.55 + 0.45 * Math.abs(dsin(s.season)) : 1; // warning shimmer
     });
     const card = DECK.find((c) => c.id === s.cardId);
     if (card) {

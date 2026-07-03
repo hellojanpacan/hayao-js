@@ -3,6 +3,7 @@
 // compositions, and a bounty economy. The genre's truth is wave balance and
 // counter-play, both proven in verify.ts.
 
+import { dhypot } from '@hayao';
 export interface Vec {
   x: number;
   y: number;
@@ -22,7 +23,7 @@ export const PATH: Vec[] = [
 export const PATH_LEN: number[] = PATH.reduce<number[]>((acc, p, i) => {
   if (i === 0) return [0];
   const q = PATH[i - 1];
-  acc.push(acc[i - 1] + Math.hypot(p.x - q.x, p.y - q.y));
+  acc.push(acc[i - 1] + dhypot(p.x - q.x, p.y - q.y));
   return acc;
 }, []);
 export const TOTAL_LEN = PATH_LEN[PATH_LEN.length - 1];

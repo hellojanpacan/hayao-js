@@ -1,23 +1,7 @@
 // Gleamvale: the combat sim (logic.ts, in world.state) + a cosmetic view with
 // the genre's juice — hit-stop, knockback flashes, screen shake, slash arcs.
 
-import {
-  Node,
-  PARTICLE_PRESETS,
-  Particles,
-  Shaker,
-  Sprite,
-  Text,
-  TILE,
-  audio,
-  defineGame,
-  hideScreen,
-  registerNode,
-  showScreen,
-  tileAt,
-  type InputMap,
-  type World,
-} from '@hayao';
+import { Node, PARTICLE_PRESETS, Particles, Shaker, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World, dcos, dsin, datan2 } from '@hayao';
 import { initialGv, parseRoom, stepGv, DOOR_RECT, KEY_AT, PLAYER, TILE_SIZE, type GvState } from './logic';
 import { ROOMS } from './rooms';
 
@@ -131,11 +115,11 @@ class GvView extends Node {
     const blink = s.iframes > 0 && Math.floor(s.iframes * 14) % 2 === 0;
     if (!blink) this.dynamic.addChild(new Sprite({ name: 'hero', pos: { x: s.x, y: s.y }, z: 6, shape: { kind: 'circle', radius: 12 }, fill: PAL.hero, stroke: PAL.heroLine, strokeWidth: 3 }));
     if (s.slashing > 0) {
-      const a = Math.atan2(s.faceY, s.faceX);
+      const a = datan2(s.faceY, s.faceX);
       const r = PLAYER.slashRange;
       const a0 = a - PLAYER.slashArc / 2;
       const a1 = a + PLAYER.slashArc / 2;
-      const d = `M 0 0 L ${Math.cos(a0) * r} ${Math.sin(a0) * r} A ${r} ${r} 0 0 1 ${Math.cos(a1) * r} ${Math.sin(a1) * r} Z`;
+      const d = `M 0 0 L ${dcos(a0) * r} ${dsin(a0) * r} A ${r} ${r} 0 0 1 ${dcos(a1) * r} ${dsin(a1) * r} Z`;
       this.dynamic.addChild(new Sprite({ pos: { x: s.x, y: s.y }, z: 7, shape: { kind: 'path', d }, fill: PAL.slash, opacity: 0.55 }));
     }
 

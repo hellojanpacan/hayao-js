@@ -1,6 +1,7 @@
 // Grid raycasting (DDA) over a tilemap — the sight primitive behind stealth
 // vision cones, sentry line-of-sight, roguelike FOV, and 2D lighting.
 
+import { dcos, dhypot } from '../core/dmath';
 import { TILE, tileAt, type TilemapData } from './tilemap';
 
 export interface RayHit {
@@ -21,7 +22,7 @@ export function raycastTiles(map: TilemapData, x0: number, y0: number, x1: numbe
   const ts = map.tileSize;
   const dx = x1 - x0;
   const dy = y1 - y0;
-  const maxDist = Math.hypot(dx, dy);
+  const maxDist = dhypot(dx, dy);
   if (maxDist === 0) return { blocked: false, x: x1, y: y1, dist: 0 };
   const dirX = dx / maxDist;
   const dirY = dy / maxDist;
@@ -67,9 +68,9 @@ export function lineOfSight(map: TilemapData, ax: number, ay: number, bx: number
 export function inVisionCone(map: TilemapData, ex: number, ey: number, faceX: number, faceY: number, fov: number, range: number, tx: number, ty: number): boolean {
   const dx = tx - ex;
   const dy = ty - ey;
-  const d = Math.hypot(dx, dy);
+  const d = dhypot(dx, dy);
   if (d > range || d === 0) return false;
   const dot = (dx * faceX + dy * faceY) / d;
-  if (dot < Math.cos(fov / 2)) return false;
+  if (dot < dcos(fov / 2)) return false;
   return lineOfSight(map, ex, ey, tx, ty);
 }

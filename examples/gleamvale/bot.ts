@@ -3,6 +3,7 @@
 // shape (plan interpreter over probe → actions) is now proven and should be
 // promoted to the engine after this game's lessons are folded in.
 
+import { dhypot } from '@hayao';
 export type BotStep =
   | { kind: 'walk'; x: number; y: number }
   | { kind: 'fight' } // until the current room is clear
@@ -73,9 +74,9 @@ export function createBot(plan: BotStep[]): Bot {
           break;
         }
         // Nearest enemy; dodge a dashing darter by fighting someone else.
-        const sorted = [...p.enemies].sort((a, b) => Math.hypot(a.x - p.x, a.y - p.y) - Math.hypot(b.x - p.x, b.y - p.y));
+        const sorted = [...p.enemies].sort((a, b) => dhypot(a.x - p.x, a.y - p.y) - dhypot(b.x - p.x, b.y - p.y));
         const target = sorted.find((e) => !(e.kind === 'darter' && e.state === 'dash')) ?? sorted[0];
-        const d = Math.hypot(target.x - p.x, target.y - p.y);
+        const d = dhypot(target.x - p.x, target.y - p.y);
         if (mode === 'hunt') {
           steerTo(p, target.x, target.y, out, 4);
           if (d < 46) {

@@ -3,7 +3,7 @@
 // that stalk the darkness, flinch from light, and feed on the unlit. Survive
 // to dawn. Light repels; darkness kills; fuel forces you out of safety.
 
-import { lineOfSight, tilemapFromAscii, moveRect, type Rng, type TilemapData } from '@hayao';
+import { lineOfSight, tilemapFromAscii, moveRect, type Rng, type TilemapData, dhypot } from '@hayao';
 
 export const TILE_SIZE = 32;
 export const W = 1280;
@@ -86,7 +86,7 @@ export function initialPw(): PwState {
 /** Is a point inside the player's lantern light (fuel > 0, LOS, radius)? */
 export function inLight(s: PwState, x: number, y: number): boolean {
   if (s.fuel <= 0) return false;
-  const d = Math.hypot(x - s.x, y - s.y);
+  const d = dhypot(x - s.x, y - s.y);
   if (d > LANTERN.radius) return false;
   return lineOfSight(woodsMap(), s.x, s.y, x, y);
 }
@@ -115,14 +115,14 @@ export function stepPw(s: PwState, input: PwInput, dt: number, rng: Rng): PwEven
   s.fuel = Math.max(0, s.fuel - LANTERN.drainPerSec * dt);
 
   // ── Player ──
-  const il = Math.hypot(input.moveX, input.moveY) || 1;
+  const il = dhypot(input.moveX, input.moveY) || 1;
   const res = moveRect(map, { x: s.x - 11, y: s.y - 11, w: 22, h: 22 }, (input.moveX / il) * P_SPEED * dt, (input.moveY / il) * P_SPEED * dt);
   s.x = res.x + 11;
   s.y = res.y + 11;
 
   // ── Fuel cans ──
   for (let i = s.cans.length - 1; i >= 0; i--) {
-    if (Math.hypot(s.cans[i].x - s.x, s.cans[i].y - s.y) < 26) {
+    if (dhypot(s.cans[i].x - s.x, s.cans[i].y - s.y) < 26) {
       s.cans.splice(i, 1);
       s.fuel = Math.min(LANTERN.fuelMax, s.fuel + LANTERN.refuel);
       s.fetched++;
@@ -148,7 +148,7 @@ export function stepPw(s: PwState, input: PwInput, dt: number, rng: Rng): PwEven
     const lit = inLight(s, p.x, p.y);
     const dx = s.x - p.x;
     const dy = s.y - p.y;
-    const d = Math.hypot(dx, dy) || 1;
+    const d = dhypot(dx, dy) || 1;
     // Pales are physical: they cannot pass through the trees (a Pale hiding
     // INSIDE a copse would be LOS-shadowed yet adjacent — an unfair ambush).
     const paleMove = (mx: number, my: number) => {

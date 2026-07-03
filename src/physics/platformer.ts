@@ -9,6 +9,7 @@
 //   wall slide + wall jump · moving-platform carry + lift momentum storage
 //   one-way platforms + drop-through
 
+import { dhypot } from '../core/dmath';
 import { moveRect, rectBlocked, type SolidRect } from './aabb';
 import type { TilemapData } from './tilemap';
 
@@ -170,7 +171,7 @@ export function stepPlatformer(s: PlatformerState, input: PadInput, dt: number, 
     let dx = input.moveX;
     let dy = input.moveY;
     if (dx === 0 && dy === 0) dx = s.facing;
-    const inv = 1 / Math.hypot(dx, dy);
+    const inv = 1 / dhypot(dx, dy);
     s.dashing = cfg.dashTime;
     s.dashCd = cfg.dashCooldown;
     s.dashesLeft--;

@@ -2,20 +2,7 @@
 // translucent fans (raycast-clipped would be nicer; fans read well enough),
 // the detection meter as an eye that opens, and bushes as soft cover.
 
-import {
-  Node,
-  Sprite,
-  Text,
-  TILE,
-  audio,
-  defineGame,
-  hideScreen,
-  registerNode,
-  showScreen,
-  tileAt,
-  type InputMap,
-  type World,
-} from '@hayao';
+import { Node, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World, dcos, dsin, datan2 } from '@hayao';
 import { BUSHES, BUSH_RADIUS, VISION, idolPoint, initialVs, isHidden, levelMap, spawnPoint, stepVs, TILE_SIZE, type VsState } from './logic';
 
 export const VS_INPUT_MAP: InputMap = {
@@ -84,11 +71,11 @@ class VsView extends Node {
     for (const b of BUSHES) this.dynamic.addChild(new Sprite({ pos: b, z: 3, shape: { kind: 'circle', radius: BUSH_RADIUS }, fill: PAL.bush, opacity: 0.85 }));
 
     for (const g of s.guards) {
-      const a = Math.atan2(g.fy, g.fx);
+      const a = datan2(g.fy, g.fx);
       const a0 = a - VISION.fov / 2;
       const a1 = a + VISION.fov / 2;
       const r = VISION.range;
-      const d = `M 0 0 L ${Math.cos(a0) * r} ${Math.sin(a0) * r} A ${r} ${r} 0 0 1 ${Math.cos(a1) * r} ${Math.sin(a1) * r} Z`;
+      const d = `M 0 0 L ${dcos(a0) * r} ${dsin(a0) * r} A ${r} ${r} 0 0 1 ${dcos(a1) * r} ${dsin(a1) * r} Z`;
       this.dynamic.addChild(new Sprite({ pos: { x: g.x, y: g.y }, z: 4, shape: { kind: 'path', d }, fill: s.meter > 0.4 ? PAL.coneAlert : PAL.cone, opacity: 0.14 + s.meter * 0.2 }));
       this.dynamic.addChild(new Sprite({ pos: { x: g.x, y: g.y }, z: 5, shape: { kind: 'circle', radius: 13 }, fill: PAL.guard, stroke: '#26160f', strokeWidth: 2 }));
     }

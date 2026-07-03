@@ -3,6 +3,7 @@
 // that cutting cannot cheat, and rivals that drive the racing line by seeking
 // ahead and braking for corners.
 
+import { dhypot, dcos, dsin, datan2 } from '@hayao';
 export interface Vec {
   x: number;
   y: number;
@@ -61,7 +62,7 @@ export function trackDistance(x: number, y: number): number {
     const t = Math.max(0, Math.min(1, ((x - a.x) * abx + (y - a.y) * aby) / (abx * abx + aby * aby)));
     const dx = x - (a.x + abx * t);
     const dy = y - (a.y + aby * t);
-    best = Math.min(best, Math.hypot(dx, dy));
+    best = Math.min(best, dhypot(dx, dy));
   }
   return best;
 }
@@ -76,13 +77,13 @@ export interface CarInput {
 
 /** One fixed step of arcade car physics. */
 export function stepCar(c: Car, input: CarInput, dt: number): void {
-  const speed = Math.hypot(c.vx, c.vy);
+  const speed = dhypot(c.vx, c.vy);
   // Steering authority: none at standstill, full at cruise, UNDERSTEER at
   // speed — flat-out cars physically cannot make the tight bends.
   const authority = Math.min(1, speed / 160) / (1 + Math.max(0, speed - 240) / 160);
   c.heading += input.steer * CAR.steerRate * dt * authority;
-  const fx = Math.cos(c.heading);
-  const fy = Math.sin(c.heading);
+  const fx = dcos(c.heading);
+  const fy = dsin(c.heading);
   // Thrust + brake along heading.
   c.vx += fx * (input.throttle * CAR.thrust - input.brake * CAR.brake * Math.sign(c.vx * fx + c.vy * fy)) * dt;
   c.vy += fy * (input.throttle * CAR.thrust - input.brake * CAR.brake * Math.sign(c.vx * fx + c.vy * fy)) * dt;
@@ -100,7 +101,7 @@ export function stepCar(c: Car, input: CarInput, dt: number): void {
   nvx *= Math.max(0, 1 - drag * dt);
   nvy *= Math.max(0, 1 - drag * dt);
   // Speed cap.
-  const ns = Math.hypot(nvx, nvy);
+  const ns = dhypot(nvx, nvy);
   if (ns > CAR.maxSpeed) {
     nvx *= CAR.maxSpeed / ns;
     nvy *= CAR.maxSpeed / ns;
@@ -112,7 +113,7 @@ export function stepCar(c: Car, input: CarInput, dt: number): void {
 
   // Ordered checkpoints: only the NEXT one counts (cutting is worthless).
   const cp = TRACK[c.nextCp];
-  if (Math.hypot(cp.x - c.x, cp.y - c.y) < CP_RADIUS) {
+  if (dhypot(cp.x - c.x, cp.y - c.y) < CP_RADIUS) {
     c.nextCp = (c.nextCp + 1) % TRACK.length;
     if (c.nextCp === 1) c.lap++; // crossed the start sector again
   }
@@ -124,18 +125,18 @@ export const progress = (c: Car): number => c.lap * TRACK.length + ((c.nextCp - 
 export function driveLine(c: Car): CarInput {
   const target = TRACK[c.nextCp];
   const after = TRACK[(c.nextCp + 1) % TRACK.length];
-  const want = Math.atan2(target.y - c.y, target.x - c.x);
+  const want = datan2(target.y - c.y, target.x - c.x);
   let da = want - c.heading;
   while (da > Math.PI) da -= 2 * Math.PI;
   while (da < -Math.PI) da += 2 * Math.PI;
   // Corner sharpness: angle between this leg and the next.
-  const legA = Math.atan2(target.y - c.y, target.x - c.x);
-  const legB = Math.atan2(after.y - target.y, after.x - target.x);
+  const legA = datan2(target.y - c.y, target.x - c.x);
+  const legB = datan2(after.y - target.y, after.x - target.x);
   let bend = legB - legA;
   while (bend > Math.PI) bend -= 2 * Math.PI;
   while (bend < -Math.PI) bend += 2 * Math.PI;
-  const near = Math.hypot(target.x - c.x, target.y - c.y) < 220;
-  const speed = Math.hypot(c.vx, c.vy);
+  const near = dhypot(target.x - c.x, target.y - c.y) < 220;
+  const speed = dhypot(c.vx, c.vy);
   const brakeForBend = near && Math.abs(bend) > 0.55 && speed > 250;
   return { throttle: brakeForBend ? 0.25 : Math.abs(da) > 1.2 ? 0.45 : 1, brake: brakeForBend ? 0.7 : 0, steer: Math.max(-1, Math.min(1, da * 2.2)) };
 }

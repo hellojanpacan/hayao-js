@@ -4,6 +4,7 @@
 // Emission is driven by sim events (jumped, landed, hit…), so replays produce
 // identical visuals, but no canonical state ever depends on them.
 
+import { dcos, dsin } from '../core/dmath';
 import { Rng } from '../core/rng';
 import { TAU, type Transform, type Vec2 } from '../core/math';
 import type { DrawCommand } from '../render/commands';
@@ -70,8 +71,8 @@ export class Particles extends Node {
       const p: Particle = {
         x: at.x,
         y: at.y,
-        vx: Math.cos(angle) * speed,
-        vy: Math.sin(angle) * speed,
+        vx: dcos(angle) * speed,
+        vy: dsin(angle) * speed,
         life: 0,
         maxLife: style.lifeMin + r.float() * (style.lifeMax - style.lifeMin),
         size: style.sizeMin + r.float() * (style.sizeMax - style.sizeMin),

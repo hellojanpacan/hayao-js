@@ -2,7 +2,7 @@
 // FSMs, orbs, doors, and room transitions are all plain-data state
 // transitions, so the whole combat system is testable and bot-drivable in Node.
 
-import { moveRect, tilemapFromAscii, asciiEntities, type SolidRect, type TilemapData, type Vec2 } from '@hayao';
+import { moveRect, tilemapFromAscii, asciiEntities, type SolidRect, type TilemapData, type Vec2, dhypot, dcos } from '@hayao';
 import { DOOR_RECT, ROOMS } from './rooms';
 
 export const TILE_SIZE = 32;
@@ -144,7 +144,7 @@ export interface StepEvents {
 }
 
 const approach = (v: number, t: number, d: number) => (v < t ? Math.min(v + d, t) : Math.max(v - d, t));
-const len = (x: number, y: number) => Math.hypot(x, y) || 1;
+const len = (x: number, y: number) => dhypot(x, y) || 1;
 
 /** Advance the whole combat sim one fixed step. Mutates s; returns events. */
 export function stepGv(s: GvState, input: StepInput, dt: number): StepEvents {
@@ -195,10 +195,10 @@ export function stepGv(s: GvState, input: StepInput, dt: number): StepEvents {
       if (e.hp <= 0 || e.hurt > 0) continue;
       const dx = e.x - s.x;
       const dy = e.y - s.y;
-      const d = Math.hypot(dx, dy);
+      const d = dhypot(dx, dy);
       if (d > PLAYER.slashRange + 12) continue;
       const dot = (dx * s.faceX + dy * s.faceY) / (d || 1);
-      if (dot < Math.cos(PLAYER.slashArc / 2)) continue;
+      if (dot < dcos(PLAYER.slashArc / 2)) continue;
       e.hp--;
       e.hurt = 0.22;
       e.x += (dx / (d || 1)) * 26;
@@ -265,7 +265,7 @@ export function stepGv(s: GvState, input: StepInput, dt: number): StepEvents {
     o.y += o.vy * dt;
     const dx = s.x - o.x;
     const dy = s.y - o.y;
-    if (Math.hypot(dx, dy) < 18 && s.iframes <= 0) {
+    if (dhypot(dx, dy) < 18 && s.iframes <= 0) {
       hurtPlayer(s, ev, dx / len(dx, dy), dy / len(dx, dy));
       continue; // orb consumed
     }
@@ -290,17 +290,17 @@ export function stepGv(s: GvState, input: StepInput, dt: number): StepEvents {
     ev.cleared = true;
     if (s.room === 2) s.keyOnGround = true;
   }
-  if (s.keyOnGround && s.room === 2 && Math.hypot(s.x - KEY_AT.x, s.y - KEY_AT.y) < 30) {
+  if (s.keyOnGround && s.room === 2 && dhypot(s.x - KEY_AT.x, s.y - KEY_AT.y) < 30) {
     s.keyOnGround = false;
     s.keys++;
     ev.pickedKey = true;
   }
-  if (!s.doorOpen && s.keys > 0 && s.room === 1 && Math.hypot(s.x - (DOOR_RECT.x + 32), s.y - (DOOR_RECT.y + 16)) < DOOR_TOUCH) {
+  if (!s.doorOpen && s.keys > 0 && s.room === 1 && dhypot(s.x - (DOOR_RECT.x + 32), s.y - (DOOR_RECT.y + 16)) < DOOR_TOUCH) {
     s.keys--;
     s.doorOpen = true;
     ev.openedDoor = true;
   }
-  if (room.heart && Math.hypot(s.x - room.heart.x, s.y - room.heart.y) < 30) {
+  if (room.heart && dhypot(s.x - room.heart.x, s.y - room.heart.y) < 30) {
     s.won = true;
     ev.won = true;
     return ev;

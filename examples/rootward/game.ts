@@ -2,7 +2,7 @@
 // lane is a drawn ribbon, pads show a cursor ring, towers show range on the
 // selected pad, and wave/economy state is always visible.
 
-import { Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
+import { Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World, dhypot, datan2 } from '@hayao';
 import { initialRw, pointAt, stepRw, ENEMIES, PADS, PATH, TOWERS, WAVES, type RwState, type TowerKind } from './logic';
 
 export const RW_INPUT_MAP: InputMap = {
@@ -40,8 +40,8 @@ class RwView extends Node {
     for (let i = 1; i < PATH.length; i++) {
       const a = PATH[i - 1];
       const b = PATH[i];
-      const len = Math.hypot(b.x - a.x, b.y - a.y);
-      this.layer.addChild(new Sprite({ pos: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, rotation: Math.atan2(b.y - a.y, b.x - a.x), z: 1, shape: { kind: 'rect', w: len + 44, h: 44, r: 22 }, fill: PAL.lane, stroke: PAL.laneEdge, strokeWidth: 2 }));
+      const len = dhypot(b.x - a.x, b.y - a.y);
+      this.layer.addChild(new Sprite({ pos: { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, rotation: datan2(b.y - a.y, b.x - a.x), z: 1, shape: { kind: 'rect', w: len + 44, h: 44, r: 22 }, fill: PAL.lane, stroke: PAL.laneEdge, strokeWidth: 2 }));
     }
     for (const p of PADS) this.layer.addChild(new Sprite({ pos: p, z: 2, shape: { kind: 'rect', w: 56, h: 56, r: 10 }, fill: PAL.pad, stroke: PAL.padLine, strokeWidth: 2 }));
     this.rangeRing = this.layer.addChild(new Sprite({ z: 2, shape: { kind: 'circle', radius: 100 }, fill: 'none', stroke: PAL.range, strokeWidth: 1.5, opacity: 0.5 }));

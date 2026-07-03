@@ -2,7 +2,7 @@
 // whose forge visibly intensifies with production. All mutations flow through
 // input actions ('forge', 'buy-N') so UI clicks live in the input log.
 
-import { defineGame, Node, Sprite, TAU, type InputMap, type World } from '@hayao';
+import { defineGame, Node, Sprite, TAU, type InputMap, type World, dcos, dsin, dlog10 } from '@hayao';
 import { buy, forge, initialEconomy, production, tick, unlockedCount, TIERS, type EconomyState } from './logic';
 
 export const LF_INPUT_MAP: InputMap = {
@@ -41,9 +41,9 @@ class ForgeView extends Node {
 
     // View: pulse with production; fireflies reflect automation breadth.
     const p = production(s);
-    const pulse = 1 + Math.min(0.5, Math.log10(1 + p) * 0.12) * (0.9 + 0.1 * Math.sin(world.time * TAU * 0.8));
+    const pulse = 1 + Math.min(0.5, dlog10(1 + p) * 0.12) * (0.9 + 0.1 * dsin(world.time * TAU * 0.8));
     this.core.scale = { x: pulse, y: pulse };
-    this.glow.scale = { x: pulse * (1 + Math.min(1.6, Math.log10(1 + p) * 0.4)), y: pulse * (1 + Math.min(1.6, Math.log10(1 + p) * 0.4)) };
+    this.glow.scale = { x: pulse * (1 + Math.min(1.6, dlog10(1 + p) * 0.4)), y: pulse * (1 + Math.min(1.6, dlog10(1 + p) * 0.4)) };
     const wantFlies = Math.min(36, s.owned.reduce((a, b) => a + b, 0));
     while (this.flies.length < wantFlies) {
       const i = this.flies.length;
@@ -52,7 +52,7 @@ class ForgeView extends Node {
     this.flies.forEach((f, i) => {
       const r = 120 + (i % 6) * 26;
       const a = world.time * (0.35 + (i % 5) * 0.11) + (i * TAU) / 11;
-      f.pos = { x: 640 + Math.cos(a) * r * 1.35, y: 400 + Math.sin(a) * r * 0.72 };
+      f.pos = { x: 640 + dcos(a) * r * 1.35, y: 400 + dsin(a) * r * 0.72 };
     });
   }
 }

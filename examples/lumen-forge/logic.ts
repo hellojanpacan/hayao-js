@@ -37,7 +37,15 @@ export interface EconomyState {
 
 export const initialEconomy = (): EconomyState => ({ motes: 0, total: 0, owned: TIERS.map(() => 0), clicks: 0 });
 
-export const cost = (s: EconomyState, i: number): number => Math.ceil(TIERS[i].baseCost * Math.pow(TIERS[i].costRate, s.owned[i]));
+// Integer power by repeated multiplication — Math.pow is implementation-defined
+// across JS engines and this cost feeds the hashed sim state.
+const ipow = (base: number, n: number): number => {
+  let r = 1;
+  for (let i = 0; i < n; i++) r *= base;
+  return r;
+};
+
+export const cost = (s: EconomyState, i: number): number => Math.ceil(TIERS[i].baseCost * ipow(TIERS[i].costRate, s.owned[i]));
 
 export const production = (s: EconomyState): number => TIERS.reduce((sum, t, i) => sum + t.prod * s.owned[i], 0);
 

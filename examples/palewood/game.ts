@@ -3,7 +3,7 @@
 // Pales are barely-visible until the light finds them. Spatial growls pan with
 // the nearest stalker; a heartbeat quickens as dread rises.
 
-import { Node, NodePool, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World } from '@hayao';
+import { Node, NodePool, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World, dhypot } from '@hayao';
 import { inLight, initialPw, stepPw, DAWN_AT, LANTERN, TILE_SIZE, woodsMap, type PwState } from './logic';
 
 export const PW_INPUT_MAP: InputMap = {
@@ -89,7 +89,7 @@ class PwView extends Node {
         sp.pos = { x: cx, y: cy };
         if (solid) sp.paint.fill = lit ? PAL.treeLit : PAL.treeDark;
         else {
-          const near = 1 - Math.hypot(cx - s.x, cy - s.y) / LANTERN.radius;
+          const near = 1 - dhypot(cx - s.x, cy - s.y) / LANTERN.radius;
           sp.paint.fill = PAL.groundLit;
           sp.paint.opacity = 0.25 + near * 0.75;
         }
@@ -107,7 +107,7 @@ class PwView extends Node {
       }
     for (const p of s.pales) {
       const lit = inLight(s, p.x, p.y);
-      const d = Math.hypot(p.x - s.x, p.y - s.y);
+      const d = dhypot(p.x - s.x, p.y - s.y);
       if (!lit && d > 320) continue; // truly unseen
       const sp = this.entPool.get();
       sp.pos = { x: p.x, y: p.y };
