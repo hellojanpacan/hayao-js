@@ -18,6 +18,8 @@ export interface Tone {
   type?: OscillatorType;
   gain?: number;
   delay?: number;
+  /** Stereo position -1 (left) … 1 (right) — the spatial-audio hook. */
+  pan?: number;
 }
 
 export class AudioBus {
@@ -74,7 +76,7 @@ export class AudioBus {
   /** Play a single tone (no-op if audio unstarted). */
   tone(spec: Tone): void {
     if (!this.ctx || !this.sfxGain) return;
-    const { freq, duration, type = 'sine', gain = 0.2, delay = 0 } = spec;
+    const { freq, duration, type = 'sine', gain = 0.2, delay = 0, pan } = spec;
     const t = this.ctx.currentTime + delay;
     const osc = this.ctx.createOscillator();
     osc.type = type;
@@ -84,9 +86,26 @@ export class AudioBus {
     g.gain.linearRampToValueAtTime(gain, t + 0.008);
     g.gain.exponentialRampToValueAtTime(0.0001, t + duration);
     osc.connect(g);
-    g.connect(this.sfxGain);
+    if (pan !== undefined && typeof this.ctx.createStereoPanner === 'function') {
+      const p = this.ctx.createStereoPanner();
+      p.pan.value = Math.max(-1, Math.min(1, pan));
+      g.connect(p);
+      p.connect(this.sfxGain);
+    } else {
+      g.connect(this.sfxGain);
+    }
     osc.start(t);
     osc.stop(t + duration + 0.05);
+  }
+
+  /**
+   * A positional cue: gain falls with distance, pan follows the horizontal
+   * offset. dx/dist in design-space px; hearing range sets the falloff.
+   */
+  spatial(freq: number, dx: number, dist: number, hearing = 600, duration = 0.18, type: OscillatorType = 'sawtooth'): void {
+    if (dist > hearing) return;
+    const near = 1 - dist / hearing;
+    this.tone({ freq, duration, type, gain: 0.04 + near * near * 0.3, pan: Math.max(-1, Math.min(1, dx / (hearing * 0.6))) });
   }
 
   /** Play a sequence of tones as an arpeggio/chord. */

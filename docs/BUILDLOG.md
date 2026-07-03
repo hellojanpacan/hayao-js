@@ -41,7 +41,7 @@ land here and in [LESSONS.md](LESSONS.md).
 | 13 | Match-3 | Puzzle Quest-ish | cascade choreography vs deterministic sim | ✅ |
 | 14 | Incremental/idle | Universal Paperclips-lite | big numbers, offline time, pacing curves | ✅ |
 | 15 | Farming/life sim | Stardew-lite | calendar clock, save/load, gentle pacing | ✅ |
-| 16 | Survival horror | Darkwood-lite | shadowcast lighting, spatial audio, dread pacing | — |
+| 16 | Survival horror | Darkwood-lite | shadowcast lighting, spatial audio, dread pacing | ✅ |
 | 17 | City/colony builder | Islanders × Mini Motorways | placement scoring, growth sim, minimal viz | — |
 | 18 | Rhythm | NecroDancer-lite | audio clock vs sim clock determinism | — |
 | 19 | Physics arcade | Breakout roguelite / Peggle | continuous collision, deterministic FP physics | — |
@@ -478,6 +478,35 @@ growth; wither honesty; the energy bound; reinvestment compounds (740 vs
 - Economy proofs transfer straight from Lumen Forge: goal tuned to the
   measured bot yield, plus a reinvest-vs-hoard delta (the farming version of
   'drafting matters').
+
+### 16 · Palewood — survival horror (Darkwood-lite) ✅
+
+**Shipped:** one 90-second night: a raycast-shadowed lantern (radius + LOS —
+trees cast real darkness), fuel that drains and cans that force fetch runs,
+Pales that stalk the dark and flinch from light, wound/grace grabs, panned +
+distance-attenuated growls (new engine `audio.spatial`, StereoPanner), a
+dread heartbeat that quickens. Verified: the keeper survives to dawn burning
+all 5 cans; fuel arithmetic proves camping impossible AND the night winnable;
+light-repels and darkness-kills each proven; deterministic + golden.
+
+**Findings:**
+
+- **Horror difficulty lives in the resource arithmetic, not the monster.**
+  Every keeper death traced to fuel economics: fetch-early wasted refuel
+  overflow against the tank cap (all cans gone by t=35, dry at 47); the
+  discipline that survives is 'refuel only below max−refuel'. The genre's
+  dread loop IS an economy — same audit tools as Lumen Forge/Fernrow apply.
+- **LOS-shadows create ambush zones; physicality keeps them fair.** Pales
+  that could walk through trees became invisible adjacent killers (unlit by
+  LOS *inside* the copse). Making monsters collide — including their
+  knockback recoil, which otherwise embeds them in trees and freezes them —
+  turned shadows from cheap deaths into readable threats. Rule: anything
+  that interacts with light must interact with the light's occluders.
+- **Wound + grace beats instadeath** (the i-frames family again, at horror
+  pacing): one grab is a story, two is a death.
+- **Spatial audio was a 20-line engine addition:** pan from horizontal
+  offset, gain from distance², all driven by sim events (`ev.growl`) — the
+  no-op-in-Node invariant holds, so headless verification is untouched.
 
 ### 14 · Lumen Forge — incremental/idle (Paperclips × Cookie Clicker) ✅
 
