@@ -2,7 +2,7 @@
 
 [![ci](https://github.com/hellojanpacan/hayao-js/actions/workflows/ci.yml/badge.svg)](https://github.com/hellojanpacan/hayao-js/actions/workflows/ci.yml)
 
-**Play the 22 machine-verified example games at [hayao.dev](https://hayao.dev/).**
+**Play the 26 machine-verified example games at [hayao.dev](https://hayao.dev/).**
 
 **An AI-first game engine.** A deterministic, headless-native simulation kernel
 with a Godot-style scene tree, pluggable renderers (SVG / Canvas / headless),
@@ -54,15 +54,23 @@ public surface is greppable in one file (`src/index.ts`).
 | **app/** | `runBrowser` (rAF loop) · `runHeadless` | plugs the kernel into a host |
 | **ui/** | DOM overlays: menus, HUD, pause/settings shell | observer (never mutates sim) |
 | **render/** | display list → `SvgRenderer` \| `Canvas2DRenderer` \| `HeadlessRenderer` | observer (projection → paint) |
+| **art/** | code-as-art: palettes, shapes, textures, bitmap fonts, autotile | observer (paints, never hashed) |
 | **audio/** | procedural Web Audio bus (no-op in Node) | observer |
-| **verify/** | probes · replay · `assertDeterministic` · solver | the AI-first harness |
+| **verify/** | probes · replay · `assertDeterministic` · solver · bots · filmstrips | the AI-first harness |
 | **scene/** | `Node`, `Node2D`, `Sprite`, `Text`, `Camera2D`, `Timer`, `AnimationPlayer`, behaviors | **THE STATE** |
+| **physics/** | tilemap + kinematic AABB · character controllers · deterministic rigid-body dynamics | deterministic |
+| **procgen/** | seeded grids, caves, terrain, rooms, stateless scatter | deterministic |
+| **logic/** | pure primitives: FSM, weighted tables, graph search, history | deterministic |
+| **content/** | data-driven wave/spawn directors + upgrade trees | deterministic |
+| **net/** | deterministic multiplayer: lockstep + rollback over a pluggable transport | deterministic |
+| **persist/** | save/load over a pluggable storage adapter + compact codecs | deterministic |
 | **input/** | action map · per-step sampling · record / replay | deterministic |
 | **core/** | `Rng` · `Clock` · `EventBus` · `World` · state hash | **THE KERNEL** (headless, pure) |
 
-`core + scene + input` are **deterministic and run in Node**. `render + audio +
-ui + app` are the browser-only observer shell. Break that boundary and the
-verification harness stops being able to prove anything.
+`core + scene + input + physics + procgen + logic + content + net + persist` are
+**deterministic and run in Node**. `render + art + audio + ui + app` are the
+browser-only observer shell. Break that boundary and the verification harness
+stops being able to prove anything.
 
 ## Why not Godot or a raw canvas engine?
 
@@ -86,17 +94,21 @@ reasoning in [docs/ENGINE.md](docs/ENGINE.md).
 
 ## Status
 
-**v0.2 — the 20-genre campaign is complete.** Twenty-one games live under
-`examples/` — one for each of the most popular 2D indie genres (platformer,
-metroidvania, Zelda-like, stealth, horde survival, bullet hell, tower defense,
-RTS, roguelike, deckbuilder, tactics, match-3, idle, farming, horror, city
-builder, rhythm, physics arcade, racing, narrative — plus the original
-Sokoban). Every one ships a `verify.ts` suite that machine-proves its genre's
-truth: solver-proven puzzles, bot-beaten levels, duel-proven counter systems,
-win-rate-tuned balance, fairness gates for procgen, frame-exact timing
-windows, golden replay hashes. 180+ tests; `npm run verify` runs the whole
-portfolio. The campaign's findings — what each genre demanded of the engine
-and what generalized — live in [docs/BUILDLOG.md](docs/BUILDLOG.md).
+**v0.2 — the 20-genre campaign is complete, plus the waves it triggered.**
+Twenty-six games live under `examples/`. The core twenty-one cover the most
+popular 2D indie genres (platformer, metroidvania, Zelda-like, stealth, horde
+survival, bullet hell, tower defense, RTS, roguelike, deckbuilder, tactics,
+match-3, idle, farming, horror, city builder, rhythm, physics arcade, racing,
+narrative — plus the original Sokoban). On top of those sit two js13k-benchmark
+reproductions (Seamfold, Gravewell), a deterministic rigid-body physics wave
+(Rookspire demolition, Brasswick pinball), and a netplay showcase (Fernclash —
+lockstep + rollback across tabs). Every one ships a `verify.ts` suite that
+machine-proves its truth: solver-proven puzzles, bot-beaten levels, duel-proven
+counter systems, win-rate-tuned balance, fairness gates for procgen,
+frame-exact timing windows, bit-for-bit peer agreement, golden replay hashes.
+400+ tests; `npm run verify` runs the whole portfolio. The campaign's findings — what each
+genre demanded of the engine and what generalized — live in
+[docs/BUILDLOG.md](docs/BUILDLOG.md).
 
 ## License
 
