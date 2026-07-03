@@ -1,4 +1,5 @@
-import { defineConfig } from 'vite';
+/// <reference types="vitest/config" />
+import { defineConfig } from 'vitest/config';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { readdirSync, existsSync } from 'node:fs';

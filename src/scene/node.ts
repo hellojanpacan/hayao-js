@@ -59,13 +59,20 @@ export class Node {
   scale: Vec2;
   z: number;
   visible: boolean;
+  /**
+   * Cosmetic nodes are pure *view* (derived from game state, rebuildable) and are
+   * excluded from serialize()/snapshot()/hash(). Mark a container cosmetic when it
+   * only renders state that lives elsewhere — so transient display (move counters,
+   * particles, tweened positions) never pollutes the canonical, verifiable state.
+   */
+  cosmetic = false;
 
   parent: Node | null = null;
   readonly children: Node[] = [];
   world: WorldContext | null = null;
 
   /** Optional inline update without subclassing: node.onUpdate = (n, dt) => {…}. */
-  onUpdate?: (node: this, dt: number) => void;
+  onUpdate?: (node: Node, dt: number) => void;
 
   private behaviors: Behavior[] = [];
   private signals = new Map<string, Signal<unknown>>();
@@ -209,7 +216,7 @@ export class Node {
       z: this.z,
       visible: this.visible,
       props: this.serializeProps(),
-      children: this.children.map((c) => c.serialize()),
+      children: this.children.filter((c) => !c.cosmetic).map((c) => c.serialize()),
     };
   }
   /** Subclasses persist their own fields here. */

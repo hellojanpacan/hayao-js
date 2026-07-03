@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hayao.js</title>
+    <style>
+      :root { color-scheme: light; }
+      html, body { margin: 0; min-height: 100%; background: #f3ecdb; color: #3d3323; font-family: Georgia, serif; }
+      .wrap { max-width: 720px; margin: 0 auto; padding: 64px 24px; }
+      h1 { font-size: 44px; margin: 0 0 4px; }
+      .tag { color: #6f6047; font-style: italic; margin-bottom: 36px; font-size: 17px; }
+      .games { display: grid; gap: 14px; }
+      a.card { display: block; text-decoration: none; color: inherit; background: #fbf6ea; border: 1px solid #d9ccae; border-radius: 12px; padding: 18px 20px; box-shadow: 0 2px 8px rgba(80,60,30,.08); transition: transform .12s, box-shadow .12s; }
+      a.card:hover, a.card:focus { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(80,60,30,.16); outline: none; }
+      a.card h2 { margin: 0 0 3px; font-size: 20px; }
+      a.card p { margin: 0; color: #6f6047; font-size: 14px; }
+      footer { margin-top: 40px; color: #9a8a6f; font-size: 13px; }
+      code { background: #efe6d0; padding: 1px 6px; border-radius: 5px; font-size: 13px; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <h1>hayao.js</h1>
+      <div class="tag">An AI-first game engine. The game is a pure deterministic function; everything else is a plugin.</div>
+      <div class="games">
+        <a class="card" href="./examples/sokoban/index.html">
+          <h2>Sokoban →</h2>
+          <p>Pure solver-provable logic + a scene-tree SVG view + undo. Every level is machine-verified winnable.</p>
+        </a>
+      </div>
+      <footer>
+        Build a game: copy <code>examples/sokoban/</code>, import only from <code>@hayao</code>, and run
+        <code>npm test</code>. See <code>docs/</code> and <code>AGENTS.md</code>.
+      </footer>
+    </div>
+  </body>
+</html>
