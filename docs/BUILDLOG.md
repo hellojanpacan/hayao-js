@@ -32,7 +32,7 @@ land here and in [LESSONS.md](LESSONS.md).
 | 4 | Top-down action-adventure | Zelda × Hyper Light Drifter | combat feel/juice kit, rooms, enemy AI | ✅ |
 | 5 | Stealth | Mark of the Ninja × Gunpoint | vision cones, noise propagation, guard FSM | ✅ |
 | 6 | Twin-stick horde | Nuclear Throne × Vampire Survivors | 100s of entities, spatial hash, upgrade economy | ✅ |
-| 7 | Bullet hell | Touhou × Jamestown | 1000+ bullets perf ceiling, pattern DSL | — |
+| 7 | Bullet hell | Touhou × Jamestown | 1000+ bullets perf ceiling, pattern DSL | ✅ |
 | 8 | Tower defense | Kingdom Rush × Bloons | path following, wave balance sim, counter system | — |
 | 9 | RTS-lite | (mass units) | flow fields, 300–500 units, counters, HUD density | — |
 | 10 | Traditional roguelike | Brogue × Shattered Pixel | procgen + connectivity proof, FOV, turn scheduler | — |
@@ -249,6 +249,35 @@ sim step averages 0.02ms at peak (100× under the 2ms budget); deterministic.
 - **rng-in-the-loop determinism works**: spawns and upgrade offers draw from
   `world.rng` inside the pure step (passed in, never imported) and the whole
   night replays hash-identical.
+
+### 7 · Duskveil — bullet hell (Touhou × Jamestown) ✅
+
+**Shipped:** three-phase boss with a declarative pattern DSL (ring / fan /
+rain, spin + arc + cadence params), 5px hitbox, focus mode, grazing,
+mercy-clears on death and phase transitions. Dodge bot clears the full fight
+deathless in 143.6s at 487 peak live bullets; sim rounds to 0.00ms/step;
+deterministic.
+
+**Findings:**
+
+- **Pattern fairness has a mechanical proof: a greedy lookahead dodger.**
+  9 candidate moves × 26 frames of linear bullet prediction is enough to
+  survive everything a fair pattern throws; if that bot dies, humans die
+  unfairly. This is the real-time analogue of the Sokoban solver — the
+  strongest fairness gate in the campaign so far.
+- **Dodging is trivial; UPTIME is the game.** The bot's first version
+  survived forever and never won — staying alive away from the boss is easy,
+  the skill is holding fire lanes under a moving boss. Scoring had to weight
+  'be under where the boss WILL be' (leading its sway) above clearance
+  saturation. Design mirror: bullet hells are positioning games disguised as
+  dodging games; patterns should punish camping, not movement.
+- **The pattern DSL earns its keep:** three phases = 8 data lines. Difficulty
+  knobs (count, cadence, spin, arc) tune density independently of fairness —
+  thickening phase 3 from 297 to 487 peak bullets cost the deathless bot
+  nothing, confirming density ≠ difficulty when patterns stay coherent.
+- **Mercy rules are structural, not polish:** the respawn bullet-clear radius
+  and phase-transition clears are what keep 3 lives meaningful at this
+  density — without them, deaths cascade. (Same family as i-frames.)
 
 ### 14 · Lumen Forge — incremental/idle (Paperclips × Cookie Clicker) ✅
 
