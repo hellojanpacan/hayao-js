@@ -25,9 +25,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm test
+      # Custom domain (hayao.dev) serves from the root — no repo-path prefix.
       - run: npm run build
         env:
-          BASE_PATH: /hayao-js/
+          BASE_PATH: /
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist-site
