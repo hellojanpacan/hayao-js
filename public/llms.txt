@@ -1,0 +1,36 @@
+# hayao.js
+
+> An AI-first game engine: a deterministic, headless-native simulation kernel with a
+> Godot-style scene tree, pluggable renderers (SVG / Canvas / headless), and a built-in
+> verification harness — designed so an LLM can author, test, and prove correct a whole
+> game without ever opening a browser. Same seed, same build → same result, every run.
+
+Install: `npm i hayao`. Import only from `@hayao`. MIT licensed.
+
+Key invariants when writing hayao games:
+- All randomness flows through `world.rng`; never `Date.now`, `Math.random`, or argless `new Date` in the sim.
+- Turn-based/puzzle rules live in a pure `Puzzle<State, Move>` module; every level is machine-proven winnable.
+- DOM is for menus only; pure-view scene nodes set `cosmetic = true` so they stay out of `world.hash()`.
+- Verify with `npm run check`, `npm test`, `npm run verify`; assert on `world.probe()` / `world.hash()`.
+
+## Docs
+
+- [Operating manual for agents](https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/AGENTS.md): the full conventions and workflow — read this first
+- [API digest](https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/docs/API.md): everything importable from `@hayao`, auto-generated
+- [Architecture](https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/docs/ARCHITECTURE.md): how the kernel, scene tree, and renderers fit together
+- [Engine internals](https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/docs/ENGINE.md): the simulation kernel in depth
+- [Conventions](https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/docs/CONVENTIONS.md): code and project conventions for examples
+- [Verification](https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/docs/VERIFICATION.md): the proof harness — solvers, bots, golden replays
+- [Game-design playbook](https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/docs/FUN.md): what made the 20-genre campaign's games fun
+
+## Examples
+
+- [Playable gallery](https://hellojanpacan.github.io/hayao-js/): 21 machine-verified games, one per genre, playable in the browser
+- [Sokoban source](https://github.com/hellojanpacan/hayao-js/tree/main/examples/sokoban): the reference example — copy this to start a new game
+- [All example sources](https://github.com/hellojanpacan/hayao-js/tree/main/examples): every game's pure logic, view, tests, and golden replay
+
+## Optional
+
+- [Build log](https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/docs/BUILDLOG.md): the Build-Measure-Learn campaign, game by game
+- [Lessons](https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/docs/LESSONS.md): engine lessons distilled from the campaign
+- [Repository](https://github.com/hellojanpacan/hayao-js): source, issues, CI
