@@ -21,10 +21,12 @@ hold the invariants.
   land the doc/check fix that prevents a recurrence.
 
 ## Before writing game code
-1. Read `docs/CONVENTIONS.md` (structure, house style, definition of done).
-2. Read `docs/VERIFICATION.md` (how you will test what you build).
-3. Grep `docs/API.md` (or `src/index.ts`) for the REAL API. Never guess a name.
-4. Copy `examples/sokoban/` — it is the living reference for every convention.
+1. Read `docs/FUN.md` (the design playbook: universal laws, your genre's
+   cheat sheet, and the before-you-author-content checklist).
+2. Read `docs/CONVENTIONS.md` (structure, house style, definition of done).
+3. Read `docs/VERIFICATION.md` (how you will test what you build).
+4. Grep `docs/API.md` (or `src/index.ts`) for the REAL API. Never guess a name.
+5. Copy `examples/sokoban/` — it is the living reference for every convention.
 
 ## Hard invariants
 The statically checkable ones are enforced by `npm run invariants` (first
