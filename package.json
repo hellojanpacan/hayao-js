@@ -14,7 +14,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "api": "tsx scripts/api-digest.ts",
-    "verify": "tsx scripts/verify.ts"
+    "invariants": "tsx scripts/invariants.ts",
+    "verify": "tsx scripts/invariants.ts && tsx scripts/verify.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

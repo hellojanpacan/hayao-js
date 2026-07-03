@@ -77,6 +77,7 @@ reasoning in [docs/ENGINE.md](docs/ENGINE.md).
 - [docs/VERIFICATION.md](docs/VERIFICATION.md) — the two verification channels; how to prove a game correct.
 - [docs/ENGINE.md](docs/ENGINE.md) — why a custom engine, and when NOT to use one.
 - [docs/LESSONS.md](docs/LESSONS.md) — transferable lessons from real LLM-authored game builds.
+- [docs/FRICTION.md](docs/FRICTION.md) — process-lesson log: what fought an AI session and what check/doc now prevents it.
 - [AGENTS.md](AGENTS.md) — the operating manual for an AI author working in this repo.
 
 ## Status

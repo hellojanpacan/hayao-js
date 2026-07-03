@@ -8,9 +8,17 @@ hold the invariants.
 - `npm run dev` — dev server (hub + all examples; MPA, honest 404s)
 - `npm run check` — typecheck (must pass before any handoff)
 - `npm test` — Vitest (engine + example suites)
-- `npm run verify` — CI gate: proves examples winnable + deterministic
+- `npm run invariants` — static check of the hard invariants below (banned
+  calls, example imports, example file contract)
+- `npm run verify` — CI gate: invariants + proves examples winnable + deterministic
 - `npm run api` — regenerate `docs/API.md` (the greppable public surface)
 - `npm run build` — production build
+
+## Skills (Claude Code)
+- `/new-game` — scaffold + build a new example via the BUILDLOG loop
+  (`.claude/skills/new-game/`). Use it instead of improvising the steps.
+- `/retro` — end-of-session: log process friction to `docs/FRICTION.md` and
+  land the doc/check fix that prevents a recurrence.
 
 ## Before writing game code
 1. Read `docs/CONVENTIONS.md` (structure, house style, definition of done).
@@ -19,6 +27,10 @@ hold the invariants.
 4. Copy `examples/sokoban/` — it is the living reference for every convention.
 
 ## Hard invariants
+The statically checkable ones are enforced by `npm run invariants` (first
+stage of `npm run verify`); the rest are caught by determinism/hash checks in
+the verify suites. When a session trips one anyway, log it in
+`docs/FRICTION.md` and tighten the check.
 - **Import only from `@hayao`.** The internals are swappable behind that seam.
 - **All randomness flows through `world.rng`** (a seeded `Rng`). `Math.random()`
   is banned in `src/` and games.
