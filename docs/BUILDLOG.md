@@ -46,7 +46,7 @@ land here and in [LESSONS.md](LESSONS.md).
 | 18 | Rhythm | NecroDancer-lite | audio clock vs sim clock determinism | ✅ |
 | 19 | Physics arcade | Breakout roguelite / Peggle | continuous collision, deterministic FP physics | ✅ |
 | 20 | Top-down racing | Micro Machines-lite | car handling feel, racing-line AI | ✅ |
-| 21 | Narrative decisions | Reigns-lite | content DSL, long-arc balance sim | — |
+| 21 | Narrative decisions | Reigns-lite | content DSL, long-arc balance sim | ✅ |
 
 Order of battle: waves grouped by shared engine needs — movement/collision
 (2–5), mass/perf (6–9), turn/UI (10–14), atmosphere/sim (15–21). Order may be
@@ -609,6 +609,31 @@ wins P1 through the input layer; golden grand prix.
 - **The rival AI is the difficulty dial and the proof in one object:** the
   same driveLine() drives rivals, proves lap-completability, measures the
   skill delta, and pilots the player-bot through the input layer.
+
+### 21 · Emberreign — narrative decisions (Reigns-lite) ✅
+
+**Shipped:** four meters between two ditches, a 15-card data-driven deck
+(every choice double-edged), flag-chained story arcs (the plot you pay to
+learn of vs the one that springs), eight themed dooms, survive-12-years
+victory. Verified: a balanced regent survives 19/20 reigns; always-left wins
+0/20 (avg 17 seasons) — judgement is the game; content lints clean (unique
+ids, bounded effects, all arc flags settable); every doom fires its OWN
+ending; the plot arc terminates both ways; deterministic + golden.
+
+**Findings:**
+
+- **When content is data, editorial judgement becomes CI.** The content lint
+  (double-edged options, |effect| ≤ 20, every needs-flag settable somewhere)
+  catches the classes of authoring mistakes that silently break narrative
+  games: dead arcs, no-op choices, meter nukes. A writers'-room checklist as
+  assertions.
+- **The doom-attribution audit matters more than it looks:** each of the 8
+  endings must fire from ITS meter at ITS edge — a swapped ending string is
+  invisible to play-testing (you died, a doom showed) but wrecks the fiction.
+- **The whole genre is the balance-seeking bot's world-view inverted:** the
+  regent policy is 'minimize the worst meter's deviation from 50' — Reigns is
+  fun precisely because cards make that impossible to do forever. The 19-vs-0
+  policy delta is this campaign's final and cleanest 'decisions matter' proof.
 
 ### 14 · Lumen Forge — incremental/idle (Paperclips × Cookie Clicker) ✅
 
