@@ -3,7 +3,7 @@
 // joint anchors, and the aim arc previews the ballistic flight.
 
 import {
-  Node, NodePool, PARTICLE_PRESETS, Particles, Sprite, Text, audio, dcos,
+  KENTO, Node, NodePool, PARTICLE_PRESETS, Particles, Sprite, Text, audio, dcos,
   defineGame, dsin, hideScreen, registerNode, showScreen, type InputMap,
   type RigidBody, type World,
 } from '@hayao';
@@ -22,17 +22,19 @@ export const RK_INPUT_MAP: InputMap = {
 };
 
 const PAL = {
-  bg: '#e9e0c9',        // parchment sky
-  ground: '#8a9b6e',    // moss earth
-  cliff: '#7d8f63',
-  wood: '#c98d5a',
-  stone: '#9a938b',
-  idol: '#3d3a54',
-  shot: '#2c4a52',
-  band: '#a6553d',
-  aim: '#b0a488',
-  ink: '#232228',
-  text: '#5d5443',
+  bg: KENTO.washi,           // parchment sky (light ground)
+  ground: KENTO.matsuDeep,   // moss earth — nature/green
+  cliff: KENTO.kinako,       // earthen sling cliff — neutral, lifts off the green
+  wood: KENTO.kakiDeep,      // warm timber — persimmon
+  stone: KENTO.stone,        // grey masonry — neutral
+  idol: KENTO.fujiDeep,      // the rooks/idols — arcane wisteria
+  shot: KENTO.asagiDeep,     // the slung stone — cool teal (distinct from idols)
+  band: KENTO.shuDeep,       // sling band — vermilion primary actor
+  aim: KENTO.koDeep,         // aim-arc trajectory — ochre-gold energy
+  ink: KENTO.sumi,           // outlines
+  text: KENTO.sumiSoft,      // HUD / muted text
+  groundText: KENTO.gofun,   // help text over the dark ground band — light for contrast
+  spark: KENTO.fuji,         // impact fx accent — bright wisteria
 };
 
 export function rkState(world: World): RkState {
@@ -69,7 +71,7 @@ class RkView extends Node {
     this.ropePool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 3, shape: { kind: 'poly', points: [0, 0, 1, 1], closed: false }, fill: 'none', stroke: PAL.ink, strokeWidth: 2 }));
     this.aimPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 2, shape: { kind: 'circle', radius: 3.5 }, fill: PAL.aim }));
     this.hud = this.layer.addChild(new Text({ pos: { x: W / 2, y: 30 }, z: 8, size: 20, align: 'center', fill: PAL.text, text: '' }));
-    this.layer.addChild(new Text({ pos: { x: W / 2, y: 686 }, z: 8, size: 15, align: 'center', fill: PAL.text, text: '↑↓ aim · ←→ power · Space looses the stone · rooks shatter on hard hits or on the earth · R restarts' }));
+    this.layer.addChild(new Text({ pos: { x: W / 2, y: 686 }, z: 8, size: 15, align: 'center', fill: PAL.groundText, text: '↑↓ aim · ←→ power · Space looses the stone · rooks shatter on hard hits or on the earth · R restarts' }));
   }
 
   protected override onProcess(dt: number): void {
@@ -97,7 +99,7 @@ class RkView extends Node {
     if (ev.smashed > 0 || ev.grounded > 0) {
       audio.success();
       for (const rook of s.idols) void rook; // fx at the score line below
-      this.fx.burst(16, { x: W * 0.7, y: GROUND_Y - 100 }, PARTICLE_PRESETS.burst([PAL.idol, '#8d87b3']));
+      this.fx.burst(16, { x: W * 0.7, y: GROUND_Y - 100 }, PARTICLE_PRESETS.burst([PAL.idol, PAL.spark]));
     }
     if (ev.won) {
       const next = s.level + 1;

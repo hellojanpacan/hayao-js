@@ -1,7 +1,7 @@
 // Emberreign: a card table of consequence — four meter columns, the speaker,
 // the dilemma, two fates. Text-forward; the meters ARE the drama.
 
-import { Node, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World, dsin } from '@hayao';
+import { Node, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World, dsin, KENTO } from '@hayao';
 import { choose, drawCard, initialEr, DECK, DOOMS, METERS, SEASONS_PER_YEAR, YEARS_TO_WIN, type ErState } from './logic';
 
 export const ER_INPUT_MAP: InputMap = {
@@ -10,7 +10,7 @@ export const ER_INPUT_MAP: InputMap = {
   restart: ['KeyR'],
 };
 
-const PAL = { bg: '#191210', card: '#241a16', cardLine: '#3d2c24', ink: '#f0e4d8', soft: '#a89484', meterBack: '#141311', meters: { grove: '#8fe8b0', folk: '#ffd75e', wardens: '#c05555', coffers: '#e8d8a0' } as Record<string, string>, choiceL: '#7fc8ff', choiceR: '#ff9d47' };
+const PAL = { bg: KENTO.kuro, card: KENTO.sumi, cardLine: KENTO.darkLine, ink: KENTO.gofun, soft: KENTO.kinako, meterBack: KENTO.yohaku, meters: { grove: KENTO.matsu, folk: KENTO.ko, wardens: KENTO.shu, coffers: KENTO.kaki } as Record<string, string>, choiceL: KENTO.asagi, choiceR: KENTO.kaki };
 
 export function erState(world: World): ErState {
   return world.state.er as ErState;

@@ -1,7 +1,7 @@
 // Vellgrove Rally: tarmac ribbon, grass beyond, three tiny cars. The camera
 // stays fixed (Micro Machines-style whole-track view); readability first.
 
-import { Node, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World, dhypot, datan2 } from '@hayao';
+import { Node, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, KENTO, type InputMap, type World, dhypot, datan2 } from '@hayao';
 import { initialVg, playerPosition, stepVg, HALF_WIDTH, LAPS, TRACK, type VgState } from './logic';
 
 export const VG_INPUT_MAP: InputMap = {
@@ -12,7 +12,7 @@ export const VG_INPUT_MAP: InputMap = {
   restart: ['KeyR'],
 };
 
-const PAL = { grass: '#1c2a18', tarmac: '#2c2c34', edge: '#4a4a58', start: '#e8e8f0', player: '#ffd75e', rival1: '#ff6d8a', rival2: '#7fc8ff', text: '#9aa88e' };
+const PAL = { grass: KENTO.yohaku, tarmac: KENTO.darkLine, edge: KENTO.stone, start: KENTO.gofun, player: KENTO.ko, rival1: KENTO.saku, rival2: KENTO.asagi, text: KENTO.kinako };
 
 export function vgState(world: World): VgState {
   return world.state.vg as VgState;
@@ -38,7 +38,7 @@ class VgView extends Node {
     // Start line.
     this.layer.addChild(new Sprite({ pos: { x: 240, y: 170 }, rotation: 1.35, z: 2, shape: { kind: 'rect', w: 12, h: HALF_WIDTH * 2 - 20, r: 4 }, fill: PAL.start, opacity: 0.7 }));
     const colors = [PAL.player, PAL.rival1, PAL.rival2];
-    for (let i = 0; i < 3; i++) this.cars.push(this.layer.addChild(new Sprite({ z: 5, shape: { kind: 'poly', points: [16, 0, -10, 9, -6, 0, -10, -9], closed: true }, fill: colors[i], stroke: '#101014', strokeWidth: 2 })));
+    for (let i = 0; i < 3; i++) this.cars.push(this.layer.addChild(new Sprite({ z: 5, shape: { kind: 'poly', points: [16, 0, -10, 9, -6, 0, -10, -9], closed: true }, fill: colors[i], stroke: KENTO.sumi, strokeWidth: 2 })));
     this.hud = this.layer.addChild(new Text({ pos: { x: 640, y: 26 }, z: 8, size: 20, align: 'center', fill: PAL.text, text: '' }));
     this.big = this.layer.addChild(new Text({ pos: { x: 640, y: 360 }, z: 9, size: 64, align: 'center', fill: PAL.start, text: '' }));
     this.layer.addChild(new Text({ pos: { x: 640, y: 692 }, z: 8, size: 15, align: 'center', fill: PAL.text, text: '↑ gas · ↓ brake · ←/→ steer · grass is slow · 3 laps' }));
@@ -83,7 +83,7 @@ registerNode('VgView', () => new VgView({ name: 'vg-view' }));
 
 export const vellgroveGame = defineGame({
   title: 'Vellgrove Rally',
-  background: '#1c2a18',
+  background: KENTO.yohaku,
   inputMap: VG_INPUT_MAP,
   build(world) {
     world.state.vg = initialVg();

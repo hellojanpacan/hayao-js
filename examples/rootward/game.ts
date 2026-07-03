@@ -2,7 +2,7 @@
 // lane is a drawn ribbon, pads show a cursor ring, towers show range on the
 // selected pad, and wave/economy state is always visible.
 
-import { Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World, dhypot, datan2 } from '@hayao';
+import { Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, KENTO, type InputMap, type World, dhypot, datan2 } from '@hayao';
 import { initialRw, pointAt, stepRw, ENEMIES, PADS, PATH, TOWERS, WAVES, type RwState, type TowerKind } from './logic';
 
 export const RW_INPUT_MAP: InputMap = {
@@ -15,7 +15,7 @@ export const RW_INPUT_MAP: InputMap = {
   restart: ['KeyR'],
 };
 
-const PAL = { bg: '#131a10', lane: '#3d3323', laneEdge: '#57492e', pad: '#2a3d24', padLine: '#456339', cursor: '#ffd75e', arrow: '#8fb573', frost: '#7fc8ff', cannon: '#c97b4a', runner: '#d84f6a', grunt: '#b8405e', tank: '#7a3050', hpBack: '#222', text: '#93ab84', range: '#ffd75e' };
+const PAL = { bg: KENTO.kuro, lane: KENTO.sumiSoft, laneEdge: KENTO.stone, pad: KENTO.matsuDeep, padLine: KENTO.matsu, cursor: KENTO.ko, arrow: KENTO.matsu, frost: KENTO.asagi, cannon: KENTO.kaki, runner: KENTO.saku, grunt: KENTO.shu, tank: KENTO.shuDeep, hpBack: KENTO.sumi, text: KENTO.kinako, range: KENTO.ko };
 
 export function rwState(world: World): RwState {
   return world.state.rw as RwState;
@@ -46,9 +46,9 @@ class RwView extends Node {
     for (const p of PADS) this.layer.addChild(new Sprite({ pos: p, z: 2, shape: { kind: 'rect', w: 56, h: 56, r: 10 }, fill: PAL.pad, stroke: PAL.padLine, strokeWidth: 2 }));
     this.rangeRing = this.layer.addChild(new Sprite({ z: 2, shape: { kind: 'circle', radius: 100 }, fill: 'none', stroke: PAL.range, strokeWidth: 1.5, opacity: 0.5 }));
     this.cursorRing = this.layer.addChild(new Sprite({ z: 3, shape: { kind: 'rect', w: 64, h: 64, r: 12 }, fill: 'none', stroke: PAL.cursor, strokeWidth: 3 }));
-    this.towerPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 4, shape: { kind: 'circle', radius: 18 }, fill: PAL.arrow, stroke: '#1a2410', strokeWidth: 2 }));
-    this.foePool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 5, shape: { kind: 'circle', radius: 12 }, fill: PAL.grunt }));
-    this.hpPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 6, shape: { kind: 'rect', w: 24, h: 4, r: 2 }, fill: '#8fe8b0' }));
+    this.towerPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 4, shape: { kind: 'circle', radius: 18 }, fill: PAL.arrow, stroke: KENTO.sumi, strokeWidth: 2 }));
+    this.foePool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 5, shape: { kind: 'circle', radius: 12 }, fill: PAL.grunt, stroke: KENTO.gofun, strokeWidth: 1.5 }));
+    this.hpPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 6, shape: { kind: 'rect', w: 24, h: 4, r: 2 }, fill: KENTO.gofun }));
     this.hud = this.layer.addChild(new Text({ pos: { x: 640, y: 30 }, z: 8, size: 20, align: 'center', fill: PAL.text, text: '' }));
     this.layer.addChild(new Text({ pos: { x: 640, y: 686 }, z: 8, size: 16, align: 'center', fill: PAL.text, text: '←/→ select pad · [1] arrow 100 · [2] frost 120 · [3] cannon 190 · Space starts the wave early' }));
   }

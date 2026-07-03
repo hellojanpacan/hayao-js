@@ -5,20 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Lumen Forge · hayao.js</title>
     <style>
-      :root { --hy-paper:#141833; --hy-ink:#e8ecff; --hy-ink-soft:#8e9bc4; --hy-line:#2c3357; --hy-accent:#ffc857; --hy-serif:Georgia,serif; }
-      html, body { margin: 0; height: 100%; background: #0d1026; font-family: Georgia, serif; }
+      :root { --hy-paper:#12121a; --hy-ink:#f7f1e2; --hy-ink-soft:#b9a882; --hy-line:#2c2c36; --hy-accent:#e3c054; --hy-serif:Georgia,serif; }
+      html, body { margin: 0; height: 100%; background: #181820; font-family: Georgia, serif; }
       #app { position: absolute; inset: 0; }
       #ui { position: absolute; top: 0; right: 0; bottom: 0; width: 320px; pointer-events: none; }
-      .lf-panel { pointer-events: auto; margin: 18px; padding: 18px; background: rgba(20,24,51,.92); border: 1px solid #2c3357; border-radius: 14px; color: #e8ecff; }
-      .lf-panel h1 { margin: 0 0 4px; font-size: 22px; color: #ffc857; }
+      .lf-panel { pointer-events: auto; margin: 18px; padding: 18px; background: rgba(24,24,32,.92); border: 1px solid #2c2c36; border-radius: 14px; color: #f7f1e2; }
+      .lf-panel h1 { margin: 0 0 4px; font-size: 22px; color: #e3c054; }
       .lf-motes { font-size: 26px; } .lf-motes span { font-variant-numeric: tabular-nums; }
-      .lf-rate { color: #8e9bc4; font-size: 13px; margin-bottom: 12px; }
-      .lf-forge { width: 100%; font: inherit; font-size: 17px; padding: 12px; margin-bottom: 14px; border-radius: 10px; border: none; background: #ffc857; color: #241c05; cursor: pointer; }
+      .lf-rate { color: #b9a882; font-size: 13px; margin-bottom: 12px; }
+      .lf-forge { width: 100%; font: inherit; font-size: 17px; padding: 12px; margin-bottom: 14px; border-radius: 10px; border: none; background: #e3c054; color: #23201a; cursor: pointer; }
       .lf-forge:active { transform: scale(.97); }
-      .lf-tier { width: 100%; text-align: left; font: inherit; display: grid; grid-template-columns: 1fr auto; gap: 0 8px; padding: 9px 12px; margin-bottom: 8px; border-radius: 10px; border: 1px solid #2c3357; background: #191e42; color: inherit; cursor: pointer; }
+      .lf-tier { width: 100%; text-align: left; font: inherit; display: grid; grid-template-columns: 1fr auto; gap: 0 8px; padding: 9px 12px; margin-bottom: 8px; border-radius: 10px; border: 1px solid #2c2c36; background: #12121a; color: inherit; cursor: pointer; }
       .lf-tier:disabled { opacity: .45; cursor: default; }
-      .lf-tier b { font-size: 15px; } .lf-tier i { grid-column: 1; color: #8e9bc4; font-size: 12px; }
-      .lf-tier .lf-cost { color: #ffc857; font-size: 14px; } .lf-tier .lf-owned { color: #c8f7ae; font-size: 13px; text-align: right; }
+      .lf-tier b { font-size: 15px; } .lf-tier i { grid-column: 1; color: #b9a882; font-size: 12px; }
+      .lf-tier .lf-cost { color: #e3c054; font-size: 14px; } .lf-tier .lf-owned { color: #8bad52; font-size: 13px; text-align: right; }
     </style>
   </head>
   <body>

@@ -2,7 +2,7 @@
 // translucent fans (raycast-clipped would be nicer; fans read well enough),
 // the detection meter as an eye that opens, and bushes as soft cover.
 
-import { Node, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World, dcos, dsin, datan2 } from '@hayao';
+import { Node, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, KENTO, type InputMap, type World, dcos, dsin, datan2 } from '@hayao';
 import { BUSHES, BUSH_RADIUS, VISION, idolPoint, initialVs, isHidden, levelMap, spawnPoint, stepVs, TILE_SIZE, type VsState } from './logic';
 
 export const VS_INPUT_MAP: InputMap = {
@@ -14,7 +14,10 @@ export const VS_INPUT_MAP: InputMap = {
   restart: ['KeyR'],
 };
 
-const PAL = { bg: '#101418', rock: '#2a3340', rockLine: '#3c4a5c', thief: '#d8e8f4', thiefHidden: '#5a7a94', cone: '#ffd75e', coneAlert: '#ff5e5e', guard: '#c05555', bush: '#3f6444', idol: '#ffd75e', text: '#8598ad' };
+// Kentō mapping: ground=kuro; walls=neutral dark w/ ai structural line; player=asagi
+// (teal) so it never collides with the guard=shu (vermilion) hue; vision/gold=ko;
+// alert=shu (danger); cover=matsu (nature); idol=ko (treasure); HUD=kinako (muted).
+const PAL = { bg: KENTO.kuro, rock: KENTO.darkLine, rockLine: KENTO.ai, thief: KENTO.asagi, thiefHidden: KENTO.asagiDeep, cone: KENTO.ko, coneAlert: KENTO.shu, guard: KENTO.shu, bush: KENTO.matsu, idol: KENTO.ko, text: KENTO.kinako };
 
 export function vsState(world: World): VsState {
   return world.state.vs as VsState;
@@ -77,15 +80,15 @@ class VsView extends Node {
       const r = VISION.range;
       const d = `M 0 0 L ${dcos(a0) * r} ${dsin(a0) * r} A ${r} ${r} 0 0 1 ${dcos(a1) * r} ${dsin(a1) * r} Z`;
       this.dynamic.addChild(new Sprite({ pos: { x: g.x, y: g.y }, z: 4, shape: { kind: 'path', d }, fill: s.meter > 0.4 ? PAL.coneAlert : PAL.cone, opacity: 0.14 + s.meter * 0.2 }));
-      this.dynamic.addChild(new Sprite({ pos: { x: g.x, y: g.y }, z: 5, shape: { kind: 'circle', radius: 13 }, fill: PAL.guard, stroke: '#26160f', strokeWidth: 2 }));
+      this.dynamic.addChild(new Sprite({ pos: { x: g.x, y: g.y }, z: 5, shape: { kind: 'circle', radius: 13 }, fill: PAL.guard, stroke: KENTO.sumi, strokeWidth: 2 }));
     }
 
     const idol = idolPoint();
-    if (!s.idol) this.dynamic.addChild(new Sprite({ pos: idol, z: 4, shape: { kind: 'poly', points: [0, -14, 9, 0, 0, 14, -9, 0], closed: true }, fill: PAL.idol, stroke: '#fff', strokeWidth: 2 }));
+    if (!s.idol) this.dynamic.addChild(new Sprite({ pos: idol, z: 4, shape: { kind: 'poly', points: [0, -14, 9, 0, 0, 14, -9, 0], closed: true }, fill: PAL.idol, stroke: KENTO.gofun, strokeWidth: 2 }));
     const sp = spawnPoint();
     this.dynamic.addChild(new Sprite({ pos: sp, z: 3, shape: { kind: 'circle', radius: 20 }, fill: 'none', stroke: PAL.thiefHidden, strokeWidth: 2 }));
 
-    this.dynamic.addChild(new Sprite({ name: 'thief', pos: { x: s.x, y: s.y }, z: 6, shape: { kind: 'circle', radius: 11 }, fill: isHidden(s) ? PAL.thiefHidden : PAL.thief, stroke: '#1a2530', strokeWidth: 2 }));
+    this.dynamic.addChild(new Sprite({ name: 'thief', pos: { x: s.x, y: s.y }, z: 6, shape: { kind: 'circle', radius: 11 }, fill: isHidden(s) ? PAL.thiefHidden : PAL.thief, stroke: KENTO.sumi, strokeWidth: 2 }));
 
     // Detection meter.
     if (s.meter > 0.02) this.dynamic.addChild(new Sprite({ pos: { x: s.x, y: s.y - 28 }, z: 8, shape: { kind: 'rect', w: 44 * s.meter, h: 6, r: 3 }, fill: s.meter > 0.6 ? PAL.coneAlert : PAL.cone }));

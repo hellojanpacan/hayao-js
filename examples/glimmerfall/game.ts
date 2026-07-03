@@ -3,7 +3,7 @@
 // but never touches the board. If the tweens vanished, the game would still
 // be exactly the game (that's the test of a cosmetic layer).
 
-import { Node, PARTICLE_PRESETS, Particles, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
+import { KENTO, Node, PARTICLE_PRESETS, Particles, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
 import { bidx, initialGf, trySwap, BOARD, MOVE_BUDGET, TARGET_SCORE, type GfState } from './logic';
 
 export const GF_INPUT_MAP: InputMap = {
@@ -20,8 +20,9 @@ const OX = 640 - (BOARD * CELL) / 2 + CELL / 2;
 const OY = 372 - (BOARD * CELL) / 2 + CELL / 2;
 const at = (x: number, y: number) => ({ x: OX + x * CELL, y: OY + y * CELL });
 
-const GEMS = ['#ff6d8a', '#ffd75e', '#8fe8b0', '#7fc8ff', '#c8a8ff', '#ff9d47'];
-const PAL = { bg: '#141020', cell: '#1e1830', cellLine: '#2e2648', cursor: '#ffffff', sel: '#ffd75e', text: '#9a8fc0' };
+// Six gem colors, each a distinct KENTO hue family so no two ever blur together.
+const GEMS = [KENTO.saku, KENTO.ko, KENTO.matsu, KENTO.asagi, KENTO.fuji, KENTO.kaki];
+const PAL = { bg: KENTO.kuro, cell: KENTO.aiDeep, cellLine: KENTO.darkLine, cursor: KENTO.gofun, sel: KENTO.ko, text: KENTO.kinako };
 
 export function gfState(world: World): GfState {
   return world.state.gf as GfState;
@@ -44,7 +45,7 @@ class GfView extends Node {
     for (let y = 0; y < BOARD; y++)
       for (let x = 0; x < BOARD; x++) {
         this.layer.addChild(new Sprite({ pos: at(x, y), z: 1, shape: { kind: 'rect', w: CELL - 6, h: CELL - 6, r: 12 }, fill: PAL.cell, stroke: PAL.cellLine, strokeWidth: 1 }));
-        const g = this.layer.addChild(new Sprite({ pos: at(x, y - 2), z: 4, shape: { kind: 'poly', points: [0, -24, 21, 0, 0, 24, -21, 0], closed: true }, fill: GEMS[0], stroke: '#0d0a14', strokeWidth: 2 }));
+        const g = this.layer.addChild(new Sprite({ pos: at(x, y - 2), z: 4, shape: { kind: 'poly', points: [0, -24, 21, 0, 0, 24, -21, 0], closed: true }, fill: GEMS[0], stroke: KENTO.sumi, strokeWidth: 2 }));
         this.gems.push(g);
         this.gemPos.push(at(x, y - 2));
       }
@@ -78,7 +79,7 @@ class GfView extends Node {
               for (const i of step.cleared) {
                 const x = i % BOARD;
                 const y = (i / BOARD) | 0;
-                this.fx.burst(4 + step.combo * 2, at(x, y), PARTICLE_PRESETS.burst([GEMS[step.combo % GEMS.length], '#ffffff']));
+                this.fx.burst(4 + step.combo * 2, at(x, y), PARTICLE_PRESETS.burst([GEMS[step.combo % GEMS.length], KENTO.gofun]));
               }
             if (ev.cascaded > 1) audio.success();
           } else audio.blip(140);

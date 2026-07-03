@@ -2,7 +2,7 @@
 // in place, hide extras) — rebuilding hundreds of nodes per frame is an
 // allocation storm. Runs on the Canvas2D backend (see main.ts).
 
-import { Node, NodePool, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World } from '@hayao';
+import { KENTO, Node, NodePool, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World } from '@hayao';
 import { arenaMap, initialEw, stepEw, E_TUNE, P_TUNE, TILE_SIZE, UPGRADES, WIN_AT, type EwState } from './logic';
 
 export const EW_INPUT_MAP: InputMap = {
@@ -16,7 +16,23 @@ export const EW_INPUT_MAP: InputMap = {
   restart: ['KeyR'],
 };
 
-const PAL = { bg: '#140f16', rock: '#332838', rockLine: '#4a3a52', hero: '#ffd75e', heroLine: '#fff3d0', bullet: '#ffe9a8', swarmer: '#b8405e', brute: '#7a3050', text: '#a893b5', card: '#e8d8f0' };
+// Dark-ground horde sim on the Kentō palette. Ground → yohaku (deepest dark).
+// Rock walls → dark neutral ramp. Hero (gold energy) → ko; its bullets stay in
+// the same warm-gold family (kaki) so they read as the hero's. The two enemy
+// types MUST live in different hue families: swarmer → shu (vermilion danger),
+// brute → fuji (arcane violet) so they never blur together.
+const PAL = {
+  bg: KENTO.yohaku,
+  rock: KENTO.darkLine,
+  rockLine: KENTO.sumiSoft,
+  hero: KENTO.ko,
+  heroLine: KENTO.gofun,
+  bullet: KENTO.kaki,
+  swarmer: KENTO.shu,
+  brute: KENTO.fuji,
+  text: KENTO.kinako,
+  card: KENTO.kinu,
+};
 
 export function ewState(world: World): EwState {
   return world.state.ew as EwState;

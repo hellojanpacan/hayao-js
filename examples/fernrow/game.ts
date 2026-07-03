@@ -1,6 +1,6 @@
 // Fernrow: gentle-pace farming view — big tiles, soft palette, seasonal sky.
 
-import { Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
+import { KENTO, Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
 import { initialFr, pidx, seasonOf, stepFr, CROPS, FARM_H, FARM_W, GOAL_COINS, SEASON_CROP, YEAR_DAYS, type FrAction, type FrState, type Season } from './logic';
 
 export const FR_INPUT_MAP: InputMap = {
@@ -21,8 +21,8 @@ const OX = 640 - (FARM_W * CELL) / 2 + CELL / 2;
 const OY = 380 - (FARM_H * CELL) / 2 + CELL / 2;
 const at = (x: number, y: number) => ({ x: OX + x * CELL, y: OY + y * CELL });
 
-const SKY: Record<Season, string> = { spring: '#1c2a1e', summer: '#232a18', autumn: '#2a2016', winter: '#1a2026' };
-const PAL = { soil: '#2a2018', tilled: '#3d2f20', grass: '#24331f', line: '#39482f', player: '#f0e8d8', sprout: '#8fe8b0', ripe: '#ffd75e', water: '#7fc8ff', text: '#a8b896' };
+const SKY: Record<Season, string> = { spring: KENTO.matsuDeep, summer: KENTO.koDeep, autumn: KENTO.kakiDeep, winter: KENTO.aiDeep };
+const PAL = { soil: KENTO.sumiSoft, tilled: KENTO.stone, grass: KENTO.matsuDeep, line: KENTO.darkLine, player: KENTO.gofun, sprout: KENTO.matsu, ripe: KENTO.ko, water: KENTO.asagi, text: KENTO.kinako };
 
 export function frState(world: World): FrState {
   return world.state.fr as FrState;
@@ -42,7 +42,7 @@ class FrView extends Node {
     this.addChild(this.layer);
     this.plotPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 1, shape: { kind: 'rect', w: CELL - 8, h: CELL - 8, r: 10 }, fill: PAL.grass }));
     this.cropPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 3, shape: { kind: 'circle', radius: 12 }, fill: PAL.sprout }));
-    this.player = this.layer.addChild(new Sprite({ z: 5, shape: { kind: 'circle', radius: 16 }, fill: PAL.player, stroke: '#1a140c', strokeWidth: 2 }));
+    this.player = this.layer.addChild(new Sprite({ z: 5, shape: { kind: 'circle', radius: 16 }, fill: PAL.player, stroke: KENTO.sumi, strokeWidth: 2 }));
     this.hud = this.layer.addChild(new Text({ pos: { x: 640, y: 26 }, z: 8, size: 20, align: 'center', fill: PAL.text, text: '' }));
     this.msg = this.layer.addChild(new Text({ pos: { x: 640, y: 700 }, z: 8, size: 16, align: 'center', fill: PAL.text, text: 'T till · P plant · O water · H harvest · Z sleep' }));
   }
@@ -109,7 +109,7 @@ registerNode('FrView', () => new FrView({ name: 'fr-view' }));
 
 export const fernrowGame = defineGame({
   title: 'Fernrow',
-  background: '#141a10',
+  background: KENTO.yohaku,
   inputMap: FR_INPUT_MAP,
   build(world) {
     world.state.fr = initialFr();

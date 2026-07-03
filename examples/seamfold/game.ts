@@ -9,6 +9,7 @@ import {
   Sprite,
   Text,
   MEADOW,
+  KENTO,
   withAlpha,
   registerNode,
   showScreen,
@@ -78,8 +79,8 @@ class SeamfoldView extends Node {
                 pos: at(x, y),
                 z: ghost ? 0 : 1,
                 shape: { kind: 'rect', w: cell - 3, h: cell - 3, r: wall ? 6 : 4 },
-                fill: withAlpha(wall ? '#4a4033' : '#efe6d0', alpha),
-                stroke: withAlpha(wall ? '#2f281d' : MEADOW.line, alpha),
+                fill: withAlpha(wall ? KENTO.sumiSoft : KENTO.washi, alpha),
+                stroke: withAlpha(wall ? KENTO.sumi : MEADOW.line, alpha),
                 strokeWidth: wall ? 2 : 1,
               }),
             );
@@ -95,12 +96,12 @@ class SeamfoldView extends Node {
         for (const b of this.state.boxes) {
           const onGoal = lvl.goals.some((g) => g.x === b.x && g.y === b.y);
           this.layer.addChild(
-            new Sprite({ name: 'box', pos: at(b.x, b.y), z: ghost ? 0 : 3, shape: { kind: 'rect', w: cell * 0.7, h: cell * 0.7, r: 5 }, fill: withAlpha(onGoal ? MEADOW.good : MEADOW.warn, alpha), stroke: withAlpha('#2f281d', alpha), strokeWidth: 2 }),
+            new Sprite({ name: 'box', pos: at(b.x, b.y), z: ghost ? 0 : 3, shape: { kind: 'rect', w: cell * 0.7, h: cell * 0.7, r: 5 }, fill: withAlpha(onGoal ? MEADOW.good : MEADOW.warn, alpha), stroke: withAlpha(KENTO.sumi, alpha), strokeWidth: 2 }),
           );
         }
         // Player
         this.layer.addChild(
-          new Sprite({ name: 'player', pos: at(this.state.player.x, this.state.player.y), z: ghost ? 0 : 4, shape: { kind: 'circle', radius: cell * 0.3 }, fill: withAlpha(MEADOW.accent, alpha), stroke: withAlpha('#2f281d', alpha), strokeWidth: 2 }),
+          new Sprite({ name: 'player', pos: at(this.state.player.x, this.state.player.y), z: ghost ? 0 : 4, shape: { kind: 'circle', radius: cell * 0.3 }, fill: withAlpha(MEADOW.accent, alpha), stroke: withAlpha(KENTO.sumi, alpha), strokeWidth: 2 }),
         );
       }
     }

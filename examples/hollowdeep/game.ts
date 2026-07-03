@@ -1,7 +1,7 @@
 // Hollowdeep: turn-based — the sim advances only on input edges. The view is
 // the classic roguelike trinity: visible (lit), explored (dim), unknown (void).
 
-import { Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
+import { KENTO, Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
 import { computeFov, idx, initialHd, stepHd, COLS, ROWS, TILE_SIZE, type HdMove, type HdState } from './logic';
 
 export const HD_INPUT_MAP: InputMap = {
@@ -14,7 +14,9 @@ export const HD_INPUT_MAP: InputMap = {
   restart: ['KeyR'],
 };
 
-const PAL = { bg: '#0d0c10', lit: '#3a3546', litLine: '#4d4760', dim: '#211e2a', floorLit: '#191622', hero: '#e8e2f6', rat: '#c97b4a', shade: '#7fc8ff', potion: '#d84f6a', sword: '#ffd75e', stairs: '#8fe8b0', text: '#9a8fc0' };
+// Kentō dark-ground mapping: deepest yohaku ground; neutral ramp for the dungeon
+// stonework; each entity on its own hue family so nothing is told apart by shade.
+const PAL = { bg: KENTO.yohaku, lit: KENTO.sumiSoft, litLine: KENTO.stone, dim: KENTO.darkLine, floorLit: KENTO.kuro, hero: KENTO.fuji, rat: KENTO.kaki, shade: KENTO.asagi, potion: KENTO.saku, sword: KENTO.ko, stairs: KENTO.matsu, text: KENTO.kinako };
 
 export function hdState(world: World): HdState {
   return world.state.hd as HdState;
@@ -34,15 +36,15 @@ class HdView extends Node {
     this.addChild(this.layer);
     this.tilePool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 1, shape: { kind: 'rect', w: TILE_SIZE, h: TILE_SIZE }, fill: PAL.dim }));
     this.entPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 4, shape: { kind: 'circle', radius: 10 }, fill: PAL.rat }));
-    this.hero = this.layer.addChild(new Sprite({ z: 5, shape: { kind: 'circle', radius: 11 }, fill: PAL.hero, stroke: '#0d0c10', strokeWidth: 2 }));
+    this.hero = this.layer.addChild(new Sprite({ z: 5, shape: { kind: 'circle', radius: 11 }, fill: PAL.hero, stroke: KENTO.sumi, strokeWidth: 2 }));
     this.hud = this.layer.addChild(new Text({ pos: { x: 640, y: 24 }, z: 8, size: 19, align: 'center', fill: PAL.text, text: '' }));
     this.msg = this.layer.addChild(new Text({ pos: { x: 640, y: 702 }, z: 8, size: 15, align: 'center', fill: PAL.text, text: '' }));
     // Legend: every entity kind on screen is named here, with its true glyph.
     const legend: [Sprite, string][] = [
-      [new Sprite({ shape: { kind: 'circle', radius: 8 }, fill: PAL.hero, stroke: '#0d0c10', strokeWidth: 1.5 }), 'you'],
-      [new Sprite({ shape: { kind: 'circle', radius: 6 }, fill: PAL.rat, stroke: '#3d1f10', strokeWidth: 1.5 }), 'rat — bites'],
-      [new Sprite({ shape: { kind: 'circle', radius: 8 }, fill: PAL.shade, stroke: '#1a2a3d', strokeWidth: 1.5 }), 'shade — slow, hits hard'],
-      [new Sprite({ shape: { kind: 'rect', w: 9, h: 13, r: 3 }, fill: PAL.potion, stroke: '#fff', strokeWidth: 1 }), 'potion — Q drinks'],
+      [new Sprite({ shape: { kind: 'circle', radius: 8 }, fill: PAL.hero, stroke: KENTO.sumi, strokeWidth: 1.5 }), 'you'],
+      [new Sprite({ shape: { kind: 'circle', radius: 6 }, fill: PAL.rat, stroke: KENTO.sumi, strokeWidth: 1.5 }), 'rat — bites'],
+      [new Sprite({ shape: { kind: 'circle', radius: 8 }, fill: PAL.shade, stroke: KENTO.sumi, strokeWidth: 1.5 }), 'shade — slow, hits hard'],
+      [new Sprite({ shape: { kind: 'rect', w: 9, h: 13, r: 3 }, fill: PAL.potion, stroke: KENTO.gofun, strokeWidth: 1 }), 'potion — Q drinks'],
       [new Sprite({ shape: { kind: 'poly', points: [0, -8, 4, 3, 0, 8, -4, 3], closed: true }, fill: PAL.sword }), 'blade — +3 atk'],
       [new Sprite({ shape: { kind: 'poly', points: [-7, 5, 7, 5, 0, -7], closed: true }, fill: PAL.stairs }), 'stairs down'],
     ];
@@ -98,7 +100,7 @@ class HdView extends Node {
           sp.paint.stroke = lit ? PAL.litLine : undefined;
           sp.paint.strokeWidth = lit ? 1 : 0;
         } else {
-          sp.paint.fill = lit ? PAL.floorLit : '#141218';
+          sp.paint.fill = lit ? PAL.floorLit : KENTO.yohaku;
           sp.paint.stroke = undefined;
         }
       }
@@ -118,7 +120,7 @@ class HdView extends Node {
         sp.pos = { x: (p.x + 0.5) * TILE_SIZE, y: (p.y + 0.5) * TILE_SIZE };
         sp.shape = { kind: 'rect', w: 9, h: 13, r: 3 }; // a flask, not a creature
         sp.paint.fill = PAL.potion;
-        sp.paint.stroke = '#fff';
+        sp.paint.stroke = KENTO.gofun;
         sp.paint.strokeWidth = 1;
       }
     if (f.sword && showAt(f.sword.x, f.sword.y)) {
@@ -133,7 +135,7 @@ class HdView extends Node {
         sp.pos = { x: (m.x + 0.5) * TILE_SIZE, y: (m.y + 0.5) * TILE_SIZE };
         sp.shape = { kind: 'circle', radius: m.kind === 'shade' ? 12 : 8 };
         sp.paint.fill = m.kind === 'shade' ? PAL.shade : PAL.rat;
-        sp.paint.stroke = m.kind === 'shade' ? '#1a2a3d' : '#3d1f10';
+        sp.paint.stroke = KENTO.sumi;
         sp.paint.strokeWidth = 2;
       }
     this.entPool.end();

@@ -7,6 +7,7 @@ import {
   Sprite,
   Text,
   MEADOW,
+  KENTO,
   registerNode,
   showScreen,
   hideScreen,
@@ -66,8 +67,8 @@ class SokobanView extends Node {
             pos: at(x, y),
             z: 0,
             shape: { kind: 'rect', w: CELL - 4, h: CELL - 4, r: wall ? 8 : 6 },
-            fill: wall ? '#4a4033' : '#efe6d0',
-            stroke: wall ? '#2f281d' : MEADOW.line,
+            fill: wall ? KENTO.sumiSoft : KENTO.gofun,
+            stroke: wall ? KENTO.sumi : MEADOW.line,
             strokeWidth: wall ? 2 : 1,
           }),
         );
@@ -83,12 +84,12 @@ class SokobanView extends Node {
     for (const b of this.state.boxes) {
       const onGoal = lvl.goals.some((g) => g.x === b.x && g.y === b.y);
       this.layer.addChild(
-        new Sprite({ name: 'box', pos: at(b.x, b.y), z: 2, shape: { kind: 'rect', w: CELL - 22, h: CELL - 22, r: 8 }, fill: onGoal ? MEADOW.good : MEADOW.warn, stroke: '#2f281d', strokeWidth: 2 }),
+        new Sprite({ name: 'box', pos: at(b.x, b.y), z: 2, shape: { kind: 'rect', w: CELL - 22, h: CELL - 22, r: 8 }, fill: onGoal ? MEADOW.good : MEADOW.warn, stroke: KENTO.sumi, strokeWidth: 2 }),
       );
     }
     // Player
     this.layer.addChild(
-      new Sprite({ name: 'player', pos: at(this.state.player.x, this.state.player.y), z: 3, shape: { kind: 'circle', radius: 22 }, fill: MEADOW.accent, stroke: '#2f281d', strokeWidth: 2 }),
+      new Sprite({ name: 'player', pos: at(this.state.player.x, this.state.player.y), z: 3, shape: { kind: 'circle', radius: 22 }, fill: MEADOW.accent, stroke: KENTO.sumi, strokeWidth: 2 }),
     );
 
     // HUD
