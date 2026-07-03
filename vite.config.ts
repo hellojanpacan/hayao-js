@@ -35,6 +35,8 @@ export default defineConfig({
     port: Number(process.env.PORT) || 5180,
   },
   build: {
+    // The examples site builds here; the npm library artifact owns dist/ (see build:lib).
+    outDir: 'dist-site',
     rollupOptions: { input: exampleInputs() },
   },
   test: {

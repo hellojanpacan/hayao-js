@@ -35,7 +35,7 @@ land here and in [LESSONS.md](LESSONS.md).
 | 7 | Bullet hell | Touhou × Jamestown | 1000+ bullets perf ceiling, pattern DSL | ✅ |
 | 8 | Tower defense | Kingdom Rush × Bloons | path following, wave balance sim, counter system | ✅ |
 | 9 | RTS-lite | (mass units) | flow fields, 300–500 units, counters, HUD density | ✅ |
-| 10 | Traditional roguelike | Brogue × Shattered Pixel | procgen + connectivity proof, FOV, turn scheduler | — |
+| 10 | Traditional roguelike | Brogue × Shattered Pixel | procgen + connectivity proof, FOV, turn scheduler | ✅ |
 | 11 | Roguelike deckbuilder | Slay the Spire-lite | card DSL, balance bot, addictive loop | — |
 | 12 | Turn-based tactics | Into the Breach-lite | telegraphed intents, push chains, fairness proof | — |
 | 13 | Match-3 | Puzzle Quest-ish | cascade choreography vs deterministic sim | — |
@@ -338,6 +338,34 @@ unit routes around brambles in 3.7s; 0.80ms/step at peak; deterministic.
 - **Perf headroom confirmed for the wave:** 265 units full-combat at
   0.80ms/step — same rebuild-per-step hash pattern as Emberwake, an order of
   magnitude of margin left for a bigger RTS.
+
+### 10 · Hollowdeep — traditional roguelike (Brogue × Shattered Pixel) ✅
+
+**Shipped:** three procgen floors (rooms + L-corridors), raycast FOV with
+lit/explored/unknown memory, turn scheduler (shades act every other turn),
+bump combat, potions + a blade upgrade, descent to the Pale Amulet. Verified:
+connectivity across 50 seeds × 3 floors (stairs + ALL loot reachable), seeded
+layouts reproduce exactly, a full-knowledge explorer bot wins seed 1 and
+10/10 random seeds, turn log replays deterministically.
+
+**Findings:**
+
+- **The classic procgen bug appeared on schedule and the classic proof caught
+  it:** one branch of the L-corridor carver skipped its vertical leg, so
+  ~half the room links were walls. 162/150-floor connectivity failures —
+  and the bot's 3/10 win rate — from one wrong line. After the fix: 0 broken,
+  10/10 wins. Procgen without a reachability gate is unshippable; with one,
+  the bug survived less than a minute.
+- **Fairness ≈ connectivity in this genre.** The bot's win-rate jumped from
+  3/10 to 10/10 purely from the topology fix — no combat rebalance needed.
+  Assert connectivity FIRST; only tune numbers when topology is proven.
+- **Turn-based reuses the whole real-time stack:** the engine raycast does
+  FOV (per-tile lineOfSight with a small inset for wall lighting), input
+  edges ARE turns (one justPressed = one world step, held keys don't
+  repeat), and the sokoban replay pattern covers a 900-turn run unchanged.
+- **Full-knowledge bots prove winnability, not player experience** — the bot
+  pathfinds with the whole map. That's the right claim for procgen ('a
+  winning line exists'), the same epistemic status as the Sokoban solver.
 
 ### 14 · Lumen Forge — incremental/idle (Paperclips × Cookie Clicker) ✅
 
