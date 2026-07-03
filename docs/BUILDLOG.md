@@ -43,7 +43,7 @@ land here and in [LESSONS.md](LESSONS.md).
 | 15 | Farming/life sim | Stardew-lite | calendar clock, save/load, gentle pacing | ✅ |
 | 16 | Survival horror | Darkwood-lite | shadowcast lighting, spatial audio, dread pacing | ✅ |
 | 17 | City/colony builder | Islanders × Mini Motorways | placement scoring, growth sim, minimal viz | ✅ |
-| 18 | Rhythm | NecroDancer-lite | audio clock vs sim clock determinism | — |
+| 18 | Rhythm | NecroDancer-lite | audio clock vs sim clock determinism | ✅ |
 | 19 | Physics arcade | Breakout roguelite / Peggle | continuous collision, deterministic FP physics | — |
 | 20 | Top-down racing | Micro Machines-lite | car handling feel, racing-line AI | — |
 | 21 | Narrative decisions | Reigns-lite | content DSL, long-arc balance sim | — |
@@ -533,6 +533,32 @@ audited; deterministic + golden.
   in the queue — pure positive-sum scoring plays itself. A design smell worth
   remembering: if the greedy bot never faces a tradeoff, neither does the
   player.
+
+### 18 · Cadence Hollow — rhythm (Crypt of the NecroDancer-lite) ✅
+
+**Shipped:** a beat-locked dungeon chamber: 120 BPM = exactly 30 fixed frames
+per beat, moves legal only inside a ±4-frame window (one per beat), foes act
+in lockstep on beat ticks, combos build on-beat and shatter off-beat, floor
+and metronome pulse read straight from the frame counter. Verified: a
+beat-perfect dancer clears the chamber; the window honest TO THE FRAME
+(+4 in, +5 out); one-action-per-beat; foes provably frozen between beats;
+the whole dance replays hash-identically.
+
+**Findings:**
+
+- **The genre's determinism paradox dissolves by inverting the dependency:
+  THE BEAT IS SIM TIME.** BPM chosen so a beat is an integer number of fixed
+  frames; the timing window is frame arithmetic; the music is an observer
+  that schedules tones off the sim's beat counter. Nothing about rhythm
+  requires an audio clock in the sim — the audio clock is a RENDERER. (In a
+  shipping title you'd lookahead-schedule Web Audio from the driver to hide
+  rAF jitter; the sim contract is unchanged.)
+- **Rhythm = an input-legality filter over a turn-based game.** Cadence is
+  Hollowdeep with a when-may-you-act rule; the whole genre layer was ~30
+  lines (beatOf/onBeat/one-act-per-beat). Genres compose.
+- **Frame-exact window tests are the whole feel contract:** +4 frames
+  accepted, +5 refused, hammering inside one window acts once. These three
+  assertions define 'tight but fair' better than any playtest adjective.
 
 ### 14 · Lumen Forge — incremental/idle (Paperclips × Cookie Clicker) ✅
 
