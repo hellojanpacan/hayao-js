@@ -44,7 +44,7 @@ land here and in [LESSONS.md](LESSONS.md).
 | 16 | Survival horror | Darkwood-lite | shadowcast lighting, spatial audio, dread pacing | ✅ |
 | 17 | City/colony builder | Islanders × Mini Motorways | placement scoring, growth sim, minimal viz | ✅ |
 | 18 | Rhythm | NecroDancer-lite | audio clock vs sim clock determinism | ✅ |
-| 19 | Physics arcade | Breakout roguelite / Peggle | continuous collision, deterministic FP physics | — |
+| 19 | Physics arcade | Breakout roguelite / Peggle | continuous collision, deterministic FP physics | ✅ |
 | 20 | Top-down racing | Micro Machines-lite | car handling feel, racing-line AI | — |
 | 21 | Narrative decisions | Reigns-lite | content DSL, long-arc balance sim | — |
 
