@@ -31,7 +31,7 @@ land here and in [LESSONS.md](LESSONS.md).
 | 3 | Metroidvania | Hollow Knight-lite | world graph, ability gating, reachability proof | ✅ |
 | 4 | Top-down action-adventure | Zelda × Hyper Light Drifter | combat feel/juice kit, rooms, enemy AI | ✅ |
 | 5 | Stealth | Mark of the Ninja × Gunpoint | vision cones, noise propagation, guard FSM | ✅ |
-| 6 | Twin-stick horde | Nuclear Throne × Vampire Survivors | 100s of entities, spatial hash, upgrade economy | — |
+| 6 | Twin-stick horde | Nuclear Throne × Vampire Survivors | 100s of entities, spatial hash, upgrade economy | ✅ |
 | 7 | Bullet hell | Touhou × Jamestown | 1000+ bullets perf ceiling, pattern DSL | — |
 | 8 | Tower defense | Kingdom Rush × Bloons | path following, wave balance sim, counter system | — |
 | 9 | RTS-lite | (mass units) | flow fields, 300–500 units, counters, HUD density | — |
@@ -219,6 +219,36 @@ full loop; noise flips guards to investigate). Deterministic.
   can't touch the corridor for the duration of a continuous move. Reasoning
   about "cone-shadow duration of a path", not guard distance, is what made
   the final plan provable.
+
+### 6 · Emberwake — twin-stick horde survival (Nuclear Throne × Vampire Survivors) ✅
+
+**Shipped:** 120-second survival night: auto-aim fire, quadratic spawn ramp,
+two enemy types with soft-separation flocking, kill-driven level-ups with
+pick-1-of-3 builds (sim pauses on choice, picks are input actions).
+Orbit bot survives with hp floor 5/8, peak horde 161, 569 kills;
+sim step averages 0.02ms at peak (100× under the 2ms budget); deterministic.
+
+**Findings:**
+
+- **Perf: the SpatialHash pattern holds effortlessly.** Rebuild-per-step +
+  queryCircle for bullets and separation runs the whole night at 0.02ms/step
+  in Node — entity-count ceilings live in the RENDERER, not the sim. Hence
+  the view lesson: pooled sprites (update-in-place, hide extras) and the
+  Canvas2D backend; rebuilding hundreds of scene nodes per frame is an
+  allocation storm the sim never sees.
+- **Kiting bots corner themselves; orbiting bots don't.** Flee-the-centroid
+  drove the bot into walls every run (all deaths at x=1236). The genre's real
+  skill is orbiting the arena — once encoded, survival became a question of
+  pure build/balance. Bot strategy IS design knowledge.
+- **Balance tuning was three sim runs:** died-at-82s (ramp too hot) →
+  untouched-with-19-alive (upgrades too strong for a linear ramp) → the
+  keeper: quadratic spawn ramp vs multiplicative build growth. Horde genres
+  want spawn pressure superlinear to stay ahead of exponential player DPS —
+  and 'peak alive ≥ 150' is asserted so the horde FEEL can't silently
+  regress.
+- **rng-in-the-loop determinism works**: spawns and upgrade offers draw from
+  `world.rng` inside the pure step (passed in, never imported) and the whole
+  night replays hash-identical.
 
 ### 14 · Lumen Forge — incremental/idle (Paperclips × Cookie Clicker) ✅
 
