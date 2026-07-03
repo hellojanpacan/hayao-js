@@ -53,7 +53,8 @@
     "invariants": "tsx scripts/invariants.ts",
     "verify": "tsx scripts/invariants.ts && tsx scripts/verify.ts",
     "prepublishOnly": "npm run check && npm test && npm run build:lib",
-    "relay": "node scripts/relay.mjs"
+    "relay": "node scripts/relay.mjs",
+    "palette": "tsx scripts/palette-audit.ts"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",

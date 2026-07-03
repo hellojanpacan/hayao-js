@@ -128,13 +128,20 @@ undo, and time-travel free.
 - **Code-as-art, zero binary assets.** A `Sprite` is a vector `Shape`
   (`rect` / `circle` / `poly` / `path`) or a `glyph` (a Unicode character) —
   never a bitmap. Unicode glyphs (♞ ♝ ⚔ ☠ ✿) are instant, legible art.
-- **Light-mode palettes.** Start from Miyazaki-16; ~5–6 colors per game plus a
-  background. Alpha and tone variants are welcome; monospace/terminal defaults
-  read as lazy and are discouraged.
-- **Pickups and interactables carry a dark ink outline** (`stroke: '#232228'`),
-  plus a glow/pulse for emphasis. An accent-colored shape flat on the floor
-  vanishes the moment two hues share a family — contrast lives in the edge, not
-  the fill. Judge contrast from a rendered SVG, never from hex values.
+- **Default palette is Kentō** (`import { KENTO, MEADOW, DUSK } from '@hayao'`).
+  It fuses the site's washi/sumi/ai/shu ink tokens with landscape hues loosely
+  drawn from Miyazaki-16 — eight named hues, each with a `Deep` tone for light
+  grounds and a bright tone for dark grounds, so `MEADOW` (light) and `DUSK`
+  (dark) share one identity. Pick hues by name (`KENTO.asagi`); reach for ~5–6
+  per game plus a ground. Alpha/tone variants via `withAlpha`/`mix` are welcome;
+  monospace/terminal defaults read as lazy and are discouraged. The engine stays
+  palette-agnostic — Kentō is a consistent starting point, never a restriction.
+  Every Kentō pairing is WCAG-AA verified: `npm run palette` is the gate.
+- **Pickups and interactables carry a dark ink outline** (`stroke: KENTO.sumi`
+  on light, `KENTO.gofun` rim on dark), plus a glow/pulse for emphasis. An
+  accent-colored shape flat on the floor vanishes the moment two hues share a
+  family — contrast lives in the edge, not the fill. Judge contrast from a
+  rendered SVG, never from hex values.
 - **Menus, titles, HUD, and settings are DOM overlays** (the ui/ shell), never
   `Text` nodes drawn into the scene. Humans compare in-scene type to the DOM
   around it and the scene loses. In-scene `Text` is for in-world labels only.
