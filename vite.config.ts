@@ -21,6 +21,8 @@ function exampleInputs(): Record<string, string> {
 }
 
 export default defineConfig({
+  // GitHub Pages serves the site under /<repo>/ — the deploy workflow sets BASE_PATH=/hayao-js/.
+  base: process.env.BASE_PATH || '/',
   // MPA mode → missing pages 404 honestly instead of silently re-serving the hub
   // (narrow-js lesson: the SPA fallback eats navigation and reads as "nothing happens").
   appType: 'mpa',

@@ -3,115 +3,199 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hayao.js</title>
+    <title>hayao.js — an AI-first, deterministic game engine</title>
+    <meta name="description" content="A deterministic, headless-native game engine designed so an LLM can author, test, and prove correct a whole game. 21 machine-verified example games, playable in the browser." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%23f1ebdd'/%3E%3Crect x='32' y='30' width='58' height='58' fill='none' stroke='%23242019' stroke-width='3' opacity='.32'/%3E%3Cpath d='M32 88 h24 M32 88 v-24' fill='none' stroke='%23b5442d' stroke-width='10'/%3E%3Cpath d='M66 88 h20' fill='none' stroke='%23b5442d' stroke-width='10'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet" />
     <style>
-      :root { color-scheme: light; }
-      html, body { margin: 0; min-height: 100%; background: #f3ecdb; color: #3d3323; font-family: Georgia, serif; }
-      .wrap { max-width: 720px; margin: 0 auto; padding: 64px 24px; }
-      h1 { font-size: 44px; margin: 0 0 4px; }
-      .tag { color: #6f6047; font-style: italic; margin-bottom: 36px; font-size: 17px; }
-      .games { display: grid; gap: 14px; }
-      a.card { display: block; text-decoration: none; color: inherit; background: #fbf6ea; border: 1px solid #d9ccae; border-radius: 12px; padding: 18px 20px; box-shadow: 0 2px 8px rgba(80,60,30,.08); transition: transform .12s, box-shadow .12s; }
-      a.card:hover, a.card:focus { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(80,60,30,.16); outline: none; }
-      a.card h2 { margin: 0 0 3px; font-size: 20px; }
-      a.card p { margin: 0; color: #6f6047; font-size: 14px; }
-      footer { margin-top: 40px; color: #9a8a6f; font-size: 13px; }
-      code { background: #efe6d0; padding: 1px 6px; border-radius: 5px; font-size: 13px; }
+      :root {
+        --washi: #f1ebdd; --washi-2: #f8f3e9; --sumi: #242019; --sumi-soft: #4f473b;
+        --stone: #6f6555; --ai: #2b4257; --ai-2: #5a7994; --shu: #b5442d; --line: #ddd3bf;
+        --mincho: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+        --body: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+        --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+        color-scheme: light;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; background: var(--washi); color: var(--sumi);
+        font-family: var(--body); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+      .wrap { max-width: 900px; margin: 0 auto; padding: 0 40px; }
+      a { color: var(--ai); text-decoration: none; border-bottom: 1px solid var(--line); }
+      a:hover { border-bottom-color: var(--ai-2); }
+      .lab { font-variant: small-caps; font-size: 14px; letter-spacing: .14em; color: var(--stone); }
+
+      .hero { padding: 88px 0 64px; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; }
+      .logo { font-family: var(--mincho); font-weight: 700; font-size: 76px; line-height: .95; letter-spacing: .004em; }
+      .logo .js { font-size: 27px; color: var(--stone); font-weight: 500; }
+      .claim { font-family: var(--mincho); font-weight: 600; font-size: 25px; margin: 20px 0 14px; letter-spacing: .005em; line-height: 1.35; }
+      .pitch { margin: 0; font-size: 17px; color: var(--sumi-soft); max-width: 58ch; }
+      .mark-hero { width: 140px; height: 140px; flex: 0 0 auto; }
+      .cta { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; margin-top: 26px; }
+      .install { font-family: var(--mono); font-size: 15px; background: var(--washi-2); border: 1px solid var(--line);
+        border-radius: 4px; padding: 9px 16px; color: var(--sumi); }
+      .cta a { font-size: 16px; }
+
+      .games-head { border-top: 1px solid var(--line); padding: 44px 0 6px; }
+      .games-head h2 { font-family: var(--mincho); font-weight: 600; font-size: 26px; margin: 10px 0 8px; }
+      .games-head p { margin: 0 0 26px; color: var(--sumi-soft); font-size: 16px; max-width: 62ch; }
+      .games { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding-bottom: 8px; }
+      a.card { display: block; color: inherit; background: var(--washi-2); border: 1px solid var(--line);
+        border-radius: 4px; padding: 18px 20px; transition: border-color .12s, background .12s; }
+      a.card:hover, a.card:focus { border-color: var(--ai-2); background: #fbf7ee; outline: none; }
+      a.card h3 { margin: 0 0 4px; font-family: var(--mincho); font-weight: 600; font-size: 18px; }
+      a.card .genre { font-family: var(--mono); font-size: 11px; color: var(--stone); letter-spacing: .05em; text-transform: uppercase; display: block; margin-bottom: 6px; }
+      a.card p { margin: 0; color: var(--sumi-soft); font-size: 13.5px; line-height: 1.55; }
+
+      .build { border-top: 1px solid var(--line); margin-top: 44px; padding: 44px 0; }
+      .build h2 { font-family: var(--mincho); font-weight: 600; font-size: 26px; margin: 10px 0 8px; }
+      .build p { color: var(--sumi-soft); font-size: 16px; max-width: 62ch; margin: 0 0 12px; }
+      .build code { font-family: var(--mono); background: var(--washi-2); border: 1px solid var(--line); padding: 1px 7px; border-radius: 4px; font-size: 13.5px; }
+
+      footer { border-top: 1px solid var(--line); padding: 36px 0 72px; color: var(--stone); font-size: 13px; line-height: 1.8; }
+      footer a { color: var(--ai); }
+
+      @media (max-width: 680px) {
+        .wrap { padding: 0 22px; }
+        .hero { grid-template-columns: 1fr; padding: 52px 0 40px; gap: 24px; }
+        .logo { font-size: 54px; }
+        .mark-hero { width: 100px; height: 100px; order: -1; }
+        .claim { font-size: 21px; }
+        .games { grid-template-columns: 1fr; }
+      }
     </style>
   </head>
   <body>
     <div class="wrap">
-      <h1>hayao.js</h1>
-      <div class="tag">An AI-first game engine. The game is a pure deterministic function; everything else is a plugin.</div>
+      <header class="hero">
+        <div>
+          <div class="lab">AI-first · deterministic · headless</div>
+          <div class="logo">hayao<span class="js">.js</span></div>
+          <h1 class="claim">A deterministic, headless game engine.</h1>
+          <p class="pitch">The game is a pure function of its inputs; the render is only an observer.
+            Hayao is built so an LLM can author, test, and <b>prove correct</b> a whole game without
+            ever opening a browser — same seed, same build, same result, every run.</p>
+          <div class="cta">
+            <span class="install">npm i hayao</span>
+            <a href="https://github.com/hellojanpacan/hayao-js">GitHub →</a>
+            <a href="https://github.com/hellojanpacan/hayao-js/blob/main/docs/API.md">API docs →</a>
+          </div>
+        </div>
+        <svg class="mark-hero" viewBox="0 0 120 120" role="img" aria-label="Hayao mark: a kentō registration mark">
+          <rect x="32" y="30" width="58" height="58" fill="none" stroke="#242019" stroke-width="1.5" opacity=".32"/>
+          <path d="M32 88 h24 M32 88 v-24" fill="none" stroke="#b5442d" stroke-width="6"/>
+          <path d="M66 88 h20" fill="none" stroke="#b5442d" stroke-width="6"/>
+        </svg>
+      </header>
+
+      <section class="games-head">
+        <div class="lab">the proof</div>
+        <h2>Twenty-one games, every one machine-verified.</h2>
+        <p>One game per genre, built to test the engine end to end. Every level, board, and boss fight
+          below is proven winnable by a solver or a bot before it ships — play them in your browser.</p>
+      </section>
       <div class="games">
         <a class="card" href="./examples/sokoban/index.html">
-          <h2>Sokoban →</h2>
+          <h3>Sokoban</h3><span class="genre">box-pushing puzzle</span>
           <p>Pure solver-provable logic + a scene-tree SVG view + undo. Every level is machine-verified winnable.</p>
         </a>
-        <a class="card" href="./examples/emberreign/index.html">
-          <h2>Emberreign →</h2>
-          <p>A reign of decisions (Reigns-lite): four meters, double-edged cards, story arcs — judgement proven to matter (19/20 vs 0/20 reigns) and every doom proven honest.</p>
-        </a>
-        <a class="card" href="./examples/vellgrove/index.html">
-          <h2>Vellgrove Rally →</h2>
-          <p>Top-down racing (Micro Machines-lite): understeer at speed, grass that punishes, cut-proof laps — braking proven faster than flooring it.</p>
-        </a>
-        <a class="card" href="./examples/pinshine/index.html">
-          <h2>Pinshine →</h2>
-          <p>A Peggle-ish physics board: swept-circle collision (no tunneling at any speed), restitution proven energy-honest, every board proven clearable by an aim-search bot.</p>
-        </a>
-        <a class="card" href="./examples/cadence/index.html">
-          <h2>Cadence Hollow →</h2>
-          <p>A rhythm dungeon (NecroDancer-lite): move only on the pulse, foes dance in lockstep — the beat IS sim time, so even rhythm replays deterministically.</p>
-        </a>
-        <a class="card" href="./examples/tarnholm/index.html">
-          <h2>Tarnholm →</h2>
-          <p>An island town builder (Islanders-lite): every roof scores by its neighbours, with the gain shown live — placement skill proven to nearly double random play.</p>
-        </a>
-        <a class="card" href="./examples/palewood/index.html">
-          <h2>Palewood →</h2>
-          <p>One night of survival horror (Darkwood-lite): a raycast-lit lantern, panned growls in the dark, fuel pressure that forbids camping — the night proven survivable, the dark proven deadly.</p>
-        </a>
-        <a class="card" href="./examples/fernrow/index.html">
-          <h2>Fernrow →</h2>
-          <p>A farming year (Stardew-lite): four seasons, energy-budgeted days, crops that wither out of season — the festival goal proven reachable, reinvestment proven to compound.</p>
-        </a>
-        <a class="card" href="./examples/glimmerfall/index.html">
-          <h2>Glimmerfall →</h2>
-          <p>Match-3 (Puzzle Quest-ish): cascade combos, spring-tweened choreography over an instant sim — 100 boards proven fair, targets proven reachable.</p>
-        </a>
-        <a class="card" href="./examples/vantage/index.html">
-          <h2>Vantage →</h2>
-          <p>Turn-based tactics (Into the Breach-lite): telegraphed attacks, push chains that rewrite the enemy's future — a perfect defence is machine-proven possible, and doing nothing proven fatal.</p>
+        <a class="card" href="./examples/shard-ascent/index.html">
+          <h3>Shard Ascent</h3><span class="genre">precision platformer</span>
+          <p>Coyote time, jump buffering, dashes, corner correction, moving lifts. Every level is bot-proven beatable, deathless.</p>
         </a>
         <a class="card" href="./examples/thornspire/index.html">
-          <h2>Thornspire →</h2>
-          <p>A roguelike deckbuilder (Slay the Spire-lite): card DSL, telegraphed intents, drafts between fights — tuned to a proven 17/20 pilot win rate, with drafting proven to matter.</p>
+          <h3>Thornspire</h3><span class="genre">roguelike deckbuilder</span>
+          <p>Card DSL, telegraphed intents, drafts between fights — tuned to a proven 17/20 pilot win rate, with drafting proven to matter.</p>
         </a>
-        <a class="card" href="./examples/hollowdeep/index.html">
-          <h2>Hollowdeep →</h2>
-          <p>A traditional roguelike: procgen floors proven connected across 50 seeds, raycast FOV with map memory, bump combat — every dungeon bot-proven winnable.</p>
-        </a>
-        <a class="card" href="./examples/bramblefall/index.html">
-          <h2>Bramblefall →</h2>
-          <p>An RTS skirmish: flow-field pathfinding, 260+ units, a spear/cavalry/archer counter triangle — every counter edge is duel-proven and the war is bot-winnable.</p>
-        </a>
-        <a class="card" href="./examples/rootward/index.html">
-          <h2>Rootward →</h2>
-          <p>Tower defense (Kingdom Rush-lite): three counter-typed towers on an S-lane, ten ramping waves — the winning build is proven, and so is that arrow-spam LOSES to tanks.</p>
+        <a class="card" href="./examples/vantage/index.html">
+          <h3>Vantage</h3><span class="genre">turn-based tactics</span>
+          <p>Telegraphed attacks, push chains that rewrite the enemy's future — a perfect defence is machine-proven possible, and doing nothing proven fatal.</p>
         </a>
         <a class="card" href="./examples/duskveil/index.html">
-          <h2>Duskveil →</h2>
-          <p>A bullet-hell boss fight (Touhou-lite): a pattern DSL, 480+ live bullets, grazing, focus mode — every phase proven survivable by a predictive dodge bot.</p>
+          <h3>Duskveil</h3><span class="genre">bullet hell</span>
+          <p>A pattern DSL, 480+ live bullets, grazing, focus mode — every phase proven survivable by a predictive dodge bot.</p>
+        </a>
+        <a class="card" href="./examples/bramblefall/index.html">
+          <h3>Bramblefall</h3><span class="genre">real-time strategy</span>
+          <p>Flow-field pathfinding, 260+ units, a spear/cavalry/archer counter triangle — every counter edge is duel-proven and the war is bot-winnable.</p>
         </a>
         <a class="card" href="./examples/emberwake/index.html">
-          <h2>Emberwake →</h2>
-          <p>Twin-stick horde survival (Vampire Survivors-lite): auto-fire, level-up builds, 160+ enemies on the Canvas backend — the full night is bot-proven survivable and the sim steps in 0.02ms.</p>
+          <h3>Emberwake</h3><span class="genre">horde survival</span>
+          <p>Auto-fire, level-up builds, 160+ enemies on the Canvas backend — the full night is bot-proven survivable and the sim steps in 0.02ms.</p>
         </a>
-        <a class="card" href="./examples/veilstep/index.html">
-          <h2>Veilstep →</h2>
-          <p>A stealth heist (Mark of the Ninja-lite): raycast vision cones, detection meters, noise, bushes — the full idol run is bot-proven doable with zero alarms, and the punishments proven real.</p>
+        <a class="card" href="./examples/hollowdeep/index.html">
+          <h3>Hollowdeep</h3><span class="genre">traditional roguelike</span>
+          <p>Procgen floors proven connected across 50 seeds, raycast FOV with map memory, bump combat — every dungeon bot-proven winnable.</p>
         </a>
         <a class="card" href="./examples/gleamvale/index.html">
-          <h2>Gleamvale →</h2>
-          <p>Top-down action-adventure (Zelda-like): sword arcs, hit-stop, telegraphed enemies, a key-locked vault — the full combat run is bot-proven winnable without dying.</p>
+          <h3>Gleamvale</h3><span class="genre">action-adventure</span>
+          <p>Sword arcs, hit-stop, telegraphed enemies, a key-locked vault — the full combat run is bot-proven winnable without dying.</p>
         </a>
         <a class="card" href="./examples/sproutveil/index.html">
-          <h2>Sproutveil →</h2>
-          <p>A four-room metroidvania (Hollow Knight-lite): ability-gated exploration where every gate is machine-proven impassable without its ability — and the whole run bot-proven beatable.</p>
+          <h3>Sproutveil</h3><span class="genre">metroidvania</span>
+          <p>Ability-gated exploration where every gate is machine-proven impassable without its ability — and the whole run bot-proven beatable.</p>
+        </a>
+        <a class="card" href="./examples/veilstep/index.html">
+          <h3>Veilstep</h3><span class="genre">stealth</span>
+          <p>Raycast vision cones, detection meters, noise, bushes — the full idol run is bot-proven doable with zero alarms, and the punishments proven real.</p>
+        </a>
+        <a class="card" href="./examples/palewood/index.html">
+          <h3>Palewood</h3><span class="genre">survival horror</span>
+          <p>A raycast-lit lantern, panned growls in the dark, fuel pressure that forbids camping — the night proven survivable, the dark proven deadly.</p>
+        </a>
+        <a class="card" href="./examples/cadence/index.html">
+          <h3>Cadence Hollow</h3><span class="genre">rhythm dungeon</span>
+          <p>Move only on the pulse, foes dance in lockstep — the beat IS sim time, so even rhythm replays deterministically.</p>
+        </a>
+        <a class="card" href="./examples/glimmerfall/index.html">
+          <h3>Glimmerfall</h3><span class="genre">match-3</span>
+          <p>Cascade combos, spring-tweened choreography over an instant sim — 100 boards proven fair, targets proven reachable.</p>
+        </a>
+        <a class="card" href="./examples/pinshine/index.html">
+          <h3>Pinshine</h3><span class="genre">physics arcade</span>
+          <p>Swept-circle collision (no tunneling at any speed), restitution proven energy-honest, every board proven clearable by an aim-search bot.</p>
+        </a>
+        <a class="card" href="./examples/vellgrove/index.html">
+          <h3>Vellgrove Rally</h3><span class="genre">top-down racing</span>
+          <p>Understeer at speed, grass that punishes, cut-proof laps — braking proven faster than flooring it.</p>
+        </a>
+        <a class="card" href="./examples/rootward/index.html">
+          <h3>Rootward</h3><span class="genre">tower defense</span>
+          <p>Three counter-typed towers on an S-lane, ten ramping waves — the winning build is proven, and so is that arrow-spam LOSES to tanks.</p>
+        </a>
+        <a class="card" href="./examples/tarnholm/index.html">
+          <h3>Tarnholm</h3><span class="genre">town builder</span>
+          <p>Every roof scores by its neighbours, with the gain shown live — placement skill proven to nearly double random play.</p>
+        </a>
+        <a class="card" href="./examples/fernrow/index.html">
+          <h3>Fernrow</h3><span class="genre">farming sim</span>
+          <p>Four seasons, energy-budgeted days, crops that wither out of season — the festival goal proven reachable, reinvestment proven to compound.</p>
         </a>
         <a class="card" href="./examples/lumen-forge/index.html">
-          <h2>Lumen Forge →</h2>
-          <p>An idle forge (Paperclips × Cookie Clicker): DOM buttons flow through the deterministic input log; the whole pacing curve is simulation-verified.</p>
+          <h3>Lumen Forge</h3><span class="genre">idle / incremental</span>
+          <p>DOM buttons flow through the deterministic input log; the whole pacing curve is simulation-verified.</p>
         </a>
-        <a class="card" href="./examples/shard-ascent/index.html">
-          <h2>Shard Ascent →</h2>
-          <p>A precision platformer (Celeste × TowerFall): coyote time, jump buffering, dashes, corner correction, moving lifts. Every level is bot-proven beatable, deathless.</p>
+        <a class="card" href="./examples/emberreign/index.html">
+          <h3>Emberreign</h3><span class="genre">narrative decisions</span>
+          <p>Four meters, double-edged cards, story arcs — judgement proven to matter (19/20 vs 0/20 reigns) and every doom proven honest.</p>
         </a>
       </div>
+
+      <section class="build">
+        <div class="lab">build one</div>
+        <h2>Point your agent at it.</h2>
+        <p>Copy <code>examples/sokoban/</code>, import only from <code>@hayao</code>, and run
+          <code>npm test</code>. The operating manual for humans and agents alike is
+          <a href="https://github.com/hellojanpacan/hayao-js/blob/main/AGENTS.md">AGENTS.md</a>;
+          the API surface lives in
+          <a href="https://github.com/hellojanpacan/hayao-js/blob/main/docs/API.md">docs/API.md</a>.</p>
+      </section>
+
       <footer>
-        Build a game: copy <code>examples/sokoban/</code>, import only from <code>@hayao</code>, and run
-        <code>npm test</code>. See <code>docs/</code> and <code>AGENTS.md</code>.
+        hayao.js · MIT · <a href="https://github.com/hellojanpacan/hayao-js">github.com/hellojanpacan/hayao-js</a><br />
+        The mark is a kentō (見当) — the registration mark ukiyo-e printers cut so every impression lands
+        in the same place. This identity credits that craft and claims no authenticity it hasn't earned.
       </footer>
     </div>
   </body>
