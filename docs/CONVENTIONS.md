@@ -55,6 +55,35 @@ export default defineGame({
 The engine, not game code, owns the clock, the rAF loop, focus, audio muting,
 and the DOM shell. Do not re-implement any of that inside a game.
 
+
+## The human-contact layer
+
+The first real playtest of the campaign found every defect in the one layer
+sim proofs cannot see. These rules close that gap; the machine-checkable ones
+are enforced by `layoutIssues()` / `missingControlHints()` from `@hayao`,
+which every verify suite must run on its representative screens.
+
+- **Text is sacred.** A shape either fully CONTAINS a text's box (it is a
+  panel/scrim) or stays fully clear of it — partial overlap is a collision.
+  Background lattice (z ≤ 1: tile grids, felt) is exempt. HUDs drawn over
+  world geometry get a scrim panel, not hope.
+- **First contact teaches.** Every action in the input map must be named by
+  some on-screen text on the first frame (`missingControlHints` = []). Games
+  with phases show a CONTEXTUAL coach line ("X has moved — F fires"), not one
+  static legend. Anything tactical gets an onboarding overlay: goal, threat,
+  verbs — a stranger must know what to do within 30 seconds.
+- **Every entity kind is legible.** Distinct shape+outline per kind (items
+  must not share silhouettes with creatures) and a legend that names them
+  with their true glyphs.
+- **Fiction is earned.** Ending copy may not introduce proper nouns the game
+  never showed; if the title names a thing in-fiction, the first screen says
+  so (the HUD naming "THE DUSKVEIL" is what earns "The Duskveil lifts").
+- **No safe camp.** Every real-time game's verify includes a degenerate-
+  position probe: park at edges/corners and prove the threat still reaches.
+  Bots demonstrate the intended line; this proves there's no cheaper one.
+- **The screen arrives intact.** Renderers letterbox (never stretch or crop);
+  sim clamps include sprite EXTENTS so nothing sinks out of view at the rim.
+
 ## Pure-sim separation (turn-based / puzzle games: mandatory)
 
 For anything grid- or turn-based, keep the **rules** in a module with NO scene

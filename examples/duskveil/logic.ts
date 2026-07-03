@@ -3,6 +3,7 @@
 // 5px hitbox, grazes for glory, and whittles the veil down. The stress: over
 // a thousand live bullets in a deterministic, replayable sim.
 
+import { dhypot, dcos, dsin, datan2 } from '@hayao';
 import type { Rng } from '@hayao';
 
 export const W = 1280;
@@ -112,10 +113,12 @@ export function stepDv(s: DvState, input: DvInput, dt: number, rng: Rng): DvEven
   s.fireCd = Math.max(0, s.fireCd - dt);
 
   // ── Player ──
-  const il = Math.hypot(input.moveX, input.moveY) || 1;
+  const il = dhypot(input.moveX, input.moveY) || 1;
   const sp = input.slow ? P_TUNE.slowSpeed : P_TUNE.speed;
-  s.x = Math.min(W - 24, Math.max(24, s.x + (input.moveX / il) * sp * dt));
-  s.y = Math.min(H - 24, Math.max(24, s.y + (input.moveY / il) * sp * dt));
+  // Clamp includes the SHIP'S EXTENTS (poly spans -14..+12): the whole craft
+  // stays on the playfield — no sinking out of view at the rim.
+  s.x = Math.min(W - 30, Math.max(30, s.x + (input.moveX / il) * sp * dt));
+  s.y = Math.min(H - 34, Math.max(32, s.y + (input.moveY / il) * sp * dt));
 
   // Auto-fire upward.
   if (s.fireCd <= 0) {
@@ -124,7 +127,7 @@ export function stepDv(s: DvState, input: DvInput, dt: number, rng: Rng): DvEven
   }
 
   // ── Boss sway + patterns ──
-  s.bossX = W / 2 + Math.sin(s.time * 0.42) * 330;
+  s.bossX = W / 2 + dsin(s.time * 0.42) * 330;
   const phase = PHASES[s.phase];
   phase.emitters.forEach((em, i) => {
     s.timers[i] += dt;
@@ -135,13 +138,13 @@ export function stepDv(s: DvState, input: DvInput, dt: number, rng: Rng): DvEven
         const base = (em.spin ?? 0) * s.phaseT * 6;
         for (let k = 0; k < em.count; k++) {
           const a = base + (k / em.count) * Math.PI * 2;
-          s.bullets.push({ x: s.bossX, y: s.bossY, vx: Math.cos(a) * em.speed, vy: Math.sin(a) * em.speed, grazed: false });
+          s.bullets.push({ x: s.bossX, y: s.bossY, vx: dcos(a) * em.speed, vy: dsin(a) * em.speed, grazed: false });
         }
       } else if (em.kind === 'fan') {
-        const aim = Math.atan2(s.y - s.bossY, s.x - s.bossX);
+        const aim = datan2(s.y - s.bossY, s.x - s.bossX);
         for (let k = 0; k < em.count; k++) {
           const a = aim + (k / (em.count - 1) - 0.5) * (em.arc ?? 0.6);
-          s.bullets.push({ x: s.bossX, y: s.bossY, vx: Math.cos(a) * em.speed, vy: Math.sin(a) * em.speed, grazed: false });
+          s.bullets.push({ x: s.bossX, y: s.bossY, vx: dcos(a) * em.speed, vy: dsin(a) * em.speed, grazed: false });
         }
       } else {
         for (let k = 0; k < em.count; k++) {

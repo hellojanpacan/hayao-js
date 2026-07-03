@@ -114,7 +114,8 @@ class SaView extends Node {
     if (shard) this.shardSprite = this.dynamic.addChild(new Sprite({ name: 'shard', pos: shard, z: 4, shape: { kind: 'poly', points: [0, -14, 9, 0, 0, 14, -9, 0], closed: true }, fill: PAL.shard, stroke: '#fff2c9', strokeWidth: 2 }));
     def.movers.forEach((m, i) => this.dynamic.addChild(new Sprite({ name: `mover-${i}`, z: 3, shape: { kind: 'rect', w: m.w, h: m.h, r: 6 }, fill: PAL.oneway, stroke: PAL.rockLine, strokeWidth: 2 })));
     this.player = this.dynamic.addChild(new Sprite({ name: 'wisp', z: 6, shape: { kind: 'circle', radius: 13 }, fill: PAL.wisp, stroke: PAL.wispCore, strokeWidth: 3 }));
-    this.hud = this.dynamic.addChild(new Text({ name: 'hud', pos: { x: 640, y: 34 }, size: 20, align: 'center', fill: PAL.text, text: '' }));
+    this.dynamic.addChild(new Sprite({ name: 'hud-scrim', pos: { x: 640, y: 16 }, z: 9, shape: { kind: 'rect', w: 1280, h: 34 }, fill: '#0b0e16', opacity: 0.92 }));
+    this.hud = this.dynamic.addChild(new Text({ name: 'hud', pos: { x: 640, y: 22 }, z: 10, size: 17, align: 'center', fill: '#dbe6f2', text: '' }));
   }
 
   private die(s: SaState): void {
@@ -202,7 +203,7 @@ class SaView extends Node {
       const node = this.dynamic.find(`mover-${i}`);
       if (node) node.pos = { x: plats[i].x + m.w / 2, y: m.y + m.h / 2 };
     });
-    this.hud.text = `${s.level + 1}/${LEVELS.length} · ${this.parsed.def.name} — ${this.parsed.def.hint} · deaths ${s.deaths}`;
+    this.hud.text = `${s.level + 1}/${LEVELS.length} · ${this.parsed.def.name} — ${this.parsed.def.hint} · X dashes · deaths ${s.deaths}`;
   }
 }
 

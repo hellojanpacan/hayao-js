@@ -54,6 +54,94 @@ re-shuffled as lessons emerge.
 
 ## Entries
 
+### B1 · Seamfold — benchmark reproduction of Edge Not Found (js13k 2020, #2) ✅
+
+First rung of the [BENCHMARK](BENCHMARK.md) ladder: reproduce a human-ranked
+game under the house discipline. Target: Sokoban on a *twisted torus* — no
+outside, seams that shift you along the other axis (`xOff`/`yOff`).
+
+**Shipped:** pure twisted-torus rules (fixpoint wrap resolution — the original
+ships a commented known bug in its x→y→x ordering), 4 original levels teaching
+torus → yOff twist → xOff twist → both, 3×3 ghost-copy tiling honoring the
+twist (all cosmetic), undo/restart, win/next-level loop. Verified: every level
+solver-proven winnable (8→6→5→13 moves, finale deepest) AND proven UNsolvable
+in a no-wrap variant — the seam is machine-proven load-bearing; full campaign
+replayed through the scene view; deterministic + golden; timeline probes show
+exactly one visible box seam-jump in the level-1 solve; filmstrip + stills
+judged readable.
+
+**Fidelity score (rubric in BENCHMARK.md):** mechanics 8/8 M-checks green ·
+content parity: teaching arc matches, volume 4 vs the original's 20+ levels
+(arc ✓, volume ✗) · feel/look ✓ (3 timeline metrics + judged artifacts) ·
+learning yield: no engine gap (see below) + one new lesson + one friction fix.
+
+**Findings:**
+
+- **The negative solver proof is the benchmark's best fidelity instrument.**
+  "Winnable" is table stakes; asserting the mechanic is *load-bearing* — same
+  rules with seam-crossings forbidden, solver proves UNsolvable — turns "this
+  level teaches the twist" from intent into CI. Generalizes to any
+  mechanic-gated genre (see LESSONS).
+- **The solver out-designed the designer twice on one level.** The finale
+  hand-trace said "no-wrap solvable" (M4 violation); the solver proved the
+  goal-placed boxes seal the player out of both push regions, so it's
+  genuinely seam-or-nothing — a property designed by accident, discovered by
+  proof. In-head verification failed in BOTH directions on a 6×6 grid.
+- **Reproduction cost at rung 1 was ~zero engine work.** Grid puzzle is the
+  engine's home turf; the alien state model (quotient space instead of
+  bounded grid) fit `Puzzle<State, Move>` untouched. The ladder's later
+  rungs (real-time feel, juice/scale) are where gaps should surface.
+- **Spec-card extraction from ranked source works.** Reading the original's
+  `wrapCoords` gave exact semantics (including its bug) in minutes; the spec
+  card's M-checklist mapped 1:1 onto verify checks. Design extracted, zero
+  code ported.
+
+### Playtest wave 1 — the unmeasured layer (first human contact)
+
+The first human playtest reported five defects; every one instantly read as
+"no human reviewed this", and every one shares a root cause: **it lived in
+the layer the verification philosophy exempted from measurement.** "The
+cosmetic layer can be deleted without changing the game" had been treated as
+license to never verify it. Bots read probes, not pixels; they know the
+controls a priori and what every entity is — so buried HUDs, kissing labels,
+bracket soup, missing onboarding, indistinguishable pickups, unearned story
+payoffs, and edge-hiding cheese were invisible BY CONSTRUCTION.
+
+Reported → root cause → systemic fix:
+
+- **Shard Ascent: HUD under the tiles.** Text z defaulted to 0 under z2
+  tiles; nothing ever asserted paint order. → `verify/layout.ts`: the display
+  list is pure data, so text readability is now linted (panel-or-disjoint
+  rule, scrim-aware); the HUD got a scrim, and the lint is a verify stage.
+- **Thornspire: text kissing the boss; illegible bracket-soup hand.** Layout
+  was absolute-positioned prose with no layout contract, information design
+  never a target. → explicit layout contract in the view (the circle owns its
+  band; one card per line, left-aligned, "press N · Name — effect" wording,
+  energy pips), linted on BOTH screens.
+- **Vantage: no way to learn the controls.** Bots emit actions directly —
+  onboarding is invisible to them. → onboarding overlay + context-sensitive
+  coach line, and `missingControlHints()`: every mapped action must be named
+  on screen (frame-1), now portfolio convention.
+- **Duskveil: ship hides at the rim + "The Duskveil lifts" pays off nothing.**
+  (a) The Canvas backend STRETCHED (100%/100%, no aspect preservation — SVG
+  letterboxed, canvas didn't; headless never renders through CSS, so nobody
+  saw it) and the clamp ignored sprite extents. → canvas `object-fit:
+  contain`; clamps include extents; a no-safe-camp probe (parked at the rim →
+  hit in 9.6s). (b) Ending copy introduced a noun the game never showed. →
+  the boss is NAMED in the HUD (asserted), and the fiction rule enters
+  CONVENTIONS: endings may not introduce new proper nouns.
+- **Hollowdeep: hp/atk unglyph'd, pickups look like monsters.** State knows
+  what everything is; the screen didn't say. → flask-shaped potions, hostile
+  outlines on creatures, a true-glyph legend strip, ♥/⚔/⚗ HUD — and the
+  legend is part of the linted screen.
+
+The meta-lesson joins the synthesis laws as #8: **verify the human-contact
+layer with the same machinery — the display list is data, onboarding is a
+checkable contract, and "would a stranger understand this screen in 30
+seconds" is a test, not a vibe.** Remaining human-only judgement (taste,
+tone) routes through the shots/ artifacts: emitting key screens per verify
+run makes "a human looked at it" a pipeline step instead of an accident.
+
 ## Campaign synthesis (all 20 genres complete)
 
 The portfolio's cross-genre laws, earned the hard way:

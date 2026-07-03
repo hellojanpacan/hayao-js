@@ -3,9 +3,9 @@
 // the genre's core loop proven), intents resolve exactly as telegraphed, and
 // a run replays hash-identically.
 
-import { checkDeterministic, createWorld, Rng } from '@hayao';
+import { checkDeterministic, createWorld, layoutIssues, missingControlHints, Rng } from '@hayao';
 import { currentIntent, initialTs, stepTs, CARDS, type TsState } from './logic';
-import { thornspireGame, tsState } from './game';
+import { thornspireGame, tsState, TS_INPUT_MAP } from './game';
 import type { VerifyContext } from '../../scripts/verify';
 
 /** Greedy pilot: kill if lethal in hand, block incoming attacks, spend energy. */
@@ -93,7 +93,21 @@ export default async function verify(t: VerifyContext) {
     t.check('intents resolve exactly as telegraphed (30 turns audited)', honest);
   }
 
-  // 4. Determinism + golden over a full winning run.
+  // 4. Readability on the title AND battle screens (the human-contact layer).
+  {
+    const w = createWorld(thornspireGame, 1);
+    w.step([]);
+    const title = layoutIssues(w.render());
+    const unhinted = missingControlHints(w, TS_INPUT_MAP);
+    w.step(['proceed']);
+    w.step([]);
+    const battle = layoutIssues(w.render());
+    const all = [...title, ...battle];
+    t.check(all.length === 0 ? 'layout lint: title + battle screens clean' : `layout lint: ${all[0]}`, all.length === 0);
+    t.check(unhinted.length === 0 ? 'every control is explained on screen' : `unhinted: ${unhinted.join(', ')}`, unhinted.length === 0);
+  }
+
+  // 5. Determinism + golden over a full winning run.
   const log: string[][] = [];
   const end = runClimb(1, 'draft', log);
   t.check(`seed-1 reference run ${end.won ? 'wins' : 'LOSES'} (${end.fightsWon} fights, ${end.hp} hp left)`, end.won);

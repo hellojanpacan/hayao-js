@@ -2,9 +2,9 @@
 // (entry→stairs and every item reachable), seeded layouts reproduce exactly,
 // a full-knowledge explorer bot proves runs are winnable, and turns replay.
 
-import { Rng, checkDeterministic, createWorld } from '@hayao';
+import { Rng, checkDeterministic, createWorld, layoutIssues, missingControlHints } from '@hayao';
 import { floorHash, genFloor, idx, reachable, COLS, ROWS, FLOORS, type Floor, type HdState } from './logic';
-import { hdState, hollowdeepGame } from './game';
+import { hdState, hollowdeepGame, HD_INPUT_MAP } from './game';
 import type { VerifyContext } from '../../scripts/verify';
 
 /** BFS next-step from (fx,fy) toward (tx,ty); null if unreachable/arrived. */
@@ -102,7 +102,17 @@ export default async function verify(t: VerifyContext) {
   for (let seed = 2; seed <= 11; seed++) if (explore(seed).won) wins++;
   t.check(`explorer bot wins ${wins}/10 random seeds (fairness floor: 6)`, wins >= 6);
 
-  // 4. Determinism over the winning run's turn log.
+  // 4. Readability: legend + glyph HUD + controls, verified on screen.
+  {
+    const w = createWorld(hollowdeepGame, 1);
+    w.step(['wait']);
+    const issues = layoutIssues(w.render());
+    t.check(issues.length === 0 ? 'layout lint: dungeon screen clean' : `layout lint: ${issues[0]}`, issues.length === 0);
+    const unhinted = missingControlHints(w, HD_INPUT_MAP);
+    t.check(unhinted.length === 0 ? 'every control is explained on screen' : `unhinted: ${unhinted.join(', ')}`, unhinted.length === 0);
+  }
+
+  // 5. Determinism over the winning run's turn log.
   const rep = checkDeterministic(() => createWorld(hollowdeepGame, 1), { frames: log });
   t.check(rep.ok ? 'dungeon sim is deterministic across runs' : `diverged at frame ${rep.divergedAt}`, rep.ok);
 }

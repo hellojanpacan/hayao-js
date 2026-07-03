@@ -4,6 +4,7 @@
 
 // ── core: the deterministic kernel ──────────────────────────────
 export * from './core/math';
+export * from './core/dmath';
 export * from './core/rng';
 export * from './core/clock';
 export * from './core/events';
@@ -29,6 +30,12 @@ export * from './physics/aabb';
 export * from './physics/platformer';
 export * from './physics/spatialHash';
 export * from './physics/raycast';
+// ── physics: rigid-body dynamics (plain-data world → hash/snapshot free) ─
+export * from './physics/rigidBody';
+export * from './physics/rigidCollide';
+export * from './physics/rigidJoints';
+export * from './physics/rigidStep';
+export * from './physics/rigidQueries';
 
 // ── render: display list + backends ─────────────────────────────
 export * from './render/commands';
@@ -57,8 +64,19 @@ export * from './verify/playthrough';
 export * from './verify/capture';
 export * from './verify/driver';
 export * from './verify/bot';
+export * from './verify/layout';
 export * from './verify/feel';
 export * from './verify/filmstrip';
+
+// ── net: deterministic multiplayer (lockstep / rollback) ────────
+export * from './net/players';
+export * from './net/protocol';
+export * from './net/transport';
+export * from './net/inputBuffer';
+export * from './net/lockstep';
+export * from './net/rollback';
+export * from './net/room';
+export * from './net/browser';
 
 // ── world + app ─────────────────────────────────────────────────
 export * from './world';

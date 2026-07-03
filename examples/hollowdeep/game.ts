@@ -36,7 +36,25 @@ class HdView extends Node {
     this.entPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 4, shape: { kind: 'circle', radius: 10 }, fill: PAL.rat }));
     this.hero = this.layer.addChild(new Sprite({ z: 5, shape: { kind: 'circle', radius: 11 }, fill: PAL.hero, stroke: '#0d0c10', strokeWidth: 2 }));
     this.hud = this.layer.addChild(new Text({ pos: { x: 640, y: 24 }, z: 8, size: 19, align: 'center', fill: PAL.text, text: '' }));
-    this.msg = this.layer.addChild(new Text({ pos: { x: 640, y: 688 }, z: 8, size: 17, align: 'center', fill: PAL.text, text: '' }));
+    this.msg = this.layer.addChild(new Text({ pos: { x: 640, y: 702 }, z: 8, size: 15, align: 'center', fill: PAL.text, text: '' }));
+    // Legend: every entity kind on screen is named here, with its true glyph.
+    const legend: [Sprite, string][] = [
+      [new Sprite({ shape: { kind: 'circle', radius: 8 }, fill: PAL.hero, stroke: '#0d0c10', strokeWidth: 1.5 }), 'you'],
+      [new Sprite({ shape: { kind: 'circle', radius: 6 }, fill: PAL.rat, stroke: '#3d1f10', strokeWidth: 1.5 }), 'rat — bites'],
+      [new Sprite({ shape: { kind: 'circle', radius: 8 }, fill: PAL.shade, stroke: '#1a2a3d', strokeWidth: 1.5 }), 'shade — slow, hits hard'],
+      [new Sprite({ shape: { kind: 'rect', w: 9, h: 13, r: 3 }, fill: PAL.potion, stroke: '#fff', strokeWidth: 1 }), 'potion — Q drinks'],
+      [new Sprite({ shape: { kind: 'poly', points: [0, -8, 4, 3, 0, 8, -4, 3], closed: true }, fill: PAL.sword }), 'blade — +3 atk'],
+      [new Sprite({ shape: { kind: 'poly', points: [-7, 5, 7, 5, 0, -7], closed: true }, fill: PAL.stairs }), 'stairs down'],
+    ];
+    let lx = 120;
+    for (const [glyph, label] of legend) {
+      glyph.pos = { x: lx, y: 676 };
+      glyph.z = 8;
+      this.layer.addChild(glyph);
+      const t = this.layer.addChild(new Text({ pos: { x: lx + 14, y: 681 }, z: 8, size: 13, align: 'left', fill: PAL.text, text: label }));
+      lx += 34 + label.length * 7.6 + 26;
+      void t;
+    }
     this.redraw(hdState(this.world as World));
   }
 
@@ -98,8 +116,10 @@ class HdView extends Node {
       if (showAt(p.x, p.y)) {
         const sp = this.entPool.get();
         sp.pos = { x: (p.x + 0.5) * TILE_SIZE, y: (p.y + 0.5) * TILE_SIZE };
-        sp.shape = { kind: 'circle', radius: 6 };
+        sp.shape = { kind: 'rect', w: 9, h: 13, r: 3 }; // a flask, not a creature
         sp.paint.fill = PAL.potion;
+        sp.paint.stroke = '#fff';
+        sp.paint.strokeWidth = 1;
       }
     if (f.sword && showAt(f.sword.x, f.sword.y)) {
       const sp = this.entPool.get();
@@ -113,11 +133,13 @@ class HdView extends Node {
         sp.pos = { x: (m.x + 0.5) * TILE_SIZE, y: (m.y + 0.5) * TILE_SIZE };
         sp.shape = { kind: 'circle', radius: m.kind === 'shade' ? 12 : 8 };
         sp.paint.fill = m.kind === 'shade' ? PAL.shade : PAL.rat;
+        sp.paint.stroke = m.kind === 'shade' ? '#1a2a3d' : '#3d1f10';
+        sp.paint.strokeWidth = 2;
       }
     this.entPool.end();
 
     this.hero.pos = { x: (s.x + 0.5) * TILE_SIZE, y: (s.y + 0.5) * TILE_SIZE };
-    this.hud.text = `floor ${s.depth + 1}/3 · hp ${s.hp}/${s.maxHp} · atk ${s.atk} · potions ${s.potions} (Q quaffs) · turn ${s.turns}`;
+    this.hud.text = `floor ${s.depth + 1}/3 · ♥ ${s.hp}/${s.maxHp} · ⚔ atk ${s.atk} · ⚗ potions ${s.potions} (Q drinks) · arrows move · X waits · turn ${s.turns}`;
     this.msg.text = s.msg;
   }
 }

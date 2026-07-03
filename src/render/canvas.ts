@@ -19,6 +19,9 @@ export class Canvas2DRenderer implements Renderer {
     this.canvas = document.createElement('canvas');
     this.canvas.style.width = '100%';
     this.canvas.style.height = '100%';
+    // Letterbox, never stretch or crop: the design space must arrive intact
+    // (a stretched canvas hides gameplay at the edges on off-ratio windows).
+    this.canvas.style.objectFit = 'contain';
     this.canvas.style.display = 'block';
     const ctx = this.canvas.getContext('2d');
     if (!ctx) throw new Error('hayao: 2D canvas context unavailable');

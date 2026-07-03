@@ -3,8 +3,8 @@
 // can't), density reaches true bullet-hell counts, the sim holds its step
 // budget at peak, and the fight replays.
 
-import { checkDeterministic, createWorld } from '@hayao';
-import { dvState, duskveilGame } from './game';
+import { checkDeterministic, createWorld, layoutIssues, missingControlHints } from '@hayao';
+import { dvState, duskveilGame, DV_INPUT_MAP } from './game';
 import { P_TUNE, W, H } from './logic';
 import type { VerifyContext } from '../../scripts/verify';
 
@@ -83,6 +83,28 @@ export default async function verify(t: VerifyContext) {
   t.golden('full fight', world.hash());
   const avg = simMs / steps;
   t.check(`sim step averages ${avg.toFixed(2)}ms at peak density (budget 2.5ms)`, avg < 2.5);
+
+  // Readability: the veil must introduce itself (the win line pays off the
+  // boss named in the HUD) and the controls must be on screen.
+  {
+    const w3 = createWorld(duskveilGame);
+    w3.step([]);
+    const issues = layoutIssues(w3.render());
+    t.check(issues.length === 0 ? 'layout lint: fight screen clean' : `layout lint: ${issues[0]}`, issues.length === 0);
+    const blob = w3.render().filter((c) => c.kind === 'text').map((c) => (c as { text: string }).text.toLowerCase()).join(' ');
+    t.check('the boss is NAMED on screen (the ending pays it off)', blob.includes('duskveil'));
+    const unhinted = missingControlHints(w3, DV_INPUT_MAP);
+    t.check(unhinted.length === 0 ? 'every control is explained on screen' : `unhinted: ${unhinted.join(', ')}`, unhinted.length === 0);
+  }
+
+  // 5. No safe camp: a ship parked at the bottom rim must still be reachable
+  //    by the aimed patterns (the fan tracks the player wherever they hide).
+  {
+    const w2 = createWorld(duskveilGame);
+    const s2 = dvState(w2);
+    for (let f = 0; f < 60 * 15 && s2.deaths === 0; f++) w2.step(f % 2 ? ['down'] : ['down', 'right']);
+    t.check(`camping the bottom rim is punished (hit after ${(dvState(w2).time).toFixed(1)}s parked)`, dvState(w2).deaths >= 1);
+  }
 
   // Determinism across the first minute of the fight.
   const rep = checkDeterministic(() => createWorld(duskveilGame), { frames: log.slice(0, 3600) });

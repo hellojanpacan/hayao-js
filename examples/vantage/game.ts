@@ -36,10 +36,17 @@ class VtView extends Node {
   private units!: NodePool<Sprite>;
   private cursor!: Sprite;
   private hud!: Text;
+  private coach!: Text;
 
   protected override onReady(): void {
     this.layer.cosmetic = true;
     this.addChild(this.layer);
+    // Onboarding: nobody should have to reverse-engineer a tactics game.
+    showScreen({
+      title: 'Vantage',
+      body: 'Bugs will strike the tiles marked by orange arrows NEXT turn — you always know their plan.<br><br>Each of your three mechs may MOVE and FIRE once per turn. Shots push their target one tile: push bugs into walls, into each other, or away so their telegraphed blow lands on nothing.<br><br>Protect the three green greenhouses for five turns.<br><br><b>1 / 2 / 3</b> select a mech · <b>arrows</b> move the gold cursor · <b>M</b> move there · <b>F</b> fire toward it · <b>E</b> end the turn',
+      actions: [{ label: 'Deploy', primary: true, onSelect: () => hideScreen() }],
+    });
     for (let y = 0; y < GRID; y++)
       for (let x = 0; x < GRID; x++)
         this.layer.addChild(new Sprite({ pos: at(x, y), z: 1, shape: { kind: 'rect', w: CELL - 6, h: CELL - 6, r: 8 }, fill: PAL.cell, stroke: PAL.cellLine, strokeWidth: 1 }));
@@ -47,7 +54,7 @@ class VtView extends Node {
     this.units = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 4, shape: { kind: 'circle', radius: 24 }, fill: PAL.bug }));
     this.cursor = this.layer.addChild(new Sprite({ z: 6, shape: { kind: 'rect', w: CELL - 2, h: CELL - 2, r: 10 }, fill: 'none', stroke: PAL.mechSel, strokeWidth: 3 }));
     this.hud = this.layer.addChild(new Text({ pos: { x: 640, y: 26 }, z: 8, size: 20, align: 'center', fill: PAL.text, text: '' }));
-    this.layer.addChild(new Text({ pos: { x: 640, y: 692 }, z: 8, size: 16, align: 'center', fill: PAL.text, text: '1/2/3 select mech · arrows aim · M move · F fire (pushes!) · E ends the turn' }));
+    this.coach = this.layer.addChild(new Text({ pos: { x: 640, y: 692 }, z: 8, size: 16, align: 'center', fill: PAL.text, text: '' }));
   }
 
   protected override onProcess(): void {
@@ -138,6 +145,15 @@ class VtView extends Node {
     this.cursor.pos = at(s.cursor.x, s.cursor.y);
     const mech = s.mechs[s.selected];
     this.hud.text = `turn ${s.turn}/5 · ${s.buildings.length}/3 greenhouses · ${mech ? `${mech.kind} ${mech.hp}hp${mech.moved ? '' : ` · move ${MECHS[mech.kind].move}`}${mech.acted ? ' · spent' : ''}` : ''} · bugs ${s.bugs.length}`;
+    // Coaching reflects what THIS mech can still do (1/2/3 select · arrows aim).
+    const allSpent = s.mechs.every((m) => m.hp <= 0 || (m.moved && m.acted));
+    this.coach.text = allSpent
+      ? 'all mechs spent — press E to end the turn (bugs strike their arrows)'
+      : mech && !mech.moved && !mech.acted
+        ? `${mech.kind}: arrows aim the cursor · M moves onto a blue dot · F fires (pushes!) · 1/2/3 select · E ends turn`
+        : mech && !mech.acted
+          ? `${mech.kind} has moved — aim with arrows and press F to fire (it pushes!), or 1/2/3 to select another`
+          : `${mech?.kind ?? 'mech'} is spent — 1/2/3 select the next mech · E ends the turn`;
   }
 }
 

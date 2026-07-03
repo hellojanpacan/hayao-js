@@ -81,7 +81,7 @@ class DvView extends Node {
     this.shotPool.begin();
     for (const sh of s.shots) this.shotPool.get().pos = { x: sh.x, y: sh.y };
     this.shotPool.end();
-    this.hud.text = `phase ${s.phase + 1}/3 · lives ${Math.max(0, s.lives)} · graze ${s.graze} · bullets ${s.bullets.length} · hold Shift to focus`;
+    this.hud.text = `THE DUSKVEIL — phase ${s.phase + 1} of 3 · lives ${Math.max(0, s.lives)} · graze ${s.graze} · arrows dodge · hold Shift to focus (shows your true hitbox)`;
   }
 }
 

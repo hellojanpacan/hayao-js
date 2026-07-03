@@ -1,10 +1,10 @@
 // Shard Ascent verify suite: every level beaten by its bot plan with zero
 // deaths, a full run is deterministic, and spikes actually kill.
 
-import { checkDeterministic, createWorld, type World } from '@hayao';
+import { checkDeterministic, createWorld, layoutIssues, missingControlHints, type World } from '@hayao';
 import { LEVELS } from './levels';
 import { createBot, PLANS, type BotProbe } from './bot';
-import { gotoLevel, shardAscentGame } from './game';
+import { gotoLevel, shardAscentGame, SA_INPUT_MAP } from './game';
 import type { VerifyContext } from '../../scripts/verify';
 
 const MAX_FRAMES = 3600; // 60 sim-seconds per level is generous
@@ -43,6 +43,17 @@ export default async function verify(t: VerifyContext) {
   }
 
   t.golden('all-levels bot run', world.hash());
+
+
+  // Readability: the human-contact layer is verified like everything else.
+  {
+    const w3 = createWorld(shardAscentGame);
+    w3.step([]);
+    const issues = layoutIssues(w3.render());
+    t.check(issues.length === 0 ? 'layout lint: no text collisions on the first screen' : `layout lint: ${issues[0]}`, issues.length === 0);
+    const unhinted = missingControlHints(w3, SA_INPUT_MAP);
+    t.check(unhinted.length === 0 ? 'every control is explained on screen' : `unhinted actions: ${unhinted.join(', ')}`, unhinted.length === 0);
+  }
 
   // Determinism over the level-1 playthrough.
   const rep = checkDeterministic(() => createWorld(shardAscentGame), { frames: fullLog });

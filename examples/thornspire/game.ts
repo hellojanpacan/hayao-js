@@ -38,8 +38,13 @@ class TsView extends Node {
     this.layer.cosmetic = true;
     this.addChild(this.layer);
     this.layer.addChild(new Sprite({ pos: { x: 640, y: 360 }, z: 0, shape: { kind: 'rect', w: 1180, h: 620, r: 24 }, fill: PAL.felt, stroke: PAL.line, strokeWidth: 2 }));
-    this.foeSprite = this.layer.addChild(new Sprite({ pos: { x: 640, y: 210 }, z: 2, shape: { kind: 'circle', radius: 52 }, fill: PAL.foe, stroke: '#1a0f0f', strokeWidth: 4 }));
-    for (let i = 0; i < 9; i++) this.lines.push(this.layer.addChild(new Text({ pos: { x: 640, y: 96 + i * 58 }, z: 3, size: 21, align: 'center', fill: PAL.ink, text: '' })));
+    this.foeSprite = this.layer.addChild(new Sprite({ pos: { x: 640, y: 186 }, z: 2, shape: { kind: 'circle', radius: 44 }, fill: PAL.foe, stroke: '#1a0f0f', strokeWidth: 4 }));
+    // Layout contract: the foe's circle owns y 142-230; text NEVER enters it.
+    // 0: foe name (y 108) · 1: intent (y 262) · 2: player status (y 306)
+    // 3-9: the hand, ONE CARD PER LINE (y 352+) · 10: footer hint (y 636)
+    const ys = [108, 262, 306, 352, 388, 424, 460, 496, 532, 568, 636];
+    for (let i = 0; i < ys.length; i++)
+      this.lines.push(this.layer.addChild(new Text({ pos: { x: i >= 3 && i <= 9 ? 400 : 640, y: ys[i] }, z: 3, size: i >= 3 && i <= 9 ? 20 : 21, align: i >= 3 && i <= 9 ? 'left' : 'center', fill: PAL.ink, text: '' })));
   }
 
   protected override onProcess(): void {
@@ -77,40 +82,42 @@ class TsView extends Node {
       L[0].text = '— choose a card for your deck —';
       s.draft.forEach((id, i) => {
         const c = CARDS[id];
-        L[1 + i].text = `[${i + 1}] ${c.name} · cost ${c.cost} · ${cardBlurb(id)}`;
+        L[3 + i].text = `press ${i + 1}   ·   ${c.name} — ${cardBlurb(id)}`;
       });
-      L[4].text = '[4] take nothing (a lean deck is a fast deck)';
+      L[6].text = 'press 4   ·   take nothing (a lean deck is a fast deck)';
       return;
     }
     if (!s.fight) {
-      L[2].text = s.node < 0 ? 'THORNSPIRE' : 'the path winds upward…';
-      L[3].text = `hp ${s.hp}/${s.maxHp} · deck ${s.deck.length} cards`;
-      L[4].text = 'press Enter to climb';
+      L[1].text = s.node < 0 ? 'THORNSPIRE' : 'the path winds upward…';
+      L[2].text = `hp ${s.hp}/${s.maxHp} · deck of ${s.deck.length} cards`;
       const next = CLIMB[s.node + 1];
-      if (next) L[5].text = `ahead: ${next.kind === 'rest' ? 'a resting fire' : FOES[next.foe!].name}`;
+      if (next) L[3].text = `        ahead: ${next.kind === 'rest' ? 'a resting fire' : FOES[next.foe!].name}`;
+      L[10].text = 'Enter climbs · numbers play cards · E ends your turn · after a win: 1/2/3 drafts a card, 4 skips';
       return;
     }
     const f = s.fight;
     const foe = FOES[f.foe];
     const intent = currentIntent(s)!;
-    const intentTxt = intent.kind === 'attack' ? `will strike for ${intent.value * (f.charged ? 2 : 1)}` : intent.kind === 'block' ? `will brace (+${intent.value} block)` : 'is gathering power…';
-    L[0].text = `${foe.name} — ${f.foeHp} hp${f.foeBlock ? ` (${f.foeBlock} block)` : ''}${f.foeVuln ? ' · vulnerable' : ''}`;
-    L[1].text = `it ${intentTxt}`;
-    L[3].text = `you — ${s.hp}/${s.maxHp} hp${f.block ? ` (${f.block} block)` : ''} · energy ${f.energy}/3 · turn ${f.turn}`;
+    const intentTxt = intent.kind === 'attack' ? `next turn it strikes for ${intent.value * (f.charged ? 2 : 1)}` : intent.kind === 'block' ? `next turn it braces (+${intent.value} block)` : 'it is gathering power for a heavy blow…';
+    L[0].text = `${foe.name} — ${f.foeHp} hp${f.foeBlock ? ` · ${f.foeBlock} block` : ''}${f.foeVuln ? ' · VULNERABLE' : ''}`;
+    L[1].text = intentTxt;
+    L[2].text = `you — ${s.hp}/${s.maxHp} hp${f.block ? ` · ${f.block} block` : ''} — energy ${'●'.repeat(f.energy)}${'○'.repeat(Math.max(0, 3 - f.energy))} — turn ${f.turn}`;
     f.hand.forEach((id, i) => {
       const c = CARDS[id];
-      L[4 + Math.floor(i / 2)].text += `${i % 2 ? '    ' : ''}[${i + 1}] ${c.name} (${c.cost}) ${cardBlurb(id)}`;
+      const afford = c.cost <= f.energy;
+      L[3 + i].text = `press ${i + 1}   ·   ${c.name}  (${c.cost} energy) — ${cardBlurb(id)}${afford ? '' : '   · too costly'}`;
+      L[3 + i].paint.opacity = afford ? 1 : 0.45;
     });
-    L[8].text = '[E] end turn · number keys play cards';
+    L[10].text = 'number keys play a card · E ends your turn (the foe acts as telegraphed)';
   }
 }
 
 function cardBlurb(id: string): string {
   const c = CARDS[id];
   const bits: string[] = [];
-  if (c.dmg) bits.push(`${c.dmg} dmg${c.hits ? ` ×${c.hits}` : ''}`);
-  if (c.block) bits.push(`${c.block} block`);
-  if (c.vuln) bits.push(`vuln ${c.vuln}`);
+  if (c.dmg) bits.push(c.hits ? `deals ${c.dmg} twice` : `deals ${c.dmg}`);
+  if (c.block) bits.push(`blocks ${c.block}`);
+  if (c.vuln) bits.push(`exposes the foe (+50% dmg, ${c.vuln} turns)`);
   if (c.draw) bits.push(`draw ${c.draw}`);
   return bits.join(', ');
 }

@@ -2,9 +2,9 @@
 // push-redirect mechanic is proven (the genre's soul), telegraphs are honest,
 // doing nothing loses (threat is real), and the battle replays.
 
-import { checkDeterministic, createWorld } from '@hayao';
+import { checkDeterministic, createWorld, layoutIssues, missingControlHints } from '@hayao';
 import { canMoveTo, initialVt, occupant, push, stepVt, MECHS, type VtCmd, type VtState } from './logic';
-import { vantageGame, vtState } from './game';
+import { vantageGame, vtState, VT_INPUT_MAP } from './game';
 import type { VerifyContext } from '../../scripts/verify';
 
 /** Score a state from the defender's perspective (pending telegraphs resolved hypothetically). */
@@ -128,6 +128,16 @@ export default async function verify(t: VerifyContext) {
     for (let i = 0; i < 6 && !s.dead && !s.won; i++) stepVt(s, { kind: 'endTurn' });
     const lost = s.dead || s.buildings.length < 3 || s.buildings.some((g) => g.hp < 2);
     t.check(`ignoring the bugs costs greenhouses (${s.dead ? 'all lost' : `${s.buildings.length}/3 left`})`, lost);
+  }
+
+  // Readability: the tactics screen must teach itself.
+  {
+    const w = createWorld(vantageGame);
+    w.step([]);
+    const issues = layoutIssues(w.render());
+    t.check(issues.length === 0 ? 'layout lint: battle screen clean' : `layout lint: ${issues[0]}`, issues.length === 0);
+    const unhinted = missingControlHints(w, VT_INPUT_MAP);
+    t.check(unhinted.length === 0 ? 'every control is explained on screen' : `unhinted: ${unhinted.join(', ')}`, unhinted.length === 0);
   }
 
   // 5. Determinism + golden over the greedy defence, driven via input actions.
