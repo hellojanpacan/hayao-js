@@ -37,7 +37,7 @@ land here and in [LESSONS.md](LESSONS.md).
 | 9 | RTS-lite | (mass units) | flow fields, 300–500 units, counters, HUD density | ✅ |
 | 10 | Traditional roguelike | Brogue × Shattered Pixel | procgen + connectivity proof, FOV, turn scheduler | ✅ |
 | 11 | Roguelike deckbuilder | Slay the Spire-lite | card DSL, balance bot, addictive loop | ✅ |
-| 12 | Turn-based tactics | Into the Breach-lite | telegraphed intents, push chains, fairness proof | — |
+| 12 | Turn-based tactics | Into the Breach-lite | telegraphed intents, push chains, fairness proof | ✅ |
 | 13 | Match-3 | Puzzle Quest-ish | cascade choreography vs deterministic sim | — |
 | 14 | Incremental/idle | Universal Paperclips-lite | big numbers, offline time, pacing curves | ✅ |
 | 15 | Farming/life sim | Stardew-lite | calendar clock, save/load, gentle pacing | — |
@@ -395,6 +395,35 @@ climb pinned as a golden replay hash.
   the perfect-information contract Into the Breach lives on (G12 next).
 - Turn-based + rng-in-sim (shuffles) replays fine: the draw pile is state,
   the shuffle draws from world.rng, and the golden hash pins the whole run.
+
+### 12 · Vantage — turn-based tactics (Into the Breach-lite) ✅
+
+**Shipped:** 8×8 grid, three mechs (melee push / lobbing artillery / ranger),
+bugs with directional telegraphs resolved exactly as shown, push mechanics
+with bump damage and chain redirects, greenhouse protection over five turns,
+scripted spawns. Verified: a 1-ply greedy defender achieves a PERFECT
+defence; push-redirect, rim-bump and unit-bump each proven in isolation;
+a do-nothing defence loses everything (threat real); golden end-state.
+
+**Findings:**
+
+- **The do-nothing baseline is the cheapest scenario-design test in the
+  campaign.** First cut: ignoring every bug still won — bugs marching 1
+  tile/turn could never reach the north row inside five turns. A genre
+  scenario needs BOTH proofs: a line of play that wins AND a null strategy
+  that loses. (Same shape as Rootward's undefended-lane check; now a
+  standing pattern.)
+- **Push-redirect is state-relative telegraphing:** storing the telegraph as
+  a DIRECTION on the bug (not a target tile) is what makes pushing rewrite
+  the future — the entire genre falls out of that one representation choice.
+- **1-ply greedy + structuredClone is a real tactics baseline.** ~80 options
+  per mech activation, scored on a cloned state (prospective telegraph
+  damage weighted -90) — enough for a perfect clear of a fair scenario, no
+  search tree needed. Pure-data state makes clone-and-score trivial; THIS is
+  where the plain-object discipline pays.
+- Turn-based command interfaces (select/cursor/move/attack/end) drive
+  equally well from keys and from verify scripts — the VtCmd union is the
+  sim's real API, input actions are just one binding of it.
 
 ### 14 · Lumen Forge — incremental/idle (Paperclips × Cookie Clicker) ✅
 

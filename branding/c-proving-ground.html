@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hayao — Direction C · The Proving Ground</title>
+<style>
+  :root{
+    --bg:#0c0e14; --bg-2:#141824; --panel:#191e2c; --line:#28304a; --fg:#eef1fa; --fg-soft:#9aa3c2;
+    --pass:#5ce39a; --agent:#a98bff; --agent-2:#c9b6ff; --amber:#ffc46b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--fg);
+    font-family:"Inter",system-ui,"Helvetica Neue",sans-serif;line-height:1.55;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:56px 28px 80px}
+  .kicker{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--agent);
+    font-family:ui-monospace,monospace;margin:0 0 18px}
+  h1.dir{font-size:14px;letter-spacing:.22em;text-transform:uppercase;color:var(--fg-soft);
+    font-family:ui-monospace,monospace;margin:0 0 36px;font-weight:500}
+  section{margin:0 0 44px}
+  .h{font-size:11px;letter-spacing:.24em;text-transform:uppercase;color:var(--fg-soft);
+    font-family:ui-monospace,monospace;border-bottom:1px solid var(--line);padding-bottom:8px;margin:0 0 20px}
+  /* wordmark + pipeline */
+  .stage{display:flex;align-items:center;gap:34px;flex-wrap:wrap}
+  .logo{font-size:60px;font-weight:800;letter-spacing:-.03em}
+  .logo .a{color:var(--agent)}
+  .logo .js{font-size:22px;color:var(--fg-soft);font-weight:400}
+  .lead{font-size:21px;color:var(--fg);max-width:560px;margin:20px 0 0;line-height:1.45}
+  .lead .ag{color:var(--agent-2)} .lead .pa{color:var(--pass)}
+  .flow{width:250px;height:206px;flex:0 0 auto}
+  .core-lbl{fill:var(--fg);font:600 11px "Inter",sans-serif}
+  .obs-lbl{fill:var(--fg-soft);font:400 11px ui-monospace,monospace}
+  .obs-hi{fill:var(--pass);font:600 11px ui-monospace,monospace}
+  /* palette */
+  .sw{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+  .chip{border-radius:10px;height:78px;border:1px solid var(--line);display:flex;align-items:flex-end;
+    padding:8px;font-size:11px;color:var(--fg);font-family:ui-monospace,monospace}
+  .chip span{background:rgba(0,0,0,.6);color:#eef1fa;border-radius:4px;padding:1px 5px}
+  /* type */
+  .spec b{display:block;font-size:36px;font-weight:800;letter-spacing:-.02em}
+  .spec .sm{font-size:14px;color:var(--fg-soft);font-weight:400}
+  .spec .m{font-family:ui-monospace,monospace;font-size:13px;color:var(--fg-soft);margin-top:10px}
+  /* hero — the proving board */
+  .hero{background:linear-gradient(160deg,#151a28,#0e1119);border:1px solid var(--line);
+    border-radius:16px;padding:34px;position:relative;overflow:hidden}
+  .hero h2{font-size:38px;margin:0 0 8px;font-weight:800;letter-spacing:-.02em;line-height:1.08}
+  .hero h2 .ag{color:var(--agent)} .hero h2 .pa{color:var(--pass)}
+  .hero .sub{color:var(--fg-soft);font-size:17px;margin:0 0 22px;max-width:560px}
+  .gates{display:grid;grid-template-columns:1fr 1fr;gap:10px;font-family:ui-monospace,monospace;font-size:13px}
+  .gate{background:#0e121c;border:1px solid var(--line);border-radius:9px;padding:11px 14px;
+    display:flex;align-items:center;gap:10px}
+  .gate .tick{color:var(--pass);font-weight:700}
+  .gate .lab{color:var(--fg)} .gate .val{color:var(--fg-soft);margin-left:auto;font-size:12px}
+  .badge{position:absolute;top:22px;right:26px;font-family:ui-monospace,monospace;font-size:11px;
+    color:var(--pass);border:1px solid var(--pass);border-radius:999px;padding:3px 11px;
+    background:rgba(92,227,154,.08)}
+  /* cards */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{background:var(--bg-2);border:1px solid var(--line);border-radius:12px;padding:16px 18px 16px 22px;position:relative}
+  .card h3{margin:0 0 3px;font-size:19px}
+  .card p{margin:0 0 10px;color:var(--fg-soft);font-size:14px}
+  .card .gate-mini{font-family:ui-monospace,monospace;font-size:12px;color:var(--pass);display:flex;align-items:center;gap:7px}
+  .card::before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:3px;border-radius:3px;background:var(--agent)}
+  .dotp{width:8px;height:8px;border-radius:50%;background:var(--pass);box-shadow:0 0 8px var(--pass)}
+  .note{background:var(--bg-2);border:1px solid var(--line);border-left:3px solid var(--agent);
+    border-radius:10px;padding:18px 22px}
+  .note p{margin:0 0 8px;color:var(--fg-soft)}.note p:last-child{margin:0}.note b{color:var(--fg)}
+  @media(max-width:640px){.cards,.sw,.gates{grid-template-columns:1fr 1fr}.logo{font-size:44px}.hero h2{font-size:30px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="kicker">Hayao · Brand Direction C</p>
+  <h1 class="dir">The Proving Ground</h1>
+
+  <section>
+    <div class="stage">
+      <div>
+        <div class="logo"><span class="a">hayao</span><span class="js">.js</span></div>
+        <p class="lead">An <span class="ag">AI agent</span> writes the game. The engine's harness
+          <span class="pa">proves it winnable and deterministic</span> — before a human ever opens a browser.</p>
+      </div>
+      <svg class="flow" viewBox="0 0 250 206" aria-label="agent authors the core; observers render, sound, and verify it">
+        <!-- agent -->
+        <rect x="8" y="78" width="58" height="50" rx="10" fill="#191e2c" stroke="#a98bff" stroke-width="1.6"/>
+        <text x="37" y="100" text-anchor="middle" class="core-lbl" fill="#c9b6ff">agent</text>
+        <text x="37" y="115" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9" fill="#9aa3c2">writes</text>
+        <path d="M66 103 h26" stroke="#a98bff" stroke-width="1.6" marker-end="url(#ar)"/>
+        <defs><marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6Z" fill="#a98bff"/></marker></defs>
+        <!-- core -->
+        <circle cx="128" cy="103" r="26" fill="#141824" stroke="#eef1fa" stroke-width="1.4"/>
+        <circle cx="128" cy="103" r="26" fill="none" stroke="#ffc46b" stroke-width="1" opacity=".5"/>
+        <text x="128" y="100" text-anchor="middle" class="core-lbl">pure</text>
+        <text x="128" y="113" text-anchor="middle" class="core-lbl">core</text>
+        <!-- emissions to observers -->
+        <g stroke="#28304a" stroke-width="1.4">
+          <line x1="154" y1="103" x2="196" y2="40"/>
+          <line x1="154" y1="103" x2="196" y2="103"/>
+          <line x1="154" y1="103" x2="196" y2="166"/>
+        </g>
+        <line x1="154" y1="103" x2="196" y2="166" stroke="#5ce39a" stroke-width="1.8"/>
+        <!-- observers -->
+        <circle cx="212" cy="40" r="15" fill="#141824" stroke="#9aa3c2" stroke-width="1.4"/>
+        <text x="212" y="44" text-anchor="middle" class="obs-lbl">svg</text>
+        <circle cx="212" cy="103" r="15" fill="#141824" stroke="#9aa3c2" stroke-width="1.4"/>
+        <text x="212" y="107" text-anchor="middle" class="obs-lbl">audio</text>
+        <circle cx="212" cy="166" r="15" fill="#141824" stroke="#5ce39a" stroke-width="2"/>
+        <text x="212" y="170" text-anchor="middle" class="obs-hi">verify</text>
+      </svg>
+    </div>
+  </section>
+
+  <section>
+    <div class="h">The idea</div>
+    <p style="max-width:700px;margin:0;font-size:16px;color:var(--fg-soft)">Direction C leads with the one thing no other
+      engine can claim: <b style="color:var(--fg)">an autonomous agent can finish a whole game here — and the engine can
+      check it.</b> The verifier is just another observer of the pure core, but it's the observer that matters: a solver
+      proves each level winnable, a replay proves the run reproduces. The brand is a <b style="color:var(--fg)">proving
+      ground</b> — agent violet in, verify green out.</p>
+  </section>
+
+  <section>
+    <div class="h">Palette — "agent &amp; verify"</div>
+    <div class="sw">
+      <div class="chip" style="background:#0c0e14"><span>#0c0e14 bg</span></div>
+      <div class="chip" style="background:#191e2c"><span>#191e2c panel</span></div>
+      <div class="chip" style="background:#a98bff"><span>#a98bff agent</span></div>
+      <div class="chip" style="background:#5ce39a"><span>#5ce39a verify</span></div>
+      <div class="chip" style="background:#ffc46b"><span>#ffc46b core</span></div>
+      <div class="chip" style="background:#eef1fa"><span>#eef1fa fg</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="h">Type — geometric sans, mono for the gates</div>
+    <div class="spec">
+      <b>Inter <span class="sm">(target face — shown in the system sans fallback)</span></b>
+      <div class="m">ui-monospace for every gate label · assertSolvable · replay hash ✓ · probe()</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="h">Hero application — the proving board</div>
+    <div class="hero">
+      <span class="badge">verify ✓</span>
+      <h2>The agent builds it.<br><span class="pa">The harness proves it.</span></h2>
+      <p class="sub">Every level machine-verified winnable, every run replay-identical — the gates an AI author clears
+        before a human looks.</p>
+      <div class="gates">
+        <div class="gate"><span class="tick">✓</span><span class="lab">assertSolvable</span><span class="val">every level</span></div>
+        <div class="gate"><span class="tick">✓</span><span class="lab">replay hash</span><span class="val">identical</span></div>
+        <div class="gate"><span class="tick">✓</span><span class="lab">connectivity</span><span class="val">50 seeds</span></div>
+        <div class="gate"><span class="tick">✓</span><span class="lab">sim budget</span><span class="val">&lt; 2ms/step</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="h">System in use — verified builds</div>
+    <div class="cards">
+      <div class="card">
+        <h3>hollowdeep</h3>
+        <p>Roguelike · procgen + FOV + turn scheduler.</p>
+        <div class="gate-mini"><span class="dotp"></span> 50 seeds · connectivity ✓ · 10/10 bot wins</div>
+      </div>
+      <div class="card">
+        <h3>duskveil</h3>
+        <p>Bullet hell · declarative pattern DSL.</p>
+        <div class="gate-mini"><span class="dotp"></span> 487 live bullets · deathless bot-cleared</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="h">When this is right</div>
+    <div class="note">
+      <p><b>Choose The Proving Ground</b> to lead with Hayao's <b>true, ownable differentiator</b> — not "determinism" in
+        the abstract, but the <i>benefit</i>: an agent can author a game and the engine can prove it. This speaks straight
+        to the real buyer (AI agents + the engineers deploying them) and to founders shipping agent tooling.</p>
+      <p><b>Watch out:</b> it stakes everything on the agent-authoring story being real and demoable — the passing gates
+        must reflect actual verify runs, never decoration. Keep the numbers honest and reproducible.</p>
+    </div>
+  </section>
+</div>
+</body>
+</html>

@@ -36,8 +36,8 @@
   /* palette */
   .sw{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
   .chip{border-radius:8px;height:76px;border:1px solid var(--line);display:flex;align-items:flex-end;
-    padding:8px;font-size:10px;color:var(--fg)}
-  .chip span{background:rgba(0,0,0,.45);border-radius:4px;padding:1px 5px}
+    padding:8px;font-size:11px;color:var(--fg)}
+  .chip span{background:rgba(0,0,0,.62);color:#e6edf3;border-radius:4px;padding:1px 5px}
   /* type */
   .spec b{display:block;font-size:34px;font-weight:600;letter-spacing:-.01em}
   .spec .row{color:var(--fg-soft);margin-top:6px}
@@ -73,7 +73,7 @@
   <section>
     <div class="logo"><span>hayao</span><span class="p">.</span><span class="js">js</span><span class="cur">▍</span></div>
     <p class="lead">The game is a <span class="g">pure function</span> of its inputs.
-      Same seed, same steps → the <span class="g">same state, forever</span>. Everything else just watches.</p>
+      Same seed + same build, same steps → the <span class="g">same state, every run</span>. Everything else just watches.</p>
     <div class="ribbon">
       <span class="st">state<b>₀</b></span>
       <span class="arw">──step()──▸</span>
@@ -89,7 +89,9 @@
     <p style="max-width:680px;margin:0;font-size:16px;color:var(--fg-soft)">Direction B tells the engineering truth with zero
       decoration: Hayao is a <b style="color:var(--fg)">deterministic simulation kernel that runs in Node</b>. The whole
       identity is a terminal — monospace, a blinking cursor, one signal-green accent, state-transition ribbons.
-      It looks like the thing it is: <b style="color:var(--fg)">code you can prove</b>.</p>
+      It looks like the thing it is: <b style="color:var(--fg)">code you can verify</b>.</p>
+    <p style="max-width:680px;margin:16px 0 0;font-size:14px;color:var(--fg-soft)">The name stays warm even here — a single
+      human word on a machine's terminal. That contrast <i>is</i> the pitch: a friendly surface over provable rigor.</p>
   </section>
 
   <section>
@@ -97,17 +99,17 @@
     <div class="sw">
       <div class="chip" style="background:#0e1116"><span>#0e1116 bg</span></div>
       <div class="chip" style="background:#1b2029"><span>#1b2029 panel</span></div>
-      <div class="chip" style="background:#e6edf3;color:#0e1116"><span style="color:#0e1116">#e6edf3 fg</span></div>
-      <div class="chip" style="background:#4ee39a;color:#0e1116"><span style="color:#0e1116">#4ee39a signal</span></div>
-      <div class="chip" style="background:#3fb0ff;color:#0e1116"><span style="color:#0e1116">#3fb0ff link</span></div>
-      <div class="chip" style="background:#f0b050;color:#0e1116"><span style="color:#0e1116">#f0b050 warn</span></div>
+      <div class="chip" style="background:#e6edf3"><span>#e6edf3 fg</span></div>
+      <div class="chip" style="background:#4ee39a"><span>#4ee39a signal</span></div>
+      <div class="chip" style="background:#3fb0ff"><span>#3fb0ff link</span></div>
+      <div class="chip" style="background:#f0b050"><span>#f0b050 warn</span></div>
     </div>
   </section>
 
   <section>
     <div class="h">Type — one family, all the way down</div>
     <div class="spec">
-      <b>ui-monospace · IBM Plex Mono</b>
+      <b>ui-monospace · IBM Plex Mono <span style="font-size:13px;color:var(--fg-soft)">(target face — shown here in the system mono fallback)</span></b>
       <div class="row"><span class="k">const</span> world = <span class="fn">createWorld</span>(game)  <span class="cm">// wordmark, headline, code — one voice</span></div>
       <div class="row">assertDeterministic(build, inputLog)  <span class="cm">// identical or it's a bug</span></div>
     </div>
@@ -118,7 +120,7 @@
     <div class="hero">
       <span class="tab">~/hayao — node</span>
       <h2>Prove it in Node.</h2>
-      <p class="sub">Author, test, and prove a whole game correct — no browser, no pixels, no flake.</p>
+      <p class="sub">Author, test, and machine-verify every level winnable &amp; replay-identical — no browser, no pixels, no flake.</p>
 <pre><span class="cm">// does my level even work?</span>
 <span class="kw">const</span> world = <span class="fn">createWorld</span>(game)
 world.<span class="fn">step</span>([<span class="ok">'right'</span>]); world.<span class="fn">step</span>([])
