@@ -34,7 +34,7 @@ land here and in [LESSONS.md](LESSONS.md).
 | 6 | Twin-stick horde | Nuclear Throne × Vampire Survivors | 100s of entities, spatial hash, upgrade economy | ✅ |
 | 7 | Bullet hell | Touhou × Jamestown | 1000+ bullets perf ceiling, pattern DSL | ✅ |
 | 8 | Tower defense | Kingdom Rush × Bloons | path following, wave balance sim, counter system | ✅ |
-| 9 | RTS-lite | (mass units) | flow fields, 300–500 units, counters, HUD density | — |
+| 9 | RTS-lite | (mass units) | flow fields, 300–500 units, counters, HUD density | ✅ |
 | 10 | Traditional roguelike | Brogue × Shattered Pixel | procgen + connectivity proof, FOV, turn scheduler | — |
 | 11 | Roguelike deckbuilder | Slay the Spire-lite | card DSL, balance bot, addictive loop | — |
 | 12 | Turn-based tactics | Into the Breach-lite | telegraphed intents, push chains, fairness proof | — |
@@ -308,6 +308,36 @@ curve ramps with breathers; deterministic.
 - **Wave curves aren't monotone — they breathe.** Runner waves are pressure
   breaks by design; the right telemetry gate is 'each wave ≥ 55% of the
   previous, finale is the peak', not monotone hp.
+
+### 9 · Bramblefall — RTS-lite (mass units + counters + HUD) ✅
+
+**Shipped:** keep-vs-keep skirmish: BFS flow-field pathfinding (cached per
+goal tile), 260+ units steering with hash separation, spear→cavalry→archer
+counter triangle, per-unit order targets, reinforcement trickle, a pulsing
+enemy commander, cursor-command HUD with per-type army counts. Verified:
+every counter edge wins its 40v40 duel to extinction; the commander bot
+(turtle → counterpush) razes the keep in 82s with 120 standing; a walled-off
+unit routes around brambles in 3.7s; 0.80ms/step at peak; deterministic.
+
+**Findings:**
+
+- **Flow fields are the cheapest 'real RTS tech' win:** one BFS per ordered
+  goal tile (40×22 grid, cached as derived data OUTSIDE state) gives hundreds
+  of units wall-aware pathing with zero per-unit search. The cache-not-state
+  distinction matters: fields are recomputable projections of (map, goal), so
+  hashing/serializing them would only bloat snapshots.
+- **Unit arrival tolerance is API, not detail.** Units hold 50px off their
+  goal tile; the verify assertion assumed 40px and 'failed' a working system.
+  Wherever a sim has a behavioural tolerance, EXPORT it — tests and bots must
+  share the sim's own constants, not re-guess them.
+- **Strategy is the balance test in symmetric games.** Attack-move-everything
+  loses the keep race; turtle-then-counterpush wins with 120 spare — the
+  matchup is defender-favoured (keep + massed army beats a marching column),
+  which is correct for a defend-your-base design. The verify bot documents
+  the intended line of play, exactly like Rootward's build order.
+- **Perf headroom confirmed for the wave:** 265 units full-combat at
+  0.80ms/step — same rebuild-per-step hash pattern as Emberwake, an order of
+  magnitude of margin left for a bigger RTS.
 
 ### 14 · Lumen Forge — incremental/idle (Paperclips × Cookie Clicker) ✅
 
