@@ -32,6 +32,13 @@ export class World implements WorldContext {
   readonly input = new InputState();
   readonly events = new EventBus<CoreEvents>();
   readonly resources = new Map<string, unknown>();
+  /**
+   * Canonical game state that lives OUTSIDE the scene tree (pure-sim structs,
+   * controllers). Must be plain JSON-serializable data: it is included in
+   * `hash()` and `snapshot()`, so hidden state here cannot escape determinism
+   * checks the way ad-hoc module variables can.
+   */
+  state: Record<string, unknown> = {};
   readonly width: number;
   readonly height: number;
 
@@ -133,6 +140,7 @@ export class World implements WorldContext {
       rng: this.rng.getState(),
       clock: this.clock.getState(),
       input: this.input.getState(),
+      state: this.state,
       tree: this.root.serialize(),
     });
   }
@@ -143,6 +151,8 @@ export class World implements WorldContext {
       seed: this.seed,
       rng: this.rng.getState(),
       clock: this.clock.getState(),
+      input: this.input.getState(),
+      state: structuredClone(this.state),
       tree: this.root.serialize(),
     };
   }
@@ -152,6 +162,8 @@ export class World implements WorldContext {
     this.seed = snap.seed;
     this.rng.setState(snap.rng);
     this.clock.setState(snap.clock);
+    this.input.setState(snap.input);
+    this.state = structuredClone(snap.state);
     resetNodeIds(1_000_000); // avoid id collisions with the live session
     this.setRoot(deserializeNode(snap.tree));
     this.ensureStarted();
@@ -172,5 +184,7 @@ export interface WorldSnapshot {
   seed: number;
   rng: ReturnType<Rng['getState']>;
   clock: ReturnType<Clock['getState']>;
+  input: ReturnType<InputState['getState']>;
+  state: Record<string, unknown>;
   tree: ReturnType<Node['serialize']>;
 }

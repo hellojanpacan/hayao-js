@@ -5,3 +5,4 @@ dist/
 .vite/
 coverage/
 shots/
+.claude/settings.local.json

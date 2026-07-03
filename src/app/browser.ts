@@ -27,6 +27,8 @@ export interface RunOptions {
 export interface GameHandle {
   world: World;
   renderer: Renderer;
+  /** The live input source — game UI calls input.press('action') for buttons. */
+  input: KeyboardSource;
   stop(): void;
   restart(): void;
 }
@@ -81,7 +83,8 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
     const dt = now - last;
     last = now;
     if (!capture && !(shell?.isPaused)) {
-      world.advance(dt, input.currentActions());
+      const steps = world.advance(dt, input.currentActions());
+      if (steps > 0) input.clearPressed(); // virtual taps held until sampled
     }
     renderFrame();
     raf = requestAnimationFrame(loop);
@@ -93,6 +96,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
       return world;
     },
     renderer,
+    input,
     stop() {
       cancelAnimationFrame(raf);
       input.dispose();

@@ -5,6 +5,8 @@ import { keysToActions, type InputMap } from './actions';
 
 export class KeyboardSource {
   private keysDown = new Set<string>();
+  /** Virtual action taps (from DOM buttons etc.) pending consumption by a step. */
+  private pressed = new Set<string>();
   private map: InputMap;
   private target: Document | HTMLElement;
   private onDown: (e: KeyboardEvent) => void;
@@ -28,7 +30,26 @@ export class KeyboardSource {
 
   /** The actions currently held down, as a stable sorted array. */
   currentActions(): string[] {
-    return keysToActions(this.map, this.keysDown);
+    const acts = keysToActions(this.map, this.keysDown);
+    if (this.pressed.size === 0) return acts;
+    const merged = new Set(acts);
+    for (const a of this.pressed) merged.add(a);
+    return [...merged].sort();
+  }
+
+  /**
+   * Virtually tap an action (DOM button, touch control). The tap is held until
+   * at least one fixed step has sampled it — the driver calls clearPressed()
+   * after a successful advance — so UI clicks enter the SAME deterministic
+   * input log as keys, and record/replay covers them.
+   */
+  press(action: string): void {
+    this.pressed.add(action);
+  }
+
+  /** Consume pending virtual taps (driver-called after ≥1 step ran). */
+  clearPressed(): void {
+    this.pressed.clear();
   }
 
   setMap(map: InputMap): void {

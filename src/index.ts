@@ -15,11 +15,19 @@ export * from './scene/node';
 export { Node as Node2D } from './scene/node';
 export * from './scene/nodes';
 export * from './scene/tween';
+export * from './scene/particles';
 export * from './scene/registry';
 
 // ── input: actions, sampling, record/replay ─────────────────────
 export * from './input/actions';
 export * from './input/source';
+
+// ── physics: tilemaps, kinematic AABB, character controllers ────
+export * from './physics/tilemap';
+export * from './physics/aabb';
+export * from './physics/platformer';
+export * from './physics/spatialHash';
+export * from './physics/raycast';
 
 // ── render: display list + backends ─────────────────────────────
 export * from './render/commands';
@@ -46,6 +54,8 @@ export * from './verify/solver';
 export * from './verify/determinism';
 export * from './verify/playthrough';
 export * from './verify/capture';
+export * from './verify/driver';
+export * from './verify/bot';
 
 // ── world + app ─────────────────────────────────────────────────
 export * from './world';

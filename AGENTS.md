@@ -33,6 +33,10 @@ hold the invariants.
   never canvas/`Text`-in-world for chrome. `Text` nodes are for in-world labels.
 - **Mark pure-view nodes `cosmetic = true`** so transient display never enters
   `world.hash()` — otherwise determinism/snapshot checks will (correctly) fail.
+- **Canonical state that lives outside the scene tree goes in `world.state`**
+  (plain JSON data — it IS hashed and snapshotted). Never keep sim state in
+  module-level variables or closures: it silently escapes determinism checks.
+  The scene tree renders it; `world.state` owns it.
 - **Expose a `probe(world)`** in `defineGame` returning a compact state snapshot;
   you cannot verify without it. Add `goto`/level-jump affordances for testing.
 - **Ordered iteration for logic.** Arrays or insertion-ordered maps — never rely
