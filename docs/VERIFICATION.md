@@ -1,0 +1,110 @@
+# Verification — how an AI proves a hayao game works
+
+The whole engine is shaped so you can verify a game **without a browser and
+without playing it**. Build the harness *before* the content; unverified content
+is presumed broken (in-head verification has a documented failure rate).
+
+Two channels, in order:
+
+1. **Numeric channel** — headless `step()`, probes, the solver, and determinism
+   checks. Proves *behavior* and *beatability*. This is where correctness lives.
+2. **Visual channel** — a headless SVG screenshot. Judges *looks* only — palette,
+   layout, legibility. Never correctness.
+
+Everything below runs in Node under Vitest (`npm test`) or the CI script
+(`npm run verify`).
+
+---
+
+## Channel 1a — scripted playthrough (any game)
+
+Drive a world with an input log and assert on its probe. No DOM.
+
+```ts
+import { createWorld } from '@hayao';
+import { myGame } from './game';
+
+const world = createWorld(myGame);          // a live, deterministic World
+world.step(['right']);                      // one fixed step, 'right' held
+world.step([]);                             // release (edges need a rising edge)
+world.step(['confirm']);
+expect(world.probe().score).toBe(1);        // assert on game state, not pixels
+```
+
+Helpers: `scriptedPlaythrough(world, [hold(['right'], 30), wait(10)])` returns a
+probe after each segment; `pump(world, n, actions)` advances n steps. Hold keys
+for several frames — a 1-frame synthetic tap is treated as a real short tap.
+
+## Channel 1b — winnability solver (puzzles / turn-based)
+
+Keep the rules in a pure module implementing `Puzzle<State, Move>` (no engine
+imports), then prove every level beatable by search:
+
+```ts
+import { solve, assertSolvable, type Puzzle } from '@hayao';
+
+const puzzle: Puzzle<State, Move> = {
+  initial: (level) => …,
+  moves:   (s) => […],
+  apply:   (s, m) => …,      // fold in a DETERMINISTIC opponent here if any
+  isWin:   (s) => …,
+  isDead:  (s) => …,          // optional: prune lost states
+  key:     (s) => canonicalString(s),
+};
+
+const r = assertSolvable(puzzle, { level: 0, maxDepth: 80 }); // throws if unwinnable
+console.log(r.depth, r.nodes);              // shortest solution length + search cost
+```
+
+A deterministic opponent means winnability is single-agent BFS — no adversarial
+branching. `solve` returns the shortest `path`, which you can replay through the
+real game (Channel 1a) to prove the *view* agrees with the *logic*.
+
+## Channel 1c — determinism (the regression net)
+
+Same seed + same input log must produce bit-identical state hashes. If not, some
+nondeterminism leaked in (Math.random, Date.now, Set iteration, unordered map).
+
+```ts
+import { assertDeterministic, assertSnapshotStable } from '@hayao';
+
+assertDeterministic(() => createWorld(myGame), inputLog);      // runs twice, compares every step's hash
+assertSnapshotStable(() => createWorld(myGame), inputLog, 20); // snapshot→restore reproduces the tail exactly
+```
+
+`world.hash()` is the structural hash; `world.snapshot()` / `world.restore()` are
+save/undo/time-travel. Mark pure-view nodes `cosmetic = true` so transient display
+(move counters, particles, tweened positions) never pollutes the canonical hash.
+
+## Channel 2 — the visual screenshot (looks only)
+
+```ts
+import { HeadlessRenderer, createWorld } from '@hayao';
+
+const world = createWorld(myGame);
+world.step([]);
+const r = new HeadlessRenderer({ width: 1280, height: 720, background: '#f3ecdb' });
+r.draw(world.render());
+writeFileSync('shots/title.svg', r.toSVGString());   // a real vector screenshot, in Node
+```
+
+Because rendering is SVG, the screenshot is **resolution-independent and text is
+crisp** — no canvas fuzz, no GPU. In the browser, `?capture=1` exposes
+`window.__hayao` (`pump`, `probe`, `hash`, `shot`, `save`, `key`) for scripted
+sessions and aesthetic captures — but you rarely need it, because the DOM is
+already inspectable and the sim already runs in Node.
+
+---
+
+## The gate (`npm run verify`)
+
+The CI verifier proves every example winnable, replays a solution through the
+real game, and checks determinism — exiting non-zero on any failure. Wire your
+game's puzzle + game into `scripts/verify.ts` and it becomes a pipeline gate.
+
+## Invariants
+
+- All randomness flows through `world.rng`. No `Math.random()` in `src/` or games.
+- No wall-clock in the sim (`Date.now`, `performance.now`, argless `new Date`).
+- Fixed tree order; ordered collections for logic (no `Set`/object-key order).
+- Every shipped level: a solver proof OR a scripted playthrough. No exceptions.

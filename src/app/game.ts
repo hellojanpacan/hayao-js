@@ -5,7 +5,7 @@
 
 import { World } from '../world';
 import type { Node } from '../scene/node';
-import { DEFAULT_INPUT_MAP, type InputMap } from '../input/actions';
+import { DEFAULT_INPUT_MAP, type InputLog, type InputMap } from '../input/actions';
 import type { ClockConfig } from '../core/clock';
 
 export interface GameDefinition {
@@ -53,4 +53,22 @@ export function createWorld(def: GameDefinition, seedOverride?: number): World {
 /** The input map a game uses (with defaults applied). */
 export function gameInputMap(def: GameDefinition): InputMap {
   return def.inputMap ?? DEFAULT_INPUT_MAP;
+}
+
+export interface HeadlessResult {
+  world: World;
+  hash: string;
+  steps: number;
+}
+
+/**
+ * Run a game to completion in Node with no host — play an input log (or zero
+ * steps) and return the final world + state hash. This is what tests, the CI
+ * verifier, and replays call. The browser is never involved.
+ */
+export function runHeadless(def: GameDefinition, inputLog?: InputLog): HeadlessResult {
+  const world = createWorld(def);
+  const frames = inputLog?.frames ?? [];
+  for (const f of frames) world.step(f);
+  return { world, hash: world.hash(), steps: frames.length };
 }
