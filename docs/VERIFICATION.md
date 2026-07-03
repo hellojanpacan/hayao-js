@@ -118,6 +118,43 @@ crisp** — no canvas fuzz, no GPU. In the browser, `?capture=1` exposes
 sessions and aesthetic captures — but you rarely need it, because the DOM is
 already inspectable and the sim already runs in Node.
 
+For MOTION, use the filmstrip instead of a single frame: it samples a whole
+run into one SVG contact sheet, so pacing, readability under load, and
+layering during play are judgeable from a file.
+
+```ts
+import { renderFilmstrip } from '@hayao';
+t.artifact('run-filmstrip.svg', renderFilmstrip(createWorld(myGame), inputFrames, {
+  width: myGame.width, height: myGame.height, background: myGame.background, panels: 12,
+}));
+// → shots/<slug>/run-filmstrip.svg — open it and actually look.
+```
+
+## Channel 3 — feel probes (quality proxies)
+
+Correctness channels prove the game is *not broken*; they say nothing about
+whether it is *good*. Feel probes give quality a measurable proxy: compute
+metrics from a per-frame probe timeline of the winning run, and gate them on
+windows YOU tune per game. A window is a design decision recorded as a test —
+retuning that wrecks pacing fails loudly instead of silently.
+
+```ts
+import { recordTimeline, firstFrame, inputDensity, longestLull, changeFrames, isMonotonic } from '@hayao';
+
+const tl = recordTimeline(createWorld(myGame), winningLog);
+firstFrame(tl, (p) => p.kills > 0);      // time-to-first-meaningful-action
+inputDensity(winningLog);                 // engagement: waiting ↔ mashing
+longestLull(changeFrames(tl, 'score'), tl.length); // dead-air detector
+isMonotonic(depths, 'up', slack);         // difficulty ramps with breathers
+```
+
+What to gate is genre truth: a stealth game gates its hide/move alternation,
+an incremental its unlock cadence, a puzzle its solve-depth curve. Two rules:
+(1) derive windows from a run you have actually judged as feeling right —
+never invent them; (2) keep them generous enough that tuning breathes, tight
+enough that pacing regressions fail. These are proxies, not proof of fun —
+the filmstrip and a human/AI look stay in the loop.
+
 ---
 
 ## The gate (`npm run verify`)

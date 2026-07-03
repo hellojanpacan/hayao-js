@@ -132,3 +132,10 @@ A game is done when ALL of the following hold. This is a checklist, not a vibe.
    was already proven numerically in steps 3–4.
 6. **A complete loop exists** — start → play → win/lose → restart, keyboard-only,
    and `restart` fully rebuilds world state (no leaked nodes, no stale RNG).
+7. **The full run's hash is pinned** — `t.golden('full run', world.hash())` in
+   `verify.ts`, recorded via `UPDATE_GOLDEN=1 npm run verify`, `golden.json`
+   committed (VERIFICATION §Channel 1d).
+8. **Feel probes gate the genre's pacing** — at least two `recordTimeline`-based
+   metrics with tuned windows, plus a `renderFilmstrip` artifact reviewed for
+   motion/readability (VERIFICATION §Channel 3). Windows come from a run you
+   judged, not from thin air.

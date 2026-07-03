@@ -60,9 +60,13 @@ card for the game to the root `index.html` hub (copy an existing
    `t.golden('full run', world.hash())`, record it via
    `UPDATE_GOLDEN=1 npm run verify`, and commit `golden.json` — this is the
    portfolio-wide refactor net (docs/VERIFICATION.md §Channel 1d).
-4. Headless SVG screenshot (`HeadlessRenderer.toSVGString()`) — judge palette,
+4. Feel probes (docs/VERIFICATION.md §Channel 3): at least two
+   `recordTimeline`-based metrics gated on windows derived from a run you
+   actually judged — plus a `renderFilmstrip` artifact
+   (`t.artifact('run-filmstrip.svg', …)`) reviewed for motion and readability.
+5. Headless SVG screenshot (`HeadlessRenderer.toSVGString()`) — judge palette,
    layering, contrast, legibility. Looks only, never correctness.
-5. Complete loop: start → play → win/lose → restart, keyboard-only.
+6. Complete loop: start → play → win/lose → restart, keyboard-only.
 
 The full definition of done is `docs/CONVENTIONS.md` §Definition of done — it
 is a checklist, not a vibe.

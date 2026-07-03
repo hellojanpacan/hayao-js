@@ -2,7 +2,7 @@
 // stealth systems are REAL (open ground gets you spotted, bushes never do,
 // noise turns heads), and it all replays deterministically.
 
-import { checkDeterministic, createPlanBot, createWorld, steer2D } from '@hayao';
+import { checkDeterministic, createPlanBot, createWorld, steer2D, recordTimeline, firstFrame, inputDensity, longestLull, renderFilmstrip } from '@hayao';
 import { initialVs, stepVs } from './logic';
 import { veilstepGame } from './game';
 import type { VerifyContext } from '../../scripts/verify';
@@ -82,6 +82,29 @@ export default async function verify(t: VerifyContext) {
     frames >= 0 && alarms === 0,
   );
   t.golden('full heist', world.hash());
+
+  // 1b. Feel probes over the winning log: stealth tension is alternation —
+  // long enough hides to feel the patrols, never so long it turns to boredom.
+  {
+    const tl = recordTimeline(createWorld(veilstepGame), log);
+    const idolAt = firstFrame(tl, (p) => (p as { idol?: boolean }).idol === true);
+    t.check(`idol grabbed mid-run at ${(idolAt / 60).toFixed(1)}s (window 5–40s)`, idolAt > 300 && idolAt < 2400);
+    const density = inputDensity(log);
+    t.check(`moving ${(density * 100).toFixed(0)}% of the heist (window 30–95%)`, density > 0.3 && density < 0.95);
+    const lull = longestLull(log.flatMap((f, i) => (f.length ? [i] : [])), log.length);
+    t.check(`longest hide is ${(lull / 60).toFixed(1)}s (< 15s — tension, not boredom)`, lull < 900);
+  }
+
+  // 1c. Filmstrip artifact of the heist, for the looks judgement.
+  t.artifact(
+    'heist-filmstrip.svg',
+    renderFilmstrip(createWorld(veilstepGame), log, {
+      width: veilstepGame.width,
+      height: veilstepGame.height,
+      background: veilstepGame.background,
+      panels: 12,
+    }),
+  );
 
   // 2. Negative: standing in the open in a patrol lane → spotted quickly.
   {
