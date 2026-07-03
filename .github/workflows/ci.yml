@@ -1,0 +1,27 @@
+# CI: the same three gates a session runs locally, in the same order.
+# npm run verify includes the static invariant checker as its first stage,
+# so a half-scaffolded example or a banned call fails the push, not the
+# next session.
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: typecheck
+        run: npm run check
+      - name: tests
+        run: npm test
+      - name: invariants + verify suites
+        run: npm run verify
