@@ -1,7 +1,7 @@
 // Cadence Hollow: the view pulses WITH THE SIM'S BEAT — the metronome tones,
 // the floor throb, the beat bar all read the frame counter. Audio observes.
 
-import { Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
+import { KENTO, Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
 import { beatOf, initialCd, beatTick, onBeat, tryMove, wallAt, CHAMBER, FRAMES_PER_BEAT, GRID_H, GRID_W, type CdMove, type CdState } from './logic';
 
 export const CD_INPUT_MAP: InputMap = {
@@ -17,7 +17,7 @@ const OX = 640 - (GRID_W * CELL) / 2 + CELL / 2;
 const OY = 356 - (GRID_H * CELL) / 2 + CELL / 2;
 const at = (x: number, y: number) => ({ x: OX + x * CELL, y: OY + y * CELL });
 
-const PAL = { bg: '#120e18', floor: '#1e1828', floorPulse: '#2a2140', wall: '#0c0a10', hero: '#9ef7ff', slime: '#8fe8b0', zombie: '#c05555', exit: '#ffd75e', text: '#9a8fc0', beat: '#ff6d8a' };
+const PAL = { bg: KENTO.yohaku, floor: KENTO.darkLine, floorPulse: KENTO.fujiDeep, wall: KENTO.kuro, hero: KENTO.asagi, slime: KENTO.matsu, zombie: KENTO.shu, exit: KENTO.ko, text: KENTO.kinako, beat: KENTO.saku };
 
 export function cdState(world: World): CdState {
   return world.state.cd as CdState;
@@ -38,7 +38,7 @@ class CdView extends Node {
     this.addChild(this.layer);
     this.floorPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 1, shape: { kind: 'rect', w: CELL - 4, h: CELL - 4, r: 8 }, fill: PAL.floor }));
     this.entPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 4, shape: { kind: 'circle', radius: 20 }, fill: PAL.slime }));
-    this.hero = this.layer.addChild(new Sprite({ z: 5, shape: { kind: 'circle', radius: 22 }, fill: PAL.hero, stroke: '#0c1418', strokeWidth: 3 }));
+    this.hero = this.layer.addChild(new Sprite({ z: 5, shape: { kind: 'circle', radius: 22 }, fill: PAL.hero, stroke: KENTO.sumi, strokeWidth: 3 }));
     this.beatBar = this.layer.addChild(new Sprite({ pos: { x: 640, y: 690 }, z: 8, shape: { kind: 'circle', radius: 12 }, fill: PAL.beat }));
     this.hud = this.layer.addChild(new Text({ pos: { x: 640, y: 26 }, z: 8, size: 20, align: 'center', fill: PAL.text, text: '' }));
     this.layer.addChild(new Text({ pos: { x: 640, y: 660 }, z: 8, size: 15, align: 'center', fill: PAL.text, text: 'move ON the pulse · off-beat breaks your combo · bump to fight · reach the gold door' }));

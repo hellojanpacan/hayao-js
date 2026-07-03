@@ -5,7 +5,7 @@
 // and feel probes gate the table's pulse.
 
 import {
-  checkDeterministic, createWorld, firstFrame, layoutIssues, longestLull,
+  KENTO, checkDeterministic, createWorld, firstFrame, layoutIssues, longestLull,
   missingControlHints, recordTimeline, renderFilmstrip,
 } from '@hayao';
 import { getBody } from '@hayao';
@@ -126,7 +126,7 @@ export default async function verify(t: VerifyContext) {
     const lull = longestLull(scoreFrames, alive.length);
     t.check(`longest scoreless stretch while alive: ${(lull / 60).toFixed(1)}s`, lull < 60 * 8);
 
-    t.artifact('rally-filmstrip.svg', renderFilmstrip(createWorld(brasswickGame), script, { width: 1280, height: 720, background: '#ece4d2', panels: 8, cols: 4 }));
+    t.artifact('rally-filmstrip.svg', renderFilmstrip(createWorld(brasswickGame), script, { width: 1280, height: 720, background: KENTO.washi, panels: 8, cols: 4 }));
   }
 
   // 6 · The human-contact layer.

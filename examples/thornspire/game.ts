@@ -2,7 +2,7 @@
 // hand as numbered cards, the foe's intent always visible (the genre's core
 // promise: perfect information about the next enemy move).
 
-import { Node, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
+import { KENTO, Node, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
 import { currentIntent, initialTs, stepTs, CARDS, CLIMB, FOES, type TsState } from './logic';
 
 export const TS_INPUT_MAP: InputMap = {
@@ -22,7 +22,7 @@ export const TS_INPUT_MAP: InputMap = {
   restart: ['KeyR'],
 };
 
-const PAL = { bg: '#171126', felt: '#211a33', line: '#3a2f52', ink: '#e8e2f6', soft: '#9a8fc0', hp: '#ff6d8a', energy: '#ffd75e', foe: '#c05555', block: '#7fc8ff', card: '#2a2244', cardLine: '#4a3c70', intent: '#ffb86e' };
+const PAL = { bg: KENTO.kuro, felt: KENTO.yohaku, line: KENTO.darkLine, ink: KENTO.gofun, soft: KENTO.kinako, hp: KENTO.saku, energy: KENTO.ko, foe: KENTO.shu, block: KENTO.asagi, card: KENTO.yohaku, cardLine: KENTO.darkLine, intent: KENTO.kaki };
 
 export function tsState(world: World): TsState {
   return world.state.ts as TsState;
@@ -38,7 +38,7 @@ class TsView extends Node {
     this.layer.cosmetic = true;
     this.addChild(this.layer);
     this.layer.addChild(new Sprite({ pos: { x: 640, y: 360 }, z: 0, shape: { kind: 'rect', w: 1180, h: 620, r: 24 }, fill: PAL.felt, stroke: PAL.line, strokeWidth: 2 }));
-    this.foeSprite = this.layer.addChild(new Sprite({ pos: { x: 640, y: 186 }, z: 2, shape: { kind: 'circle', radius: 44 }, fill: PAL.foe, stroke: '#1a0f0f', strokeWidth: 4 }));
+    this.foeSprite = this.layer.addChild(new Sprite({ pos: { x: 640, y: 186 }, z: 2, shape: { kind: 'circle', radius: 44 }, fill: PAL.foe, stroke: KENTO.sumi, strokeWidth: 4 }));
     // Layout contract: the foe's circle owns y 142-230; text NEVER enters it.
     // 0: foe name (y 108) · 1: intent (y 262) · 2: player status (y 306)
     // 3-9: the hand, ONE CARD PER LINE (y 352+) · 10: footer hint (y 636)

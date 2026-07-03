@@ -8,6 +8,7 @@ import {
   Node,
   Sprite,
   Text,
+  KENTO,
   MEADOW,
   withAlpha,
   registerNode,
@@ -94,7 +95,7 @@ class GravewellView extends Node {
             pos: at(x, y),
             z: 0,
             shape: { kind: 'rect', w: CELL - 6, h: CELL - 6, r: 8 },
-            fill: '#efe6d0',
+            fill: KENTO.gofun,
             stroke: MEADOW.line,
             strokeWidth: 1,
           }),
@@ -109,33 +110,33 @@ class GravewellView extends Node {
       const p = at(i % W, Math.floor(i / W));
       if (c === 'hole') {
         this.layer.addChild(
-          new Sprite({ name: 'hole', pos: p, z: 1, shape: { kind: 'circle', radius: CELL * 0.32 }, fill: '#232228', stroke: MEADOW.accent, strokeWidth: 3 }),
+          new Sprite({ name: 'hole', pos: p, z: 1, shape: { kind: 'circle', radius: CELL * 0.32 }, fill: KENTO.kuro, stroke: MEADOW.accent, strokeWidth: 3 }),
         );
       } else if (c === 'blank') {
         this.layer.addChild(
-          new Sprite({ name: 'blank', pos: p, z: 2, shape: { kind: 'rect', w: CELL * 0.62, h: CELL * 0.62, r: 8 }, fill: '#cbbfa4', stroke: '#2f281d', strokeWidth: 2 }),
+          new Sprite({ name: 'blank', pos: p, z: 2, shape: { kind: 'rect', w: CELL * 0.62, h: CELL * 0.62, r: 8 }, fill: KENTO.kinako, stroke: KENTO.sumi, strokeWidth: 2 }),
         );
       } else if (c === 'x') {
         this.layer.addChild(
-          new Sprite({ name: 'xsq', pos: p, z: 2, shape: { kind: 'rect', w: CELL * 0.62, h: CELL * 0.62, r: 8 }, fill: MEADOW.warn, stroke: '#2f281d', strokeWidth: 2 }),
+          new Sprite({ name: 'xsq', pos: p, z: 2, shape: { kind: 'rect', w: CELL * 0.62, h: CELL * 0.62, r: 8 }, fill: MEADOW.warn, stroke: KENTO.sumi, strokeWidth: 2 }),
         );
         this.layer.addChild(
-          new Sprite({ name: 'xmark', pos: p, z: 3, shape: { kind: 'glyph', char: '✕', size: CELL * 0.4 }, fill: '#2f281d' }),
+          new Sprite({ name: 'xmark', pos: p, z: 3, shape: { kind: 'glyph', char: '✕', size: CELL * 0.4 }, fill: KENTO.sumi }),
         );
       } else if (c === 'star') {
         this.layer.addChild(
-          new Sprite({ name: 'star', pos: p, z: 2, shape: { kind: 'circle', radius: CELL * 0.28 }, fill: '#e8c15a', stroke: MEADOW.accent, strokeWidth: 3 }),
+          new Sprite({ name: 'star', pos: p, z: 2, shape: { kind: 'circle', radius: CELL * 0.28 }, fill: KENTO.koDeep, stroke: MEADOW.accent, strokeWidth: 3 }),
         );
         this.layer.addChild(
-          new Sprite({ name: 'star-core', pos: p, z: 3, shape: { kind: 'circle', radius: CELL * 0.1 }, fill: '#fbf6ea' }),
+          new Sprite({ name: 'star-core', pos: p, z: 3, shape: { kind: 'circle', radius: CELL * 0.1 }, fill: KENTO.gofun }),
         );
       } else {
         // arrow
         this.layer.addChild(
-          new Sprite({ name: 'arrow', pos: p, z: 2, shape: { kind: 'rect', w: CELL * 0.62, h: CELL * 0.62, r: 8 }, fill: MEADOW.good, stroke: '#2f281d', strokeWidth: 2 }),
+          new Sprite({ name: 'arrow', pos: p, z: 2, shape: { kind: 'rect', w: CELL * 0.62, h: CELL * 0.62, r: 8 }, fill: MEADOW.good, stroke: KENTO.sumi, strokeWidth: 2 }),
         );
         this.layer.addChild(
-          new Sprite({ name: 'arrow-glyph', pos: p, z: 3, shape: { kind: 'glyph', char: ARROW_GLYPH[c]!, size: CELL * 0.34 }, fill: '#2f281d' }),
+          new Sprite({ name: 'arrow-glyph', pos: p, z: 3, shape: { kind: 'glyph', char: ARROW_GLYPH[c]!, size: CELL * 0.34 }, fill: KENTO.sumi }),
         );
       }
     }

@@ -3,6 +3,7 @@
 // tile view rebuilt on room change.
 
 import {
+  KENTO,
   Node,
   PARTICLE_PRESETS,
   Particles,
@@ -13,6 +14,7 @@ import {
   createPlatformerState,
   defineGame,
   hideScreen,
+  mix,
   registerNode,
   showScreen,
   stepPlatformer,
@@ -45,7 +47,18 @@ export interface SvState {
 }
 
 const START = { room: 0, x: 112, y: 560 };
-const PAL = { bg: '#111b14', rock: '#26382b', rockLine: '#35503c', spike: '#c05555', sprout: '#8fe8b0', core: '#eafff2', seed: '#ffd75e', boots: '#7fc8ff', heart: '#ff6d8a', text: '#7da88c' };
+const PAL = {
+  bg: KENTO.kuro,
+  rock: KENTO.sumiSoft,
+  rockLine: KENTO.stone,
+  spike: KENTO.shu,
+  sprout: KENTO.matsu,
+  core: KENTO.gofun,
+  seed: KENTO.ko,
+  boots: KENTO.asagi,
+  heart: KENTO.saku,
+  text: KENTO.kinako,
+};
 const CFGW = 22;
 const CFGH = 28;
 
@@ -94,9 +107,9 @@ class SvView extends Node {
     for (const pu of room.pickups) {
       if (s.taken.includes(`${s.room}:${pu.ability}`)) continue;
       const fill = pu.ability === 'dj' ? PAL.seed : PAL.boots;
-      this.dynamic.addChild(new Sprite({ name: `pickup-${pu.ability}`, pos: pu.at, z: 4, shape: { kind: 'poly', points: [0, -13, 9, 0, 0, 13, -9, 0], closed: true }, fill, stroke: '#ffffff', strokeWidth: 2 }));
+      this.dynamic.addChild(new Sprite({ name: `pickup-${pu.ability}`, pos: pu.at, z: 4, shape: { kind: 'poly', points: [0, -13, 9, 0, 0, 13, -9, 0], closed: true }, fill, stroke: KENTO.gofun, strokeWidth: 2 }));
     }
-    if (room.heart) this.dynamic.addChild(new Sprite({ name: 'heart', pos: room.heart, z: 4, shape: { kind: 'circle', radius: 14 }, fill: PAL.heart, stroke: '#fff', strokeWidth: 3 }));
+    if (room.heart) this.dynamic.addChild(new Sprite({ name: 'heart', pos: room.heart, z: 4, shape: { kind: 'circle', radius: 14 }, fill: PAL.heart, stroke: KENTO.gofun, strokeWidth: 3 }));
     this.player = this.dynamic.addChild(new Sprite({ name: 'sprout', z: 6, shape: { kind: 'circle', radius: 13 }, fill: PAL.sprout, stroke: PAL.core, strokeWidth: 3 }));
     this.hud = this.dynamic.addChild(new Text({ name: 'hud', pos: { x: 640, y: 34 }, size: 20, align: 'center', fill: PAL.text, text: '' }));
   }
@@ -130,7 +143,7 @@ class SvView extends Node {
     if (ev.airJumped) this.fx.burst(8, { x: cx, y: cy + 10 }, PARTICLE_PRESETS.sparkle());
     if (ev.dashed) {
       audio.blip(520);
-      this.fx.burst(10, { x: cx, y: cy }, PARTICLE_PRESETS.burst([PAL.boots, '#d9f2ff']));
+      this.fx.burst(10, { x: cx, y: cy }, PARTICLE_PRESETS.burst([PAL.boots, mix(KENTO.asagi, KENTO.gofun, 0.5)]));
     }
 
     // Death: hazards or falling out through a closed border.
@@ -196,7 +209,7 @@ function initialSv(): SvState {
 
 export const sproutveilGame = defineGame({
   title: 'Sproutveil',
-  background: '#111b14',
+  background: KENTO.kuro,
   inputMap: SV_INPUT_MAP,
   build(world) {
     world.state.sv = initialSv();

@@ -7,6 +7,7 @@
 // without a single branch in game code.
 
 import {
+  KENTO,
   Node,
   Sprite,
   Text,
@@ -48,14 +49,14 @@ export const FC_LOCAL_INPUT_MAP: InputMap = {
 };
 
 const PAL = {
-  fern: '#24371f',
-  ring: '#8fae7c',
-  arena: '#f0e7cf',
-  grain: '#e2d5b4',
-  p1: '#a11d3a',
-  p2: '#2c5d8f',
-  ink: '#3d3323',
-  soft: '#6f6047',
+  fern: KENTO.matsuDeep, // dark pine ring around the arena (nature backdrop)
+  ring: KENTO.matsu, // bright pine rim on the arena disc
+  arena: KENTO.washi, // light arena disc lifts off the dark ground
+  grain: KENTO.kinu, // warm wood-grain rings
+  p1: KENTO.shu, // fighter 1 — vermilion (fire / primary actor)
+  p2: KENTO.asagi, // fighter 2 — teal-cyan (water / cool), distinct hue from p1
+  ink: KENTO.gofun, // score/big text reads on the dark ground
+  soft: KENTO.kinako, // muted hint text
 };
 
 export function fcState(world: World): FcState {
@@ -89,8 +90,8 @@ class FcView extends Node {
       this.layer.addChild(new Sprite({ pos: { x: ARENA.cx, y: ARENA.cy }, z: 2, shape: { kind: 'circle', radius: r }, fill: 'none', stroke: PAL.grain, strokeWidth: 2 }));
     }
     this.fighters = {
-      p1: this.layer.addChild(new Sprite({ z: 5, shape: { kind: 'circle', radius: FIGHTER.radius }, fill: PAL.p1, stroke: '#2c1118', strokeWidth: 3 })),
-      p2: this.layer.addChild(new Sprite({ z: 5, shape: { kind: 'circle', radius: FIGHTER.radius }, fill: PAL.p2, stroke: '#101c2c', strokeWidth: 3 })),
+      p1: this.layer.addChild(new Sprite({ z: 5, shape: { kind: 'circle', radius: FIGHTER.radius }, fill: PAL.p1, stroke: KENTO.sumi, strokeWidth: 3 })),
+      p2: this.layer.addChild(new Sprite({ z: 5, shape: { kind: 'circle', radius: FIGHTER.radius }, fill: PAL.p2, stroke: KENTO.sumi, strokeWidth: 3 })),
     };
     // Place fighters before the first step so frame 0 already reads well.
     const s0 = fcState(this.world as World);
@@ -149,7 +150,7 @@ registerNode('FcView', () => new FcView());
 export const fernclashGame = defineGame({
   title: 'Fernclash',
   seed: 5,
-  background: '#1c2a18',
+  background: KENTO.kuro,
   inputMap: FC_NET_INPUT_MAP,
   build(world) {
     world.state.fc = initialFc();

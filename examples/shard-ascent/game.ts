@@ -8,6 +8,7 @@ import {
   Particles,
   Shaker,
   Sprite,
+  KENTO,
   Text,
   audio,
   createPlatformerState,
@@ -44,7 +45,7 @@ export interface SaState {
 }
 
 const CFG = DEFAULT_PLATFORMER;
-const PAL = { bg: '#10131d', rock: '#2a3147', rockLine: '#3c4560', oneway: '#57628a', spike: '#b8405e', wisp: '#3fd8e0', wispCore: '#d9fbfd', shard: '#ffc857', gate: '#5a6a8c', gateOpen: '#8fe8b0', text: '#8ea3bd' };
+const PAL = { bg: KENTO.kuro, rock: KENTO.aiDeep, rockLine: KENTO.ai, oneway: KENTO.ai, spike: KENTO.shu, wisp: KENTO.asagi, wispCore: KENTO.gofun, shard: KENTO.ko, gate: KENTO.kinako, gateOpen: KENTO.matsu, text: KENTO.kinako };
 
 function initState(level = 0): SaState {
   const { spawn } = parseLevel(level);
@@ -111,11 +112,11 @@ class SaView extends Node {
     // Exit gate + shard + movers + player + HUD (in dynamic layer).
     this.gate = this.dynamic.addChild(new Sprite({ name: 'gate', pos: exit, z: 3, shape: { kind: 'rect', w: 30, h: 46, r: 8 }, fill: 'none', stroke: PAL.gate, strokeWidth: 4 }));
     this.shardSprite = null;
-    if (shard) this.shardSprite = this.dynamic.addChild(new Sprite({ name: 'shard', pos: shard, z: 4, shape: { kind: 'poly', points: [0, -14, 9, 0, 0, 14, -9, 0], closed: true }, fill: PAL.shard, stroke: '#fff2c9', strokeWidth: 2 }));
+    if (shard) this.shardSprite = this.dynamic.addChild(new Sprite({ name: 'shard', pos: shard, z: 4, shape: { kind: 'poly', points: [0, -14, 9, 0, 0, 14, -9, 0], closed: true }, fill: PAL.shard, stroke: KENTO.gofun, strokeWidth: 2 }));
     def.movers.forEach((m, i) => this.dynamic.addChild(new Sprite({ name: `mover-${i}`, z: 3, shape: { kind: 'rect', w: m.w, h: m.h, r: 6 }, fill: PAL.oneway, stroke: PAL.rockLine, strokeWidth: 2 })));
     this.player = this.dynamic.addChild(new Sprite({ name: 'wisp', z: 6, shape: { kind: 'circle', radius: 13 }, fill: PAL.wisp, stroke: PAL.wispCore, strokeWidth: 3 }));
-    this.dynamic.addChild(new Sprite({ name: 'hud-scrim', pos: { x: 640, y: 16 }, z: 9, shape: { kind: 'rect', w: 1280, h: 34 }, fill: '#0b0e16', opacity: 0.92 }));
-    this.hud = this.dynamic.addChild(new Text({ name: 'hud', pos: { x: 640, y: 22 }, z: 10, size: 17, align: 'center', fill: '#dbe6f2', text: '' }));
+    this.dynamic.addChild(new Sprite({ name: 'hud-scrim', pos: { x: 640, y: 16 }, z: 9, shape: { kind: 'rect', w: 1280, h: 34 }, fill: KENTO.yohaku, opacity: 0.92 }));
+    this.hud = this.dynamic.addChild(new Text({ name: 'hud', pos: { x: 640, y: 22 }, z: 10, size: 17, align: 'center', fill: KENTO.gofun, text: '' }));
   }
 
   private die(s: SaState): void {
@@ -163,7 +164,7 @@ class SaView extends Node {
     if (ev.dashed) {
       audio.blip(520);
       this.shaker.addTrauma(0.18);
-      this.fx.burst(10, c, PARTICLE_PRESETS.burst([PAL.wisp, PAL.wispCore, '#9ef7ff']));
+      this.fx.burst(10, c, PARTICLE_PRESETS.burst([PAL.wisp, PAL.wispCore, KENTO.asagi]));
     }
     if (ev.landed) this.fx.burst(5, { x: c.x, y: s.p.y + CFG.height }, PARTICLE_PRESETS.dust());
     if (ev.died || s.p.y > this.parsed.map.rows * TILE_SIZE) {

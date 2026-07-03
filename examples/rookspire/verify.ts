@@ -135,7 +135,7 @@ export default async function verify(t: VerifyContext) {
     const quietAt = firstFrame(tl.slice(launchAt + 60), (p) => (p.awake as number) === 0);
     t.check(`the dust settles ${quietAt >= 0 ? `${((quietAt + 60) / 60).toFixed(1)}s` : 'NEVER'} after launch`, quietAt >= 0 && quietAt + 60 < 420);
 
-    t.artifact('siege-filmstrip.svg', renderFilmstrip(createWorld(rookspireGame), script, { width: 1280, height: 720, background: '#e9e0c9', panels: 8, cols: 4 }));
+    t.artifact('siege-filmstrip.svg', renderFilmstrip(createWorld(rookspireGame), script, { width: 1280, height: 720, background: '#efe7d3', panels: 8, cols: 4 }));
   }
 
   // 6 · The human-contact layer: text never collides, controls are taught.

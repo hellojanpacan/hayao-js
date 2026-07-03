@@ -1,7 +1,7 @@
 // Vantage: the tactics sim in world.state; the view IS the information —
 // telegraph arrows, movement range dots, hp pips. Perfect information or bust.
 
-import { Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
+import { KENTO, Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
 import { canMoveTo, initialVt, stepVt, GRID, MECHS, type VtState } from './logic';
 
 export const VT_INPUT_MAP: InputMap = {
@@ -23,7 +23,7 @@ const OX = 640 - (GRID * CELL) / 2 + CELL / 2;
 const OY = 360 - (GRID * CELL) / 2 + CELL / 2;
 const at = (x: number, y: number) => ({ x: OX + x * CELL, y: OY + y * CELL });
 
-const PAL = { bg: '#101418', cell: '#1a2028', cellLine: '#2a3340', mech: '#7fc8ff', mechSel: '#ffd75e', bug: '#c05555', bugLine: '#e8a0a0', building: '#8fe8b0', telegraph: '#ff9d47', range: '#3d5a75', text: '#8598ad' };
+const PAL = { bg: KENTO.kuro, cell: KENTO.sumi, cellLine: KENTO.darkLine, mech: KENTO.asagi, mechSel: KENTO.ko, bug: KENTO.shu, bugLine: KENTO.saku, building: KENTO.matsu, telegraph: KENTO.kaki, range: KENTO.ai, text: KENTO.kinako };
 
 export function vtState(world: World): VtState {
   return world.state.vt as VtState;
@@ -119,7 +119,7 @@ class VtView extends Node {
       u.shape = { kind: 'rect', w: 46, h: 46, r: 8 };
       u.paint.fill = PAL.building;
       u.paint.opacity = 0.5 + 0.25 * g.hp;
-      u.paint.stroke = '#1a2a1e';
+      u.paint.stroke = KENTO.sumi;
       u.paint.strokeWidth = 2;
     }
     s.mechs.forEach((m, i) => {
@@ -128,7 +128,7 @@ class VtView extends Node {
       u.pos = at(m.x, m.y);
       u.shape = m.kind === 'bruiser' ? { kind: 'rect', w: 40, h: 40, r: 10 } : m.kind === 'artillery' ? { kind: 'poly', points: [0, -22, 20, 14, -20, 14], closed: true } : { kind: 'circle', radius: 20 };
       u.paint.fill = PAL.mech;
-      u.paint.stroke = i === s.selected ? PAL.mechSel : '#12202c';
+      u.paint.stroke = i === s.selected ? PAL.mechSel : KENTO.sumi;
       u.paint.strokeWidth = i === s.selected ? 4 : 2;
       u.paint.opacity = m.acted ? 0.55 : 1;
     });

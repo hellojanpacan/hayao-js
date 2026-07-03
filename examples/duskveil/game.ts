@@ -1,7 +1,7 @@
 // Duskveil: the bullet-hell sim in world.state; pooled Canvas view (the
 // Emberwake lesson, at 4× the entity count). Slow-mode shows the true hitbox.
 
-import { Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
+import { KENTO, Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
 import { initialDv, stepDv, P_TUNE, PHASES, type DvState } from './logic';
 
 export const DV_INPUT_MAP: InputMap = {
@@ -13,7 +13,9 @@ export const DV_INPUT_MAP: InputMap = {
   restart: ['KeyR'],
 };
 
-const PAL = { bg: '#0c0a14', player: '#9ef7ff', hitbox: '#ffffff', shot: '#4ed8e8', bullet: '#ff9db8', bullet2: '#ffd0dc', boss: '#8a5fc8', bossCore: '#e8d8ff', text: '#9a8fc0' };
+// Kentō dark ground: player + its shots = asagi (water/cool), enemy bullets = shu
+// (danger), boss = fuji (arcane) — three distinct hue families for readability.
+const PAL = { bg: KENTO.kuro, player: KENTO.asagi, hitbox: KENTO.gofun, shot: KENTO.asagi, bullet: KENTO.shu, bullet2: KENTO.gofun, boss: KENTO.fuji, bossCore: KENTO.gofun, text: KENTO.kinako };
 
 export function dvState(world: World): DvState {
   return world.state.dv as DvState;
@@ -36,7 +38,7 @@ class DvView extends Node {
     this.bulletPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 5, shape: { kind: 'circle', radius: 6 }, fill: PAL.bullet, stroke: PAL.bullet2, strokeWidth: 1.5 }));
     this.shotPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 3, shape: { kind: 'rect', w: 4, h: 14, r: 2 }, fill: PAL.shot }));
     this.boss = this.layer.addChild(new Sprite({ z: 4, shape: { kind: 'circle', radius: 46 }, fill: PAL.boss, stroke: PAL.bossCore, strokeWidth: 4 }));
-    this.player = this.layer.addChild(new Sprite({ z: 6, shape: { kind: 'poly', points: [0, -14, 10, 12, 0, 6, -10, 12], closed: true }, fill: PAL.player, stroke: '#ffffff', strokeWidth: 1.5 }));
+    this.player = this.layer.addChild(new Sprite({ z: 6, shape: { kind: 'poly', points: [0, -14, 10, 12, 0, 6, -10, 12], closed: true }, fill: PAL.player, stroke: KENTO.gofun, strokeWidth: 1.5 }));
     this.hitbox = this.layer.addChild(new Sprite({ z: 7, shape: { kind: 'circle', radius: P_TUNE.hitbox }, fill: PAL.hitbox }));
     this.hpBar = this.layer.addChild(new Sprite({ pos: { x: 640, y: 16 }, z: 8, shape: { kind: 'rect', w: 600, h: 8, r: 4 }, fill: PAL.boss }));
     this.hud = this.layer.addChild(new Text({ pos: { x: 640, y: 44 }, z: 8, size: 18, align: 'center', fill: PAL.text, text: '' }));

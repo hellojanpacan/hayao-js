@@ -2,7 +2,7 @@
 // the one number that matters everywhere: what THIS placement would score,
 // live under the cursor. Readable scoring is the whole genre.
 
-import { Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
+import { KENTO, Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, mix, registerNode, showScreen, type InputMap, type World } from '@hayao';
 import { currentBuilding, initialTh, place, placementScore, BUILDINGS, GH, GW, QUEUE, TARGET, tidx, type ThState } from './logic';
 
 export const TH_INPUT_MAP: InputMap = {
@@ -19,9 +19,25 @@ const OX = 640 - (GW * CELL) / 2 + CELL / 2;
 const OY = 368 - (GH * CELL) / 2 + CELL / 2;
 const at = (x: number, y: number) => ({ x: OX + x * CELL, y: OY + y * CELL });
 
-const TERRA = { water: '#28425c', grass: '#2c4430', forest: '#1e3322' };
-const GLYPH: Record<string, string> = { hut: '#e8d8b0', farm: '#ffd75e', sawmill: '#c97b4a', dock: '#7fc8ff', temple: '#e8a0ff' };
-const PAL = { line: '#141c14', cursorOk: '#8fe8b0', cursorBad: '#c05555', text: '#a8b8a8' };
+// Terrain fills sit on the dark ground, so darken the deep hue tones toward kuro
+// to keep them as muted ground rather than bright marks. Grass vs forest are two
+// tones of pine (they are the same "land" family); water is indigo (ai) — a
+// clearly different hue so shoreline reads.
+const TERRA = {
+  water: mix(KENTO.aiDeep, KENTO.kuro, 0.35),
+  grass: mix(KENTO.matsuDeep, KENTO.kuro, 0.4),
+  forest: mix(KENTO.matsuDeep, KENTO.kuro, 0.62),
+};
+// Five buildings that must be told apart -> five distinct hue families:
+//   hut=pale neutral, farm=gold, sawmill=persimmon, dock=cyan, temple=wisteria.
+const GLYPH: Record<string, string> = {
+  hut: KENTO.kinu,
+  farm: KENTO.ko,
+  sawmill: KENTO.kaki,
+  dock: KENTO.asagi,
+  temple: KENTO.fuji,
+};
+const PAL = { line: KENTO.darkLine, cursorOk: KENTO.matsu, cursorBad: KENTO.shu, text: KENTO.kinako };
 
 export function thState(world: World): ThState {
   return world.state.th as ThState;
@@ -110,7 +126,7 @@ registerNode('ThView', () => new ThView({ name: 'th-view' }));
 
 export const tarnholmGame = defineGame({
   title: 'Tarnholm',
-  background: '#101812',
+  background: KENTO.yohaku,
   inputMap: TH_INPUT_MAP,
   build(world) {
     world.state.th = initialTh(world.rng);

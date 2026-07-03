@@ -1,7 +1,7 @@
 // Gleamvale: the combat sim (logic.ts, in world.state) + a cosmetic view with
 // the genre's juice — hit-stop, knockback flashes, screen shake, slash arcs.
 
-import { Node, PARTICLE_PRESETS, Particles, Shaker, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World, dcos, dsin, datan2 } from '@hayao';
+import { KENTO, Node, PARTICLE_PRESETS, Particles, Shaker, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World, dcos, dsin, datan2 } from '@hayao';
 import { initialGv, parseRoom, stepGv, DOOR_RECT, KEY_AT, PLAYER, TILE_SIZE, type GvState } from './logic';
 import { ROOMS } from './rooms';
 
@@ -14,7 +14,10 @@ export const GV_INPUT_MAP: InputMap = {
   restart: ['KeyR'],
 };
 
-const PAL = { bg: '#151a12', rock: '#31402c', rockLine: '#465c3f', hero: '#e8f4d8', heroLine: '#8fb573', slash: '#fff8c8', chaser: '#c97b4a', darter: '#d84f6a', darterFlash: '#ffd0d0', sentry: '#8a6fc8', orb: '#c8a8ff', key: '#ffd75e', door: '#7a6248', heart: '#ff6d8a', text: '#93ab84' };
+// Kentō restyle — dark ground. Actors on distinct BRIGHT hue families:
+// hero=gofun/matsu, chaser=kaki (warm), darter=shu (danger), sentry+orb=fuji (arcane),
+// key=ko (treasure gold), heart=saku (health), door=kinako (wood), terrain=neutral ramp.
+const PAL = { bg: KENTO.kuro, rock: KENTO.sumiSoft, rockLine: KENTO.stone, hero: KENTO.gofun, heroLine: KENTO.matsu, slash: KENTO.ko, chaser: KENTO.kaki, darter: KENTO.shu, darterFlash: KENTO.gofun, sentry: KENTO.fuji, orb: KENTO.fuji, key: KENTO.ko, door: KENTO.kinako, heart: KENTO.saku, text: KENTO.kinako, enemyLine: KENTO.sumi, rimLight: KENTO.gofun, doorLine: KENTO.sumi };
 
 export function gvState(world: World): GvState {
   return world.state.gv as GvState;
@@ -101,15 +104,15 @@ class GvView extends Node {
       const flash = e.hurt > 0 || (e.kind === 'darter' && e.state === 'telegraph' && Math.floor(e.t * 12) % 2 === 0);
       const fill = flash ? PAL.darterFlash : e.kind === 'chaser' ? PAL.chaser : e.kind === 'darter' ? PAL.darter : PAL.sentry;
       const shape = e.kind === 'sentry' ? ({ kind: 'rect', w: 30, h: 30, r: 8 } as const) : ({ kind: 'circle', radius: 13 } as const);
-      this.dynamic.addChild(new Sprite({ pos: { x: e.x, y: e.y }, z: 5, shape, fill, stroke: '#1c140f', strokeWidth: 2 }));
+      this.dynamic.addChild(new Sprite({ pos: { x: e.x, y: e.y }, z: 5, shape, fill, stroke: PAL.enemyLine, strokeWidth: 2 }));
     }
     for (const o of s.orbs) this.dynamic.addChild(new Sprite({ pos: { x: o.x, y: o.y }, z: 5, shape: { kind: 'circle', radius: 8 }, fill: PAL.orb }));
-    if (s.keyOnGround && s.room === 2) this.dynamic.addChild(new Sprite({ pos: KEY_AT, z: 4, shape: { kind: 'poly', points: [0, -12, 8, 0, 0, 12, -8, 0], closed: true }, fill: PAL.key, stroke: '#fff', strokeWidth: 2 }));
+    if (s.keyOnGround && s.room === 2) this.dynamic.addChild(new Sprite({ pos: KEY_AT, z: 4, shape: { kind: 'poly', points: [0, -12, 8, 0, 0, 12, -8, 0], closed: true }, fill: PAL.key, stroke: PAL.rimLight, strokeWidth: 2 }));
     if (!s.doorOpen && (s.room === 1 || s.room === 3)) {
       const y = s.room === 1 ? DOOR_RECT.y + 16 : 16;
-      this.dynamic.addChild(new Sprite({ pos: { x: DOOR_RECT.x + 32, y }, z: 3, shape: { kind: 'rect', w: 64, h: 32, r: 4 }, fill: PAL.door, stroke: '#3d2f20', strokeWidth: 3 }));
+      this.dynamic.addChild(new Sprite({ pos: { x: DOOR_RECT.x + 32, y }, z: 3, shape: { kind: 'rect', w: 64, h: 32, r: 4 }, fill: PAL.door, stroke: PAL.doorLine, strokeWidth: 3 }));
     }
-    if (room.heart) this.dynamic.addChild(new Sprite({ pos: room.heart, z: 4, shape: { kind: 'circle', radius: 14 }, fill: PAL.heart, stroke: '#fff', strokeWidth: 3 }));
+    if (room.heart) this.dynamic.addChild(new Sprite({ pos: room.heart, z: 4, shape: { kind: 'circle', radius: 14 }, fill: PAL.heart, stroke: PAL.rimLight, strokeWidth: 3 }));
 
     // Hero (blinks during i-frames) + slash arc.
     const blink = s.iframes > 0 && Math.floor(s.iframes * 14) % 2 === 0;

@@ -1,7 +1,7 @@
 // Bramblefall: the battle sim in world.state; pooled Canvas view; RTS HUD —
 // per-type counts for both armies, selection badge, command cursor, keep hp.
 
-import { Node, NodePool, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World } from '@hayao';
+import { KENTO, Node, NodePool, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World } from '@hayao';
 import { countBy, fieldMap, initialBf, stepBf, KEEPS, TILE_SIZE, type BfState, type UnitKind } from './logic';
 
 export const BF_INPUT_MAP: InputMap = {
@@ -17,7 +17,7 @@ export const BF_INPUT_MAP: InputMap = {
   restart: ['KeyR'],
 };
 
-const PAL = { bg: '#141a10', rock: '#31402c', rockLine: '#465c3f', p0: '#8fb573', p0b: '#c8e8b0', p1: '#c05555', p1b: '#e8a0a0', keep0: '#5a7a44', keep1: '#7a3050', cursor: '#ffd75e', text: '#93ab84' };
+const PAL = { bg: KENTO.kuro, rock: KENTO.sumiSoft, rockLine: KENTO.stone, p0: KENTO.matsu, p0b: KENTO.gofun, p1: KENTO.shu, p1b: KENTO.saku, keep0: KENTO.matsuDeep, keep1: KENTO.shuDeep, cursor: KENTO.ko, text: KENTO.kinako };
 const KIND_R: Record<UnitKind, number> = { spear: 7, cavalry: 10, archer: 6 };
 
 export function bfState(world: World): BfState {
@@ -41,7 +41,7 @@ class BfView extends Node {
       for (let tx = 0; tx < map.cols; tx++)
         if (tileAt(map, tx, ty) === TILE.SOLID)
           this.layer.addChild(new Sprite({ pos: { x: (tx + 0.5) * TILE_SIZE, y: (ty + 0.5) * TILE_SIZE }, z: 2, shape: { kind: 'rect', w: TILE_SIZE, h: TILE_SIZE }, fill: PAL.rock, stroke: PAL.rockLine, strokeWidth: 1 }));
-    KEEPS.forEach((k, i) => this.keeps.push(this.layer.addChild(new Sprite({ pos: { x: k.x, y: k.y }, z: 3, shape: { kind: 'rect', w: 72, h: 88, r: 10 }, fill: i === 0 ? PAL.keep0 : PAL.keep1, stroke: '#1a2410', strokeWidth: 3 }))));
+    KEEPS.forEach((k, i) => this.keeps.push(this.layer.addChild(new Sprite({ pos: { x: k.x, y: k.y }, z: 3, shape: { kind: 'rect', w: 72, h: 88, r: 10 }, fill: i === 0 ? PAL.keep0 : PAL.keep1, stroke: KENTO.sumi, strokeWidth: 3 }))));
     this.unitPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 5, shape: { kind: 'circle', radius: 8 }, fill: PAL.p0 }));
     this.cursor = this.layer.addChild(new Sprite({ z: 7, shape: { kind: 'rect', w: 34, h: 34, r: 6 }, fill: 'none', stroke: PAL.cursor, strokeWidth: 3 }));
     this.hud = this.layer.addChild(new Text({ pos: { x: 640, y: 28 }, z: 8, size: 19, align: 'center', fill: PAL.text, text: '' }));

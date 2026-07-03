@@ -3,7 +3,7 @@
 // Pales are barely-visible until the light finds them. Spatial growls pan with
 // the nearest stalker; a heartbeat quickens as dread rises.
 
-import { Node, NodePool, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World, dhypot } from '@hayao';
+import { KENTO, Node, NodePool, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World, dhypot } from '@hayao';
 import { inLight, initialPw, stepPw, DAWN_AT, LANTERN, TILE_SIZE, woodsMap, type PwState } from './logic';
 
 export const PW_INPUT_MAP: InputMap = {
@@ -14,7 +14,7 @@ export const PW_INPUT_MAP: InputMap = {
   restart: ['KeyR'],
 };
 
-const PAL = { bg: '#050607', dark: '#0a0c0e', treeDark: '#0e1210', treeLit: '#2a3d2a', groundLit: '#1a201a', player: '#f0e8d0', lantern: '#ffd75e', can: '#c97b4a', pale: '#dbe6f2', text: '#6a7a6a' };
+const PAL = { bg: KENTO.yohaku, dark: KENTO.sumi, treeDark: KENTO.darkLine, treeLit: KENTO.matsuDeep, groundLit: KENTO.sumiSoft, player: KENTO.gofun, lantern: KENTO.ko, can: KENTO.kaki, pale: KENTO.asagi, text: KENTO.kinako };
 
 export function pwState(world: World): PwState {
   return world.state.pw as PwState;
@@ -36,7 +36,7 @@ class PwView extends Node {
     this.tilePool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 1, shape: { kind: 'rect', w: TILE_SIZE, h: TILE_SIZE }, fill: PAL.groundLit }));
     this.glow = this.layer.addChild(new Sprite({ z: 2, shape: { kind: 'circle', radius: LANTERN.radius }, fill: PAL.lantern, opacity: 0.06 }));
     this.entPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 4, shape: { kind: 'circle', radius: 10 }, fill: PAL.can }));
-    this.player = this.layer.addChild(new Sprite({ z: 5, shape: { kind: 'circle', radius: 11 }, fill: PAL.player, stroke: '#0a0c0e', strokeWidth: 2 }));
+    this.player = this.layer.addChild(new Sprite({ z: 5, shape: { kind: 'circle', radius: 11 }, fill: PAL.player, stroke: KENTO.sumi, strokeWidth: 2 }));
     this.hud = this.layer.addChild(new Text({ pos: { x: 640, y: 26 }, z: 8, size: 19, align: 'center', fill: PAL.text, text: '' }));
     this.layer.addChild(new Text({ pos: { x: 640, y: 692 }, z: 8, size: 15, align: 'center', fill: PAL.text, text: 'stay in the light · fetch fuel cans before the lantern dies · dawn comes at 90s' }));
   }

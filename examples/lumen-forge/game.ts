@@ -2,7 +2,7 @@
 // whose forge visibly intensifies with production. All mutations flow through
 // input actions ('forge', 'buy-N') so UI clicks live in the input log.
 
-import { defineGame, Node, Sprite, TAU, type InputMap, type World, dcos, dsin, dlog10 } from '@hayao';
+import { defineGame, Node, Sprite, TAU, KENTO, type InputMap, type World, dcos, dsin, dlog10 } from '@hayao';
 import { buy, forge, initialEconomy, production, tick, unlockedCount, TIERS, type EconomyState } from './logic';
 
 export const LF_INPUT_MAP: InputMap = {
@@ -14,7 +14,7 @@ export function lfState(world: World): EconomyState {
   return world.state.lf as EconomyState;
 }
 
-const PAL = { bg: '#0d1026', forge: '#ffc857', forgeCore: '#fff3d6', ember: '#ff9d47', fly: '#c8f7ae', ink: '#8e9bc4' };
+const PAL = { bg: KENTO.kuro, forge: KENTO.ko, forgeCore: KENTO.gofun, ember: KENTO.kaki, fly: KENTO.matsu, ink: KENTO.kinako };
 
 class ForgeView extends Node {
   override readonly type = 'ForgeView';

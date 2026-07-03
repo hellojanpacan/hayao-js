@@ -3,7 +3,7 @@
 // struck, kinematic flipper blades, and a gun-metal ball.
 
 import {
-  Node, NodePool, PARTICLE_PRESETS, Particles, Sprite, Text, audio,
+  KENTO, Node, NodePool, PARTICLE_PRESETS, Particles, Sprite, Text, audio,
   defineGame, dhypot, hideScreen, registerNode, showScreen, worldPoints,
   type InputMap, type World,
 } from '@hayao';
@@ -19,15 +19,15 @@ export const PB_INPUT_MAP: InputMap = {
 };
 
 const PAL = {
-  bg: '#ece4d2',       // parlor cream
-  felt: '#31504a',     // deep table felt
-  brass: '#b08d4a',    // rails and blades
-  bell: '#c9563c',     // unlit bell
-  bellLit: '#f4c65a',  // struck bell
-  ball: '#3a3633',     // gun metal
-  ink: '#232228',
-  text: '#57503f',
-  feltText: '#c9d6c2',
+  bg: KENTO.washi,           // parlor cream -> light ground
+  felt: KENTO.matsuDeep,     // deep table felt -> pine green
+  brass: KENTO.koDeep,       // rails and blades -> ochre-gold
+  bell: KENTO.shuDeep,       // unlit bell -> vermilion
+  bellLit: KENTO.ko,         // struck bell -> bright gold glow
+  ball: KENTO.sumiSoft,      // gun metal -> dark neutral
+  ink: KENTO.sumi,           // outlines
+  text: KENTO.stone,         // muted text
+  feltText: KENTO.gofun,     // light text on dark felt
 };
 
 export function pbState(world: World): PbState {
@@ -79,7 +79,7 @@ class PbView extends Node {
     if (ev.bells > 0) audio.blip(720 + s.bells.filter((b) => b.lit).length * 90);
     if (ev.jackpot) {
       audio.success();
-      this.fx.burst(20, { x: 640, y: 300 }, PARTICLE_PRESETS.burst([PAL.bellLit, '#fff2c9']));
+      this.fx.burst(20, { x: 640, y: 300 }, PARTICLE_PRESETS.burst([PAL.bellLit, KENTO.gofun]));
     }
     if (ev.drained) audio.blip(140);
     if (ev.won) showScreen({ title: 'Every bell rung', body: `${s.score} — the parlor pays out.`, actions: [{ label: 'Rack another table', primary: true, onSelect: () => { world.state.pb = initialPb(); hideScreen(); } }] });
