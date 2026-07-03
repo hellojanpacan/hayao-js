@@ -1,0 +1,42 @@
+{
+  "slug": "beatgate",
+  "spec": "bench/specs/01-beatgate.md",
+  "worktree": "/tmp/hayao-bench/pilot-beatgate",
+  "head": "d91977d",
+  "scoredAt": "2026-07-03T19:56:26.660Z",
+  "agentExit": null,
+  "wallSeconds": 824,
+  "gates": {
+    "check": true,
+    "test": true,
+    "invariants": true,
+    "verify": true,
+    "ownVerifyFailures": 0,
+    "otherExamplesFailing": []
+  },
+  "contract": {
+    "required": [],
+    "hasTest": true,
+    "hasGolden": true,
+    "hasPureLogic": true,
+    "hubRegistered": true
+  },
+  "done": true,
+  "iterations": {
+    "verifyRuns": 4,
+    "checkRuns": 2,
+    "source": "transcript"
+  },
+  "usage": {
+    "tokens": null,
+    "costUsd": null,
+    "numTurns": null,
+    "cliDurationMs": null
+  },
+  "hallucinated": {
+    "shipped": [],
+    "transient": []
+  },
+  "outOfScopeChanges": [],
+  "sessionMd": "# SESSION.md — beatgate build notes\n\n## Runs before green\n\n- `npm run check`: **green on the 1st run.**\n- `npm test`: green on the **2nd** run. The one failure was my own test's\n  float naivety (`0.55 - 0.5 > 0.05` in binary), not engine or game logic;\n  fixed by using binary-exact edge values (0.0625 halves).\n- `npm run verify`: green on the **2nd** run. First run (with\n  `UPDATE_GOLDEN=1`) had 3 failures:\n  1–2. \"confirm restarts on the win/lose screen\" — the scripted run's final\n  scoring press was still *held* when I sent the restart press, so there was\n  no rising edge. Fixed with an explicit release frame. (This exact trap is\n  documented — FUN.md Part 3: \"bot-driver inputs release between edges\" — I\n  read it and still walked into it; the docs are fine, the trap is just real.)\n  3. My time-to-first-hit feel window (0.3–5s) was invented before measuring;\n  seed 1 places the first gate near the sweep start, so the first hit lands at\n  0.2s. Retuned the lower bound to the start-grace length (the earliest a hit\n  is even possible), which is a derived bound rather than a vibed one.\n\n## `@hayao` names that turned out not to exist\n\nNone. I grepped `docs/API.md` before writing any import, per AGENTS.md, and\nevery name used (`defineGame`, `createWorld`, `Node`, `Sprite`, `Text`,\n`audio`, `showScreen`/`hideScreen`, `registerNode`, `checkDeterministic`,\n`assertSnapshotStable`, `recordTimeline`, `firstFrame`, `inputDensity`,\n`longestLull`, `changeFrames`, `renderFilmstrip`, `runBrowser`,\n`DEFAULT_INPUT_MAP`-shaped `InputMap`) existed with the documented signature.\n\n## Where the docs were wrong, missing, or misleading\n\n1. **VERIFICATION.md \"The gate\" section is stale.** It says \"Wire your game's\n   puzzle + game into `scripts/verify.ts`\" — but `scripts/verify.ts` is an\n   auto-discovering runner (and CONVENTIONS.md forbids touching `scripts/`).\n   The real mechanism (ship `examples/<slug>/verify.ts` with a default-export\n   `verify(t)`) is documented only in a comment at the top of\n   `scripts/verify.ts` itself.\n2. **No documented recipe for a title screen, and no example ships one.** The\n   spec's \"standard title / game-over overlays\" implies a standard; in the\n   repo, all 21 examples start straight in gameplay and use `showScreen` only\n   for win/lose. I had to design the title phase fresh: a `mode: 'title'` in\n   the pure state so the loop is sim-driven and verifiable headlessly, with\n   the DOM overlay as a projection of it.\n3. **Undocumented double-fire between overlays and the input map.** The\n   overlay's built-in keyboard handler consumes Enter/Space to trigger\n   `onSelect`, but the same keydown also reaches the input system as a\n   `confirm` edge on the next step — so dismissing a game-over screen with\n   Enter would instantly score a miss in the fresh run. No doc mentions this.\n   I absorbed it with `START_GRACE` frames (confirm swallowed for 12 frames\n   after a (re)start), which also protects double-taps; worth a line in\n   CONVENTIONS or a fix in `overlay.ts` (stopPropagation on handled keys).\n4. **`assertSnapshotStable` doesn't assert.** Despite the `assert*` name it\n   returns `{ ok, hashA, hashB }` and never throws (API.md shows the\n   signature, so no harm done — but the name promises `assertSolvable`\n   semantics it doesn't have).\n5. Minor: `renderFilmstrip` captures frame 0 before the view's first\n   `onProcess`, so any shape set in `redraw()` rather than construction shows\n   its constructor default in the first panel. Cosmetic only; invisible in\n   the browser (first rAF step runs before paint).\n"
+}
