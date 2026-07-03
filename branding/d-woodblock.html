@@ -4,11 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hayao — Woodblock identity</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --washi:#f1ebdd; --washi-2:#f8f3e9; --sumi:#242019; --sumi-soft:#5c5347;
-    --stone:#8a8172; --ai:#2b4257; --ai-2:#5a7994; --shu:#b5442d; --line:#ddd3bf;
-    --mincho:"Hiragino Mincho ProN","Yu Mincho","Songti SC",Georgia,serif;
+    --washi:#f1ebdd; --washi-2:#f8f3e9; --sumi:#242019; --sumi-soft:#4f473b;
+    --stone:#6f6555; --ai:#2b4257; --ai-2:#5a7994; --shu:#b5442d; --shu-warm:#d4694f; --line:#ddd3bf;
+    --mincho:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",Georgia,serif;
     --body:"Iowan Old Style",Palatino,"Palatino Linotype",Georgia,serif;
     --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
   }
@@ -16,68 +19,66 @@
   html,body{margin:0;background:var(--washi);color:var(--sumi);font-family:var(--body);
     line-height:1.7;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
   .wrap{max-width:900px;margin:0 auto;padding:0 40px}
-  /* labels + rules */
-  .lab{font-family:var(--mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--stone)}
-  .rule{height:1px;background:var(--line);border:0;margin:0}
+  /* labels — serif small-caps, editorial */
+  .lab{font-family:var(--body);font-variant:small-caps;font-size:14px;letter-spacing:.14em;color:var(--stone)}
   a{color:var(--ai);text-decoration:none;border-bottom:1px solid var(--line)}
-  /* editorial rows: narrow label column + content */
-  .row{display:grid;grid-template-columns:150px 1fr;gap:32px;padding:60px 0;border-top:1px solid var(--line)}
-  .row > .lab{padding-top:5px}
-  .row h2{font-family:var(--mincho);font-weight:500;font-size:27px;letter-spacing:.01em;margin:0 0 16px;line-height:1.3}
+  .row{display:grid;grid-template-columns:124px 1fr;gap:36px;padding:60px 0;border-top:1px solid var(--line)}
+  .row > .lab{padding-top:8px}
+  .row h2{font-family:var(--mincho);font-weight:600;font-size:27px;letter-spacing:.005em;margin:0 0 16px;line-height:1.32}
   .row p{margin:0 0 16px;font-size:17px;color:#332f27;max-width:60ch}
   .row p:last-child{margin-bottom:0}
-  .kicker-jp{font-family:var(--mincho);font-size:15px;color:var(--stone);margin-right:8px}
+  .kicker-jp{font-family:var(--mincho);font-size:16px;color:var(--stone);margin-right:9px}
   /* ─── hero ─── */
   .hero{padding:96px 0 84px;display:grid;grid-template-columns:1fr auto;gap:40px;align-items:center}
-  .hero .lab{margin:0 0 30px}
-  .logo{font-family:var(--mincho);font-weight:500;font-size:88px;line-height:.95;letter-spacing:.005em;color:var(--sumi)}
-  .logo .js{font-size:30px;color:var(--stone);font-weight:400}
-  .essence{font-family:var(--mincho);font-size:23px;color:var(--ai);margin:26px 0 0;max-width:30ch;line-height:1.5}
+  .hero .lab{margin:0 0 28px}
+  .logo{font-family:var(--mincho);font-weight:700;font-size:84px;line-height:.95;letter-spacing:.004em;color:var(--sumi)}
+  .logo .js{font-size:29px;color:var(--stone);font-weight:500;vertical-align:baseline}
+  .claim{font-family:var(--mincho);font-weight:600;font-size:26px;color:var(--sumi);margin:22px 0 6px;letter-spacing:.005em}
+  .essence{font-family:var(--mincho);font-size:20px;color:var(--ai);margin:0;max-width:26ch;line-height:1.45;font-weight:500}
   .mark-hero{width:150px;height:150px}
-  /* ─── the mark: construction ─── */
+  /* ─── the mark ─── */
   .markgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:8px}
   .markcard{background:var(--washi-2);border:1px solid var(--line);border-radius:4px;padding:22px;text-align:center}
   .markcard svg{width:96px;height:96px}
-  .markcard .cap{font-family:var(--mono);font-size:11px;color:var(--stone);margin-top:14px;letter-spacing:.04em}
+  .markcard .cap{font-family:var(--mono);font-size:11px;color:var(--stone);margin-top:14px;letter-spacing:.03em}
   .markcard .cap b{color:var(--sumi);font-weight:400}
-  /* clear space / reversed */
   .lockups{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:8px}
-  .lock{border:1px solid var(--line);border-radius:4px;padding:30px;display:flex;align-items:center;gap:18px;background:var(--washi-2)}
+  .lock{border:1px solid var(--line);border-radius:4px;padding:30px;display:flex;align-items:center;gap:20px;background:var(--washi-2)}
   .lock.dark{background:var(--sumi);border-color:var(--sumi)}
-  .lock .lg{font-family:var(--mincho);font-size:38px;color:var(--sumi)}
+  .lock .lg{font-family:var(--mincho);font-weight:700;font-size:38px;color:var(--sumi)}
   .lock.dark .lg{color:var(--washi)}
-  .lock .lg .js{font-size:15px;color:var(--stone)}
-  .lock svg{width:52px;height:52px;flex:0 0 auto}
+  .lock .lg .js{font-size:14px;color:var(--stone);font-weight:500}
+  .lock svg{width:50px;height:50px;flex:0 0 auto}
   /* ─── palette ─── */
   .pal{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px}
   .swx{border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--washi-2)}
   .swx .top{height:96px;display:flex;align-items:flex-start;justify-content:flex-end;padding:10px}
-  .swx .jp{font-family:var(--mincho);font-size:22px}
+  .swx .jp{font-family:var(--mincho);font-size:23px;font-weight:600}
   .swx .meta{padding:12px 14px}
   .swx .nm{font-size:15px;color:var(--sumi)}
   .swx .hex{font-family:var(--mono);font-size:12px;color:var(--stone);letter-spacing:.02em}
   .usage{font-size:14px;color:var(--sumi-soft);margin-top:20px;max-width:60ch}
   .usage .dab{display:inline-block;width:10px;height:10px;border-radius:50%;vertical-align:0;margin:0 2px}
   /* ─── type ─── */
-  .scale > div{border-top:1px solid var(--line);padding:16px 0;display:grid;grid-template-columns:110px 1fr;gap:20px;align-items:baseline}
+  .scale > div{border-top:1px solid var(--line);padding:16px 0;display:grid;grid-template-columns:96px 1fr;gap:20px;align-items:baseline}
   .scale > div:first-child{border-top:0}
-  .scale .tag{font-family:var(--mono);font-size:11px;color:var(--stone);letter-spacing:.08em}
+  .scale .tag{font-family:var(--mono);font-size:11px;color:var(--stone);letter-spacing:.06em}
   .scale .disp{font-family:var(--mincho);color:var(--sumi)}
-  .scale .s1{font-size:40px;font-weight:500} .scale .s2{font-size:24px} .scale .s3{font-size:17px;font-family:var(--body)}
+  .scale .s1{font-size:40px;font-weight:700} .scale .s2{font-size:24px;font-weight:600} .scale .s3{font-size:17px;font-family:var(--body)}
   .scale .s4{font-family:var(--mono);font-size:14px;color:var(--sumi-soft)}
   /* ─── care ─── */
   .care{background:var(--washi-2);border:1px solid var(--line);border-left:3px solid var(--shu);border-radius:4px;padding:26px 30px;margin-top:8px}
-  .care h3{font-family:var(--mincho);font-weight:500;font-size:20px;margin:0 0 14px}
+  .care h3{font-family:var(--mincho);font-weight:600;font-size:20px;margin:0 0 14px}
   .dd{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin-top:6px}
-  .dd ul{margin:8px 0 0;padding-left:18px} .dd li{font-size:14px;color:var(--sumi-soft);margin:0 0 7px}
-  .dd .hd{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase}
+  .dd ul{margin:8px 0 0;padding-left:18px} .dd li{font-size:14px;color:var(--sumi-soft);margin:0 0 7px;line-height:1.55}
+  .dd .hd{font-family:var(--body);font-variant:small-caps;font-size:14px;letter-spacing:.12em}
   .dd .do .hd{color:var(--ai)} .dd .dont .hd{color:var(--shu)}
-  .foot{padding:56px 0 90px;color:var(--stone);font-size:13px;font-family:var(--mono);letter-spacing:.03em}
+  .foot{padding:56px 0 90px;color:var(--stone);font-size:13px;font-family:var(--mono);letter-spacing:.02em;line-height:1.8}
   .foot a{color:var(--ai)}
   @media(max-width:680px){
-    .wrap{padding:0 24px}.hero{grid-template-columns:1fr;padding:64px 0 48px}.logo{font-size:60px}
+    .wrap{padding:0 24px}.hero{grid-template-columns:1fr;padding:60px 0 44px}.logo{font-size:58px}
     .row{grid-template-columns:1fr;gap:12px;padding:44px 0}.markgrid,.pal{grid-template-columns:1fr}
-    .lockups,.dd{grid-template-columns:1fr}.mark-hero{width:110px;height:110px}
+    .lockups,.dd{grid-template-columns:1fr}.mark-hero{width:112px;height:112px}.claim{font-size:22px}
   }
 </style>
 </head>
@@ -89,12 +90,13 @@
     <div>
       <div class="lab">Hayao — visual identity · direction D</div>
       <div class="logo">hayao<span class="js">.js</span></div>
-      <p class="essence">Carve the registration once, and every impression lands in the same place.</p>
+      <h1 class="claim">A deterministic, headless game engine.</h1>
+      <p class="essence">Carve the registration once — every impression lands in the same place.</p>
     </div>
     <svg class="mark-hero" viewBox="0 0 120 120" role="img" aria-label="Hayao mark: a kentō registration mark">
-      <rect x="26" y="26" width="68" height="68" fill="none" stroke="#242019" stroke-width="1" opacity=".22"/>
-      <path d="M26 94 h20 M26 94 v-20" fill="none" stroke="#b5442d" stroke-width="4.5"/>
-      <path d="M62 94 h18" fill="none" stroke="#b5442d" stroke-width="4.5"/>
+      <rect x="32" y="30" width="58" height="58" fill="none" stroke="#242019" stroke-width="1.5" opacity=".32"/>
+      <path d="M32 88 h24 M32 88 v-24" fill="none" stroke="#b5442d" stroke-width="6"/>
+      <path d="M66 88 h20" fill="none" stroke="#b5442d" stroke-width="6"/>
     </svg>
   </header>
 
@@ -102,14 +104,27 @@
   <section class="row">
     <div class="lab">the idea</div>
     <div>
-      <h2><span class="kicker-jp">見当</span>Kentō — the mark that makes every print identical.</h2>
-      <p>Before a colour is printed, the carver cuts <b>kentō</b> registration marks into the block: an
-        L-shaped <i>kagi</i> at one corner and a straight <i>hikitsuke</i> along an edge. The paper is seated against
-        them for every pass, so a dozen blocks land in perfect alignment — the first impression and the hundredth,
-        the same.</p>
-      <p>That is Hayao's promise, drawn from craft rather than jargon: <b>same seed, same build → the same result,
-        every run.</b> Determinism is a registration mark for software. The identity is built on that one honest
-        rhyme — quiet, exact, and made by hand.</p>
+      <h2><span class="kicker-jp">見当</span>Kentō — the mark that makes every impression land in the same place.</h2>
+      <p>Before a colour is printed, the carver cuts <b>kentō</b> registration marks into the block: an L-shaped
+        <i>kagi</i> at one corner and a straight <i>hikitsuke</i> along an edge. The paper is seated against them for
+        every pass, so a dozen blocks land in perfect alignment — the first impression and the hundredth, framed
+        exactly alike.</p>
+      <p>That is Hayao's promise, drawn from craft rather than jargon: <b>same seed and build fix the frame → the same
+        result, every run.</b> Registration is determinism for software. The whole identity rests on that one honest
+        rhyme — and the mark is a <b>proof</b>, not an ornament: wherever the seal appears, a verifiable claim appears
+        with it.</p>
+    </div>
+  </section>
+
+  <!-- ═══════════ THE HONEST NOTE ═══════════ -->
+  <section class="row">
+    <div class="lab">the borrow</div>
+    <div>
+      <h2>A mark of the hand, held to a machine's account.</h2>
+      <p>A kentō is the trace of a human carver. Hayao is AI-first, so it does not claim the handwork — it claims the
+        <b>discipline</b>. Determinism is what makes machine-made output <i>accountable</i>: every run reproducible,
+        inspectable, and provable, the opposite of disposable generation. That is why this craft language fits, and
+        the standard it holds itself to is written plainly in <a href="#care">the duty of care</a> below.</p>
     </div>
   </section>
 
@@ -117,27 +132,24 @@
   <section class="row">
     <div class="lab">the mark</div>
     <div>
-      <h2>A registration mark, not a logo of a thing.</h2>
+      <h2>A registration mark — used identically everywhere.</h2>
       <p>The mark is the kentō itself: the vermilion <i>kagi</i> and <i>hikitsuke</i> holding the corner of an implied
-        sheet. It is abstract and non-linguistic by design — a printer's tool, never a character.</p>
+        sheet. It is abstract and non-linguistic by design — a printer's tool, never a character — and it is drawn the
+        same in every context, which literally enacts the idea it stands for.</p>
       <div class="markgrid">
         <div class="markcard">
-          <svg viewBox="0 0 120 120" aria-hidden="true">
-            <path d="M30 90 h26 M30 90 v-26" fill="none" stroke="#b5442d" stroke-width="6"/>
-          </svg>
-          <div class="cap"><b>kagi</b> · the corner (鉤)</div>
+          <svg viewBox="0 0 120 120" aria-hidden="true"><path d="M34 88 h28 M34 88 v-28" fill="none" stroke="#b5442d" stroke-width="7"/></svg>
+          <div class="cap"><b>kagi</b> · the corner</div>
         </div>
         <div class="markcard">
-          <svg viewBox="0 0 120 120" aria-hidden="true">
-            <path d="M46 90 h44" fill="none" stroke="#b5442d" stroke-width="6"/>
-          </svg>
+          <svg viewBox="0 0 120 120" aria-hidden="true"><path d="M42 88 h44" fill="none" stroke="#b5442d" stroke-width="7"/></svg>
           <div class="cap"><b>hikitsuke</b> · the guide</div>
         </div>
         <div class="markcard">
           <svg viewBox="0 0 120 120" aria-hidden="true">
-            <rect x="28" y="28" width="64" height="64" fill="none" stroke="#242019" stroke-width="1" opacity=".22"/>
-            <path d="M28 92 h20 M28 92 v-20" fill="none" stroke="#b5442d" stroke-width="6"/>
-            <path d="M62 92 h18" fill="none" stroke="#b5442d" stroke-width="6"/>
+            <rect x="32" y="30" width="58" height="58" fill="none" stroke="#242019" stroke-width="1.5" opacity=".32"/>
+            <path d="M32 88 h24 M32 88 v-24" fill="none" stroke="#b5442d" stroke-width="7"/>
+            <path d="M66 88 h20" fill="none" stroke="#b5442d" stroke-width="7"/>
           </svg>
           <div class="cap"><b>the mark</b> · seated</div>
         </div>
@@ -150,22 +162,22 @@
     <div class="lab">wordmark</div>
     <div>
       <h2>Mincho, set quietly, with room to breathe.</h2>
-      <p>The wordmark is a single Mincho line — high-contrast, brush-cut strokes — with the mark to its left. On ink,
-        it reverses to washi. Give it clear space equal to the height of the mark on every side.</p>
+      <p>A single Mincho line — high-contrast, brush-cut strokes — with the mark to its left. On ink it reverses to
+        washi and the vermilion warms for contrast. Clear space equals the height of the mark on every side.</p>
       <div class="lockups">
         <div class="lock">
           <svg viewBox="0 0 120 120" aria-hidden="true">
-            <rect x="26" y="26" width="68" height="68" fill="none" stroke="#242019" stroke-width="1.2" opacity=".22"/>
-            <path d="M26 94 h20 M26 94 v-20" fill="none" stroke="#b5442d" stroke-width="5"/>
-            <path d="M62 94 h18" fill="none" stroke="#b5442d" stroke-width="5"/>
+            <rect x="32" y="30" width="58" height="58" fill="none" stroke="#242019" stroke-width="1.6" opacity=".3"/>
+            <path d="M32 88 h24 M32 88 v-24" fill="none" stroke="#b5442d" stroke-width="6"/>
+            <path d="M66 88 h20" fill="none" stroke="#b5442d" stroke-width="6"/>
           </svg>
           <span class="lg">hayao<span class="js">.js</span></span>
         </div>
         <div class="lock dark">
           <svg viewBox="0 0 120 120" aria-hidden="true">
-            <rect x="26" y="26" width="68" height="68" fill="none" stroke="#f1ebdd" stroke-width="1.2" opacity=".3"/>
-            <path d="M26 94 h20 M26 94 v-20" fill="none" stroke="#d4694f" stroke-width="5"/>
-            <path d="M62 94 h18" fill="none" stroke="#d4694f" stroke-width="5"/>
+            <rect x="32" y="30" width="58" height="58" fill="none" stroke="#f1ebdd" stroke-width="1.6" opacity=".34"/>
+            <path d="M32 88 h24 M32 88 v-24" fill="none" stroke="#d4694f" stroke-width="6"/>
+            <path d="M66 88 h20" fill="none" stroke="#d4694f" stroke-width="6"/>
           </svg>
           <span class="lg">hayao<span class="js">.js</span></span>
         </div>
@@ -178,15 +190,15 @@
     <div class="lab">colour</div>
     <div>
       <h2>Traditional pigments, used with restraint.</h2>
-      <p>Three inks and a paper. Vermilion (<i>shu</i>) is a seal, not a fill — it appears only on the mark and a single
-        accent per view. The colours carry their historical Japanese names.</p>
+      <p>Three inks and a paper. Vermilion (<i>shu</i>) is a seal, not a fill — one per view, on the mark and nowhere
+        large. The core inks carry their historical Japanese names.</p>
       <div class="pal">
         <div class="swx"><div class="top" style="background:#f1ebdd"></div><div class="meta"><div class="nm">washi · paper</div><div class="hex">#f1ebdd</div></div></div>
         <div class="swx"><div class="top" style="background:#242019"><span class="jp" style="color:#8a8172">墨</span></div><div class="meta"><div class="nm">sumi · ink</div><div class="hex">#242019</div></div></div>
-        <div class="swx"><div class="top" style="background:#2b4257"><span class="jp" style="color:#5a7994">藍</span></div><div class="meta"><div class="nm">ai · indigo</div><div class="hex">#2b4257</div></div></div>
-        <div class="swx"><div class="top" style="background:#5a7994"><span class="jp" style="color:#cfe0ec">縹</span></div><div class="meta"><div class="nm">hanada · pale indigo</div><div class="hex">#5a7994</div></div></div>
+        <div class="swx"><div class="top" style="background:#2b4257"><span class="jp" style="color:#7f9bb2">藍</span></div><div class="meta"><div class="nm">ai · indigo</div><div class="hex">#2b4257</div></div></div>
+        <div class="swx"><div class="top" style="background:#5a7994"></div><div class="meta"><div class="nm">pale indigo · UI blue</div><div class="hex">#5a7994</div></div></div>
         <div class="swx"><div class="top" style="background:#b5442d"><span class="jp" style="color:#f0cabf">朱</span></div><div class="meta"><div class="nm">shu · vermilion</div><div class="hex">#b5442d</div></div></div>
-        <div class="swx"><div class="top" style="background:#8a8172"></div><div class="meta"><div class="nm">stone · UI neutral</div><div class="hex">#8a8172</div></div></div>
+        <div class="swx"><div class="top" style="background:#6f6555"></div><div class="meta"><div class="nm">stone · UI neutral</div><div class="hex">#6f6555</div></div></div>
       </div>
       <p class="usage"><span class="dab" style="background:#b5442d"></span> One vermilion per view — the seal. Ink and
         indigo do the reading; paper does the resting. Never fill a large field with <i>shu</i>.</p>
@@ -198,9 +210,9 @@
     <div class="lab">type</div>
     <div>
       <h2>Mincho for voice, mono for the machine.</h2>
-      <p>Display and headings set in a Mincho serif <span style="color:var(--stone)">(target face — this page falls back
-        to Georgia off Apple/JP systems; bundle a licensed Mincho or a high-contrast serif such as Shippori Mincho as a
-        webfont)</span>. Code and labels in a single monospace.</p>
+      <p>Display and headings set in <b>Shippori Mincho</b> — an open-licence high-contrast Mincho that renders Latin
+        and kana in one family, so the wordmark and any kanji share a hand. Code, labels, and CLI output in a single
+        monospace. Running text in a quiet serif.</p>
       <div class="scale">
         <div><div class="tag">DISPLAY</div><div class="disp s1">carve once, print identical</div></div>
         <div><div class="tag">HEADING</div><div class="disp s2">A deterministic engine</div></div>
@@ -215,28 +227,28 @@
     <div class="lab">in use</div>
     <div>
       <h2>The system, applied.</h2>
-      <p>Favicon, site header, README hero, game cards, and a note on motion live on the applications sheet.</p>
+      <p>Favicon, site header, README hero, verified-example cards, the CLI seal, and a note on motion live on the
+        applications sheet.</p>
       <p><a href="./d-applications.html">Open the applications sheet →</a></p>
     </div>
   </section>
 
   <!-- ═══════════ DUTY OF CARE ═══════════ -->
-  <section class="row">
+  <section class="row" id="care">
     <div class="lab">duty of care</div>
     <div>
       <h2>Homage is earned, not worn.</h2>
-      <p>This identity borrows a living craft. It is built to read as respect — and the same restraint that keeps it
-        respectful is what keeps it elegant. Two rules do most of the work: <b>credit the technique</b>, and
-        <b>abstract, never counterfeit</b>.</p>
+      <p>This identity borrows a living craft. The same restraint that keeps it respectful is what keeps it elegant.
+        Two rules do most of the work: <b>credit the technique</b>, and <b>abstract, never counterfeit</b>.</p>
       <div class="care">
-        <h3>Before any public use</h3>
+        <h3>A launch gate — not a footnote</h3>
         <div class="dd">
           <div class="do">
             <div class="hd">Do</div>
             <ul>
+              <li>Commission a paid review from a Japanese designer with authority to say no — <b>before</b> first public use.</li>
               <li>Credit kentō and the ukiyo-e lineage on the about page.</li>
               <li>Keep every mark abstract and non-linguistic.</li>
-              <li>Commission a paid review from a Japanese designer with authority to say no.</li>
               <li>Use real colour names accurately (藍 ai, 朱 shu, 墨 sumi).</li>
             </ul>
           </div>
@@ -244,9 +256,9 @@
             <div class="hd">Don't</div>
             <ul>
               <li>Invent kanji, or set text in Japanese you can't read.</li>
+              <li>Use a kanji as a decorative UI glyph — the mark is abstract for this reason.</li>
               <li>Claim exactness the artwork doesn't hold — it is seigaiha-<i>inspired</i>.</li>
               <li>Imply any tie to a filmmaker or studio. The name is evocative, standalone, not an endorsement.</li>
-              <li>Fill large fields with vermilion, or crowd the layout. Ma is the point.</li>
             </ul>
           </div>
         </div>

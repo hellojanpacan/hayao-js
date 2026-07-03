@@ -45,7 +45,7 @@ land here and in [LESSONS.md](LESSONS.md).
 | 17 | City/colony builder | Islanders × Mini Motorways | placement scoring, growth sim, minimal viz | ✅ |
 | 18 | Rhythm | NecroDancer-lite | audio clock vs sim clock determinism | ✅ |
 | 19 | Physics arcade | Breakout roguelite / Peggle | continuous collision, deterministic FP physics | ✅ |
-| 20 | Top-down racing | Micro Machines-lite | car handling feel, racing-line AI | — |
+| 20 | Top-down racing | Micro Machines-lite | car handling feel, racing-line AI | ✅ |
 | 21 | Narrative decisions | Reigns-lite | content DSL, long-arc balance sim | — |
 
 Order of battle: waves grouped by shared engine needs — movement/collision
@@ -584,6 +584,31 @@ states) clears the board in 7 balls; a 24,000px/s ball cannot tunnel and a
   than it arrived' catches restitution/normal bugs that look like
   liveliness. Feel-critical physics deserves conservation checks, not just
   trajectory eyeballing.
+
+### 20 · Vellgrove Rally — top-down racing (Micro Machines-lite) ✅
+
+**Shipped:** whole-track fixed camera, arcade handling (thrust, hard lateral
+grip, high-speed UNDERSTEER, grass drag), a 12-waypoint circuit with
+ordered-checkpoint laps, two racing-line rivals (seek-ahead + brake-for-bend),
+countdown start, live positions. Verified: the line finishes 3 laps in 26.5s;
+braking beats flat-out (26.2 vs 27.7 — cornering is a real skill); infield
+cutting advances nothing; grass caps speed at 17%% of tarmac; the player-bot
+wins P1 through the input layer; golden grand prix.
+
+**Findings:**
+
+- **Racing feel is an inequality chain:** turn radius (speed/steer-authority)
+  vs corner radius vs track width. With full authority at speed, flat-out
+  made every bend and braking was pointless — the fix wasn't more grip but
+  UNDERSTEER (authority falls past 240px/s), which makes the speed/line
+  tradeoff physically real. Same lesson family as Fernrow's calendar and
+  Shard Ascent's envelope: derive the design constraint, don't vibe it.
+- **Ordered checkpoints are the whole anti-cheat:** only the NEXT waypoint
+  counts, so the infield is worthless by construction — one comparison, no
+  path validation.
+- **The rival AI is the difficulty dial and the proof in one object:** the
+  same driveLine() drives rivals, proves lap-completability, measures the
+  skill delta, and pilots the player-bot through the input layer.
 
 ### 14 · Lumen Forge — incremental/idle (Paperclips × Cookie Clicker) ✅
 

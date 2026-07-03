@@ -4,11 +4,14 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Hayao — Woodblock, applied</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
-    --washi:#f1ebdd; --washi-2:#f8f3e9; --sumi:#242019; --sumi-soft:#5c5347;
-    --stone:#8a8172; --ai:#2b4257; --ai-2:#5a7994; --shu:#b5442d; --line:#ddd3bf;
-    --mincho:"Hiragino Mincho ProN","Yu Mincho","Songti SC",Georgia,serif;
+    --washi:#f1ebdd; --washi-2:#f8f3e9; --sumi:#242019; --sumi-soft:#4f473b;
+    --stone:#6f6555; --ai:#2b4257; --ai-2:#5a7994; --shu:#b5442d; --shu-warm:#d4694f; --line:#ddd3bf;
+    --mincho:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",Georgia,serif;
     --body:"Iowan Old Style",Palatino,"Palatino Linotype",Georgia,serif;
     --mono:ui-monospace,"SFMono-Regular",Menlo,Consolas,monospace;
   }
@@ -16,16 +19,16 @@
   html,body{margin:0;background:var(--washi);color:var(--sumi);font-family:var(--body);
     line-height:1.7;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
   .wrap{max-width:900px;margin:0 auto;padding:0 40px}
-  .lab{font-family:var(--mono);font-size:11px;letter-spacing:.26em;text-transform:uppercase;color:var(--stone)}
+  .lab{font-family:var(--body);font-variant:small-caps;font-size:14px;letter-spacing:.14em;color:var(--stone)}
   a{color:var(--ai);text-decoration:none;border-bottom:1px solid var(--line)}
   .head{padding:80px 0 12px}
-  .head .logo{font-family:var(--mincho);font-weight:500;font-size:46px;line-height:1;display:flex;align-items:center;gap:16px}
-  .head .logo .js{font-size:18px;color:var(--stone)}
+  .head .logo{font-family:var(--mincho);font-weight:700;font-size:46px;line-height:1;display:flex;align-items:center;gap:16px}
+  .head .logo .js{font-size:17px;color:var(--stone);font-weight:500}
   .head .logo svg{width:46px;height:46px}
-  .head .sub{font-family:var(--mincho);font-size:19px;color:var(--ai);margin:16px 0 0}
-  .row{display:grid;grid-template-columns:150px 1fr;gap:32px;padding:56px 0;border-top:1px solid var(--line)}
-  .row > .lab{padding-top:5px}
-  .row h2{font-family:var(--mincho);font-weight:500;font-size:25px;margin:0 0 18px;line-height:1.3}
+  .head .sub{font-family:var(--mincho);font-size:19px;color:var(--ai);margin:16px 0 0;font-weight:500}
+  .row{display:grid;grid-template-columns:124px 1fr;gap:36px;padding:56px 0;border-top:1px solid var(--line)}
+  .row > .lab{padding-top:8px}
+  .row h2{font-family:var(--mincho);font-weight:600;font-size:25px;margin:0 0 18px;line-height:1.32}
   .row p{margin:0 0 16px;font-size:16px;color:#332f27;max-width:60ch}
   .row p:last-child{margin-bottom:0}
   /* favicon strip */
@@ -33,59 +36,68 @@
   .fav{text-align:center}
   .fav .tile{border:1px solid var(--line);border-radius:7px;background:var(--washi);display:flex;align-items:center;justify-content:center}
   .fav.dark .tile{background:var(--sumi);border-color:var(--sumi)}
-  .fav .cap{font-family:var(--mono);font-size:10px;color:var(--stone);margin-top:8px;letter-spacing:.05em}
-  /* browser chrome mock */
-  .browser{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--washi-2);box-shadow:0 1px 0 rgba(36,32,25,.04)}
+  .fav .cap{font-family:var(--mono);font-size:10px;color:var(--stone);margin-top:8px;letter-spacing:.04em}
+  /* browser + terminal chrome */
+  .browser{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--washi-2)}
   .bar{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--washi)}
   .bar .dot{width:9px;height:9px;border-radius:50%;background:#d9cdb3}
   .bar .tab{margin-left:14px;display:flex;align-items:center;gap:7px;font-family:var(--mono);font-size:12px;color:var(--sumi-soft)}
   .bar .tab svg{width:15px;height:15px}
   /* site header mock */
   .site .nav{display:flex;align-items:center;gap:14px;padding:20px 26px;border-bottom:1px solid var(--line)}
-  .site .nav .brand{font-family:var(--mincho);font-size:26px;display:flex;align-items:center;gap:12px;margin-right:auto}
+  .site .nav .brand{font-family:var(--mincho);font-weight:700;font-size:26px;display:flex;align-items:center;gap:12px;margin-right:auto}
   .site .nav .brand svg{width:28px;height:28px}
-  .site .nav .brand .js{font-size:12px;color:var(--stone)}
-  .site .nav a{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--sumi-soft);border:0}
-  .site .stage{padding:64px 26px 72px;position:relative;overflow:hidden}
-  .site .stage .jpbig{position:absolute;right:-10px;top:6px;font-family:var(--mincho);font-size:150px;color:var(--sumi);opacity:.05;line-height:1}
-  .site .stage h1{font-family:var(--mincho);font-weight:500;font-size:52px;line-height:1.12;margin:0 0 18px;max-width:15ch}
+  .site .nav .brand .js{font-size:12px;color:var(--stone);font-weight:500}
+  .site .nav a{font-family:var(--body);font-variant:small-caps;font-size:14px;letter-spacing:.08em;color:var(--sumi-soft);border:0}
+  .site .stage{padding:60px 26px 66px;position:relative;overflow:hidden}
+  .site .stage .jpbig{position:absolute;right:26px;top:-6px;font-family:var(--mincho);font-weight:800;font-size:190px;color:var(--sumi);opacity:.07;line-height:1;pointer-events:none}
+  .site .stage h1{font-family:var(--mincho);font-weight:700;font-size:50px;line-height:1.12;margin:0 0 16px;max-width:15ch;position:relative}
   .site .stage .em{color:var(--ai)}
-  .site .stage p{font-size:17px;color:var(--sumi-soft);max-width:52ch;margin:0 0 26px}
-  .cta{font-family:var(--mono);font-size:13px;letter-spacing:.06em;padding:11px 20px;border-radius:5px;
-    background:var(--sumi);color:var(--washi);display:inline-block;border:0}
+  .site .stage p{font-size:17px;color:var(--sumi-soft);max-width:52ch;margin:0 0 22px;position:relative}
+  .badges{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 26px;position:relative}
+  .bdg{font-family:var(--mono);font-size:11px;color:var(--sumi-soft);border:1px solid var(--line);border-radius:4px;padding:3px 9px;background:var(--washi)}
+  .bdg .ok{color:#5a7d54}
+  .cta{font-family:var(--mono);font-size:13px;letter-spacing:.04em;padding:11px 20px;border-radius:5px;
+    background:var(--sumi);color:var(--washi);display:inline-block;border:0;position:relative}
   .cta.ghost{background:transparent;color:var(--ai);border:1px solid var(--line);margin-left:10px}
   /* readme hero (dark) */
   .readme{background:var(--sumi);border-radius:8px;padding:44px 40px;color:var(--washi);position:relative;overflow:hidden}
   .readme .wm{position:absolute;left:34px;top:34px;width:40px;height:40px}
-  .readme h1{font-family:var(--mincho);font-weight:500;font-size:40px;margin:56px 0 10px}
+  .readme h1{font-family:var(--mincho);font-weight:700;font-size:40px;margin:56px 0 10px}
   .readme h1 .js{font-size:16px;color:var(--stone)}
-  .readme .tag{font-family:var(--mincho);font-size:18px;color:#cdb9a6;margin:0 0 22px;max-width:40ch}
-  .readme pre{font-family:var(--mono);font-size:13px;color:#c9c1b2;background:#1a1712;border:1px solid #37312a;
-    border-radius:6px;padding:16px 18px;margin:0;overflow:auto}
-  .readme pre .c{color:#7c8b6f} .readme pre .v{color:#d4694f}
+  .readme .tag{font-family:var(--mincho);font-size:18px;color:#d3c0ad;margin:0 0 22px;max-width:40ch;font-weight:500}
+  .readme pre{font-family:var(--mono);font-size:13px;color:#cabfae;background:#1a1712;border:1px solid #37312a;
+    border-radius:6px;padding:16px 18px;margin:0;overflow:auto;line-height:1.7}
+  .readme pre .c{color:#8a8172} .readme pre .v{color:#d4694f}
+  /* terminal seal */
+  .term{border-radius:8px;overflow:hidden;border:1px solid #37312a}
+  .term .tbar{background:#1f1b15;color:#8a8172;font-family:var(--mono);font-size:12px;padding:9px 14px;display:flex;gap:8px;align-items:center}
+  .term .tbar .d{width:9px;height:9px;border-radius:50%;background:#3a3229}
+  .term pre{background:#141109;color:#cabfae;font-family:var(--mono);font-size:13px;line-height:1.85;margin:0;padding:18px 20px;overflow:auto}
+  .term pre .k{color:#d4694f} .term pre .ok{color:#8faa78} .term pre .dim{color:#8a8172} .term pre .n{color:#a9b6c4}
   /* game cards */
   .cards{display:grid;grid-template-columns:1fr 1fr;gap:18px}
   .gcard{border:1px solid var(--line);border-radius:6px;overflow:hidden;background:var(--washi-2)}
-  .gcard .art{height:112px;position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .gcard .art{height:112px;overflow:hidden;border-bottom:1px solid var(--line)}
   .gcard .body{padding:15px 18px 17px}
-  .gcard h3{font-family:var(--mincho);font-weight:500;font-size:21px;margin:0 0 2px}
+  .gcard h3{font-family:var(--mincho);font-weight:600;font-size:21px;margin:0 0 2px}
   .gcard .genre{font-family:var(--mono);font-size:11px;letter-spacing:.06em;color:var(--stone);text-transform:uppercase}
-  .gcard .seal{position:absolute;top:12px;right:12px;width:26px;height:26px}
-  .gcard .proof{font-family:var(--mono);font-size:11px;color:var(--ai);margin-top:11px;display:flex;align-items:center;gap:7px}
-  .gcard .proof .k{color:var(--shu)}
+  .gcard .proof{font-family:var(--mono);font-size:11.5px;color:var(--ai);margin-top:11px;display:flex;align-items:center;gap:8px}
+  .gcard .proof svg{width:15px;height:15px;flex:0 0 auto}
   /* motion */
   .press{border:1px solid var(--line);border-radius:6px;background:var(--washi-2);padding:30px;display:flex;
     align-items:center;gap:30px;flex-wrap:wrap}
-  .press svg{width:120px;height:120px;cursor:pointer}
+  .press svg{width:120px;height:120px}
   .press .imp{opacity:0;transform:translateY(-3px);animation:press 3.6s ease-in-out infinite}
   @keyframes press{0%,12%{opacity:0;transform:translateY(-4px)}22%,74%{opacity:1;transform:translateY(0)}90%,100%{opacity:0;transform:translateY(-4px)}}
   @media(prefers-reduced-motion:reduce){.press .imp{animation:none;opacity:1;transform:none}}
   .press p{margin:0;font-size:15px;color:var(--sumi-soft);max-width:40ch}
-  .foot{padding:52px 0 90px;color:var(--stone);font-size:13px;font-family:var(--mono);letter-spacing:.03em}
+  .foot{padding:52px 0 90px;color:var(--stone);font-size:13px;font-family:var(--mono);letter-spacing:.02em;line-height:1.8}
   .foot a{color:var(--ai)}
   @media(max-width:680px){
     .wrap{padding:0 24px}.row{grid-template-columns:1fr;gap:12px;padding:40px 0}
     .cards{grid-template-columns:1fr}.site .stage h1{font-size:34px}.head .logo{font-size:34px}
+    .site .stage .jpbig{font-size:120px}
   }
 </style>
 </head>
@@ -96,9 +108,9 @@
     <div class="lab" style="margin-bottom:26px">Hayao — woodblock, applied</div>
     <div class="logo">
       <svg viewBox="0 0 120 120" aria-hidden="true">
-        <rect x="26" y="26" width="68" height="68" fill="none" stroke="#242019" stroke-width="1.4" opacity=".22"/>
-        <path d="M26 94 h20 M26 94 v-20" fill="none" stroke="#b5442d" stroke-width="5"/>
-        <path d="M62 94 h18" fill="none" stroke="#b5442d" stroke-width="5"/>
+        <rect x="32" y="30" width="58" height="58" fill="none" stroke="#242019" stroke-width="1.6" opacity=".3"/>
+        <path d="M32 88 h24 M32 88 v-24" fill="none" stroke="#b5442d" stroke-width="6"/>
+        <path d="M66 88 h20" fill="none" stroke="#b5442d" stroke-width="6"/>
       </svg>
       hayao<span class="js">.js</span>
     </div>
@@ -110,20 +122,20 @@
     <div class="lab">favicon</div>
     <div>
       <h2>The kagi alone, at any size.</h2>
-      <p>At favicon scale the sheet drops away and only the vermilion <i>kagi</i> remains — legible at 16px, distinct in
-        a crowded tab row.</p>
+      <p>At small sizes the sheet drops away and only the vermilion <i>kagi</i> remains — a corner that stays open and
+        legible down to 16px, distinct in a crowded tab row.</p>
       <div class="favs">
         <div class="fav"><div class="tile" style="width:72px;height:72px">
-          <svg viewBox="0 0 120 120" width="52" height="52" aria-label="Hayao favicon"><path d="M38 86 h30 M38 86 v-30" fill="none" stroke="#b5442d" stroke-width="9"/></svg>
+          <svg viewBox="0 0 120 120" width="52" height="52" aria-label="Hayao favicon"><path d="M40 84 h30 M40 84 v-30" fill="none" stroke="#b5442d" stroke-width="9"/></svg>
         </div><div class="cap">64px</div></div>
         <div class="fav"><div class="tile" style="width:44px;height:44px">
-          <svg viewBox="0 0 120 120" width="30" height="30" aria-hidden="true"><path d="M38 86 h30 M38 86 v-30" fill="none" stroke="#b5442d" stroke-width="11"/></svg>
+          <svg viewBox="0 0 120 120" width="30" height="30" aria-hidden="true"><path d="M42 84 h28 M42 84 v-28" fill="none" stroke="#b5442d" stroke-width="9"/></svg>
         </div><div class="cap">32px</div></div>
         <div class="fav"><div class="tile" style="width:26px;height:26px">
-          <svg viewBox="0 0 120 120" width="17" height="17" aria-hidden="true"><path d="M38 88 h30 M38 88 v-30" fill="none" stroke="#b5442d" stroke-width="13"/></svg>
+          <svg viewBox="0 0 120 120" width="17" height="17" aria-hidden="true"><path d="M44 82 h24 M44 82 v-24" fill="none" stroke="#b5442d" stroke-width="9"/></svg>
         </div><div class="cap">16px</div></div>
         <div class="fav dark"><div class="tile" style="width:44px;height:44px">
-          <svg viewBox="0 0 120 120" width="30" height="30" aria-hidden="true"><path d="M38 86 h30 M38 86 v-30" fill="none" stroke="#d4694f" stroke-width="11"/></svg>
+          <svg viewBox="0 0 120 120" width="30" height="30" aria-hidden="true"><path d="M42 84 h28 M42 84 v-28" fill="none" stroke="#d4694f" stroke-width="9"/></svg>
         </div><div class="cap">on ink</div></div>
       </div>
     </div>
@@ -133,26 +145,54 @@
   <section class="row">
     <div class="lab">site</div>
     <div>
-      <h2>The landing page.</h2>
-      <p>A single kanji ghosts behind the headline as texture — 版 (<i>han</i>, "printing block") — held at 5% so it
-        reads as paper grain, never as a slogan.</p>
+      <h2>The landing page — literal first, then quiet.</h2>
+      <p>The plain claim leads; the poetry is the tagline. Dev-tool trust signals sit in the house style, and a single
+        kanji ghosts behind the headline as paper grain — 版 (<i>han</i>, "printing block") — never as a slogan.</p>
       <div class="browser site">
         <div class="bar"><span class="dot"></span><span class="dot"></span><span class="dot"></span>
-          <span class="tab"><svg viewBox="0 0 120 120" aria-hidden="true"><path d="M38 86 h30 M38 86 v-30" fill="none" stroke="#b5442d" stroke-width="10"/></svg>hayao.js</span></div>
+          <span class="tab"><svg viewBox="0 0 120 120" aria-hidden="true"><path d="M40 84 h30 M40 84 v-30" fill="none" stroke="#b5442d" stroke-width="10"/></svg>hayao.js</span></div>
         <div class="nav">
           <span class="brand">
-            <svg viewBox="0 0 120 120" aria-hidden="true"><rect x="26" y="26" width="68" height="68" fill="none" stroke="#242019" stroke-width="1.4" opacity=".22"/><path d="M26 94 h20 M26 94 v-20" fill="none" stroke="#b5442d" stroke-width="5"/><path d="M62 94 h18" fill="none" stroke="#b5442d" stroke-width="5"/></svg>
+            <svg viewBox="0 0 120 120" aria-hidden="true"><rect x="32" y="30" width="58" height="58" fill="none" stroke="#242019" stroke-width="1.6" opacity=".3"/><path d="M32 88 h24 M32 88 v-24" fill="none" stroke="#b5442d" stroke-width="6"/><path d="M66 88 h20" fill="none" stroke="#b5442d" stroke-width="6"/></svg>
             hayao<span class="js">.js</span>
           </span>
           <a>Docs</a><a>Examples</a><a>GitHub</a>
         </div>
         <div class="stage">
           <div class="jpbig" aria-hidden="true">版</div>
-          <h1>Carve once.<br><span class="em">Print identical.</span></h1>
-          <p>A deterministic, headless game engine. The game is a pure function; every run is a faithful impression of
-            the same block.</p>
+          <h1>A deterministic<br>game engine.</h1>
+          <p>Headless, provable, and hand-made in feel. The game is a pure function; every run is a faithful impression
+            of the same block — <span class="em">carve once, print identical.</span></p>
+          <div class="badges">
+            <span class="bdg"><span class="ok">●</span> CI passing</span>
+            <span class="bdg">40 tests ✓</span>
+            <span class="bdg">11 examples verified</span>
+            <span class="bdg">MIT</span>
+          </div>
           <span class="cta">npm i hayao</span><span class="cta ghost">Read the idea →</span>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- terminal seal -->
+  <section class="row">
+    <div class="lab">the cli seal</div>
+    <div>
+      <h2>The mark lives in the terminal too.</h2>
+      <p>Where the tool actually lives — CI logs, <span style="font-family:var(--mono);font-size:14px">verify</span>
+        output — the kentō becomes a single character: <span style="font-family:var(--mono);color:var(--shu)">└</span>,
+        a corner that stamps every proven build. The seal always sits beside a real, verifiable line; it is never
+        decoration.</p>
+      <div class="term">
+        <div class="tbar"><span class="d"></span><span class="d"></span><span class="d"></span> hayao — npm run verify</div>
+<pre>$ npm run verify
+  <span class="k">└</span> sokoban       <span class="dim">grid puzzle</span>     solvable <span class="ok">✓</span>   replay-identical <span class="ok">✓</span>
+  <span class="k">└</span> hollowdeep    <span class="dim">roguelike</span>       50 seeds <span class="ok">✓</span>   connectivity <span class="ok">✓</span>
+  <span class="k">└</span> duskveil      <span class="dim">bullet hell</span>     487 bullets    deathless <span class="ok">✓</span>
+  <span class="k">└</span> bramblefall   <span class="dim">rts-lite</span>        265 units      0.80ms/step <span class="ok">✓</span>
+
+  <span class="ok">registered 11/11</span> <span class="dim">— every impression lands in the same place.</span></pre>
       </div>
     </div>
   </section>
@@ -162,16 +202,16 @@
     <div class="lab">readme</div>
     <div>
       <h2>The repository hero.</h2>
-      <p>On ink, the mark reverses and the vermilion warms slightly for contrast. The pitch, then the proof — the two
-        lines a reader needs first.</p>
+      <p>On ink, the mark reverses and the vermilion warms for contrast. The pitch, then the proof — the two lines a
+        reader needs first.</p>
       <div class="readme">
-        <svg class="wm" viewBox="0 0 120 120" aria-hidden="true"><rect x="26" y="26" width="68" height="68" fill="none" stroke="#f1ebdd" stroke-width="1.4" opacity=".3"/><path d="M26 94 h20 M26 94 v-20" fill="none" stroke="#d4694f" stroke-width="5"/><path d="M62 94 h18" fill="none" stroke="#d4694f" stroke-width="5"/></svg>
+        <svg class="wm" viewBox="0 0 120 120" aria-hidden="true"><rect x="32" y="30" width="58" height="58" fill="none" stroke="#f1ebdd" stroke-width="1.6" opacity=".34"/><path d="M32 88 h24 M32 88 v-24" fill="none" stroke="#d4694f" stroke-width="6"/><path d="M66 88 h20" fill="none" stroke="#d4694f" stroke-width="6"/></svg>
         <h1>hayao<span class="js">.js</span></h1>
         <p class="tag">The game is a pure, deterministic function. Everything else is an observer.</p>
 <pre><span class="c"># prove a level winnable — in Node, no browser</span>
 assertSolvable(puzzle, { level: 0 })      <span class="v">✓</span>
 const w = createWorld(game); w.step(['right'])
-w.probe().solved                          <span class="v">// true</span></pre>
+w.probe().solved                          <span class="c">// true</span></pre>
       </div>
     </div>
   </section>
@@ -180,39 +220,38 @@ w.probe().solved                          <span class="v">// true</span></pre>
   <section class="row">
     <div class="lab">examples</div>
     <div>
-      <h2>The example gallery.</h2>
-      <p>Each game is a woodblock landscape in the house pigments, stamped with the seal and its one honest proof-line.</p>
+      <h2>The verified-example gallery.</h2>
+      <p>Each game is a woodblock landscape in the house pigments. The seal is the proof — the vermilion mark prefixes
+        one honest, machine-checked line per card, and it is the only vermilion in the frame.</p>
       <div class="cards">
         <div class="gcard">
           <div class="art">
-            <svg viewBox="0 0 400 112" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <svg viewBox="0 0 400 112" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
               <rect width="400" height="112" fill="#e7dcc6"/>
-              <circle cx="316" cy="34" r="22" fill="#b5442d" opacity=".8"/>
-              <path d="M0 78 q60 -26 130 -6 t140 -10 t140 -12 v62 H0Z" fill="#5a7994" opacity=".7"/>
+              <circle cx="316" cy="40" r="20" fill="#5a7994" opacity=".8"/>
+              <path d="M0 78 q60 -26 130 -6 t140 -10 t140 -12 v62 H0Z" fill="#5a7994" opacity=".55"/>
               <path d="M0 92 q80 -20 180 -4 t200 -12 v40 H0Z" fill="#2b4257" opacity=".9"/>
             </svg>
-            <svg class="seal" viewBox="0 0 120 120" aria-hidden="true"><rect x="14" y="14" width="92" height="92" rx="10" fill="none" stroke="#b5442d" stroke-width="6"/><path d="M40 84 h20 M40 84 v-20" fill="none" stroke="#b5442d" stroke-width="7"/></svg>
           </div>
           <div class="body">
             <div class="genre">metroidvania</div>
             <h3>Sproutveil</h3>
-            <div class="proof"><span class="k">見当</span> every gate machine-verified traversable</div>
+            <div class="proof"><svg viewBox="0 0 120 120" aria-hidden="true"><path d="M40 84 h30 M40 84 v-30" fill="none" stroke="#b5442d" stroke-width="10"/></svg> every gate machine-verified traversable</div>
           </div>
         </div>
         <div class="gcard">
           <div class="art">
-            <svg viewBox="0 0 400 112" width="100%" height="100%" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <svg viewBox="0 0 400 112" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
               <rect width="400" height="112" fill="#e7dcc6"/>
-              <g fill="none" stroke="#2b4257" stroke-width="2" opacity=".5"><path d="M30 92 q26 -20 52 0 M110 92 q26 -20 52 0 M190 92 q26 -20 52 0 M270 92 q26 -20 52 0"/></g>
+              <g fill="none" stroke="#2b4257" stroke-width="2" opacity=".45"><path d="M30 92 q26 -20 52 0 M110 92 q26 -20 52 0 M190 92 q26 -20 52 0 M270 92 q26 -20 52 0"/></g>
+              <circle cx="86" cy="40" r="14" fill="#5a7994" opacity=".8"/>
               <path d="M0 96 q100 -22 210 -4 t220 -12 v40 H0Z" fill="#2b4257" opacity=".85"/>
-              <circle cx="86" cy="40" r="15" fill="#b5442d" opacity=".8"/>
             </svg>
-            <svg class="seal" viewBox="0 0 120 120" aria-hidden="true"><rect x="14" y="14" width="92" height="92" rx="10" fill="none" stroke="#b5442d" stroke-width="6"/><path d="M40 84 h20 M40 84 v-20" fill="none" stroke="#b5442d" stroke-width="7"/></svg>
           </div>
           <div class="body">
             <div class="genre">bullet hell</div>
             <h3>Duskveil</h3>
-            <div class="proof"><span class="k">見当</span> 487 live bullets · deathless bot-cleared</div>
+            <div class="proof"><svg viewBox="0 0 120 120" aria-hidden="true"><path d="M40 84 h30 M40 84 v-30" fill="none" stroke="#b5442d" stroke-width="10"/></svg> 487 live bullets · deathless bot-cleared</div>
           </div>
         </div>
       </div>
@@ -224,14 +263,14 @@ w.probe().solved                          <span class="v">// true</span></pre>
     <div class="lab">motion</div>
     <div>
       <h2>One gesture: the press.</h2>
-      <p>Motion is scarce and physical — the ink meeting paper. The mark presses in once and holds. Nothing loops
-        loudly; nothing floats. (Respects <span class="lab" style="font-size:11px">prefers-reduced-motion</span>.)</p>
+      <p>Motion is scarce and physical — ink meeting paper. The mark presses in once and holds. Nothing loops loudly;
+        nothing floats. (Respects <span style="font-family:var(--mono);font-size:12px">prefers-reduced-motion</span>.)</p>
       <div class="press">
         <svg viewBox="0 0 120 120" aria-label="the mark pressing onto paper">
-          <rect x="26" y="26" width="68" height="68" fill="none" stroke="#242019" stroke-width="1" opacity=".2"/>
+          <rect x="32" y="30" width="58" height="58" fill="none" stroke="#242019" stroke-width="1.4" opacity=".28"/>
           <g class="imp">
-            <path d="M26 94 h20 M26 94 v-20" fill="none" stroke="#b5442d" stroke-width="4.5"/>
-            <path d="M62 94 h18" fill="none" stroke="#b5442d" stroke-width="4.5"/>
+            <path d="M32 88 h24 M32 88 v-24" fill="none" stroke="#b5442d" stroke-width="6"/>
+            <path d="M66 88 h20" fill="none" stroke="#b5442d" stroke-width="6"/>
           </g>
         </svg>
         <p>The impression settles into place — the same place, every time. Determinism, felt.</p>
@@ -241,7 +280,8 @@ w.probe().solved                          <span class="v">// true</span></pre>
 
   <div class="foot">
     <a href="./d-woodblock.html">← back to the identity</a> · <a href="./index.html">the four directions</a><br>
-    Mockups are illustrative. Proof-lines (487 bullets, verified gates) are drawn from real verify runs in docs/BUILDLOG.md.
+    Mockups are illustrative. Proof-lines (487 bullets, 50 seeds, 265 units, 0.80ms/step) are drawn from real verify
+    runs recorded in docs/BUILDLOG.md.
   </div>
 
 </div>
