@@ -25,7 +25,7 @@ Key invariants when writing hayao games:
 
 ## Examples
 
-- [Playable gallery](https://hellojanpacan.github.io/hayao-js/): machine-verified games, one per genre, playable in the browser
+- [Playable gallery](https://hayao.dev/): machine-verified games, one per genre, playable in the browser
 - [Sokoban source](https://github.com/hellojanpacan/hayao-js/tree/main/examples/sokoban): the reference example — copy this to start a new game
 - [All example sources](https://github.com/hellojanpacan/hayao-js/tree/main/examples): every game's pure logic, view, tests, and golden replay
 
