@@ -58,6 +58,8 @@ export class RollbackSession {
   private rollbackCount = 0;
   private resimulatedFrames = 0;
   private localHashes = new Map<number, string>();
+  /** player → cutoff frame: their inputs are [] from there on (departed). */
+  private dropped = new Map<PlayerId, number>();
   private pendingRemoteHashes: Array<{ player: PlayerId; frame: number; hash: string }> = [];
   private hashedThrough = -1;
   private desynced = false;
@@ -84,7 +86,38 @@ export class RollbackSession {
 
   /** Highest frame all players' real inputs are known for (inclusive). */
   get confirmedFrame(): number {
-    return this.buffer.confirmedFrame();
+    let min = Infinity;
+    for (const p of this.players) {
+      const cut = this.dropped.get(p);
+      let c = this.buffer.contiguousThrough(p);
+      // A departed player's inputs are [] forever from the cutoff — known.
+      if (cut !== undefined && c >= cut - 1) c = Infinity;
+      min = Math.min(min, c);
+    }
+    return min === Infinity ? -1 : min;
+  }
+
+  /** Highest contiguous frame received from `player` — the drop-cutoff basis. */
+  lastKnownFrame(player: PlayerId): number {
+    return this.buffer.contiguousThrough(player);
+  }
+
+  /**
+   * A player left (or vanished): their inputs are [] from `atFrame` on, so the
+   * session stops waiting on them. All peers must apply the SAME atFrame (the
+   * room layer broadcasts it). Frames already simulated with a non-empty
+   * prediction for the departed player roll back and re-simulate as usual.
+   */
+  removePlayer(player: PlayerId, atFrame: number): void {
+    if (player === this.localPlayer || this.dropped.has(player)) return;
+    this.dropped.set(player, atFrame);
+    // Inputs at/after the cutoff must never merge, even if they arrived.
+    this.buffer.clearFrom(player, atFrame);
+    for (let f = atFrame; f < this.world.frame; f++) {
+      const used = this.usedInputs.get(f)?.get(player);
+      if (used !== undefined && used !== '[]') this.earliestBad = Math.min(this.earliestBad, f);
+    }
+    this.settleHashes();
   }
 
   get stats(): { rollbacks: number; resimulatedFrames: number } {
@@ -157,7 +190,9 @@ export class RollbackSession {
   private inputsFor(frame: number): Map<PlayerId, readonly string[]> {
     const inputs = new Map<PlayerId, readonly string[]>();
     for (const p of this.players) {
-      inputs.set(p, this.buffer.get(p, frame) ?? this.buffer.latestAt(p, frame));
+      const cut = this.dropped.get(p);
+      if (cut !== undefined && frame >= cut) inputs.set(p, []);
+      else inputs.set(p, this.buffer.get(p, frame) ?? this.buffer.latestAt(p, frame));
     }
     return inputs;
   }
@@ -203,8 +238,10 @@ export class RollbackSession {
     const msg = decodeMessage(data);
     if (!msg) return;
     if (msg.t === 'input' && msg.player !== this.localPlayer) {
+      const cut = this.dropped.get(msg.player);
       for (let i = 0; i < msg.frames.length; i++) {
         const frame = msg.from + i;
+        if (cut !== undefined && frame >= cut) continue; // post-cutoff never merges
         if (!this.buffer.set(msg.player, frame, msg.frames[i])) continue;
         // Did we already simulate this frame with a different guess?
         if (frame < this.world.frame) {

@@ -387,6 +387,46 @@ describe('rollback: prediction + correction', () => {
     expect(Math.min(a.confirmedFrame, b.confirmedFrame)).toBeGreaterThan(100);
   });
 
+  it('a vanished peer stalls the session until dropped, then play resumes', () => {
+    const hub = new LoopbackHub();
+    const a = new RollbackSession({
+      world: makeChaseWorld(),
+      transport: hub.connect(),
+      localPlayer: 'p1',
+      players: ['p1', 'p2'],
+      attach: attachChase,
+    });
+    const b = new RollbackSession({
+      world: makeChaseWorld(),
+      transport: hub.connect(),
+      localPlayer: 'p2',
+      players: ['p1', 'p2'],
+      attach: attachChase,
+    });
+    for (let i = 0; i < 50; i++) {
+      a.tick(script('p1', a.frame));
+      b.tick(script('p2', b.frame));
+      hub.tick();
+    }
+    hub.flush();
+    b.dispose(); // p2 vanishes mid-game
+    for (let i = 0; i < 60; i++) {
+      a.tick(['right']);
+      hub.tick();
+    }
+    const stalled = a.frame;
+    expect(stalled).toBeLessThanOrEqual(a.confirmedFrame + 1 + a.config.maxRollback); // backpressure held
+    // The room layer (or app timeout) announces the drop; play resumes with
+    // the departed player's inputs empty from the cutoff.
+    a.removePlayer('p2', a.lastKnownFrame('p2') + 1);
+    for (let i = 0; i < 60; i++) {
+      a.tick(['right']);
+      hub.tick();
+    }
+    expect(a.frame).toBeGreaterThan(stalled + 50);
+    expect(a.confirmedFrame).toBeGreaterThanOrEqual(a.frame - 1); // nothing left to wait on
+  });
+
   it('backpressure: a peer cannot outrun its rollback window', () => {
     const hub = new LoopbackHub();
     const worldA = makeChaseWorld();

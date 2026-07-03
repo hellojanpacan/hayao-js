@@ -5,6 +5,7 @@
 
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { spawn, type ChildProcess } from 'node:child_process';
+import { connect as netConnect, type Socket } from 'node:net';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { World } from '../world';
@@ -90,7 +91,75 @@ describe.skipIf(!hasWebSocket)('relay: real sockets end to end', () => {
     hostTransport.close();
     clientTransport.close();
   }, 20_000);
+
+  it('reassembles fragmented client messages before broadcasting', async () => {
+    // Browsers fragment large sends (late-join snapshots easily qualify), so
+    // speak RFC 6455 by hand over a raw socket to control the fragmentation.
+    const room = `frag-${process.pid}`;
+    const receiver = await connectWebSocket(`${url}/${room}`);
+    const received = new Promise<string>((resolve, reject) => {
+      const timer = setTimeout(() => reject(new Error('fragmented message never arrived')), 5000);
+      const unsub = receiver.onMessage((data) => {
+        clearTimeout(timer);
+        unsub();
+        resolve(data);
+      });
+    });
+
+    const port = Number(new URL(url).port);
+    const raw = netConnect(port, 'localhost');
+    await wsHandshake(raw, room);
+    const msg = `{"pad":"${'x'.repeat(200_000)}"}`;
+    raw.write(maskedFrame(0x1, false, msg.slice(0, 70_000)));
+    raw.write(maskedFrame(0x0, false, msg.slice(70_000, 140_000)));
+    raw.write(maskedFrame(0x0, true, msg.slice(140_000)));
+
+    expect(await received).toBe(msg);
+    raw.destroy();
+    receiver.close();
+  }, 15_000);
 });
+
+/** Minimal client-side upgrade handshake for the hand-rolled socket. */
+function wsHandshake(sock: Socket, room: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    sock.once('data', (d: Buffer) =>
+      d.toString().includes(' 101 ') ? resolve() : reject(new Error('upgrade refused')),
+    );
+    sock.once('error', reject);
+    sock.write(
+      `GET /${room} HTTP/1.1\r\n` +
+        'Host: localhost\r\n' +
+        'Upgrade: websocket\r\n' +
+        'Connection: Upgrade\r\n' +
+        'Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==\r\n' +
+        'Sec-WebSocket-Version: 13\r\n\r\n',
+    );
+  });
+}
+
+/** Encode a masked client→server frame (text 0x1 / continuation 0x0). */
+function maskedFrame(opcode: number, fin: boolean, text: string): Buffer {
+  const payload = Buffer.from(text);
+  const len = payload.length;
+  const mask = Buffer.from([0x1a, 0x2b, 0x3c, 0x4d]);
+  let header: Buffer;
+  if (len < 126) header = Buffer.from([(fin ? 0x80 : 0) | opcode, 0x80 | len]);
+  else if (len < 65536) {
+    header = Buffer.alloc(4);
+    header[0] = (fin ? 0x80 : 0) | opcode;
+    header[1] = 0x80 | 126;
+    header.writeUInt16BE(len, 2);
+  } else {
+    header = Buffer.alloc(10);
+    header[0] = (fin ? 0x80 : 0) | opcode;
+    header[1] = 0x80 | 127;
+    header.writeBigUInt64BE(BigInt(len), 2);
+  }
+  const masked = Buffer.allocUnsafe(len);
+  for (let i = 0; i < len; i++) masked[i] = payload[i] ^ mask[i & 3];
+  return Buffer.concat([header, mask, masked]);
+}
 
 function sleep(ms: number): Promise<void> {
   return new Promise((r) => setTimeout(r, ms));

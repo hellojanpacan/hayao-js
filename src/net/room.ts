@@ -166,11 +166,16 @@ export class RoomHost {
   /** Announce a player's departure (disconnect handling is the app's call). */
   dropPlayer(player: PlayerId): void {
     const session = this.game?.session;
-    if (!session || !(session instanceof LockstepSession)) return;
+    if (!session) return;
     // Cut at the first frame nobody can have merged yet: one past the last
     // contiguous input everyone received from the departed player. Peers on a
     // reliable bus share the same received set, so the cutoff is consistent.
-    const atFrame = Math.max(session.frame, session.confirmedFrame + 1);
+    // Rollback peers may already have PREDICTED past the cutoff — that's an
+    // ordinary misprediction; removePlayer rolls back and re-simulates.
+    const atFrame =
+      session instanceof LockstepSession
+        ? Math.max(session.frame, session.confirmedFrame + 1)
+        : session.lastKnownFrame(player) + 1;
     this.transport.send(encodeMessage(netMessage({ t: 'leave', player, atFrame })));
     session.removePlayer(player, atFrame);
     this.players = this.players.filter((p) => p !== player);
@@ -323,7 +328,7 @@ export function joinRoom(opts: RoomClientOptions): Promise<NetGame> {
       // Roster changes and inputs that raced past us while restoring:
       for (const m of pendingRoster) {
         if (m.t === 'join' && session instanceof LockstepSession) session.addPlayer(m.player, m.atFrame);
-        if (m.t === 'leave' && session instanceof LockstepSession) session.removePlayer(m.player, m.atFrame);
+        if (m.t === 'leave') session.removePlayer(m.player, m.atFrame);
       }
       const roomUnsub = transport.onMessage((data) => {
         const msg = decodeMessage(data);
@@ -331,7 +336,7 @@ export function joinRoom(opts: RoomClientOptions): Promise<NetGame> {
         if (msg.t === 'join' && session instanceof LockstepSession) {
           session.addPlayer(msg.player, msg.atFrame);
           opts.onPlayerJoin?.(msg.player, msg.atFrame);
-        } else if (msg.t === 'leave' && session instanceof LockstepSession) {
+        } else if (msg.t === 'leave') {
           session.removePlayer(msg.player, msg.atFrame);
           opts.onPlayerLeave?.(msg.player, msg.atFrame);
         }
