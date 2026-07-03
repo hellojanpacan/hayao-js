@@ -67,6 +67,10 @@ describe('hashValue', () => {
   it('collapses -0 and 0', () => {
     expect(hashValue(-0)).toEqual(hashValue(0));
   });
+  it('treats an undefined-valued key as absent (JSON-stable, survives save round-trip)', () => {
+    expect(hashValue({ a: 1, b: undefined })).toEqual(hashValue({ a: 1 }));
+    expect(hashValue({ paint: { fill: undefined } })).toEqual(hashValue({ paint: {} }));
+  });
 });
 
 describe('Clock', () => {

@@ -26,16 +26,21 @@ describe('storage adapters', () => {
     expect(s.keys()).toEqual([]);
   });
 
-  it('defaultStorage is in-memory headless (no localStorage)', () => {
-    expect(typeof localStorage).toBe('undefined');
-    expect(defaultStorage()).toBeInstanceOf(MemoryStorage);
+  it('defaultStorage returns a working adapter headless (falls back to memory)', () => {
+    // Headless/CI has no functional localStorage, so the default is in-memory —
+    // saves work in tests without touching disk or leaking global state.
+    const s = defaultStorage();
+    expect(s).toBeInstanceOf(MemoryStorage);
+    s.set('x', '1');
+    expect(s.get('x')).toBe('1'); // round-trips
   });
 
-  it('LocalStorageAdapter degrades to silent misses when localStorage is absent', () => {
+  it('LocalStorageAdapter never throws when localStorage is absent/broken', () => {
     const s = new LocalStorageAdapter();
-    s.set('x', '1'); // no throw
+    s.set('x', '1'); // guarded — no throw even if setItem is missing
     expect(s.get('x')).toBeNull();
     expect(s.keys()).toEqual([]);
+    s.remove('x'); // no throw
   });
 });
 

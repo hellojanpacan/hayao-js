@@ -1068,3 +1068,195 @@ would be cosmetic weight for no gameplay dependency. Declined on purpose.
   required here and engine-nondeterministic (banned). Building `dpow` on
   `dexp2`/`dlog2` satisfies both at once — the "correct blend" and the
   "reproducible blend" turned out to be the same fix.
+
+### E3 · Presentation / game-feel primitives (js13k-mined) ✅
+
+Third "engine gaps first" batch — [JS13K-MINING.md](JS13K-MINING.md) rows #9,
+#11, #12, #16. All four are **view/juice**: transitions, spring-smoothed values,
+damage popups, and UI frames. The whole batch is cosmetic-by-construction —
+nothing here enters `world.hash()` — and every effect runs off the fixed clock
+`dt`, never a variable rAF delta. New `ui/transition.ts`, `render/nineSlice.ts`,
+`scene/floatingText.ts`, `scene/tween.ts` + `core/dmath.ts` extensions. 28 new
+tests, all green; a headless filmstrip renders the wipe + panel + pops + spring.
+
+**Gaps filled:**
+
+- **`ui/transition.ts` — wipes + cinematic sequencer (#9).** `ScreenTransition`
+  is a cosmetic node that paints a full-screen `fade`/`circle`(iris)/`dither`
+  wipe in **screen space** (draws with `IDENTITY`, so it rides over the camera
+  untouched), driven by a queued ramp machine on `dt`. `wipe()` is the classic
+  cover → `onMidpoint` (swap the level) → reveal, gated off `busy`. The dither
+  dissolve is an ordered 4×4 Bayer threshold — pure, no PRNG. `CinematicPlayer`
+  walks pure-data `CinematicStep[]`: each step's `enter` fires once, then it
+  holds until `duration` elapses **and** its `until` gate passes — `wipeStep()`
+  wires the gate to `!transition.busy`, which is exactly witchcat's fade-gated
+  advance. Named `ScreenTransition` to avoid colliding with `logic/fsm`'s
+  `Transition`.
+- **`scene/tween.ts` + `core/dmath.ts` — framerate-independent smoothing (#11).**
+  `lerpDamp(current, target, lambda, dt)` folds `dt` into an exponential so the
+  same real-time response falls out of any fixed step (dante). `spring`/
+  `springStep` is a **closed-form critically-damped** spring (no stiffness
+  blow-up, no overshoot at any dt; cat-survivors/witchcat feel), and `makeReach`
+  is the one-liner chase that owns its velocity in a closure. All route through a
+  new `dexp` (natural exp via `dexp2`) so they're bit-identical across engines —
+  safe on hashed values, not just cosmetic ones.
+- **`scene/floatingText.ts` — pooled damage numbers (#12).** `FloatingText` is
+  the rise-and-fade combat-text emitter every action/survivors/RPG expects,
+  built as the exact twin of `Particles`: pooled, capped, `pop()` on sim events,
+  opacity fade over the tail of life, `FLOAT_PRESETS.damage/crit/heal/label`.
+- **`render/nineSlice.ts` — scalable panels (#16).** `nineSlice(rect, style)` is
+  a pure display-list helper: a 3×3 grid where the four corners stay a fixed
+  size while edges stretch and the center fills, so a frame at any size keeps
+  crisp corners. Distinct edge/corner/highlight/shadow fills give a free bevel;
+  `PANEL_PRESETS.parchment/slate`. Border auto-clamps to half the smaller side.
+
+**Decision — floating-text jitter uses a private `Rng`, not `world.rng`.** The
+mining row said "jitter via `world.rng`", but the stronger in-repo invariant
+(`particles.ts`: cosmetic juice carries *its own* stream so it "can be deleted
+without changing any game outcome") wins. A cosmetic node drawing from
+`world.rng` would perturb the hashed RNG state, so toggling popups off would
+diverge the sim — the precise anti-pattern the separate-stream rule exists to
+prevent. `FloatingText` seeds its own `Rng` like `Particles`/`Shaker`.
+
+**Findings:**
+
+- **"Cosmetic" is a rendering discipline, not just a `hash()` opt-out.** A
+  screen wipe wants **screen space**, but every node is handed a camera-composed
+  world transform. The fix is for the overlay to *ignore* the transform it's
+  given and emit with `IDENTITY` — the same instinct as the private-Rng call:
+  cosmetic view must be able to change (or vanish) without moving anything the
+  sim can observe, and that means opting out of both the hash *and* the camera.
+- **Closed-form beats iterative for framerate independence.** The naive
+  `x += (target-x)*k` is frame-coupled by construction; the analytic
+  exp-decay / critically-damped solutions make "same real time → same result"
+  a property of the formula, so they're correct at 30Hz, 60Hz, or one giant
+  catch-up step — the same lesson procgen learned with stateless `f(col,seed)`.
+
+### E4 · Persistence & content-engine primitives (js13k-mined) ✅
+
+Fourth "engine gaps first" batch — [JS13K-MINING.md](JS13K-MINING.md) rows #1
+(save/load — the single most-frequent gap, ~12/17 games), #13 (undo /
+record-replay), #15 (data-driven content DSL). The unifying theme is *plain-data
+over the existing snapshot seam*: save/load, undo, and the wave director all
+build on `world.snapshot()`/`restore()` and store their cursor state as JSON, so
+nothing here reinvents serialization or escapes the hash. New `persist/storage.ts`
++ `persist/codec.ts` + `persist/save.ts`, `logic/history.ts`, `content/dsl.ts`.
+46 new tests, all green; `npm run verify` unchanged (no golden drift).
+
+**Gaps filled:**
+
+- **`persist/` — save/load over a pluggable adapter (#1).** `StorageAdapter` is a
+  four-method (`get`/`set`/`remove`/`keys`) seam — the **only** browser-coupled
+  piece of the feature. `LocalStorageAdapter` is guarded on every call (private
+  mode, quota, SSR all degrade to a silent miss, never a throw);
+  `MemoryStorage`/`NullStorage` keep headless runs clean; `defaultStorage()`
+  **feature-probes** a real write/read/remove rather than trusting the global, so
+  a runtime that exposes a `localStorage` object whose methods throw (our own
+  Node test env does exactly this) falls back to memory. `SaveManager` rides
+  `world.snapshot()`/`restore()` — `serializeSnapshot` versions the envelope,
+  `parseSnapshot` guards `JSON.parse` and shape-checks so a corrupt slot is a
+  clean `false`, world untouched. `codec.ts` adds the js13k byte-squeeze tools —
+  a reversible RLE (witchcat) and base-64 continuation-varint pack (soul-surf),
+  both pure with exact round-trips.
+- **`logic/history.ts` — undo + ghost trails (#13).** `UndoStack<S>` is a bounded
+  memento stack with redo and a cursor (dying-dreams clones its `PuzzleState`);
+  it clones in and out so callers can't corrupt history, and drops the oldest
+  entry past `limit`. `RingBuffer<T>` is the O(1) bounded FIFO for echo/ghost
+  trails (soul-jumper's 8-frame history), `toArray()` oldest→newest for a trail
+  renderer.
+- **`content/dsl.ts` — declarative content (#15).** `SpawnDirector`
+  (`initDirector`/`pollDirector`) interprets a flat `WaveDef[]` (norman) with
+  repeats, an end bound, and optional weighted spawn sets rolled via `world.rng`
+  (cat-survivors' director) — its `DirectorState.next[]` cursor is plain JSON, so
+  it snapshots/hashes like everything else and a poll after restore doesn't
+  re-fire. `availableUpgrades` gates evolution/upgrade trees on owned
+  prerequisites + `maxStacks` (cat-survivors evolution, deckbuilder upgrades).
+  Weighted rolls **reuse** `logic/random`'s `pickEntry`/`WeightedEntry` — the E1
+  primitive — instead of a private copy.
+
+**Findings:**
+
+- **`hash()` wasn't JSON-stable — save/load was the first thing to cross the
+  boundary and prove it.** A live `Sprite` serializes `paint:{fill:undefined,…}`;
+  JSON drops undefined keys, so a restored sprite serialized `paint:{}` and
+  `hashValue` — which counted an `undefined`-valued key as present — gave a
+  *different* hash after a save round-trip. The fix is one line in `core/hash.ts`:
+  omit undefined-valued object keys, matching JSON's own semantics (`{a:undefined}`
+  ≡ `{}`). It rippled **zero** goldens because well-built examples mark pure-view
+  sprites `cosmetic` (out of the hash entirely) — the bug only bites a
+  *non-cosmetic* node in the hashed tree, which is exactly the save scenario.
+  Determinism hazards hide behind the boundaries nothing has crossed yet.
+- **Feature-detect the environment, don't sniff the global.** `typeof
+  localStorage !== 'undefined'` is not enough: our Node test runtime exposes a
+  `localStorage` object whose `setItem` throws. Only an actual probe write is
+  honest, and it's the same instinct as the hash finding — trust behavior you
+  verified, not a shape you assumed.
+- **The snapshot seam pays compound interest.** Save/load, undo, and director
+  restore are all ~30-line modules because `world.snapshot()`/`restore()` +
+  `world.state`-as-plain-JSON already did the hard part. The batch's real work
+  was guarding the JSON edges (corrupt slots, undefined keys, broken storage),
+  not serialization — the pure-state model keeps handing back primitives for
+  near-free.
+
+### E5 · Art-from-code primitives — procedural sprites, bitmap text, autotiling (js13k-mined) ✅
+
+Fifth "engine gaps first" batch — [JS13K-MINING.md](JS13K-MINING.md) rows #2
+(procedural sprite/texture generation, 6 games), #3 (bitmap/pixel font + rich
+text layout, 6 games), #10 (autotiling — bitmask Wang + marching squares). The
+unifying theme is *view over data*: every module is a **pure function to a
+`DrawCommand[]`**, and the three scene nodes it ships (`TextureSprite`,
+`BitmapText`, and the autotile emitters) are the only stateful surface — each
+`cosmetic = true` in its constructor, so decoded pixels / rendered glyphs /
+tile art never enter `world.hash()`. New `art/texture.ts`, `art/font5.ts`,
+`art/bitmapFont.ts`, `art/autotile.ts`. 21 new tests, all green; `npm run
+verify` unchanged (no golden drift); headless SVG proof composes all three.
+
+**Gaps filled:**
+
+- **`art/texture.ts` — sprites/tilesets from ~0 asset bytes (#2).** `PixelBuffer`
+  is a tiny indexed bitmap; three decoders reconstruct one from a compact
+  encoding — `decodeBits` (1-bit MSB-first BigInt/hex, super-castle),
+  `decode2bit` + `PixelBuffer.remap(lut)` (2-bit source → palette LUT,
+  dying-dreams), `decodeRLE`/`encodeRLE` (run pairs, witchcat, exact
+  round-trip). `pixelsToCommands` projects a buffer to **run-merged** `rect`
+  commands (a 16×16 sprite → a handful of rects, not 256), skipping `null`
+  swatches as transparent. `TextureSprite` is the drop-in cosmetic node.
+- **`art/font5.ts` + `art/bitmapFont.ts` — pixel text with rich markup (#3).** A
+  built-in 5px proportional font (`I` is 1 wide, `M` is 5). `parseRich` reads a
+  `{tag}…{/}` colour **stack** (clawstrike/coup-ahoo), `{{` → literal brace,
+  `#hex` tags literal. `layoutText` word-wraps + breaks on `\n` and is a pure
+  function of (font, string, width); `typewriterCount` is a pure function of
+  *sim* time. `BitmapText` drives the reveal off `world.time` (never
+  `performance.now`) and is cosmetic.
+- **`art/autotile.ts` — seamless tiles from a boolean grid (#10, fully pure).**
+  `mask4`/`mask8` are the neighbour bitmasks; a module-load-once 16-entry table
+  maps each 4-bit mask → `{frame, rotation}` (isolated/cap/straight/bend/tee/
+  cross × quarter-turn) by rotating one canonical mask per frame.
+  `marchingSquaresCases` + `marchingSquaresContours` give the corner-sampled
+  dual-grid alternative (iso-contour segments, saddle cases fixed). Emitters
+  draw fill + exposed-edge seams and the contour polylines.
+
+**Findings:**
+
+- **The two autotilers read the same grid through different lenses — align by
+  `tile/2` or they talk past each other.** The bitmask autotiler treats
+  `grid[y][x]` as a *tile* (a filled cell); marching squares treats the same
+  value as a *corner sample* (a point). Overlay them at the same origin and the
+  contour sits half a tile off the fill — visible immediately in the headless
+  proof. Neither is wrong; they're dual grids offset by `tile/2`. Shipping both
+  in one module is only safe if the offset is documented at the seam, because a
+  caller who assumes "same grid → same coordinates" gets a subtly broken frame
+  that still renders.
+- **Make `cosmetic` the constructor default, not a caller checkbox.** These are
+  the most tempting primitives to leak into the hash — a decoded sprite *looks*
+  like state. Emitting plain `DrawCommand[]` from the pure functions makes the
+  hash-safe path the *only* path for the data (commands are never hashed), and
+  setting `this.cosmetic = true` inside `TextureSprite`/`BitmapText` (rather than
+  asking the caller to remember) means a forgetful game can't pollute
+  determinism even by accident. The invariant is enforced by construction, not
+  by discipline.
+- **A pure typewriter needs no accumulator.** Reveal count is
+  `f(world.time − startTime, cps)`; the node stores only `startTime`. There's no
+  per-frame counter to snapshot, so scrubbing to any frame — or replaying on a
+  peer — shows the exact same characters. Clock-as-input beats clock-as-state
+  the same way `f(col, seed)` beat the stateful generator in E2.

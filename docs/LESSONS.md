@@ -14,6 +14,18 @@ The cost is discipline — all randomness through one seeded `Rng`, no wall-cloc
 the sim, ordered iteration. hayao enforces it and `assertDeterministic` catches
 any leak. Everything else in this file depends on this one.
 
+## A structural hash must be stable across the serialization it will cross
+`world.hash()` is only as trustworthy as the boundaries the state travels
+through. Building save/load surfaced a latent bug: `hashValue` counted an
+`undefined`-valued object key as present, but JSON — which every save crosses —
+drops it, so a snapshot hashed one value live and a different value after a
+save→load round-trip (a `Sprite`'s unset `paint` fields were the trigger). The
+fix is to make the hash match the serialization's own semantics (`{a:undefined}`
+≡ `{}`, as in JSON). The general lesson: a determinism hazard can hide for a long
+time behind a boundary nothing has crossed yet — the day you add persistence,
+netcode, or a new backend is the day it surfaces, so make the canonical hash
+agree with the canonical wire format *by construction*.
+
 ## Verification before content
 The single highest-leverage habit. Without a harness you will confidently ship
 unreachable rooms and unwinnable levels — the author's certainty is not evidence.
@@ -191,3 +203,26 @@ lockstep) delivers the correct blend and the reproducible blend in one stroke.
 When a "quality" requirement and a "determinism" requirement seem to collide,
 check whether the determinism-safe primitive you already have is also the
 higher-quality one — here linear-light lerp is both.
+
+## Two views of one grid are two coordinate systems — say so at the seam
+Autotiling ships two solvers over the same `boolean[][]`: a neighbour bitmask
+(each cell is a *tile*, a filled square) and marching squares (each cell is a
+*corner*, a sampled point). They are duals — the corner grid sits half a tile
+in from the tile grid — so overlaying the contour on the fill at a shared origin
+puts the outline `tile/2` off, a bug that still *renders* and only the headless
+screenshot catches. The lesson isn't "pick one." It's that when two primitives
+consume the same input structure through different interpretations, the offset
+between their outputs is a real part of the API and belongs documented at the
+call site, not discovered in a frame. A shared input type quietly implies a
+shared coordinate system that isn't there.
+
+## Enforce the cosmetic invariant by construction, not by discipline
+The art-from-code primitives are the ones most likely to leak into `world.hash()`
+— a decoded sprite or a laid-out glyph *feels* like state. Two structural
+choices make the leak impossible rather than merely discouraged: the pure
+functions emit plain `DrawCommand[]` (commands are never hashed, so the data has
+no path into the hash at all), and the view nodes set `this.cosmetic = true` in
+their own constructor instead of asking the caller to remember. A forgetful game
+can't pollute determinism even by accident. When an invariant is easy to violate
+and expensive to catch, move the guarantee into the type's construction so the
+safe path is the only path.

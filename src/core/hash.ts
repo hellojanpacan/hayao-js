@@ -43,7 +43,14 @@ export function hashValue(value: unknown): string {
           return;
         }
         const obj = v as Record<string, unknown>;
-        const keys = Object.keys(obj).sort();
+        // Omit undefined-valued keys: JSON has no `undefined`, so `{a: undefined}`
+        // and `{}` serialize identically. Counting the key would make hash()
+        // disagree with the value after a save/load JSON round-trip (a Sprite's
+        // unset paint fields are the canonical case). JSON-stable = the guarantee
+        // persistence needs.
+        const keys = Object.keys(obj)
+          .filter((k) => obj[k] !== undefined)
+          .sort();
         push('{');
         for (const k of keys) {
           push(k + ':');

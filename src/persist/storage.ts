@@ -106,7 +106,15 @@ export class LocalStorageAdapter implements StorageAdapter {
  */
 export function defaultStorage(prefix?: string): StorageAdapter {
   try {
-    if (typeof localStorage !== 'undefined') return new LocalStorageAdapter(prefix);
+    if (typeof localStorage !== 'undefined') {
+      // Feature-probe rather than trust the global: some headless runtimes expose
+      // a `localStorage` object whose methods throw. A real write/read/remove is
+      // the only honest test; any failure falls through to the in-memory backend.
+      const probe = '__hayao_probe__';
+      localStorage.setItem(probe, '1');
+      localStorage.removeItem(probe);
+      return new LocalStorageAdapter(prefix);
+    }
   } catch {
     /* fall through to memory */
   }
