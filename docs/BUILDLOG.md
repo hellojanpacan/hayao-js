@@ -38,9 +38,9 @@ land here and in [LESSONS.md](LESSONS.md).
 | 10 | Traditional roguelike | Brogue × Shattered Pixel | procgen + connectivity proof, FOV, turn scheduler | ✅ |
 | 11 | Roguelike deckbuilder | Slay the Spire-lite | card DSL, balance bot, addictive loop | ✅ |
 | 12 | Turn-based tactics | Into the Breach-lite | telegraphed intents, push chains, fairness proof | ✅ |
-| 13 | Match-3 | Puzzle Quest-ish | cascade choreography vs deterministic sim | — |
+| 13 | Match-3 | Puzzle Quest-ish | cascade choreography vs deterministic sim | ✅ |
 | 14 | Incremental/idle | Universal Paperclips-lite | big numbers, offline time, pacing curves | ✅ |
-| 15 | Farming/life sim | Stardew-lite | calendar clock, save/load, gentle pacing | — |
+| 15 | Farming/life sim | Stardew-lite | calendar clock, save/load, gentle pacing | ✅ |
 | 16 | Survival horror | Darkwood-lite | shadowcast lighting, spatial audio, dread pacing | — |
 | 17 | City/colony builder | Islanders × Mini Motorways | placement scoring, growth sim, minimal viz | — |
 | 18 | Rhythm | NecroDancer-lite | audio clock vs sim clock determinism | — |
@@ -451,6 +451,33 @@ matcher hits the target on 13/20 seeds, scripted session golden-pinned.
   measured bot distribution rather than the mechanics to a fixed goal.
 - Board-generation fairness (no pre-matches + guaranteed move + reshuffle
   rescue) is the genre's connectivity proof — same slot as Hollowdeep's BFS.
+
+### 15 · Fernrow — farming/life sim (Stardew-lite) ✅
+
+**Shipped:** a 16-day year over four seasons, energy-budgeted days (24
+actions), till/plant/water/harvest on a 10×6 farm, three season-locked crops,
+overnight growth, unripe-crops-wither on season change, a 700-coin festival
+goal. Verified: a diligent bot wins on day 12 (30 harvests); no-water-no-
+growth; wither honesty; the energy bound; reinvestment compounds (740 vs
+236 coins); golden year replay.
+
+**Findings:**
+
+- **Calendar arithmetic is a solvency constraint.** First cut: 3-day seasons
+  with 2-3-night crops meant beans could NEVER mature (planted day 1 of
+  summer, ripe the morning autumn withers them) — the bot ended the year with
+  4 coins and the 'compounding' comparison read 4 vs 4. Season length ≥
+  longest growDays + harvest slack is a hard inequality; check it the way
+  Shard Ascent checks jump distance.
+- **'Don't plant what can't mature' is player knowledge the sim shouldn't
+  hide:** the bot needed a nights-left-in-season guard to stop donating seed
+  money to the wither. A kind UI would surface exactly this number.
+- **Ripe crops surviving the season turn** is the difference between a
+  punishing calendar and a gentle one — one predicate
+  (`grown < growDays` in the wither rule) sets the genre's whole mood.
+- Economy proofs transfer straight from Lumen Forge: goal tuned to the
+  measured bot yield, plus a reinvest-vs-hoard delta (the farming version of
+  'drafting matters').
 
 ### 14 · Lumen Forge — incremental/idle (Paperclips × Cookie Clicker) ✅
 
