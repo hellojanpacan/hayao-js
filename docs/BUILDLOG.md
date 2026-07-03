@@ -36,7 +36,7 @@ land here and in [LESSONS.md](LESSONS.md).
 | 8 | Tower defense | Kingdom Rush × Bloons | path following, wave balance sim, counter system | ✅ |
 | 9 | RTS-lite | (mass units) | flow fields, 300–500 units, counters, HUD density | ✅ |
 | 10 | Traditional roguelike | Brogue × Shattered Pixel | procgen + connectivity proof, FOV, turn scheduler | ✅ |
-| 11 | Roguelike deckbuilder | Slay the Spire-lite | card DSL, balance bot, addictive loop | — |
+| 11 | Roguelike deckbuilder | Slay the Spire-lite | card DSL, balance bot, addictive loop | ✅ |
 | 12 | Turn-based tactics | Into the Breach-lite | telegraphed intents, push chains, fairness proof | — |
 | 13 | Match-3 | Puzzle Quest-ish | cascade choreography vs deterministic sim | — |
 | 14 | Incremental/idle | Universal Paperclips-lite | big numbers, offline time, pacing curves | ✅ |
@@ -366,6 +366,35 @@ layouts reproduce exactly, a full-knowledge explorer bot wins seed 1 and
 - **Full-knowledge bots prove winnability, not player experience** — the bot
   pathfinds with the whole map. That's the right claim for procgen ('a
   winning line exists'), the same epistemic status as the Sokoban solver.
+
+### 11 · Thornspire — roguelike deckbuilder (Slay the Spire-lite) ✅
+
+**Shipped:** data-driven card DSL (8 cards: dmg/hits/block/draw/vulnerable),
+3-energy turns with reshuffling piles, deterministic enemy intent scripts
+(attack/block/charge-doubles-next), pick-1-of-3 drafts after every fight, an
+8-node climb (fights, rests, an elite, the Spire Heart). Verified: a greedy
+pilot wins 17/20 seeds (target 11–19); a never-draft pilot wins 9/20 —
+progression proven; 30 turns of intents audited as exactly honest; seed-1
+climb pinned as a golden replay hash.
+
+**Findings:**
+
+- **Win-rate windows are the genre's balance instrument, and both edges
+  matter.** First tuning: 3/20 (charged spikes exceeded any block ceiling —
+  32 incoming vs ~16 blockable is not tension, it's a coin flip about draw
+  order). Second: 20/20 (no tension at all). The keeper sits at 17/20 via
+  spike damage ≤ pool+heal arithmetic. The assertion window (11–19) means
+  BOTH failure directions break CI.
+- **'Drafting matters' is provable:** the same pilot with drafting off drops
+  from 17 to 9 wins. That delta IS the genre — if skipping every reward were
+  competitive, the deckbuilder would be a solitaire timer. Assert the delta,
+  not just the win rate.
+- **Intent honesty is a one-line audit worth its weight:** resolve each
+  telegraph and compare actual hp loss to the shown number, block included.
+  Any future charge/vuln/block interaction bug fails loudly here — this is
+  the perfect-information contract Into the Breach lives on (G12 next).
+- Turn-based + rng-in-sim (shuffles) replays fine: the draw pile is state,
+  the shuffle draws from world.rng, and the golden hash pins the whole run.
 
 ### 14 · Lumen Forge — incremental/idle (Paperclips × Cookie Clicker) ✅
 

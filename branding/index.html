@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hayao — Four Branding Directions</title>
+<style>
+  :root{--bg:#12100c;--panel:#1c1a14;--line:#33302a;--fg:#f4ecda;--fg-soft:#a99f88;--accent:#c9a24b}
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg);color:var(--fg);
+    font-family:Georgia,serif;line-height:1.6;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:940px;margin:0 auto;padding:60px 28px 90px}
+  .kicker{font-family:ui-monospace,monospace;font-size:12px;letter-spacing:.28em;text-transform:uppercase;
+    color:var(--accent);margin:0 0 14px}
+  h1{font-size:42px;margin:0 0 10px;letter-spacing:-.01em}
+  .lead{font-size:19px;color:var(--fg-soft);max-width:680px;margin:0 0 14px;font-style:italic}
+  .frame{font-family:ui-monospace,monospace;font-size:13px;color:var(--fg-soft);background:var(--panel);
+    border:1px solid var(--line);border-radius:10px;padding:16px 18px;max-width:720px;margin:20px 0 46px}
+  .frame b{color:var(--fg)}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  a.dir{display:block;text-decoration:none;color:inherit;border:1px solid var(--line);border-radius:14px;
+    overflow:hidden;background:var(--panel);transition:transform .12s,border-color .12s}
+  a.dir:hover{transform:translateY(-3px);border-color:var(--accent)}
+  .swatch{height:96px;display:flex}
+  .swatch i{flex:1}
+  .dir .body{padding:18px 20px}
+  .dir .tag{font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+  .dir h2{margin:4px 0 6px;font-size:23px}
+  .dir p{margin:0 0 10px;color:var(--fg-soft);font-size:14px}
+  .dir .use{font-size:13px;color:var(--fg)}
+  .dir .use b{color:var(--accent);font-weight:400;font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+  table{width:100%;border-collapse:collapse;margin-top:46px;font-size:14px}
+  th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{font-family:ui-monospace,monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-soft)}
+  td b{color:var(--fg)} td{color:var(--fg-soft)}
+  footer{margin-top:46px;color:var(--fg-soft);font-size:13px;font-style:italic}
+  @media(max-width:640px){.grid{grid-template-columns:1fr}h1{font-size:32px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="kicker">Hayao · Brand exploration</p>
+  <h1>Four directions for Hayao</h1>
+  <p class="lead">One engine, four honest stances — each a coherent story, not a coat of paint.</p>
+  <div class="frame">
+    <b>What all four must carry:</b> the truth that a Hayao game is a <b>pure, deterministic function</b> — provable,
+    headless, and warm in its output. They differ only in <b>which of those truths leads</b>: the craft, the rigor, the
+    architecture, or the heritage. Open each; they're self-contained HTML.
+  </div>
+
+  <div class="grid">
+    <a class="dir" href="./a-provable-garden.html">
+      <div class="swatch"><i style="background:#f4ecda"></i><i style="background:#5a7d54"></i><i style="background:#b34a34"></i><i style="background:#c9a24b"></i><i style="background:#332a1c"></i></div>
+      <div class="body">
+        <div class="tag">Direction A</div>
+        <h2>Provable Garden</h2>
+        <p>Evolves today's warm, hand-tended identity and adds one rigorous mark: the proof seal. Craft you can trust.</p>
+        <div class="use"><b>Leads with</b> · craft + trust · lowest risk</div>
+      </div>
+    </a>
+    <a class="dir" href="./b-deterministic.html">
+      <div class="swatch"><i style="background:#0e1116"></i><i style="background:#1b2029"></i><i style="background:#4ee39a"></i><i style="background:#3fb0ff"></i><i style="background:#e6edf3"></i></div>
+      <div class="body">
+        <div class="tag">Direction B</div>
+        <h2>Deterministic</h2>
+        <p>The engineering truth, undecorated: a terminal, a cursor, one signal-green accent, state-transition ribbons.</p>
+        <div class="use"><b>Leads with</b> · rigor · most credible to devs</div>
+      </div>
+    </a>
+    <a class="dir" href="./c-observer.html">
+      <div class="swatch"><i style="background:#0a0a12"></i><i style="background:#ffd36b"></i><i style="background:#ff9a5a"></i><i style="background:#6ad6ff"></i><i style="background:#b98bff"></i></div>
+      <div class="body">
+        <div class="tag">Direction C</div>
+        <h2>The Observer</h2>
+        <p>Makes the one idea the whole logo: a luminous pure core radiating frames to plugin observers.</p>
+        <div class="use"><b>Leads with</b> · architecture · most ownable</div>
+      </div>
+    </a>
+    <a class="dir" href="./d-woodblock.html">
+      <div class="swatch"><i style="background:#efe7d6"></i><i style="background:#2b4a6f"></i><i style="background:#3d6a97"></i><i style="background:#c0432b"></i><i style="background:#20211d"></i></div>
+      <div class="body">
+        <div class="tag">Direction D</div>
+        <h2>Woodblock</h2>
+        <p>The woodblock as a deterministic function — carve once, print identical forever. Heritage as concept, handled with care.</p>
+        <div class="use"><b>Leads with</b> · heritage + story · highest ceiling &amp; care</div>
+      </div>
+    </a>
+  </div>
+
+  <table>
+    <tr><th>Direction</th><th>Voice</th><th>Best when the audience is…</th><th>Main risk</th></tr>
+    <tr><td><b>A · Provable Garden</b></td><td>Warm serif + mono</td><td>Indie devs, storytellers, existing fans</td><td>Reads "hobby" if the rigor marks are dropped</td></tr>
+    <tr><td><b>B · Deterministic</b></td><td>All monospace</td><td>Engineers, AI agents, HN/GitHub</td><td>Cold; ignores the games' warmth &amp; the name</td></tr>
+    <tr><td><b>C · The Observer</b></td><td>Geometric sans</td><td>Systems thinkers, conference stage</td><td>"Dark-mode SaaS" unless the diagram stays central</td></tr>
+    <tr><td><b>D · Woodblock</b></td><td>Mincho serif</td><td>Design-led, brand-forward launch</td><td>Pastiche without genuine cultural care</td></tr>
+  </table>
+
+  <footer>Recommendation lives in the chat. Each page ends with a candid “when this is right / watch out” — pick the
+    truth you most want to lead with.</footer>
+</div>
+</body>
+</html>

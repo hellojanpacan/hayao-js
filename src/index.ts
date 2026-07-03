@@ -56,6 +56,8 @@ export * from './verify/playthrough';
 export * from './verify/capture';
 export * from './verify/driver';
 export * from './verify/bot';
+export * from './verify/feel';
+export * from './verify/filmstrip';
 
 // ── world + app ─────────────────────────────────────────────────
 export * from './world';

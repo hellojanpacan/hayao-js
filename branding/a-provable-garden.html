@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hayao — Direction A · Provable Garden</title>
+<style>
+  :root{
+    --paper:#f4ecda; --paper-2:#fbf6ea; --ink:#332a1c; --ink-soft:#6f6047;
+    --line:#d9ccae; --moss:#5a7d54; --moss-deep:#3f5c3b; --seal:#b34a34;
+    --gold:#c9a24b;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--paper);color:var(--ink);
+    font-family:Georgia,"Iowan Old Style",serif;line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:960px;margin:0 auto;padding:56px 28px 80px}
+  .kicker{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--moss-deep);
+    font-family:ui-monospace,Menlo,monospace;margin:0 0 18px}
+  h1{font-size:15px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);
+    font-family:ui-monospace,Menlo,monospace;font-weight:600;margin:0 0 34px}
+  section{margin:0 0 42px}
+  .h{font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--ink-soft);
+    font-family:ui-monospace,Menlo,monospace;border-bottom:1px solid var(--line);
+    padding-bottom:8px;margin:0 0 20px}
+  /* wordmark */
+  .mark{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+  .logo{font-size:66px;letter-spacing:-.01em;line-height:1;display:flex;align-items:baseline;gap:2px}
+  .logo .dot{color:var(--seal)}
+  .logo .js{font-size:26px;color:var(--ink-soft);font-style:italic}
+  .seal{width:78px;height:78px;flex:0 0 auto}
+  .lead{font-size:22px;font-style:italic;color:var(--moss-deep);max-width:640px;margin:22px 0 0}
+  /* palette */
+  .sw{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+  .chip{border-radius:10px;height:78px;border:1px solid rgba(0,0,0,.08);
+    display:flex;align-items:flex-end;padding:8px;font-family:ui-monospace,monospace;font-size:10px}
+  .chip span{background:rgba(255,255,255,.82);border-radius:4px;padding:1px 5px}
+  /* type */
+  .spec b{display:block;font-size:40px;font-weight:400;letter-spacing:-.01em}
+  .spec .m{font-family:ui-monospace,Menlo,monospace;font-size:14px;color:var(--ink-soft);
+    background:#efe6d0;padding:12px 14px;border-radius:8px;margin-top:14px;white-space:pre-wrap}
+  /* hero */
+  .hero{background:linear-gradient(160deg,#fbf6ea,#efe4c9);border:1px solid var(--line);
+    border-radius:16px;padding:40px;position:relative;overflow:hidden}
+  .hero h2{font-size:44px;margin:0 0 6px;letter-spacing:-.01em}
+  .hero .sub{font-style:italic;color:var(--moss-deep);font-size:19px;margin:0 0 22px}
+  .hero .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .pill{font-family:ui-monospace,monospace;font-size:11px;color:var(--moss-deep);
+    border:1px solid var(--moss);border-radius:999px;padding:4px 12px;background:rgba(90,125,84,.08)}
+  .vine{position:absolute;right:-10px;bottom:-10px;width:190px;opacity:.9}
+  /* cards */
+  .cards{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .card{background:var(--paper-2);border:1px solid var(--line);border-radius:12px;padding:18px 20px;
+    box-shadow:0 2px 8px rgba(80,60,30,.08);position:relative}
+  .card h3{margin:0 0 3px;font-size:20px}
+  .card p{margin:0;color:var(--ink-soft);font-size:14px}
+  .stamp{position:absolute;top:14px;right:14px;width:34px;height:34px;opacity:.8}
+  .note{background:var(--paper-2);border:1px solid var(--line);border-left:3px solid var(--moss);
+    border-radius:10px;padding:18px 22px}
+  .note p{margin:0 0 8px}.note p:last-child{margin:0}
+  .note b{color:var(--moss-deep)}
+  code{font-family:ui-monospace,Menlo,monospace;background:#efe6d0;padding:1px 6px;border-radius:5px;font-size:13px}
+  @media(max-width:640px){.cards,.sw{grid-template-columns:1fr 1fr}.logo{font-size:48px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="kicker">Hayao · Brand Direction A</p>
+  <h1>Provable Garden</h1>
+
+  <section>
+    <div class="mark">
+      <div class="logo">hayao<span class="dot">.</span><span class="js">js</span></div>
+      <svg class="seal" viewBox="0 0 100 100" aria-label="proof seal">
+        <circle cx="50" cy="50" r="46" fill="none" stroke="#b34a34" stroke-width="2.5"/>
+        <circle cx="50" cy="50" r="38" fill="none" stroke="#b34a34" stroke-width="1" stroke-dasharray="2 4"/>
+        <path d="M34 51 l11 11 l22 -26" fill="none" stroke="#b34a34" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="50" y="86" text-anchor="middle" font-family="ui-monospace,monospace" font-size="8" letter-spacing="2" fill="#b34a34">VERIFIED</text>
+      </svg>
+    </div>
+    <p class="lead">An engine that grows games like a garden — patient, hand-tended, alive —
+      yet every leaf of it is machine-proven true.</p>
+  </section>
+
+  <section>
+    <div class="h">The idea</div>
+    <p style="max-width:680px;margin:0;font-size:17px">The name honours a maker known for craft, patience, and worlds
+      that feel hand-drawn. Direction A keeps that warmth — parchment, botanical line, a serif voice — and pairs it with
+      a single rigorous mark: <b>the proof seal</b>. Warmth says <i>made with care</i>; the seal says <i>and proven correct</i>.
+      Craft you can trust.</p>
+  </section>
+
+  <section>
+    <div class="h">Palette — "pressed-flower"</div>
+    <div class="sw">
+      <div class="chip" style="background:#f4ecda"><span>#f4ecda paper</span></div>
+      <div class="chip" style="background:#332a1c;color:#fff"><span style="color:#332a1c">#332a1c ink</span></div>
+      <div class="chip" style="background:#5a7d54;color:#fff"><span style="color:#3f5c3b">#5a7d54 moss</span></div>
+      <div class="chip" style="background:#b34a34;color:#fff"><span style="color:#b34a34">#b34a34 seal</span></div>
+      <div class="chip" style="background:#c9a24b"><span>#c9a24b gold</span></div>
+      <div class="chip" style="background:#6f6047;color:#fff"><span style="color:#6f6047">#6f6047 stem</span></div>
+    </div>
+  </section>
+
+  <section>
+    <div class="h">Type — serif body, mono for the machine</div>
+    <div class="spec">
+      <b>Georgia / Iowan — the human voice</b>
+      <div class="m">ui-monospace — the machine voice
+world.step(inputs) → state′        // proof, hashes, code all speak in mono</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="h">Hero application</div>
+    <div class="hero">
+      <h2>Grow a game. Prove it true.</h2>
+      <p class="sub">A deterministic engine an AI can author, test, and prove correct — without ever opening a browser.</p>
+      <div class="chips">
+        <span class="pill">deterministic</span>
+        <span class="pill">headless-native</span>
+        <span class="pill">provably winnable</span>
+      </div>
+      <svg class="vine" viewBox="0 0 200 200" aria-hidden="true">
+        <path d="M180 200 C150 150 170 110 130 90 C95 72 120 40 150 30" fill="none" stroke="#5a7d54" stroke-width="3"/>
+        <path d="M130 90 c-18 -6 -30 6 -28 22 c16 4 30 -6 28 -22z" fill="#5a7d54" opacity=".85"/>
+        <path d="M150 30 c-14 -8 -30 0 -30 16 c16 6 30 -2 30 -16z" fill="#3f5c3b" opacity=".85"/>
+        <circle cx="150" cy="30" r="7" fill="#c9a24b"/>
+      </svg>
+    </div>
+  </section>
+
+  <section>
+    <div class="h">System in use — game cards</div>
+    <div class="cards">
+      <div class="card">
+        <svg class="stamp" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="#b34a34" stroke-width="4"/><path d="M32 52 l12 12 l24 -30" fill="none" stroke="#b34a34" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>Bramblefall</h3>
+        <p>RTS-lite · 260 units, flow fields, counter triangle.</p>
+      </div>
+      <div class="card">
+        <svg class="stamp" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="#b34a34" stroke-width="4"/><path d="M32 52 l12 12 l24 -30" fill="none" stroke="#b34a34" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>Duskveil</h3>
+        <p>Bullet hell · 487 live bullets, deathless-provable.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="h">When this is right</div>
+    <div class="note">
+      <p><b>Choose Provable Garden</b> if Hayao's story is <i>craft + trust</i>: a warm, human engine whose secret weapon
+        is rigor. It evolves today's parchment identity rather than replacing it — lowest risk, deepest continuity.</p>
+      <p><b>Watch out:</b> serif-warm can read as "boutique / hobby". The mono + seal are what keep it credible to engineers —
+        never drop them.</p>
+    </div>
+  </section>
+</div>
+</body>
+</html>
