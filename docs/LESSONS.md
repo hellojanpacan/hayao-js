@@ -54,6 +54,17 @@ nothing" — actually a 200 on a typo'd path). Use MPA mode so 404s are honest.
 Bind the dev server to a harness-assignable port so two sessions don't collide.
 The boring glue is where the surprises live.
 
+## Consolidate on the third copy — and let goldens prove the lift
+Copy-paste between examples is *correct* for the first two occurrences (the
+abstraction isn't visible yet). By the third verbatim copy, promote it into
+`src/` behind `@hayao` — the frame-scoped `NodePool` existed six times before
+the mid-campaign sweep found it. Two rules from that sweep: (1) promote only
+near-identical code; same-shaped-but-divergent patterns (wave schedulers,
+enemy FSMs, room transitions) lose expressiveness when unified — leave them in
+the games. (2) Do the lift right after pinning golden replay hashes: five
+games migrated, every golden byte-identical, refactor proven pure in one
+command (`npm run verify`).
+
 ## Multi-agent orchestration
 Subagents stall holding a whole 1000-line file in one unwritten response — instruct
 builders to write one small module per tool call. Give verification agents their

@@ -2,7 +2,7 @@
 // lane is a drawn ribbon, pads show a cursor ring, towers show range on the
 // selected pad, and wave/economy state is always visible.
 
-import { Node, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
+import { Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
 import { initialRw, pointAt, stepRw, ENEMIES, PADS, PATH, TOWERS, WAVES, type RwState, type TowerKind } from './logic';
 
 export const RW_INPUT_MAP: InputMap = {
@@ -21,32 +21,14 @@ export function rwState(world: World): RwState {
   return world.state.rw as RwState;
 }
 
-class Pool {
-  private items: Sprite[] = [];
-  private used = 0;
-  constructor(private parent: Node, private make: () => Sprite) {}
-  begin(): void {
-    this.used = 0;
-  }
-  get(): Sprite {
-    if (this.used === this.items.length) this.items.push(this.parent.addChild(this.make()));
-    const s = this.items[this.used++];
-    s.visible = true;
-    return s;
-  }
-  end(): void {
-    for (let i = this.used; i < this.items.length; i++) this.items[i].visible = false;
-  }
-}
-
 const TOWER_COLOR: Record<TowerKind, string> = { arrow: PAL.arrow, frost: PAL.frost, cannon: PAL.cannon };
 
 class RwView extends Node {
   override readonly type = 'RwView';
   private layer = new Node({ name: 'layer' });
-  private foePool!: Pool;
-  private hpPool!: Pool;
-  private towerPool!: Pool;
+  private foePool!: NodePool<Sprite>;
+  private hpPool!: NodePool<Sprite>;
+  private towerPool!: NodePool<Sprite>;
   private cursorRing!: Sprite;
   private rangeRing!: Sprite;
   private hud!: Text;
@@ -64,9 +46,9 @@ class RwView extends Node {
     for (const p of PADS) this.layer.addChild(new Sprite({ pos: p, z: 2, shape: { kind: 'rect', w: 56, h: 56, r: 10 }, fill: PAL.pad, stroke: PAL.padLine, strokeWidth: 2 }));
     this.rangeRing = this.layer.addChild(new Sprite({ z: 2, shape: { kind: 'circle', radius: 100 }, fill: 'none', stroke: PAL.range, strokeWidth: 1.5, opacity: 0.5 }));
     this.cursorRing = this.layer.addChild(new Sprite({ z: 3, shape: { kind: 'rect', w: 64, h: 64, r: 12 }, fill: 'none', stroke: PAL.cursor, strokeWidth: 3 }));
-    this.towerPool = new Pool(this.layer, () => new Sprite({ z: 4, shape: { kind: 'circle', radius: 18 }, fill: PAL.arrow, stroke: '#1a2410', strokeWidth: 2 }));
-    this.foePool = new Pool(this.layer, () => new Sprite({ z: 5, shape: { kind: 'circle', radius: 12 }, fill: PAL.grunt }));
-    this.hpPool = new Pool(this.layer, () => new Sprite({ z: 6, shape: { kind: 'rect', w: 24, h: 4, r: 2 }, fill: '#8fe8b0' }));
+    this.towerPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 4, shape: { kind: 'circle', radius: 18 }, fill: PAL.arrow, stroke: '#1a2410', strokeWidth: 2 }));
+    this.foePool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 5, shape: { kind: 'circle', radius: 12 }, fill: PAL.grunt }));
+    this.hpPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 6, shape: { kind: 'rect', w: 24, h: 4, r: 2 }, fill: '#8fe8b0' }));
     this.hud = this.layer.addChild(new Text({ pos: { x: 640, y: 30 }, z: 8, size: 20, align: 'center', fill: PAL.text, text: '' }));
     this.layer.addChild(new Text({ pos: { x: 640, y: 686 }, z: 8, size: 16, align: 'center', fill: PAL.text, text: '←/→ select pad · [1] arrow 100 · [2] frost 120 · [3] cannon 190 · Space starts the wave early' }));
   }

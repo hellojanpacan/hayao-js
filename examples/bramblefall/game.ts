@@ -1,7 +1,7 @@
 // Bramblefall: the battle sim in world.state; pooled Canvas view; RTS HUD —
 // per-type counts for both armies, selection badge, command cursor, keep hp.
 
-import { Node, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World } from '@hayao';
+import { Node, NodePool, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World } from '@hayao';
 import { countBy, fieldMap, initialBf, stepBf, KEEPS, TILE_SIZE, type BfState, type UnitKind } from './logic';
 
 export const BF_INPUT_MAP: InputMap = {
@@ -24,28 +24,10 @@ export function bfState(world: World): BfState {
   return world.state.bf as BfState;
 }
 
-class Pool {
-  private items: Sprite[] = [];
-  private used = 0;
-  constructor(private parent: Node, private make: () => Sprite) {}
-  begin(): void {
-    this.used = 0;
-  }
-  get(): Sprite {
-    if (this.used === this.items.length) this.items.push(this.parent.addChild(this.make()));
-    const s = this.items[this.used++];
-    s.visible = true;
-    return s;
-  }
-  end(): void {
-    for (let i = this.used; i < this.items.length; i++) this.items[i].visible = false;
-  }
-}
-
 class BfView extends Node {
   override readonly type = 'BfView';
   private layer = new Node({ name: 'layer' });
-  private unitPool!: Pool;
+  private unitPool!: NodePool<Sprite>;
   private keeps: Sprite[] = [];
   private cursor!: Sprite;
   private hud!: Text;
@@ -60,7 +42,7 @@ class BfView extends Node {
         if (tileAt(map, tx, ty) === TILE.SOLID)
           this.layer.addChild(new Sprite({ pos: { x: (tx + 0.5) * TILE_SIZE, y: (ty + 0.5) * TILE_SIZE }, z: 2, shape: { kind: 'rect', w: TILE_SIZE, h: TILE_SIZE }, fill: PAL.rock, stroke: PAL.rockLine, strokeWidth: 1 }));
     KEEPS.forEach((k, i) => this.keeps.push(this.layer.addChild(new Sprite({ pos: { x: k.x, y: k.y }, z: 3, shape: { kind: 'rect', w: 72, h: 88, r: 10 }, fill: i === 0 ? PAL.keep0 : PAL.keep1, stroke: '#1a2410', strokeWidth: 3 }))));
-    this.unitPool = new Pool(this.layer, () => new Sprite({ z: 5, shape: { kind: 'circle', radius: 8 }, fill: PAL.p0 }));
+    this.unitPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 5, shape: { kind: 'circle', radius: 8 }, fill: PAL.p0 }));
     this.cursor = this.layer.addChild(new Sprite({ z: 7, shape: { kind: 'rect', w: 34, h: 34, r: 6 }, fill: 'none', stroke: PAL.cursor, strokeWidth: 3 }));
     this.hud = this.layer.addChild(new Text({ pos: { x: 640, y: 28 }, z: 8, size: 19, align: 'center', fill: PAL.text, text: '' }));
     this.armies = this.layer.addChild(new Text({ pos: { x: 640, y: 688 }, z: 8, size: 16, align: 'center', fill: PAL.text, text: '' }));

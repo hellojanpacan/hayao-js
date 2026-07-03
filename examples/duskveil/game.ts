@@ -1,7 +1,7 @@
 // Duskveil: the bullet-hell sim in world.state; pooled Canvas view (the
 // Emberwake lesson, at 4× the entity count). Slow-mode shows the true hitbox.
 
-import { Node, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
+import { Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
 import { initialDv, stepDv, P_TUNE, PHASES, type DvState } from './logic';
 
 export const DV_INPUT_MAP: InputMap = {
@@ -19,29 +19,11 @@ export function dvState(world: World): DvState {
   return world.state.dv as DvState;
 }
 
-class Pool {
-  private items: Sprite[] = [];
-  private used = 0;
-  constructor(private parent: Node, private make: () => Sprite) {}
-  begin(): void {
-    this.used = 0;
-  }
-  get(): Sprite {
-    if (this.used === this.items.length) this.items.push(this.parent.addChild(this.make()));
-    const s = this.items[this.used++];
-    s.visible = true;
-    return s;
-  }
-  end(): void {
-    for (let i = this.used; i < this.items.length; i++) this.items[i].visible = false;
-  }
-}
-
 class DvView extends Node {
   override readonly type = 'DvView';
   private layer = new Node({ name: 'layer' });
-  private bulletPool!: Pool;
-  private shotPool!: Pool;
+  private bulletPool!: NodePool<Sprite>;
+  private shotPool!: NodePool<Sprite>;
   private player!: Sprite;
   private hitbox!: Sprite;
   private boss!: Sprite;
@@ -51,8 +33,8 @@ class DvView extends Node {
   protected override onReady(): void {
     this.layer.cosmetic = true;
     this.addChild(this.layer);
-    this.bulletPool = new Pool(this.layer, () => new Sprite({ z: 5, shape: { kind: 'circle', radius: 6 }, fill: PAL.bullet, stroke: PAL.bullet2, strokeWidth: 1.5 }));
-    this.shotPool = new Pool(this.layer, () => new Sprite({ z: 3, shape: { kind: 'rect', w: 4, h: 14, r: 2 }, fill: PAL.shot }));
+    this.bulletPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 5, shape: { kind: 'circle', radius: 6 }, fill: PAL.bullet, stroke: PAL.bullet2, strokeWidth: 1.5 }));
+    this.shotPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 3, shape: { kind: 'rect', w: 4, h: 14, r: 2 }, fill: PAL.shot }));
     this.boss = this.layer.addChild(new Sprite({ z: 4, shape: { kind: 'circle', radius: 46 }, fill: PAL.boss, stroke: PAL.bossCore, strokeWidth: 4 }));
     this.player = this.layer.addChild(new Sprite({ z: 6, shape: { kind: 'poly', points: [0, -14, 10, 12, 0, 6, -10, 12], closed: true }, fill: PAL.player, stroke: '#ffffff', strokeWidth: 1.5 }));
     this.hitbox = this.layer.addChild(new Sprite({ z: 7, shape: { kind: 'circle', radius: P_TUNE.hitbox }, fill: PAL.hitbox }));

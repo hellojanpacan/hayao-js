@@ -2,7 +2,7 @@
 // in place, hide extras) — rebuilding hundreds of nodes per frame is an
 // allocation storm. Runs on the Canvas2D backend (see main.ts).
 
-import { Node, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World } from '@hayao';
+import { Node, NodePool, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World } from '@hayao';
 import { arenaMap, initialEw, stepEw, E_TUNE, P_TUNE, TILE_SIZE, UPGRADES, WIN_AT, type EwState } from './logic';
 
 export const EW_INPUT_MAP: InputMap = {
@@ -22,29 +22,11 @@ export function ewState(world: World): EwState {
   return world.state.ew as EwState;
 }
 
-class Pool {
-  private items: Sprite[] = [];
-  private used = 0;
-  constructor(private parent: Node, private make: () => Sprite) {}
-  begin(): void {
-    this.used = 0;
-  }
-  get(): Sprite {
-    if (this.used === this.items.length) this.items.push(this.parent.addChild(this.make()));
-    const s = this.items[this.used++];
-    s.visible = true;
-    return s;
-  }
-  end(): void {
-    for (let i = this.used; i < this.items.length; i++) this.items[i].visible = false;
-  }
-}
-
 class EwView extends Node {
   override readonly type = 'EwView';
   private layer = new Node({ name: 'layer' });
-  private enemyPool!: Pool;
-  private bulletPool!: Pool;
+  private enemyPool!: NodePool<Sprite>;
+  private bulletPool!: NodePool<Sprite>;
   private hero!: Sprite;
   private hud!: Text;
   private cards!: Text;
@@ -57,8 +39,8 @@ class EwView extends Node {
       for (let tx = 0; tx < map.cols; tx++)
         if (tileAt(map, tx, ty) === TILE.SOLID)
           this.layer.addChild(new Sprite({ pos: { x: (tx + 0.5) * TILE_SIZE, y: (ty + 0.5) * TILE_SIZE }, z: 2, shape: { kind: 'rect', w: TILE_SIZE, h: TILE_SIZE }, fill: PAL.rock, stroke: PAL.rockLine, strokeWidth: 1 }));
-    this.enemyPool = new Pool(this.layer, () => new Sprite({ z: 5, shape: { kind: 'circle', radius: 12 }, fill: PAL.swarmer }));
-    this.bulletPool = new Pool(this.layer, () => new Sprite({ z: 4, shape: { kind: 'circle', radius: 4 }, fill: PAL.bullet }));
+    this.enemyPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 5, shape: { kind: 'circle', radius: 12 }, fill: PAL.swarmer }));
+    this.bulletPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 4, shape: { kind: 'circle', radius: 4 }, fill: PAL.bullet }));
     this.hero = this.layer.addChild(new Sprite({ name: 'hero', z: 6, shape: { kind: 'circle', radius: P_TUNE.radius }, fill: PAL.hero, stroke: PAL.heroLine, strokeWidth: 3 }));
     this.hud = this.layer.addChild(new Text({ pos: { x: 640, y: 34 }, z: 8, size: 20, align: 'center', fill: PAL.text, text: '' }));
     this.cards = this.layer.addChild(new Text({ pos: { x: 640, y: 360 }, z: 9, size: 24, align: 'center', fill: PAL.card, text: '' }));

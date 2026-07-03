@@ -1,7 +1,7 @@
 // Hollowdeep: turn-based — the sim advances only on input edges. The view is
 // the classic roguelike trinity: visible (lit), explored (dim), unknown (void).
 
-import { Node, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
+import { Node, NodePool, Sprite, Text, audio, defineGame, hideScreen, registerNode, showScreen, type InputMap, type World } from '@hayao';
 import { computeFov, idx, initialHd, stepHd, COLS, ROWS, TILE_SIZE, type HdMove, type HdState } from './logic';
 
 export const HD_INPUT_MAP: InputMap = {
@@ -20,29 +20,11 @@ export function hdState(world: World): HdState {
   return world.state.hd as HdState;
 }
 
-class Pool {
-  private items: Sprite[] = [];
-  private used = 0;
-  constructor(private parent: Node, private make: () => Sprite) {}
-  begin(): void {
-    this.used = 0;
-  }
-  get(): Sprite {
-    if (this.used === this.items.length) this.items.push(this.parent.addChild(this.make()));
-    const s = this.items[this.used++];
-    s.visible = true;
-    return s;
-  }
-  end(): void {
-    for (let i = this.used; i < this.items.length; i++) this.items[i].visible = false;
-  }
-}
-
 class HdView extends Node {
   override readonly type = 'HdView';
   private layer = new Node({ name: 'layer' });
-  private tilePool!: Pool;
-  private entPool!: Pool;
+  private tilePool!: NodePool<Sprite>;
+  private entPool!: NodePool<Sprite>;
   private hero!: Sprite;
   private hud!: Text;
   private msg!: Text;
@@ -50,8 +32,8 @@ class HdView extends Node {
   protected override onReady(): void {
     this.layer.cosmetic = true;
     this.addChild(this.layer);
-    this.tilePool = new Pool(this.layer, () => new Sprite({ z: 1, shape: { kind: 'rect', w: TILE_SIZE, h: TILE_SIZE }, fill: PAL.dim }));
-    this.entPool = new Pool(this.layer, () => new Sprite({ z: 4, shape: { kind: 'circle', radius: 10 }, fill: PAL.rat }));
+    this.tilePool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 1, shape: { kind: 'rect', w: TILE_SIZE, h: TILE_SIZE }, fill: PAL.dim }));
+    this.entPool = new NodePool<Sprite>(this.layer, () => new Sprite({ z: 4, shape: { kind: 'circle', radius: 10 }, fill: PAL.rat }));
     this.hero = this.layer.addChild(new Sprite({ z: 5, shape: { kind: 'circle', radius: 11 }, fill: PAL.hero, stroke: '#0d0c10', strokeWidth: 2 }));
     this.hud = this.layer.addChild(new Text({ pos: { x: 640, y: 24 }, z: 8, size: 19, align: 'center', fill: PAL.text, text: '' }));
     this.msg = this.layer.addChild(new Text({ pos: { x: 640, y: 688 }, z: 8, size: 17, align: 'center', fill: PAL.text, text: '' }));
