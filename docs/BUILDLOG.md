@@ -560,6 +560,31 @@ the whole dance replays hash-identically.
   accepted, +5 refused, hammering inside one window acts once. These three
   assertions define 'tight but fair' better than any playtest adjective.
 
+### 19 · Pinshine — physics arcade (Breakout roguelite / Peggle) ✅
+
+**Shipped:** a Peggle-ish board: aim fan + trajectory preview, gravity flight,
+SWEPT circle-vs-circle collision (closed-form time-of-impact per substep, up
+to 3 impacts resolved per substep for corner rattles), restitution bounces,
+a patrolling refund bucket, 10 orange goals in 8 balls. Verified: an
+aim-searching sharpshooter (49 candidate aims simulated per shot on cloned
+states) clears the board in 7 balls; a 24,000px/s ball cannot tunnel and a
+1px graze correctly misses; bounces never add energy; golden replay.
+
+**Findings:**
+
+- **Swept collision is a quadratic, not a subsystem.** |v|^2 t^2 + 2(d.v)t +
+  |d|^2 - R^2 = 0, take the earliest root in [0, dt] — one function gives
+  exact, speed-independent contact. The 'no tunneling ever' guarantee costs
+  ~15 lines; substepping alone would have needed tuning forever.
+- **Physics games get shot-planning bots for free from pure state:**
+  clone the state, fire a candidate aim, run the flight, count oranges —
+  the same structuredClone pattern as Vantage's tactics scoring. Winnability
+  proof AND a difficulty meter (7 of 8 balls needed = tight board) in one.
+- **Energy honesty as an invariant:** 'a bounce never leaves the ball faster
+  than it arrived' catches restitution/normal bugs that look like
+  liveliness. Feel-critical physics deserves conservation checks, not just
+  trajectory eyeballing.
+
 ### 14 · Lumen Forge — incremental/idle (Paperclips × Cookie Clicker) ✅
 
 **Shipped:** 5-tier exponential economy (lantern → dawn engine), forge clicking,
