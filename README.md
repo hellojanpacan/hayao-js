@@ -81,11 +81,14 @@ reasoning in [docs/ENGINE.md](docs/ENGINE.md).
 
 ## Status
 
-**Early — the kernel is being laid down.** `core/`, `scene/`, `input/`, and
-`render/` (display list + SVG string + headless backend) are implemented. The
-`verify/`, `audio/`, `ui/`, and `app/` layers are designed (see ARCHITECTURE)
-but not all built yet; the docs describe the intended API where code is pending.
-Expect movement.
+**v0.1 — complete and verified.** All layers are implemented and tested:
+`core/`, `scene/`, `input/`, `render/` (SVG + Canvas2D + headless backends),
+`audio/`, `ui/`, `verify/`, and `app/`. The flagship **Sokoban** example
+(`examples/sokoban/`) is solver-proven winnable on every level and plays in the
+browser. 40 tests pass; `npm run check`, `npm run verify`, and `npm run build`
+are all green. Roadmap: more node types (physics bodies, particles), an ECS
+option for large entity counts, additional example genres, and asset-free audio
+tracks. Contributions welcome.
 
 ## License
 

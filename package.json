@@ -6,7 +6,7 @@
   "description": "An AI-first game engine: a deterministic, headless-native simulation kernel with a Godot-style scene tree, pluggable renderers (SVG/Canvas/headless), and a built-in verification harness — designed so an LLM can author, test, and prove correct a whole game without ever opening a browser.",
   "keywords": ["game-engine", "ai-first", "deterministic", "typescript", "svg", "godot-like"],
   "author": "hellojanpacan",
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
