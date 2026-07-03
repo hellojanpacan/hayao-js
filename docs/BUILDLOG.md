@@ -1260,3 +1260,54 @@ verify` unchanged (no golden drift); headless SVG proof composes all three.
   per-frame counter to snapshot, so scrubbing to any frame — or replaying on a
   peer — shows the exact same characters. Clock-as-input beats clock-as-state
   the same way `f(col, seed)` beat the stateful generator in E2.
+
+### E6 · Camera decoupled from the screen — Camera2D follow, scroll, `screenToWorld` ✅
+
+Sixth "engine gaps first" batch, prompted by a direct question: *can the camera
+be decoupled from the screen for scrolling and zooming?* It already could — the
+render root applies `World.viewTransform()` (the inverse of the active
+`Camera2D`, centred in design space and scaled by zoom) to the whole display
+list, so moving a `Camera2D` node scrolls the world and setting its `zoom`
+scales it. What was **missing was the ergonomic + proof layer**: nothing drove
+the camera, nothing converted screen→world, and no example exercised a world
+larger than the viewport. Filled that. New `scene/cameraController.ts` and two
+`World` methods; 10 new engine tests + the `examples/lanternway/` demo. Full
+portfolio `verify` unchanged (no golden drift on the other 26 games).
+
+**Gaps filled:**
+
+- **`World.screenToWorld` / `worldToScreen`.** Three lines each over the existing
+  transform kit (`applyTransform(invertTransform(viewTransform()), p)`), unit-
+  proven to round-trip exactly under a scrolled + zoomed camera. The doc comment
+  is a warning as much as an API: convert pointer coordinates at the host edge
+  and feed the result in as a **quantized action/axis** — raw screen coords in
+  the sim break determinism, which is why input stays action-based and no game
+  loop calls this on the hot path.
+- **`CameraController` — follow behaviour on top of `Camera2D`.** Chases a target
+  node with a deadzone (slack box the target roams before the camera moves), a
+  per-step lerp, and world-bounds clamping (inset by half the visible extent,
+  which grows as you zoom out) so the view never shows past the level edge. It
+  `snap()`s on ready so frame 0 is already framed. `cosmetic = true` by default.
+
+**What transfers:**
+
+- **A follow camera is *view*, not *state* — default it cosmetic.** The smoothed
+  chase is derived from the (canonical) target and would only fold float drift
+  into `world.hash()`; a follow camera driven by a lerp will intermittently break
+  `assertDeterministic` if it's hashed. So `CameraController` sets
+  `cosmetic = true` in its constructor (the E5 "enforce by construction" lesson
+  again), and the demo marks its `Camera2D` cosmetic too. The escape hatch is
+  deliberate: a game where offscreen means something mechanical (scroll-death
+  shmup, fog reveal) keeps the camera canonical.
+- **Parent the HUD to the camera to pin it to the screen — for free.** A child of
+  the `Camera2D` renders at `view ∘ cameraWorld ∘ local = centered ∘ local`: the
+  scroll cancels out, so camera-children sit at fixed screen positions with no
+  inverse-transform bookkeeping. Lanternway's coach line and goal compass are
+  camera children; the world scrolls under them. (At `zoom ≠ 1` they scale with
+  the zoom — counter-scale if you need pixel-fixed chrome.)
+- **The edge-clamp makes the deadzone "leak" near corners — tune feel windows to
+  a judged run, not the steady state.** In the open field the bearer leads the
+  camera by ~the deadzone; at the world corner the camera clamps and the bearer
+  walks the rest of the way in, so the on-screen offset peaks well past the
+  deadzone (420px vs 180px here). The feel probe window has to come from a run
+  you actually watched, or it fails on correct behaviour.

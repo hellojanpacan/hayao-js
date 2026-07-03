@@ -15,6 +15,7 @@ export * from './scene/node';
 // Node2D is an alias for Node — the base node already carries a 2D transform.
 export { Node as Node2D } from './scene/node';
 export * from './scene/nodes';
+export * from './scene/cameraController';
 export * from './scene/pool';
 export * from './scene/tween';
 export * from './scene/particles';

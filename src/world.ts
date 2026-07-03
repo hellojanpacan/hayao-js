@@ -10,7 +10,7 @@ import { InputState } from './input/actions';
 import { Node, resetNodeIds, type WorldContext } from './scene/node';
 import { deserializeNode } from './scene/registry';
 import type { Camera2D } from './scene/nodes';
-import { IDENTITY, composeTransform, invertTransform, makeTransform, type Transform } from './core/math';
+import { IDENTITY, applyTransform, composeTransform, invertTransform, makeTransform, type Transform, type Vec2 } from './core/math';
 import type { DrawCommand } from './render/commands';
 
 export interface WorldConfig {
@@ -122,6 +122,25 @@ export class World implements WorldContext {
     const camWorld = cam.worldTransform();
     const centered = composeTransform(makeTransform({ x: this.width / 2, y: this.height / 2 }, 0, { x: cam.zoom, y: cam.zoom }), invertTransform(camWorld));
     return centered;
+  }
+
+  /**
+   * Map a world-space point to screen/design space (the forward view transform).
+   * With no active camera this is the identity, so world == screen.
+   */
+  worldToScreen(p: Vec2): Vec2 {
+    return applyTransform(this.viewTransform(), p);
+  }
+
+  /**
+   * Map a screen/design-space point back to world space — the inverse of the
+   * view transform. Use this to turn a pointer position (in design units) into
+   * a world coordinate under a scrolled/zoomed camera. Keep raw pointer values
+   * OUT of the sim: convert at the host edge and feed the result in as a
+   * quantized action/axis, or determinism breaks (see docs/CONVENTIONS.md).
+   */
+  screenToWorld(p: Vec2): Vec2 {
+    return applyTransform(invertTransform(this.viewTransform()), p);
   }
 
   /** Project the whole scene to a display list (already camera-applied). */
