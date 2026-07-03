@@ -42,7 +42,7 @@ land here and in [LESSONS.md](LESSONS.md).
 | 14 | Incremental/idle | Universal Paperclips-lite | big numbers, offline time, pacing curves | ✅ |
 | 15 | Farming/life sim | Stardew-lite | calendar clock, save/load, gentle pacing | ✅ |
 | 16 | Survival horror | Darkwood-lite | shadowcast lighting, spatial audio, dread pacing | ✅ |
-| 17 | City/colony builder | Islanders × Mini Motorways | placement scoring, growth sim, minimal viz | — |
+| 17 | City/colony builder | Islanders × Mini Motorways | placement scoring, growth sim, minimal viz | ✅ |
 | 18 | Rhythm | NecroDancer-lite | audio clock vs sim clock determinism | — |
 | 19 | Physics arcade | Breakout roguelite / Peggle | continuous collision, deterministic FP physics | — |
 | 20 | Top-down racing | Micro Machines-lite | car handling feel, racing-line AI | — |
@@ -507,6 +507,32 @@ light-repels and darkness-kills each proven; deterministic + golden.
 - **Spatial audio was a 20-line engine addition:** pan from horizontal
   offset, gain from distance², all driven by sim events (`ev.growl`) — the
   no-op-in-Node invariant holds, so headless verification is untouched.
+
+### 17 · Tarnholm — city/colony builder (Islanders × Mini Motorways) ✅
+
+**Shipped:** procgen island (water rim, forest patches, grassy heart), an
+18-building queue, adjacency scoring (huts cluster, farms want open grass,
+sawmills forest, docks water, temples love huts and hate industry), live
+score preview under the cursor, a 150-renown target. Verified: 50 islands
+always fit the queue; greedy placement wins 20/20 at avg 158 (tight); greedy
+nearly doubles random placement (158 vs 82 — skill is real); scoring honesty
+audited; deterministic + golden.
+
+**Findings:**
+
+- **The live '+N' under the cursor is the entire genre UI.** Islanders works
+  because the scoring function is EXPOSED, not discovered — `placementScore`
+  serves the sim, the verify suite, the greedy bot, and the cursor label from
+  one function. When a genre's core rule is one pure function, put it on
+  screen verbatim.
+- **Skill-delta proofs generalize:** greedy-vs-random is the placement
+  version of Thornspire's draft-vs-skip and Fernrow's reinvest-vs-hoard.
+  Every strategy genre now ships an assertion that playing WELL matters —
+  arguably the closest thing this campaign has to a mechanical 'fun proof'.
+- Negative synergies (temples hating industry) create the only real decisions
+  in the queue — pure positive-sum scoring plays itself. A design smell worth
+  remembering: if the greedy bot never faces a tradeoff, neither does the
+  player.
 
 ### 14 · Lumen Forge — incremental/idle (Paperclips × Cookie Clicker) ✅
 
