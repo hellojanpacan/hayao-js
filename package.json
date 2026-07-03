@@ -7,7 +7,7 @@
   "author": "hellojanpacan",
   "license": "MIT",
   "repository": { "type": "git", "url": "git+https://github.com/hellojanpacan/hayao-js.git" },
-  "homepage": "https://github.com/hellojanpacan/hayao-js#readme",
+  "homepage": "https://hellojanpacan.github.io/hayao-js/",
   "bugs": { "url": "https://github.com/hellojanpacan/hayao-js/issues" },
   "main": "./dist/index.js",
   "module": "./dist/index.js",
