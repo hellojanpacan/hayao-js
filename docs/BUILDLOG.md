@@ -47,12 +47,55 @@ land here and in [LESSONS.md](LESSONS.md).
 | 19 | Physics arcade | Breakout roguelite / Peggle | continuous collision, deterministic FP physics | ✅ |
 | 20 | Top-down racing | Micro Machines-lite | car handling feel, racing-line AI | ✅ |
 | 21 | Narrative decisions | Reigns-lite | content DSL, long-arc balance sim | ✅ |
+| 22 | Physics demolition | Angry Birds × Crush the Castle | RIGID-BODY DYNAMICS: stacks, joints, CCD, sleep, contact events | ✅ |
+| 23 | Pinball | brass-parlor table | kinematic motor paddles, extreme-speed CCD in tight geometry, no-dead-pocket proof | ✅ |
 
 Order of battle: waves grouped by shared engine needs — movement/collision
 (2–5), mass/perf (6–9), turn/UI (10–14), atmosphere/sim (15–21). Order may be
 re-shuffled as lessons emerge.
 
 ## Entries
+
+### B2 · Gravewell — benchmark reproduction of Black Hole Square (js13k 2021, #9) ✅
+
+Second rung of the [BENCHMARK](BENCHMARK.md) ladder. Target: a 6×6 tap-puzzle
+— X squares vanish, neutron stars collapse into black holes, arrows slide
+contiguous runs of debris, holes swallow whatever slides in; every level has
+a hard tap budget (par).
+
+**Shipped:** pure tap rules (exact extraction from the original's
+`shiftPieces`, including the subtlety that blocked pushes don't consume
+budget), 5 original levels teaching tap → collapse → sweep → gap-cost →
+collapse-then-sweep combo finale, keyboard-native tap model (cursor +
+confirm; cursor position is canonical state), three distinct fail states
+surfaced (out of taps / not clean / stuck), piece-taxonomy view with on-screen
+legend. Verified: every level solver-proven within budget (3→3→3→5→6, finale
+deepest) AND proven UNsolvable in par−1; full campaign replayed through the
+cursor model with 0 taps to spare on every level; deterministic + golden;
+finale feel probes (monotone cleanup, ≥1 positioning tap, last tap lands at
+0); filmstrip + taxonomy still judged readable.
+
+**Fidelity score (rubric in BENCHMARK.md):** mechanics 10/10 M-checks green ·
+content parity: teaching arc ✓, volume 5 vs original's ~40 puzzles (arc ✓,
+volume ✗) · feel/look ✓ · learning yield: no engine gap, two findings below.
+
+**Findings:**
+
+- **Pointer-designed games reproduce keyboard-first with a cursor+confirm
+  model, and gain determinism for free.** Every "tap" is an action in the
+  same replayable input log as any key; `tapsToFrames()` compiles solver
+  paths (cell indices) into cursor walks. The cursor is CANONICAL state (it
+  decides what confirm does) — the temptation to mark it cosmetic would have
+  broken replay silently.
+- **Move budgets are negative proofs, refined.** Setting par := solver
+  optimum makes "par−1 unsolvable" true by construction — but asserting it
+  in CI is what protects the budget from later content edits (nudge one
+  piece and the assertion, not a playtester, catches the slack). B1's
+  load-bearing-mechanic lesson, applied to budgets.
+- **The blocked-push-is-free rule is the design's hidden generosity.** The
+  original only charges taps that change the board (`nChanges > 0`). Missing
+  that detail would have made every level rating wrong — rules extraction
+  from source (not from play) caught it.
 
 ### NET · Fernclash — deterministic multiplayer (lockstep + rollback netcode) ✅
 
@@ -829,3 +872,199 @@ orbiting fireflies. Balance sim–verified 10-minute arc: first buys at
 Proved: pure `Puzzle` module + BFS solver + `assertDeterministic` + scripted
 playthrough. Weakness identified: everything about this engine was only ever
 exercised by a discrete grid puzzle. Hence this campaign.
+
+### 22 · Rookspire — physics demolition (Angry Birds × Crush the Castle) ✅
+
+**Engine first:** this game forced hayao's biggest engine upgrade — a full
+deterministic 2D RIGID-BODY module (`src/physics/rigid*.ts`, exported via
+`@hayao`): circle/convex-poly bodies, SAT narrowphase with clipped 2-point
+manifolds, warm-started sequential impulses (restitution, Coulomb friction),
+SPLIT-IMPULSE penetration recovery (pseudo velocities — zero kinetic energy
+injected), distance + revolute joints with motors and limits, swept-circle
+bullet CCD, island-atomic sleeping, contact events with impulse magnitudes,
+ray/point queries. The whole world is PLAIN JSON — it lives in `world.state`
+and inherits hash/snapshot/replay/structuredClone-bots for free.
+
+**Shipped:** three castles (tower / twin rooks + lintel / walled keep with a
+rope-hung idol), aim-arc slingshot, materials (wood/stone), idol destruction
+by contact impulse or earth-touch, rubble that stays. Verified: an
+aim-searching siege bot with a structural-displacement gradient proves every
+castle falls within its stone budget; a full-power flat shot proven to strike
+(CCD); settled castles proven to SLEEP (0 awake → 0.03ms/step); golden replay;
+feel probes (impact wakes the pile, dust settles in 4.3s).
+
+**Solver-class findings (each found by a failing gate, none by eyeballs):**
+
+- **Warm-start capture order is an energy pump.** Computing a point's
+  restitution approach-speed AFTER earlier points' warm impulses were applied
+  double-counts the bounce; any restitution > 0 made piles wobble forever.
+  Box2D's two-pass shape (capture ALL, then warm-start ALL) fixed piles at
+  every restitution. The class: interleaving read-and-apply over coupled
+  constraints.
+- **Baumgarte bias velocity cannot sleep.** Position error fed into the
+  velocity solve holds stacks but leaves them humming at 5–20px/s — sleep
+  never engages. Split impulse (Chipmunk bias velocities) recovers overlap in
+  a pseudo field that dies at integration; piles then freeze truly. Linear-only
+  pseudo pushes: rotating positions without refreshing manifolds re-rocks the
+  pile.
+- **Sleep must be island-atomic.** Per-body sleep in a pile is unreachable —
+  neighbors wake each other forever (a 10-box tower NEVER slept). Union-find
+  islands over dynamic contacts + joints, sleeping a whole island when every
+  member is calm, put a settled tower to sleep at frame 56.
+- **CCD has three pinning traps:** (1) clamping to exact TOI leaves pen=0 and
+  the discrete narrowphase (pen>0) never sees a contact — gravity pumps
+  velocity to thousands while the body hangs (fix: advance 0.4px past TOI);
+  (2) exit crossings of the Minkowski hull count as hits and pin a bullet to
+  the platform it launched from (fix: front-side crossings only); (3) a ball
+  SLIDING along a face it already touches re-clamps at t≈0 every frame (fix:
+  skip faces the start point already touches — that regime belongs to the
+  contact solver).
+- **Feel probes catch design, not just code:** "impact wakes the castle"
+  failed on a clean headshot (physically correct, cinematically wrong) — the
+  golden script was retuned to a body shot. "Dust settles" failed because the
+  sim FROZE at the win screen; terminal states now keep settling physics.
+
+### 23 · Brasswick — pinball (brass-parlor table) ✅
+
+**Shipped:** felt-and-brass table, three bumper-bells with impulse kicks and a
+jackpot relight, kinematic flipper blades driven about their pivots, drain
+sensor, three deterministic serves, first-to-2000. Verified: a pulse-flip bot
+wins in 13s (peak ball speed 2445px/s); the ball proven table-bound for the
+whole game (CCD in tight geometry, 0 escaped frames); a searched flip proven
+to return a blade-rolling ball to the bumper field; every unflipped serve
+proven to drain (no dead pockets); golden metronome rally; feel probes (first
+bell 0.4s, ball lives 5.2s, max lull 4.7s).
+
+**Findings:**
+
+- **Flippers want to be kinematic, not motored joints.** A revolute motor
+  drives RELATIVE angular velocity about centroids; the pivot constraint eats
+  most of it (3.7 rad/s of a 26 target) and tuning is a war. A kinematic body
+  whose pose+velocity are recomputed about the pivot each step snaps in 3
+  frames, is infinitely stiff (as a paddle should be), and the contact solver
+  imparts its true surface velocity to the ball for free.
+- **"An unflipped table always drains" is the pinball winnability proof.**
+  Dead pockets are this genre's unwinnable-level bug: the gate caught a ball
+  CCD-pinned mid-slide on a corner slant (engine trap #3 above) that looked
+  exactly like a table-design flaw.
+- **Cradling emerged, unprogrammed.** Hold a flipper up and the ball nests in
+  the funnel–blade crotch — trap-and-hold, a real pinball skill, straight out
+  of the dynamics. Bots must PULSE flips or they cradle forever; verify bots
+  are players and need player discipline (hold/cooldown timers).
+- **Feel windows come from judged runs.** The 6s ball-life gate was invented;
+  the honest metronome run lives 5.2s with 0.4s first-score and 4.7s max lull
+  — a living table. The gate now encodes the judged run, not a wish.
+
+### E1 · Engine primitives — FSM, weighted tables, graph search (js13k-mined) ✅
+
+Not a game — the "engine gaps first" step run standalone, filling the cleanest
+pure-logic wins from [JS13K-MINING.md](JS13K-MINING.md) (rows #4/#5/#6, and an
+assessment of #17). One new module dir, `src/logic/`, three files, 19 tests,
+all deterministic and hash-safe (no `cosmetic` concerns — pure logic only).
+
+**Gaps filled:**
+
+- **`logic/fsm.ts` (#4).** `Fsm` — onEnter/onUpdate/onLeave states + an
+  **ordered** transition table (first satisfied guard wins; order IS the
+  tie-break, so it stays hash-stable). Plus `PhaseClock`, the pure-logic↔
+  `cosmetic` bridge generalised from super-castle-game's `IState`+`NextPhaseMap`:
+  a timed phase with a `next`-map and an eased `progress()` 0→1, so discrete
+  logical steps and smooth view interpolation ride the *same* fixed-`dt` clock.
+  Both serialize to a plain key(+timer) for `world.state`.
+- **`logic/random.ts` (#5).** `weightedIndex`/`weightedPick`/`pickEntry` +
+  a `LootTable` (prefix-summed for cheap repeat rolls), all drawing **one**
+  `rng.float()` per pick from a passed `Rng` — `world.rng`, never `Math.random`
+  (the corpus's near-universal sin). Negative weights clamp to 0; all-zero
+  tables throw rather than silently mis-sample.
+- **`logic/graph.ts` (#6).** Generic `bfs` + `reconstructPath`, weighted
+  `astar`/Dijkstra over any adjacency fn, and grid conveniences `floodFill`,
+  `connectedComponents`, `astarGrid`, `passableFromTilemap`. Determinism came
+  from three specifics: fixed neighbour order (`NEIGHBORS_4/8`), row-major
+  component scan, and an A* min-heap **tie-broken by a monotonic insertion
+  counter** — without that last one, equal-`f` nodes pop in engine-dependent
+  order and the *chosen* path (not just its cost) desyncs across machines.
+  Heuristics are integer-stable (Manhattan / octile) for the same reason.
+
+**Decision — ECS-lite behavior hooks (#17) deferred, not built.** norman's
+`Behaviour{onUpdate,onCollision,onDamage}` mixin earns its keep in a codebase
+*without* a scene graph; Hayao already has one (`Node.onProcess` + `Signal`/
+`EventBus` for collision/damage), so a parallel per-entity hook bus would be a
+second, competing update path — exactly the "keep the node tree lean" trap the
+row flagged. The composition it offers is already expressible as small Nodes or
+`world.state` behavior tags iterated in `onProcess`. Revisit only if a real
+game hits friction the node tree can't absorb; until then it's redundant
+surface. (Row #17 marked *evaluated → declined* in JS13K-MINING.)
+
+**Findings:**
+
+- **The determinism cost of graph search is entirely in the tie-breaks.** BFS
+  is free (array frontier, insertion order). A*/Dijkstra is not: a min-heap
+  ordered on `f` alone lets equal-cost paths resolve by heap-internal swap
+  order, which differs per engine — same length, different cells. A monotonic
+  `seq` as the secondary key makes the path itself reproducible. Heuristics
+  must be integer/exact-arithmetic too, or float wobble re-orders ties.
+- **`PhaseClock` is the missing half of the tween kit.** `AnimationPlayer`
+  eases *cosmetic* values; `PhaseClock` eases the *timing of logical commits*
+  and hands the view a progress alpha to interpolate against — the piece 5 of
+  the sampled games hand-rolled with ad-hoc timers.
+
+### E2 · Procgen generators + color engine + ambient particles (js13k-mined) ✅
+
+Second "engine gaps first" batch — [JS13K-MINING.md](JS13K-MINING.md) rows #7,
+#8, #14. Unlike E1 (pure logic only), this batch spans the whole determinism
+spectrum, and the discipline was drawing the line **per output**: logical
+structure is hash-relevant and runs off `world.rng`; decoration and view are
+`cosmetic` and stay out of the hash. New `src/procgen/` dir (5 files),
+`art/palette.ts` + `scene/particles.ts` extensions, one `core/math` helper.
+31 new tests, all green; headless SVG screenshot verified.
+
+**Gaps filled:**
+
+- **`procgen/` — carving + scatter (#7).** `generateCave` (cellular automata,
+  space-huggers caverns) and `generateDungeon` (room+corridor bases) both take
+  a passed `Rng` and iterate **row-major**, so same seed → byte-identical grid
+  (`Grid`→`gridToTilemap` drops straight into physics — these ARE hash state).
+  `terrainHeight` is the knight-dreams endless-terrain case done right: a
+  *stateless pure function* of `(col, seed)` via layered value noise — no PRNG
+  stream, any column sampleable in any order, infinite worlds reproducible for
+  free. `scatter.ts` is the witchcat/cat-survivors `((x-812347*y)*…)%17` trick
+  generalised: `cellHash`/`scatter`/`valueNoise`/`fractalNoise`, all stateless
+  coordinate hashes → **cosmetic decoration, no PRNG state threaded**.
+- **`art/palette.ts` — HSL/HSV + gamma-correct blends (#8).** `hsl`/`hsv`/
+  `hexToHsl` constructors (pure arithmetic, no trig), `mutateColor` (space-
+  huggers hue/sat/light drift via `world.rng`), and linear-light `mixLinear`/
+  `sampleGradient`/`gradient` (super-castle's gamma-correct lerp). The sRGB↔
+  linear 2.4-exponent routes through `dmath` (`dexp2`/`dlog2`) — a local `dpow`
+  — so it's bit-identical across engines AND never trips the "no `Math.pow`"
+  invariant.
+- **`scene/particles.ts` — ambient field preset (#14).** `AmbientField`, a
+  screen-wrapping drift field (a *distinct* node from the burst `Particles`):
+  fixed particle set seeded across a region, toroidal wrap, own `Rng`, always
+  `cosmetic`. `weatherEnvelope` is a smoothstep keyframe curve over **sim time**
+  (`world.time`, never wall-clock) that thins the field to fade weather in/out.
+  `AMBIENT_PRESETS.snow/rain/ash`. Added `smoothstep` to `core/math`.
+
+**Decision — no simplex/Perlin lib.** Per the mining doc's anti-recommendation,
+value-noise (bilinear-smoothed integer-cell hash) + integer scatter cover every
+sampled game's real need at a fraction of the size; a heavyweight simplex import
+would be cosmetic weight for no gameplay dependency. Declined on purpose.
+
+**Findings:**
+
+- **The hash boundary in procgen runs per-output, not per-module.** The same
+  `src/procgen/` dir holds both hash-critical state (`generateCave`/`Dungeon`/
+  `terrainHeight` → collision geometry, fully deterministic off `rng`/seed) and
+  cosmetic-only helpers (`scatter`/`valueNoise` → decoration). The invariant
+  isn't "procgen is cosmetic" or "procgen is hashed" — it's *which output are
+  you producing*. Structure carves logic; scatter dusts the view.
+- **Stateless coordinate-hash beats a seeded stream for endless content.**
+  knight-dreams' anti-pattern isn't just `Math.random` — it's *stateful*
+  generation, which forces you to generate the world in order. A pure
+  `f(col, seed)` height (value noise) needs no stream, so an infinite runner can
+  sample any column, any order, any peer, and agree — determinism as a *property
+  of the function*, not a discipline you maintain over a mutating generator.
+- **Gamma correctness and the determinism invariant point the same way.** The
+  honest sRGB→linear blend needs a 2.4 power; `Math.pow` is both perceptually
+  required here and engine-nondeterministic (banned). Building `dpow` on
+  `dexp2`/`dlog2` satisfies both at once — the "correct blend" and the
+  "reproducible blend" turned out to be the same fix.

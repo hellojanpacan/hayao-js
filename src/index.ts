@@ -18,6 +18,7 @@ export * from './scene/nodes';
 export * from './scene/pool';
 export * from './scene/tween';
 export * from './scene/particles';
+export * from './scene/floatingText';
 export * from './scene/registry';
 
 // ── input: actions, sampling, record/replay ─────────────────────
@@ -44,10 +45,22 @@ export * from './render/svgString';
 export * from './render/svg';
 export * from './render/canvas';
 export * from './render/headless';
+export * from './render/nineSlice';
 
 // ── art: code-as-art helpers ────────────────────────────────────
 export * from './art/palette';
 export * from './art/shapes';
+export * from './art/texture';
+export * from './art/font5';
+export * from './art/bitmapFont';
+export * from './art/autotile';
+
+// ── procgen: deterministic generators + stateless scatter ───────
+export * from './procgen/grid';
+export * from './procgen/scatter';
+export * from './procgen/cave';
+export * from './procgen/terrain';
+export * from './procgen/rooms';
 
 // ── audio ───────────────────────────────────────────────────────
 export * from './audio/audio';
@@ -56,6 +69,7 @@ export * from './audio/audio';
 export * from './ui/overlay';
 export * from './ui/settings';
 export * from './ui/shell';
+export * from './ui/transition';
 
 // ── verify: the AI-first harness ────────────────────────────────
 export * from './verify/solver';
@@ -67,6 +81,20 @@ export * from './verify/bot';
 export * from './verify/layout';
 export * from './verify/feel';
 export * from './verify/filmstrip';
+
+// ── logic: pure engine primitives (FSM, weighted tables, graph search) ─
+export * from './logic/fsm';
+export * from './logic/random';
+export * from './logic/graph';
+export * from './logic/history';
+
+// ── persist: save/load over a pluggable storage adapter + compact codecs ─
+export * from './persist/storage';
+export * from './persist/codec';
+export * from './persist/save';
+
+// ── content: data-driven wave/spawn directors + upgrade trees ───
+export * from './content/dsl';
 
 // ── net: deterministic multiplayer (lockstep / rollback) ────────
 export * from './net/players';

@@ -80,3 +80,114 @@ statistical property tests over a stochastic system.
 **Hard (scaffold or avoid):** judging interactive feel blind (build the probe/
 screenshot harness first); hand-authoring provably-complete levels (always solve
 them); binary/spritesheet art; music; frame-perfect real-time; giant single files.
+
+## Prove the mechanic is load-bearing, not just that levels are winnable
+Winnability proofs accept levels that ignore the game's core mechanic. The
+cheap, strong upgrade (from Seamfold/B1): run the SAME solver on a rules
+variant with the mechanic disabled and assert *unsolvable* — one extra
+`Puzzle` object reusing `apply` with a flag. "Every level needs the seam"
+became CI, and it caught the designer being wrong about his own level in both
+directions. Works anywhere a mechanic gates progress: ability-gating
+(metroidvania reachability minus the ability), dash-gated platforming, the
+twist mechanic of any puzzle genre. Negative proofs are as cheap as positive
+ones and assert design intent, not just feasibility.
+
+## Pointer games port keyboard-first: cursor + confirm keeps taps replayable
+Reproducing a tap/pointer game (Gravewell/B2): model the tap as a keyboard
+cursor + confirm action instead of raw pointer coords. Every tap then lives in
+the same deterministic input log as any key (record/replay covers it), and a
+`tapsToFrames()` helper compiles solver paths into cursor walks so proofs
+drive the REAL view. Two rules: the cursor is CANONICAL state, never cosmetic
+(it decides what confirm does); and taps that change nothing must not consume
+resources — charge effects, not clicks.
+
+## Continuous physics is verified by failure classes, not trajectories
+The rigid-body build's five real bugs were all CLASSES with names — warm-start
+capture order (an energy pump), bias velocity vs sleep (position error must
+not carry momentum), per-body sleep in piles (must be island-atomic), and
+three distinct CCD pinning traps (exact-TOI leaves no penetration for the
+discrete solver; exit crossings count as hits; already-touching surfaces
+re-clamp a slider every frame). None were visible in a trajectory eyeball;
+every one fell out of a genre-truth gate ("piles sleep", "an unflipped table
+always drains", "a bounce never adds energy"). Write the gate for the CLASS
+and the instance finds itself. Continuous state can't be BFS-solved like a
+grid puzzle, but plain-data physics gives the same power back as
+structuredClone search bots: an aim-searching siege bot and a flip-timing bot
+are the solver, and a displacement-score gradient turns a greedy bot into a
+multi-stage planner.
+
+## Constrained motion wants kinematic bodies, not fought motors
+When gameplay needs a paddle/platform/blade that follows a SCRIPT (flippers,
+crushers, lifts), don't pin a dynamic body with a motored joint and fight the
+constraint for authority — a revolute motor drives relative velocity about
+centroids and the pivot constraint eats most of it. A kinematic body whose
+pose AND velocity are recomputed about the pivot each step is infinitely
+stiff, tuning-free, and the contact solver hands its true surface velocity to
+whatever it strikes. Reserve joints for things that should genuinely be
+pushed around (ropes, wrecking balls, ragdolls, bridges).
+
+## A deterministic path needs a tie-break, not just a correct cost
+Porting graph search into a lockstep engine, the trap isn't correctness — a
+textbook A* finds an optimal-cost path anywhere. It's that *which* optimal path
+it returns must be bit-identical on every JS engine, or a cross-machine game
+desyncs even though both peers "found the shortest route." Two disciplines buy
+this: order the open-set min-heap on `(f, insertionSeq)` so equal-`f` nodes pop
+in push order (never heap-internal swap order, which is engine-defined), and
+keep the heuristic in exact arithmetic (Manhattan/octile, integer-stable) so
+float wobble can't re-order ties. Same rule as `dmath` for transcendentals:
+the answer being *right* isn't enough; it has to be right the *same way*
+everywhere. BFS is immune (array frontier = insertion order for free); every
+priority-ordered search is not.
+
+## FSM has two jobs; the timed one is the tween kit's missing half
+"Add an FSM helper" hides two distinct primitives. One is the classic
+condition-driven machine (onEnter/update/leave + an ordered guard table) for AI
+and screens. The other — the one 5 js13k games hand-rolled with ad-hoc timers —
+is a *timed phase* that eases the moment a logical step commits and hands the
+view a 0→1 progress alpha to interpolate against (super-castle's
+`IState`+`NextPhaseMap`). The engine already eased cosmetic values
+(`AnimationPlayer`); what it lacked was easing the *timing of the logic*, on the
+same fixed-`dt` clock, so a discrete move and its smooth animation can't drift.
+Ship both under one name and the discrete↔continuous bridge stops being
+per-game glue.
+
+## Weigh a mined mixin against the seams you already have
+norman's `Behaviour{onUpdate,onCollision,onDamage}` mixin is a real win — in a
+codebase with no scene graph. Hayao has `Node.onProcess` + `Signal`/`EventBus`
+already covering those three hooks, so adding a parallel per-entity hook bus
+would be a *second* update path competing with the node tree — the redundancy
+the "keep the tree lean" invariant exists to prevent. The test for adopting a
+mined primitive isn't "did a sampled game build it?" but "does it collapse into
+a seam I already have?" If yes, decline it and record why; a declined gap with
+a reason is a deliverable, not a gap left open.
+
+## The cosmetic/hash line in procgen is drawn per-output, not per-module
+Adding generators, the instinct is to classify the *module* — "procgen is
+cosmetic" or "procgen is level data." Both are wrong. One `src/procgen/` dir
+legitimately holds cave/dungeon/terrain carving (collision geometry — logical,
+hash-relevant, must run deterministically off `world.rng` or an explicit seed)
+right beside coordinate-hash scatter and value noise (decoration — `cosmetic`,
+out of `world.hash()`). The invariant resolves per *output*: are you producing
+structure the rules read, or dressing the view? Structure carves logic; scatter
+dusts it. A helper file is not the unit the determinism rule applies to.
+
+## For endless content, make generation a pure function, not a seeded stream
+knight-dreams' real anti-pattern isn't only `Math.random` — it's *stateful*
+generation. A generator that mutates as it runs forces the world to be built in
+order, and reproducing column N means replaying columns 0..N-1. Express the
+surface as `f(col, seed)` instead (layered value noise off an integer cell
+hash) and determinism stops being a discipline you maintain over a mutating
+object and becomes a *property of the function*: any column, any order, any
+peer, same answer, no stream to serialize. Seeded PRNG is right for a *bounded*
+carve (a cave, a floor); a stateless coordinate hash is right for the
+*unbounded* one (endless terrain, per-cell scatter).
+
+## Gamma-correct and netplay-deterministic turned out to be the same fix
+An honest sRGB→linear color blend needs a 2.4-power transfer curve. `Math.pow`
+is both the perceptually-correct tool here and an engine-nondeterministic op the
+invariants ban. The reflex is to treat these as competing constraints; they're
+not. Building `dpow` on the existing `dexp2`/`dlog2` (already exact-rounded for
+lockstep) delivers the correct blend and the reproducible blend in one stroke.
+When a "quality" requirement and a "determinism" requirement seem to collide,
+check whether the determinism-safe primitive you already have is also the
+higher-quality one — here linear-light lerp is both.

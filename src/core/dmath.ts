@@ -159,6 +159,11 @@ export function dexp2(x: number): number {
   return sum * 2 ** k; // 2^integer is exact in every engine
 }
 
+/** Deterministic natural exponential eˣ. Routes through dexp2 (eˣ = 2^(x/ln2)). */
+export function dexp(x: number): number {
+  return dexp2(x * INV_LN2);
+}
+
 /** Deterministic hypotenuse: sqrt is IEEE-correctly-rounded, hypot is not. */
 export function dhypot(x: number, y: number): number {
   return Math.sqrt(x * x + y * y);

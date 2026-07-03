@@ -378,9 +378,11 @@ function sweepCircle(x0: number, y0: number, dx: number, dy: number, r: number, 
     const len = dhypot(ex, ey) || 1;
     const nx = ey / len, ny = -ex / len;
     // Offset edge segment — only FRONT-side crossings count (motion into the
-    // face); an exit crossing from inside the hull is not a hit, or a bullet
-    // could pin itself against a platform it launches from.
-    if (dx * nx + dy * ny < 0) {
+    // face), and only from a start point that is NOT already touching the
+    // face. A touching/overlapping start is the contact solver's regime: TOI
+    // would clamp t≈0 every frame and pin a sliding ball in place.
+    const startSep = (x0 - ax) * nx + (y0 - ay) * ny - r;
+    if (dx * nx + dy * ny < 0 && startSep > 0.5) {
       const t = sweepVsSegment(x0, y0, dx, dy, ax + nx * r, ay + ny * r, bx + nx * r, by + ny * r);
       if (t >= 0 && (best < 0 || t < best)) best = t;
     }
@@ -396,8 +398,10 @@ function sweepVsCircle(x0: number, y0: number, dx: number, dy: number, cx: numbe
   const a = dx * dx + dy * dy;
   if (a < 1e-12) return -1;
   const b = 2 * (fx * dx + fy * dy);
+  // Already touching or overlapping (within a slop ring): the contact solver
+  // owns this — a TOI of ~0 would pin a rolling/sliding ball in place.
+  if (fx * fx + fy * fy < (R + 0.5) * (R + 0.5)) return -1;
   const c = fx * fx + fy * fy - R * R;
-  if (c < 0) return -1; // already overlapping — let the contact solver handle it
   const disc = b * b - 4 * a * c;
   if (disc < 0) return -1;
   const t = (-b - Math.sqrt(disc)) / (2 * a);

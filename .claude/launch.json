@@ -6,6 +6,13 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "4599"],
       "port": 4599
+    },
+    {
+      "name": "hayao-site",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 5180,
+      "autoPort": true
     }
   ]
 }

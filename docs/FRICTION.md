@@ -42,3 +42,24 @@ surfaced, what changed so it can't recur (or "unfixed" — an open trap).
   hash mismatches, far from the cause.
 - **Fix landed:** `scripts/invariants.ts` greps for all statically checkable
   invariants and runs as the first stage of `npm run verify`.
+
+## 2026-07-03 — Hidden preview tab silently suspends the sim (rAF = 0)
+
+- **Happened:** trying to prove the in-browser keyboard loop by dispatching
+  synthetic KeyboardEvents through the harness preview; nothing moved.
+- **Surfaced as:** HUD stuck at "Moves 0" with zero console errors — the
+  preview tab reports `document.hidden === true`, Chrome suspends rAF
+  entirely, so the driver never steps regardless of input. Looks like an
+  input bug; is actually environment throttling.
+- **Fix landed:** unfixed — watch for this. Rule: interaction proofs belong in
+  the headless channel (scripted `world.step` replays — which already covered
+  this game); use the preview ONLY for static looks judgement (screenshots of
+  live pages and SVG artifacts render fine while hidden).
+
+- **Friction:** `npm run verify` always ran the entire portfolio; iterating on
+  one game's verify meant hand-rolling a scratch harness that re-implements
+  the VerifyContext (goldens, artifacts, UPDATE_GOLDEN) — a second source of
+  truth that can drift.
+- **Fix landed:** `scripts/verify.ts` now takes slugs: `npm run verify --
+  rookspire brasswick` runs only those suites (no args = whole portfolio, so
+  the CI gate is unchanged).

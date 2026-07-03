@@ -29,9 +29,12 @@ export interface VerifyContext {
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const examplesDir = join(root, 'examples');
+// Optional filter: `npm run verify -- rookspire brasswick` runs only those.
+const only = process.argv.slice(2).filter((a) => !a.startsWith('-'));
 const slugs = readdirSync(examplesDir, { withFileTypes: true })
   .filter((d) => d.isDirectory())
   .map((d) => d.name)
+  .filter((n) => only.length === 0 || only.includes(n))
   .sort();
 
 let failures = 0;

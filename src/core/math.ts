@@ -27,6 +27,12 @@ export const invLerp = (a: number, b: number, v: number): number => (a === b ? 0
 export const remap = (v: number, a0: number, a1: number, b0: number, b1: number): number =>
   lerp(b0, b1, invLerp(a0, a1, v));
 
+/** Hermite smoothstep: 0 below `edge0`, 1 above `edge1`, eased in between. */
+export const smoothstep = (edge0: number, edge1: number, v: number): number => {
+  const t = clamp(edge0 === edge1 ? (v < edge0 ? 0 : 1) : invLerp(edge0, edge1, v), 0, 1);
+  return t * t * (3 - 2 * t);
+};
+
 export const TAU = Math.PI * 2;
 export const deg2rad = (d: number): number => (d * Math.PI) / 180;
 export const rad2deg = (r: number): number => (r * 180) / Math.PI;

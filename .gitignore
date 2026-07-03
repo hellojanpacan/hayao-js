@@ -7,3 +7,4 @@ dist-site/
 coverage/
 shots/
 .claude/settings.local.json
+scratchpad/
