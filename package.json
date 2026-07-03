@@ -1,0 +1,26 @@
+{
+  "name": "hayao",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "An AI-first game engine: a deterministic, headless-native simulation kernel with a Godot-style scene tree, pluggable renderers (SVG/Canvas/headless), and a built-in verification harness — designed so an LLM can author, test, and prove correct a whole game without ever opening a browser.",
+  "keywords": ["game-engine", "ai-first", "deterministic", "typescript", "svg", "godot-like"],
+  "author": "hellojanpacan",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "api": "tsx scripts/api-digest.ts",
+    "verify": "tsx scripts/verify.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vite": "^6.0.0",
+    "vitest": "^2.1.0"
+  }
+}
