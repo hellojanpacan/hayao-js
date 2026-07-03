@@ -33,7 +33,7 @@ land here and in [LESSONS.md](LESSONS.md).
 | 5 | Stealth | Mark of the Ninja × Gunpoint | vision cones, noise propagation, guard FSM | ✅ |
 | 6 | Twin-stick horde | Nuclear Throne × Vampire Survivors | 100s of entities, spatial hash, upgrade economy | ✅ |
 | 7 | Bullet hell | Touhou × Jamestown | 1000+ bullets perf ceiling, pattern DSL | ✅ |
-| 8 | Tower defense | Kingdom Rush × Bloons | path following, wave balance sim, counter system | — |
+| 8 | Tower defense | Kingdom Rush × Bloons | path following, wave balance sim, counter system | ✅ |
 | 9 | RTS-lite | (mass units) | flow fields, 300–500 units, counters, HUD density | — |
 | 10 | Traditional roguelike | Brogue × Shattered Pixel | procgen + connectivity proof, FOV, turn scheduler | — |
 | 11 | Roguelike deckbuilder | Slay the Spire-lite | card DSL, balance bot, addictive loop | — |
@@ -278,6 +278,36 @@ deterministic.
 - **Mercy rules are structural, not polish:** the respawn bullet-clear radius
   and phase-transition clears are what keep 3 lives meaningful at this
   density — without them, deaths cascade. (Same family as i-frames.)
+
+### 8 · Rootward — tower defense (Kingdom Rush × Bloons) ✅
+
+**Shipped:** S-curve lane with waypoint interpolation, 12 build pads, three
+counter-typed towers (arrow / frost aura / splash cannon), ten composed waves
+with a bounty economy, cursor-driven building via input actions. The scripted
+mixed build survives 10/10 waves at 9 lives; an arrow-only build of a larger
+budget falls to the tank waves; the bare lane falls on wave 2; the pressure
+curve ramps with breathers; deterministic.
+
+**Findings:**
+
+- **A counter system must be proven from BOTH sides.** After the first range
+  buff, arrow-spam beat everything — the "counter" was decorative. It became
+  real only when tank arrow-resist dropped to 0.12 (arrows ~useless), which
+  is the design rule: soft resists (45%) get erased by tower-count scaling;
+  counters need to be near-hard to force build diversity.
+- **Tower coverage is geometry, not stats.** A range-175 tower on a pad 120px
+  off the lane covers a 254px chord — 3.2s of fire, less than one grunt kill.
+  Pad placement × range defines the real DPS; the range ring in the HUD is
+  the single most important piece of UI in the genre.
+- **A verify-driver bug masqueraded as a design failure:** holding 'next'
+  every frame edges justPressed once, so the cursor stuck and NOTHING was
+  built — 'mixed build' and 'undefended' were identical runs. Symmetric to
+  the shard-ascent DJ-tap lesson, from the driving side: **edge-triggered
+  inputs need explicit release frames in any scripted driver.** Worth a
+  helper in the engine bot at synthesis time.
+- **Wave curves aren't monotone — they breathe.** Runner waves are pressure
+  breaks by design; the right telemetry gate is 'each wave ≥ 55% of the
+  previous, finale is the peak', not monotone hp.
 
 ### 14 · Lumen Forge — incremental/idle (Paperclips × Cookie Clicker) ✅
 
