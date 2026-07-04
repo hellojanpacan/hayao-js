@@ -85,7 +85,12 @@ looks only — never for correctness.
 Copy `examples/sokoban/` → `examples/<slug>/`, adapt, add a card to the store at
 `play/index.html` (group it under the matching engine-slice section), `npm run
 check`, then verify per `docs/VERIFICATION.md` before presenting a play link.
-Vite auto-discovers the new folder — zero config.
+Vite auto-discovers the new folder — zero config. Adding a game needs **no**
+count bookkeeping: never hardcode a portfolio total ("28 games", "the core
+twenty-one") in copy — it goes stale the moment the next game lands. The store
+header derives its count live from the cards; elsewhere phrase it count-free
+("browse the full store", "a growing portfolio"). Per-game facts (Kintsugi's
+30 rooms, lanternfold's 42 levels) are fixed and fine.
 
 ## The site (three doors)
 The website is split by audience: `index.html` is the marketing landing
