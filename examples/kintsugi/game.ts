@@ -18,6 +18,9 @@ import {
   KENTO,
   composeTransform,
   IDENTITY,
+  Rng,
+  blobPath,
+  smoothOpenPath,
   gridFromRows,
   autotileToCommands,
   defineGame,
@@ -126,12 +129,8 @@ class KintsugiView extends Node {
 
     // backdrop sky
     this.room.addChild(new Sprite({ pos: { x: VIEW_W / 2, y: VIEW_H / 2 }, z: -100, shape: { kind: 'rect', w: VIEW_W + 20, h: VIEW_H + 20 }, gradient: linearGradient([art.skyTop, mix(art.skyTop, art.skyBot, 0.5), art.skyBot], 90) }));
-    // distant silhouettes (cheap parallax feel — static per room)
-    for (let i = 0; i < 4; i++) {
-      const x = 160 + i * 320;
-      const h = 150 + ((i * 53) % 90);
-      this.room.addChild(new Sprite({ pos: { x, y: VIEW_H - 120 }, z: -90, shape: { kind: 'poly', points: [-160, 120, -70, -h + 120, 20, 40, 110, -h + 60, 190, 120], closed: true }, fill: withAlpha(art.far, 0.55) }));
-    }
+    // biome-specific midground scenery + ambient motes (depth, not a void)
+    this.buildScenery(art, biomeOf(region), region);
 
     // walls (autotiled woodblock)
     const grid = gridFromRows(rows, '#');
@@ -159,6 +158,69 @@ class KintsugiView extends Node {
     }
 
     this.sig = `${region}|${kg.taken.length}`;
+  }
+
+  /** Biome-specific midground scenery + ambient motes — depth, not a void. */
+  private buildScenery(art: ReturnType<typeof biomeArt>, biome: string, region: string): void {
+    let seed = 0;
+    for (const c of region) seed = (seed * 31 + c.charCodeAt(0)) >>> 0;
+    const rng = new Rng(seed || 1);
+    const far = withAlpha(art.far, 0.5);
+    const mid = withAlpha(mix(art.far, KENTO.sumi, 0.4), 0.7);
+    const horizon = VIEW_H - 96;
+
+    if (biome === 'grove') {
+      for (let i = 0; i < 6; i++) {
+        const x = 90 + i * 200 + rng.range(-40, 40);
+        const ch = rng.range(70, 120);
+        this.room.addChild(new Sprite({ pos: { x, y: horizon - ch * 0.25 }, z: -88, shape: { kind: 'rect', w: 10, h: ch * 0.5 }, fill: mid }));
+        this.room.addChild(new Sprite({ pos: { x, y: horizon - ch * 0.6 }, z: -87, shape: { kind: 'path', d: blobPath(rng, ch * 0.5, 0.24, 7) }, fill: mid }));
+      }
+    } else if (biome === 'cistern') {
+      for (let i = 0; i < 8; i++) {
+        const x = 70 + i * 150 + rng.range(-30, 30);
+        const h = rng.range(60, 150);
+        this.room.addChild(new Sprite({ z: -88, shape: { kind: 'poly', points: [x - 14, 0, x + 14, 0, x, h], closed: true }, fill: far }));
+      }
+      for (let i = 0; i < 6; i++) {
+        const x = 120 + i * 190 + rng.range(-30, 30);
+        const h = rng.range(40, 90);
+        this.room.addChild(new Sprite({ z: -88, shape: { kind: 'poly', points: [x - 16, horizon, x + 16, horizon, x, horizon - h], closed: true }, fill: mid }));
+      }
+    } else if (biome === 'ember') {
+      for (let i = 0; i < 7; i++) {
+        const x = 80 + i * 170 + rng.range(-30, 30);
+        const h = rng.range(120, 240);
+        this.room.addChild(new Sprite({ pos: { x, y: horizon - h / 2 }, z: -88, shape: { kind: 'rect', w: rng.range(24, 44), h, r: 3 }, fill: mid }));
+        this.room.addChild(new Sprite({ pos: { x, y: horizon - h }, z: -87, shape: { kind: 'circle', radius: 8 }, gradient: radialGradient([withAlpha(art.glow, 0.7), withAlpha(art.glow, 0)]), shadow: glow(withAlpha(art.glow, 0.6), 14) }));
+      }
+    } else if (biome === 'sky') {
+      for (let i = 0; i < 7; i++) {
+        const x = rng.range(60, 1220);
+        const y = rng.range(120, 420);
+        this.room.addChild(new Sprite({ pos: { x, y }, z: -88, shape: { kind: 'path', d: blobPath(rng, rng.range(50, 110), 0.3, 7) }, fill: withAlpha(art.far, 0.32) }));
+      }
+    } else {
+      for (let i = 0; i < 9; i++) {
+        const x = 60 + i * 140 + rng.range(-30, 30);
+        const len = rng.range(120, 300);
+        const pts = [];
+        let yy = 0;
+        let xx = x;
+        for (let s = 0; s < 5; s++) {
+          pts.push({ x: xx, y: yy });
+          yy += len / 4;
+          xx += rng.range(-24, 24);
+        }
+        this.room.addChild(new Sprite({ z: -88, shape: { kind: 'path', d: smoothOpenPath(pts, 1) }, stroke: mid, strokeWidth: rng.range(3, 7), round: true, fill: 'none' }));
+      }
+    }
+
+    for (let i = 0; i < 14; i++) {
+      const x = rng.range(40, 1240);
+      const y = rng.range(60, horizon);
+      this.room.addChild(new Sprite({ pos: { x, y }, z: 15, shape: { kind: 'circle', radius: rng.range(1.5, 3.5) }, fill: withAlpha(art.glow, rng.range(0.2, 0.5)), shadow: glow(withAlpha(art.glow, 0.5), rng.range(3, 7)) }));
+    }
   }
 
   private addSpikes(tx: number, ty: number, color: string): void {
@@ -266,6 +328,8 @@ class KintsugiView extends Node {
       hurtT: justHurt ? 1 : 0,
     });
     node.pos = { x: p.x + 10, y: p.y + 18 };
+    // a soft gold aura so the Mender is always instantly findable
+    this.actor.addChild(new Sprite({ pos: { x: p.x + 10, y: p.y + 16 }, z: 24, shape: { kind: 'circle', radius: 30 }, gradient: radialGradient([withAlpha(KENTO.ko, 0.28), withAlpha(KENTO.ko, 0)]), shadow: glow(withAlpha(KENTO.ko, 0.35), 12) }));
     this.actor.addChild(node);
   }
 
