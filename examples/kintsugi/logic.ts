@@ -27,6 +27,7 @@ import {
   type EnemyState,
   type Orb,
 } from './combat';
+import { spawnBoss, stepBoss, resolveBossHit, GUARDIAN_OF, type BossState } from './boss';
 
 const OPPOSITE: Record<Dir, Dir> = { left: 'right', right: 'left', up: 'down', down: 'up' };
 
@@ -61,12 +62,23 @@ export interface KgState {
   iframes: number;
   /** Frozen-frames on a landed hit (juice), in seconds. */
   hitstop: number;
+  /** The current room's guardian, if any (null = none / already slain). */
+  boss: BossState | null;
+  /** Boss ids already defeated (persists; unseals arenas). */
+  bossesDefeated: string[];
 }
 
 /** Spawn a room's enemies fresh from its spec (tile coords → world px). */
 export function spawnRoomEnemies(region: string): EnemyState[] {
   const spec = roomSpec(region);
   return (spec?.enemies ?? []).map((e) => spawnEnemy(e.kind, e.x * TS, e.y * TS));
+}
+
+/** The guardian for a room, unless it's already been slain. */
+export function spawnBossFor(region: string, defeated: readonly string[]): BossState | null {
+  const id = GUARDIAN_OF[region];
+  if (!id || defeated.includes(id)) return null;
+  return spawnBoss(id, 22 * TS, 11 * TS);
 }
 
 export const START_HP = 4;
@@ -128,6 +140,8 @@ export function initialState(): KgState {
     atkHit: false,
     iframes: 0,
     hitstop: 0,
+    boss: spawnBossFor(KINTSUGI_WORLD.start, []),
+    bossesDefeated: [],
   };
 }
 
@@ -156,6 +170,7 @@ function respawnAtSave(s: KgState): void {
   s.region = s.save.region;
   s.p = createPlatformerState(s.save.x, s.save.y);
   s.enemies = spawnRoomEnemies(s.region);
+  s.boss = spawnBossFor(s.region, s.bossesDefeated);
   s.orbs = [];
   s.atk = 0;
   s.atkHit = false;
@@ -198,7 +213,9 @@ export function stepKintsugi(s: KgState, pad: PadInput, dt: number, attack = fal
       const box = attackHitbox(s.p.x, s.p.y, w, h, s.p.facing, s.atk);
       if (box) {
         const res = resolvePlayerAttack(box, s.p.x + w / 2, s.enemies);
-        if (res.hits > 0) {
+        let hits = res.hits;
+        if (s.boss) hits += resolveBossHit(box, s.p.x + w / 2, s.boss);
+        if (hits > 0) {
           s.atkHit = true;
           s.hitstop = HITSTOP / 60;
           ev.hitEnemy = true;
@@ -208,13 +225,28 @@ export function stepKintsugi(s: KgState, pad: PadInput, dt: number, attack = fal
     }
   }
 
-  // Enemies act; their contact/orbs deal damage (respecting i-frames).
+  // Enemies + the guardian act; their contact/orbs deal damage (i-frame gated).
   const er = stepEnemies(s.enemies, s.orbs, s.p.x, s.p.y, w, h, dt, map);
   for (let i = s.enemies.length - 1; i >= 0; i--) if (s.enemies[i].hp <= 0) s.enemies.splice(i, 1);
-  if (er.playerDmg > 0 && s.iframes <= 0) {
-    s.hp -= er.playerDmg;
+  let dmg = er.playerDmg;
+  let knockDir = er.knockDir;
+  if (s.boss) {
+    const br = stepBoss(s.boss, s.orbs, s.p.x, s.p.y, w, h, dt, map);
+    if (br.playerDmg > 0) {
+      dmg += br.playerDmg;
+      knockDir = br.knockDir;
+    }
+    if (s.boss.dead) {
+      if (!s.bossesDefeated.includes(s.boss.id)) s.bossesDefeated.push(s.boss.id);
+      ev.killed += 1;
+      ev.hitEnemy = true;
+      s.boss = null; // arena unseals
+    }
+  }
+  if (dmg > 0 && s.iframes <= 0) {
+    s.hp -= dmg;
     s.iframes = IFRAMES;
-    s.p.vx += er.knockDir * PLAYER_KNOCK;
+    s.p.vx += knockDir * PLAYER_KNOCK;
     s.p.vy -= 150;
     s.hitstop = 3 / 60;
     ev.hurt = true;
@@ -257,6 +289,8 @@ export function stepKintsugi(s: KgState, pad: PadInput, dt: number, attack = fal
   else if (spec.exits.right && cx > RW * TS - INSET) dir = 'right';
   else if (spec.exits.up && cy < INSET) dir = 'up';
   else if (spec.exits.down && cy > RH * TS - INSET) dir = 'down';
+  // A living guardian seals its arena's forward ('right') exit.
+  if (dir === 'right' && s.boss && GUARDIAN_OF[s.region]) dir = null;
   if (dir) {
     const target = spec.exits[dir]!;
     if (roomSpec(target)) {
@@ -268,6 +302,7 @@ export function stepKintsugi(s: KgState, pad: PadInput, dt: number, attack = fal
       // keep vertical momentum through vertical seams; damp horizontal
       s.p.vx *= 0.3;
       s.enemies = spawnRoomEnemies(target);
+      s.boss = spawnBossFor(target, s.bossesDefeated);
       s.orbs = [];
       s.atk = 0;
       ev.transitioned = true;

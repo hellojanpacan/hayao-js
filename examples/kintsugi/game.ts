@@ -35,6 +35,7 @@ import { roomRows, markerPos, RW, RH, TS } from './rooms';
 import { biomeArt } from './biome';
 import { menderNode, motionFrom } from './mender';
 import { ATTACK_TIME, IFRAMES, type EnemyState } from './combat';
+import { type BossState } from './boss';
 import { MusicDirector } from './music';
 import { StoryCards, ABILITY_LINES, SHARD_LINE, GUARDIAN_INTRO } from './story';
 
@@ -229,13 +230,21 @@ class KintsugiView extends Node {
       const x = VIEW_W - 40 - i * 30;
       this.hud.addChild(new Sprite({ pos: { x, y: 40 }, z: 100, shape: { kind: 'rect', w: 8, h: 22, r: 4 }, fill: has ? KENTO.ko : withAlpha(KENTO.sumi, 0.5), stroke: KENTO.gofun, strokeWidth: 1.5, shadow: has ? glow(withAlpha(KENTO.ko, 0.8), 6) : undefined }));
     });
+    // guardian HP bar (top centre) during a boss fight
+    if (kg.boss) {
+      const frac = Math.max(0, kg.boss.hp / kg.boss.maxHp);
+      const bw = 520;
+      this.hud.addChild(new Sprite({ pos: { x: VIEW_W / 2, y: 78 }, z: 100, shape: { kind: 'rect', w: bw + 8, h: 16, r: 8 }, fill: withAlpha(KENTO.sumi, 0.7), stroke: KENTO.kinako, strokeWidth: 2 }));
+      this.hud.addChild(new Sprite({ pos: { x: VIEW_W / 2 - (bw * (1 - frac)) / 2, y: 78 }, z: 101, shape: { kind: 'rect', w: Math.max(2, bw * frac), h: 10, r: 5 }, gradient: linearGradient([KENTO.shu, KENTO.shuDeep], 0), shadow: glow(withAlpha(KENTO.shu, 0.7), 8) }));
+    }
   }
 
   // ── actor ─────────────────────────────────────────────────────────
   private updateActor(): void {
     for (const c of this.actor.children.slice()) this.actor.removeChild(c);
     const kg = this.kg;
-    // enemies (behind the Mender)
+    // the guardian, then enemies (behind the Mender)
+    if (kg.boss) this.actor.addChild(this.bossNode(kg.boss));
     for (const e of kg.enemies) this.actor.addChild(this.enemyNode(e));
     for (const o of kg.orbs) this.actor.addChild(new Sprite({ pos: { x: o.x, y: o.y }, z: 26, shape: { kind: 'circle', radius: 7 }, gradient: radialGradient([KENTO.gofun, KENTO.shu, withAlpha(KENTO.shuDeep, 0)]), shadow: glow(withAlpha(KENTO.shu, 0.9), 10) }));
 
@@ -252,6 +261,29 @@ class KintsugiView extends Node {
     });
     node.pos = { x: p.x + 10, y: p.y + 18 };
     this.actor.addChild(node);
+  }
+
+  /** A boss guardian: a great cracked vessel, biome-tinted, red grief-seams. */
+  private bossNode(b: BossState): Node {
+    const tint: Record<string, string> = {
+      drowned_bell: KENTO.asagiDeep,
+      cinder_warden: KENTO.kakiDeep,
+      gale: KENTO.fuji,
+      grief: KENTO.fujiDeep,
+    };
+    const base = mix(tint[b.id] ?? KENTO.sumi, KENTO.kuro, 0.35);
+    const tell = b.st === 'tell';
+    const g = new Node({ pos: { x: b.x + b.w / 2, y: b.y + b.h / 2 }, z: 25 });
+    g.cosmetic = true;
+    g.addChild(new Sprite({ pos: { x: 0, y: b.h * 0.4 }, z: 24, shape: { kind: 'circle', radius: b.w * 0.7 }, fill: withAlpha(KENTO.yohaku, 0.25) }));
+    g.addChild(new Sprite({ z: 25, shape: { kind: 'rect', w: b.w, h: b.h, r: b.w * 0.28 }, gradient: linearGradient([mix(base, KENTO.gofun, 0.12), base], 90), stroke: KENTO.shuDeep, strokeWidth: 3, shadow: b.hurt > 0 ? glow(KENTO.gofun, 14) : tell ? glow(withAlpha(KENTO.shu, 0.9), 20) : glow(withAlpha(tint[b.id] ?? KENTO.fuji, 0.5), 14) }));
+    // grief seams
+    for (const [sx, sy] of [[-0.22, -0.2], [0.18, -0.05], [-0.05, 0.2]] as [number, number][]) {
+      g.addChild(new Sprite({ pos: { x: sx * b.w, y: sy * b.h }, z: 26, shape: { kind: 'poly', points: [-b.w * 0.12, -b.h * 0.06, b.w * 0.04, 0, -b.w * 0.06, b.h * 0.1], closed: false }, stroke: KENTO.shu, strokeWidth: 2, round: true, fill: 'none', shadow: glow(withAlpha(KENTO.shu, 0.6), 4) }));
+    }
+    // two lit eyes
+    for (const ex of [-0.16, 0.16]) g.addChild(new Sprite({ pos: { x: ex * b.w, y: -b.h * 0.14 }, z: 27, shape: { kind: 'circle', radius: 4 }, fill: b.hurt > 0 ? KENTO.gofun : KENTO.shu, shadow: glow(KENTO.shu, 6) }));
+    return g;
   }
 
   /** A grief-hardened guardian: dark cracked ceramic with red seams + a lit eye. */
@@ -327,6 +359,7 @@ class KintsugiView extends Node {
       const d = dhypot(e.x + e.w / 2 - (kg.p.x + 10), e.y + e.h / 2 - (kg.p.y + 15));
       inten = Math.max(inten, 1 - d / 380);
     }
+    if (kg.boss) inten = 1; // full threat during a guardian fight
     this.music.update(dt, Math.max(0, Math.min(1, inten)));
     this.story.update(dt);
 
