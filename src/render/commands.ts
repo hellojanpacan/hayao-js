@@ -4,6 +4,46 @@
 
 import type { Transform } from '../core/math';
 
+/** One color stop of a gradient. `offset` is 0..1 along the gradient axis. */
+export interface GradientStop {
+  offset: number;
+  color: string;
+}
+
+/**
+ * A gradient fill in OBJECT-BOUNDING-BOX space: all coordinates are 0..1
+ * relative to the painted shape's bounds, so the same gradient reads correctly
+ * on a shape of any size or position (matches SVG `gradientUnits`).
+ */
+export interface LinearGradient {
+  type: 'linear';
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  stops: GradientStop[];
+}
+
+export interface RadialGradient {
+  type: 'radial';
+  /** Center + radius, all 0..1 in object-bounding-box space. */
+  cx: number;
+  cy: number;
+  r: number;
+  stops: GradientStop[];
+}
+
+export type Gradient = LinearGradient | RadialGradient;
+
+/** A soft shadow / outer glow. `dx=dy=0` is a symmetric glow; offset = drop. */
+export interface Shadow {
+  color: string;
+  /** Blur radius in local px. */
+  blur: number;
+  dx?: number;
+  dy?: number;
+}
+
 export interface Paint {
   fill?: string;
   stroke?: string;
@@ -11,6 +51,10 @@ export interface Paint {
   opacity?: number;
   /** Round line joins/caps for organic shapes. */
   round?: boolean;
+  /** A gradient fill; when present it overrides `fill` for the shape body. */
+  gradient?: Gradient;
+  /** A soft outer glow / drop shadow applied to the shape. */
+  shadow?: Shadow;
 }
 
 export type TextAlign = 'left' | 'center' | 'right';

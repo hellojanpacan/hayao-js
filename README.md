@@ -2,7 +2,10 @@
 
 [![ci](https://github.com/hellojanpacan/hayao-js/actions/workflows/ci.yml/badge.svg)](https://github.com/hellojanpacan/hayao-js/actions/workflows/ci.yml)
 
-**Play the 26 machine-verified example games at [hayao.dev](https://hayao.dev/).**
+**Play the machine-verified example games at [hayao.dev/play](https://hayao.dev/play/).**
+Three are art-finished in the house woodblock style (Lanternway, Rootward,
+Tarnholm); the rest are playable engine slices. See where it's headed on the
+[roadmap](https://hayao.dev/roadmap/).
 
 **An AI-first game engine.** A deterministic, headless-native simulation kernel
 with a Godot-style scene tree, pluggable renderers (SVG / Canvas / headless),
@@ -91,6 +94,15 @@ reasoning in [docs/ENGINE.md](docs/ENGINE.md).
 - [docs/LESSONS.md](docs/LESSONS.md) — transferable lessons from real LLM-authored game builds.
 - [docs/FRICTION.md](docs/FRICTION.md) — process-lesson log: what fought an AI session and what check/doc now prevents it.
 - [AGENTS.md](AGENTS.md) — the operating manual for an AI author working in this repo.
+
+## The site
+
+Three doors, split by audience: [hayao.dev](https://hayao.dev/) is the marketing
+landing (`index.html`), [hayao.dev/play](https://hayao.dev/play/) is the example
+store (`play/index.html`), [hayao.dev/roadmap](https://hayao.dev/roadmap/) is the
+public roadmap + js13k benchmark ladder (`roadmap/index.html`), and developer docs
+live at [hayao.js.org](https://hayao.js.org/). Featured-game thumbnails are
+regenerated with `npm run thumbs`.
 
 ## Status
 

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Play · hayao.js</title>
+    <meta name="description" content="Browse, play, and read the source of hayao's 27 machine-verified example games — three art-finished showcases plus playable engine slices across physics, real-time AI, solver-proven puzzles, and simulation." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%23f1ebdd'/%3E%3Crect x='32' y='30' width='58' height='58' fill='none' stroke='%23242019' stroke-width='3' opacity='.32'/%3E%3Cpath d='M32 88 h24 M32 88 v-24' fill='none' stroke='%23b5442d' stroke-width='10'/%3E%3Cpath d='M66 88 h20' fill='none' stroke='%23b5442d' stroke-width='10'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --washi: #f1ebdd; --washi-2: #f8f3e9; --sumi: #242019; --sumi-soft: #4f473b;
+        --stone: #6f6555; --ai: #2b4257; --ai-2: #5a7994; --shu: #b5442d; --line: #ddd3bf;
+        --mincho: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+        --body: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+        --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+        color-scheme: light;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; background: var(--washi); color: var(--sumi); font-family: var(--body); line-height: 1.7; -webkit-font-smoothing: antialiased; }
+      .wrap { max-width: 1040px; margin: 0 auto; padding: 0 40px; }
+      a { color: var(--ai); text-decoration: none; border-bottom: 1px solid var(--line); }
+      a:hover { border-bottom-color: var(--ai-2); }
+      .lab { font-variant: small-caps; font-size: 14px; letter-spacing: .14em; color: var(--stone); }
+
+      nav { border-bottom: 1px solid var(--line); }
+      nav .wrap { display: flex; align-items: center; gap: 26px; padding-top: 18px; padding-bottom: 18px; }
+      nav .brand { font-family: var(--mincho); font-weight: 700; font-size: 22px; border: none; color: var(--sumi); }
+      nav .brand .js { font-size: 13px; color: var(--stone); font-weight: 500; }
+      nav .spacer { flex: 1; }
+      nav .links { display: flex; gap: 22px; font-size: 15px; }
+      nav .links a { border: none; color: var(--sumi-soft); }
+      nav .links a:hover, nav .links a[aria-current] { color: var(--ai); }
+      nav .links a.ext::after { content: " ↗"; color: var(--stone); font-size: 12px; }
+
+      header.top { padding: 48px 0 8px; }
+      header.top h1 { font-family: var(--mincho); font-weight: 700; font-size: 40px; margin: 8px 0 12px; }
+      header.top p { font-size: 17px; color: var(--sumi-soft); max-width: 68ch; margin: 0; }
+
+      section.sec { border-top: 1px solid var(--line); margin-top: 42px; padding-top: 30px; }
+      section.sec .head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+      section.sec h2 { font-family: var(--mincho); font-weight: 600; font-size: 23px; margin: 0; }
+      section.sec .desc { color: var(--sumi-soft); font-size: 15.5px; max-width: 66ch; margin: 0 0 20px; }
+
+      /* featured rail */
+      .rail { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+      .fcard { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--washi-2); display: flex; flex-direction: column; transition: border-color .12s; }
+      .fcard:hover { border-color: var(--ai-2); }
+      .fcard .thumb { aspect-ratio: 16/9; background: #e4d8bd; border-bottom: 1px solid var(--line); }
+      .fcard .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .fcard .body { padding: 15px 17px 16px; display: flex; flex-direction: column; flex: 1; }
+      .fcard h3 { margin: 0 0 3px; font-family: var(--mincho); font-weight: 600; font-size: 19px; }
+      .fcard .genre { font-family: var(--mono); font-size: 10.5px; color: var(--stone); letter-spacing: .05em; text-transform: uppercase; }
+      .fcard p { margin: 9px 0 0; font-size: 13.5px; color: var(--sumi-soft); line-height: 1.55; }
+      .fcard .links { margin-top: auto; padding-top: 14px; display: flex; gap: 16px; font-size: 13.5px; }
+      .fcard .links a { border-bottom: none; }
+      .fcard .links a:hover { border-bottom: 1px solid var(--ai-2); }
+
+      /* slice grid */
+      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+      .card { display: flex; flex-direction: column; background: var(--washi-2); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; transition: border-color .12s, background .12s; }
+      .card:hover, .card:focus-within { border-color: var(--ai-2); background: #fbf7ee; }
+      .card h3 { margin: 0 0 3px; font-family: var(--mincho); font-weight: 600; font-size: 17px; }
+      .card h3 a { color: inherit; border-bottom: none; }
+      .card .genre { font-family: var(--mono); font-size: 10.5px; color: var(--stone); letter-spacing: .05em; text-transform: uppercase; display: block; margin-bottom: 6px; }
+      .card p { margin: 0; color: var(--sumi-soft); font-size: 13.5px; line-height: 1.55; }
+      .card .links { margin-top: auto; padding-top: 12px; display: flex; gap: 16px; font-size: 13.5px; }
+      .card .links a { border-bottom: none; }
+      .card .links a:hover { border-bottom: 1px solid var(--ai-2); }
+      .tag { font-family: var(--mono); font-size: 10px; color: var(--shu); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; letter-spacing: .04em; }
+
+      footer { border-top: 1px solid var(--line); margin-top: 50px; padding: 34px 0 72px; color: var(--stone); font-size: 13px; line-height: 1.8; }
+      footer a { color: var(--ai); }
+
+      @media (max-width: 820px) {
+        .wrap { padding: 0 22px; }
+        nav .links { gap: 14px; font-size: 14px; }
+        .rail { grid-template-columns: 1fr; }
+        .grid { grid-template-columns: 1fr; }
+        header.top h1 { font-size: 32px; }
+      }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <div class="wrap">
+        <a class="brand" href="../">hayao<span class="js">.js</span></a>
+        <div class="spacer"></div>
+        <div class="links">
+          <a href="../play/" aria-current="page">Play</a>
+          <a href="../roadmap/">Roadmap</a>
+          <a class="ext" href="https://hayao.js.org/">Docs</a>
+          <a class="ext" href="https://github.com/hellojanpacan/hayao-js">GitHub</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="wrap">
+      <header class="top">
+        <div class="lab">the store</div>
+        <h1>Play the engine.</h1>
+        <p>Twenty-seven games, every one machine-verified before it shipped. Three are art-finished in the house woodblock style; the rest
+          are honest engine <em>slices</em> — each one built to stress one capability end to end, playable in the browser and readable at the
+          source. This is what “make a game with hayao” produces today.</p>
+      </header>
+
+      <section class="sec">
+        <div class="head"><div class="lab">featured</div><h2>Art-finished showcases</h2></div>
+        <p class="desc">The current art bar — code-as-art in the woodblock style, static and deterministic, out of the sim's hash. An Ori-scale
+          metroidvania is on the <a href="../roadmap/">roadmap</a>, not yet in the box.</p>
+        <div class="rail">
+          <div class="fcard">
+            <a class="thumb" href="../examples/lanternway/index.html"><img src="../shots/lanternway.svg" alt="Lanternway" /></a>
+            <div class="body">
+              <span class="genre">scrolling traversal</span><h3>Lanternway</h3>
+              <p>A Camera2D + CameraController follow the bearer across a world far larger than the viewport — deadzone, edge-clamped, screen-pinned HUD. The smooth follow is cosmetic, so it never enters the hash.</p>
+              <div class="links"><a href="../examples/lanternway/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/lanternway">source →</a></div>
+            </div>
+          </div>
+          <div class="fcard">
+            <a class="thumb" href="../examples/rootward/index.html"><img src="../shots/rootward.svg" alt="Rootward" /></a>
+            <div class="body">
+              <span class="genre">tower defense</span><h3>Rootward</h3>
+              <p>Three counter-typed towers on a sunlit S-lane, ten ramping waves over a hand-illustrated meadow — the winning build is proven, and arrow-spam is proven to lose to tanks.</p>
+              <div class="links"><a href="../examples/rootward/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/rootward">source →</a></div>
+            </div>
+          </div>
+          <div class="fcard">
+            <a class="thumb" href="../examples/tarnholm/index.html"><img src="../shots/tarnholm.svg" alt="Tarnholm" /></a>
+            <div class="body">
+              <span class="genre">island town builder</span><h3>Tarnholm</h3>
+              <p>An island drawn as a printed sea chart — teal water, sand-rimmed land, little roofed buildings. Every roof scores by its neighbours, live under the cursor; skill nearly doubles random play.</p>
+              <div class="links"><a href="../examples/tarnholm/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/tarnholm">source →</a></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sec">
+        <div class="head"><div class="lab">engine slice</div><h2>Physics &amp; motion</h2></div>
+        <p class="desc">One deterministic rigid-body core — stacks, ropes, CCD, restitution — reused across four very different games.</p>
+        <div class="grid">
+          <div class="card"><span class="genre">demolition slingshot</span><h3><a href="../examples/rookspire/index.html">Rookspire</a></h3><p>Rigid-body castles (stacks, planks, ropes) razed by a CCD cannonball — every castle proven to fall within its stone budget by a siege bot.</p><div class="links"><a href="../examples/rookspire/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/rookspire">source →</a></div></div>
+          <div class="card"><span class="genre">pinball</span><h3><a href="../examples/brasswick/index.html">Brasswick</a></h3><p>A brass-and-felt table from the same physics world — kinematic flippers, bumper-bells, CCD-tight geometry proven ball-bound (0 escaped frames).</p><div class="links"><a href="../examples/brasswick/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/brasswick">source →</a></div></div>
+          <div class="card"><span class="genre">physics arcade</span><h3><a href="../examples/pinshine/index.html">Pinshine</a></h3><p>Swept-circle collision (no tunneling at any speed), restitution proven energy-honest, every board proven clearable by an aim-search bot.</p><div class="links"><a href="../examples/pinshine/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/pinshine">source →</a></div></div>
+          <div class="card"><span class="genre">top-down racing</span><h3><a href="../examples/vellgrove/index.html">Vellgrove Rally</a></h3><p>Understeer at speed, grass that punishes, cut-proof laps — braking into corners proven faster than flooring it.</p><div class="links"><a href="../examples/vellgrove/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/vellgrove">source →</a></div></div>
+        </div>
+      </section>
+
+      <section class="sec">
+        <div class="head"><div class="lab">engine slice</div><h2>Real-time action &amp; AI</h2></div>
+        <p class="desc">Fixed-step sims with hundreds of agents, character controllers, vision and lighting — each proven beatable by a scripted bot, not a promise.</p>
+        <div class="grid">
+          <div class="card"><span class="genre">precision platformer</span><h3><a href="../examples/shard-ascent/index.html">Shard Ascent</a></h3><p>Coyote time, jump buffering, dashes, corner correction, moving lifts. Every level is bot-proven beatable, deathless.</p><div class="links"><a href="../examples/shard-ascent/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/shard-ascent">source →</a></div></div>
+          <div class="card"><span class="genre">metroidvania</span><h3><a href="../examples/sproutveil/index.html">Sproutveil</a></h3><p>Ability-gated exploration where every gate is machine-proven impassable without its ability — and the whole run bot-proven beatable.</p><div class="links"><a href="../examples/sproutveil/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/sproutveil">source →</a></div></div>
+          <div class="card"><span class="genre">horde survival</span><h3><a href="../examples/emberwake/index.html">Emberwake</a></h3><p>Auto-fire, level-up builds, 160+ enemies on the Canvas backend — the full night is bot-proven survivable and the sim steps in 0.02ms.</p><div class="links"><a href="../examples/emberwake/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/emberwake">source →</a></div></div>
+          <div class="card"><span class="genre">bullet hell</span><h3><a href="../examples/duskveil/index.html">Duskveil</a></h3><p>A pattern DSL, 480+ live bullets, grazing, focus mode — every phase proven survivable by a predictive dodge bot.</p><div class="links"><a href="../examples/duskveil/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/duskveil">source →</a></div></div>
+          <div class="card"><span class="genre">real-time strategy</span><h3><a href="../examples/bramblefall/index.html">Bramblefall</a></h3><p>Flow-field pathfinding, 260+ units, a spear/cavalry/archer counter triangle — every counter edge is duel-proven and the war is bot-winnable.</p><div class="links"><a href="../examples/bramblefall/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/bramblefall">source →</a></div></div>
+          <div class="card"><span class="genre">stealth</span><h3><a href="../examples/veilstep/index.html">Veilstep</a></h3><p>Raycast vision cones, detection meters, noise, bushes — the full idol run is bot-proven doable with zero alarms, and the punishments proven real.</p><div class="links"><a href="../examples/veilstep/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/veilstep">source →</a></div></div>
+          <div class="card"><span class="genre">survival horror</span><h3><a href="../examples/palewood/index.html">Palewood</a></h3><p>A raycast-lit lantern, panned growls in the dark, fuel pressure that forbids camping — the night proven survivable, the dark proven deadly.</p><div class="links"><a href="../examples/palewood/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/palewood">source →</a></div></div>
+          <div class="card"><span class="genre">action-adventure</span><h3><a href="../examples/gleamvale/index.html">Gleamvale</a></h3><p>Sword arcs, hit-stop, telegraphed enemies, a key-locked vault — the full combat run is bot-proven winnable without dying.</p><div class="links"><a href="../examples/gleamvale/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/gleamvale">source →</a></div></div>
+        </div>
+      </section>
+
+      <section class="sec">
+        <div class="head"><div class="lab">engine slice</div><h2>Puzzles &amp; solver proofs</h2></div>
+        <p class="desc">Pure <code>Puzzle&lt;State, Move&gt;</code> rules a search can exhaust — so every level ships with a machine proof it is winnable, and two reproduce human-ranked js13k winners.</p>
+        <div class="grid">
+          <div class="card"><span class="genre">box-pushing puzzle</span><h3><a href="../examples/sokoban/index.html">Sokoban</a></h3><p>The reference example: pure solver-provable logic + a scene-tree SVG view + undo. Every level is machine-verified winnable.</p><div class="links"><a href="../examples/sokoban/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/sokoban">source →</a></div></div>
+          <div class="card"><span class="genre">twisted-torus sokoban <span class="tag">benchmark B1</span></span><h3><a href="../examples/seamfold/index.html">Seamfold</a></h3><p>Sokoban with no outside — seams that shift you sideways, every level proven to NEED the fold (unsolvable without it). Reproduces <i>Edge Not Found</i>, js13k 2020 #2.</p><div class="links"><a href="../examples/seamfold/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/seamfold">source →</a></div></div>
+          <div class="card"><span class="genre">tap puzzle <span class="tag">benchmark B2</span></span><h3><a href="../examples/gravewell/index.html">Gravewell</a></h3><p>Collapse stars into black holes and sweep the debris in — every tap budget proven tight (par−1 is a proven loss). Reproduces <i>Black Hole Square</i>, js13k 2021 #9.</p><div class="links"><a href="../examples/gravewell/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/gravewell">source →</a></div></div>
+          <div class="card"><span class="genre">roguelike deckbuilder</span><h3><a href="../examples/thornspire/index.html">Thornspire</a></h3><p>Card DSL, telegraphed intents, drafts between fights — tuned to a proven 17/20 pilot win rate, with drafting proven to matter.</p><div class="links"><a href="../examples/thornspire/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/thornspire">source →</a></div></div>
+          <div class="card"><span class="genre">turn-based tactics</span><h3><a href="../examples/vantage/index.html">Vantage</a></h3><p>Telegraphed attacks, push chains that rewrite the enemy's future — a perfect defence is machine-proven possible, and doing nothing proven fatal.</p><div class="links"><a href="../examples/vantage/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/vantage">source →</a></div></div>
+          <div class="card"><span class="genre">rhythm dungeon</span><h3><a href="../examples/cadence/index.html">Cadence Hollow</a></h3><p>Move only on the pulse, foes dance in lockstep — the beat IS sim time, so even rhythm replays deterministically.</p><div class="links"><a href="../examples/cadence/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/cadence">source →</a></div></div>
+          <div class="card"><span class="genre">match-3</span><h3><a href="../examples/glimmerfall/index.html">Glimmerfall</a></h3><p>Cascade combos, spring-tweened choreography over an instant sim — 100 boards proven fair, targets proven reachable.</p><div class="links"><a href="../examples/glimmerfall/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/glimmerfall">source →</a></div></div>
+        </div>
+      </section>
+
+      <section class="sec">
+        <div class="head"><div class="lab">engine slice</div><h2>Systems, simulation &amp; netplay</h2></div>
+        <p class="desc">Procgen fairness proofs, economy pacing curves, and deterministic multiplayer — the sim's purity is what makes each of these checkable.</p>
+        <div class="grid">
+          <div class="card"><span class="genre">traditional roguelike</span><h3><a href="../examples/hollowdeep/index.html">Hollowdeep</a></h3><p>Procgen floors proven connected across 50 seeds, raycast FOV with map memory, bump combat — every dungeon bot-proven winnable.</p><div class="links"><a href="../examples/hollowdeep/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/hollowdeep">source →</a></div></div>
+          <div class="card"><span class="genre">farming sim</span><h3><a href="../examples/fernrow/index.html">Fernrow</a></h3><p>Four seasons, energy-budgeted days, crops that wither out of season — the festival goal proven reachable, reinvestment proven to compound.</p><div class="links"><a href="../examples/fernrow/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/fernrow">source →</a></div></div>
+          <div class="card"><span class="genre">idle / incremental</span><h3><a href="../examples/lumen-forge/index.html">Lumen Forge</a></h3><p>DOM buttons flow through the deterministic input log; the whole pacing curve is simulation-verified.</p><div class="links"><a href="../examples/lumen-forge/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/lumen-forge">source →</a></div></div>
+          <div class="card"><span class="genre">narrative decisions</span><h3><a href="../examples/emberreign/index.html">Emberreign</a></h3><p>Four meters, double-edged cards, story arcs — judgement proven to matter (19/20 vs 0/20 reigns) and every doom proven honest.</p><div class="links"><a href="../examples/emberreign/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/emberreign">source →</a></div></div>
+          <div class="card"><span class="genre">2-player netplay duel</span><h3><a href="../examples/fernclash/index.html">Fernclash</a></h3><p>Sumo shoving on a fern ring — hot-seat or true lockstep netplay across tabs/machines, peers proven to agree bit-for-bit.</p><div class="links"><a href="../examples/fernclash/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/fernclash">source →</a></div></div>
+        </div>
+      </section>
+
+      <footer>
+        hayao.js · MIT · <a href="../">home</a> · <a href="https://hayao.js.org/">docs</a> · <a href="../roadmap/">roadmap</a> · <a href="https://github.com/hellojanpacan/hayao-js">GitHub</a><br />
+        Every game ships a <code>verify.ts</code> suite that machine-proves its truth — solver proofs, bot runs, replay hashes. Run the lot with <code>npm run verify</code>.
+      </footer>
+    </div>
+  </body>
+</html>

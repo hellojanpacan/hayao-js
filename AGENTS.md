@@ -71,6 +71,15 @@ Then a headless SVG screenshot (`new HeadlessRenderer(...).toSVGString()`) for
 looks only — never for correctness.
 
 ## Adding a game
-Copy `examples/sokoban/` → `examples/<slug>/`, adapt, add a card to the root
-`index.html`, `npm run check`, then verify per `docs/VERIFICATION.md` before
-presenting a play link. Vite auto-discovers the new folder — zero config.
+Copy `examples/sokoban/` → `examples/<slug>/`, adapt, add a card to the store at
+`play/index.html` (group it under the matching engine-slice section), `npm run
+check`, then verify per `docs/VERIFICATION.md` before presenting a play link.
+Vite auto-discovers the new folder — zero config.
+
+## The site (three doors)
+The website is split by audience: `index.html` is the marketing landing
+(hayao.dev), `play/index.html` is the example store, `roadmap/index.html` is the
+public roadmap + js13k benchmark ladder, and developer docs live at hayao.js.org.
+Art-finished flagships (currently `lanternway`, `rootward`, `tarnholm`) get a
+still-frame thumbnail under `public/shots/<slug>.svg`; regenerate them with
+`npm run thumbs` after changing their art.

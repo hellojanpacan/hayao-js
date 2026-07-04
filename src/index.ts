@@ -42,6 +42,7 @@ export * from './physics/rigidQueries';
 
 // ── render: display list + backends ─────────────────────────────
 export * from './render/commands';
+export * from './render/paint';
 export * from './render/renderer';
 export * from './render/svgString';
 export * from './render/svg';

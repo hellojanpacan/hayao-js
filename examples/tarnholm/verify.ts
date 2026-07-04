@@ -2,7 +2,7 @@
 // reachable by good play, adjacency IS the game (greedy beats random by a
 // wide margin), scoring rules are honest, and a session replays.
 
-import { Rng, checkDeterministic, createWorld } from '@hayao';
+import { Rng, checkDeterministic, createWorld, renderFilmstrip } from '@hayao';
 import { bestPlacement, currentBuilding, genIsland, initialTh, place, placementScore, QUEUE, TARGET, tidx } from './logic';
 import { tarnholmGame, thState } from './game';
 import type { VerifyContext } from '../../scripts/verify';
@@ -86,5 +86,24 @@ export default async function verify(t: VerifyContext) {
   t.golden('scripted settlement', world.hash());
   const rep = checkDeterministic(() => createWorld(tarnholmGame, 6), { frames });
   t.check(rep.ok ? 'the settlement replays deterministically' : `diverged at frame ${rep.divergedAt}`, rep.ok);
-  void thState;
+
+  // 6. Filmstrip of a greedy settlement, for the looks judgement (does the
+  //    island map read?). The cosmetic art is a pure projection of state.
+  {
+    const w = createWorld(tarnholmGame, 6);
+    const log: string[][] = [];
+    const press = (a: string) => { log.push([a]); w.step([a]); log.push([]); w.step([]); };
+    for (let n = 0; n < QUEUE.length; n++) {
+      const s = thState(w);
+      if (s.won || s.done) break;
+      const b = bestPlacement(s);
+      if (!b) break;
+      while (s.cursor.x < b.x) press('right');
+      while (s.cursor.x > b.x) press('left');
+      while (s.cursor.y < b.y) press('down');
+      while (s.cursor.y > b.y) press('up');
+      press('build');
+    }
+    t.artifact('settlement-filmstrip.svg', renderFilmstrip(createWorld(tarnholmGame, 6), log, { width: 1280, height: 720, background: tarnholmGame.background, panels: 8 }));
+  }
 }
