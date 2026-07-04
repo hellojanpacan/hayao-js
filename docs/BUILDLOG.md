@@ -136,6 +136,57 @@ volume ✗) · feel/look ✓ · learning yield: no engine gap, two findings belo
   that detail would have made every level rating wrong — rules extraction
   from source (not from play) caught it.
 
+### CO-OP · Kinfall — 2-player local co-op survival (surviv.io duo) ✅
+
+The engine already had player-namespaced input (`p1:*` / `p2:*`, from
+Fernclash) and the horde stack (SpatialHash broad phase + quadratic spawn ramp,
+from Emberwake). Kinfall composes them into the first *cooperative* shared-world
+game: two players on ONE keyboard drive ONE `world.state.kin`, surviving a
+closing storm ring together. Controls are exactly as briefed — P1 on WASD with
+«,»/«y», P2 on the arrows with «.»/«-» — mapped straight into the hot-seat input
+map, zero engine changes.
+
+**Shipped:** a 100-second night on a walled field; a stormcircle that shrinks
+through keyframed holds and bleeds anyone caught outside (the surviv gas); six
+loot crates that raise a player's weapon tier (pistol → SMG → scatter → rifle);
+an auto-aiming gun so 8-way movement can still fight; a quadratic horde of
+swarmers + brutes chasing the nearest STANDING player; and the co-op soul — a
+down / bleed-out / hold-to-revive loop. Extraction (win) needs one survivor at
+t=100; a full team wipe (both dead) loses. Verified: the co-op pair-bot holds
+the ring to extraction on 6/6 seeds while an idle pair is wiped by ~39s (the
+skill delta); the storm proven load-bearing (a rim-camper is knocked out in
+1.5s — no safe camp); revive proven BOTH ways (a partner in range hauls you to
+5 hp; unattended you bleed out and die); deterministic + golden; feel probes
+(first kill after the loot grace, storm monotonic, kill-lull bounded, final ring
+peaks ≥ 40 enemies); layout + control-hint lints clean; salience feel-gate green.
+
+**Findings:**
+
+- **Co-op is a shared-state generalisation of hot-seat, not new engine.**
+  Fernclash namespaced input for a *duel* (two bodies, opposed); Kinfall reuses
+  the identical `playerInput('p1'|'p2')` seam for *cooperation* (two bodies, one
+  shared `world.state.kin`, one shared horde). The fixed p1-then-p2 iteration
+  order is all determinism needs — the whole verify harness (golden, snapshot,
+  timeline) worked on the two-player shared world unchanged.
+- **A staged loot economy needs a spawn-grace window or it self-strangles.**
+  The first cut spawned enemies from frame 0, so the "stand 0.7s to open a
+  crate" loot action was a death trap — nobody armed up, everyone bled out by
+  ~45s. Adding an 8-second calm opening (surviv's early loot phase) let the pair
+  arm before contact and flipped 0/6 losses to 6/6 wins. The genre truth: a
+  loot-then-fight loop must guarantee a safe loot window, and that window is a
+  tunable, not a vibe.
+- **Reachability arithmetic applies to PICKUPS, not just platforms.** Four of
+  six crates were placed on top of the cover blocks (unreachable), so only the
+  two center crates ever opened and exactly one player armed per run. Same class
+  as Shard Ascent's frame-perfect gap — "it looks reachable" is not a proof;
+  crate positions must be checked against the actual wall geometry.
+- **The revive loop is best proven in isolation, like a tactics mechanic.**
+  A well-tuned bot only gets downed at the buzzer, so the *winning run* rarely
+  exercises a real revive — hoping the pilot triggers it is flaky. Instead the
+  suite constructs the downed state directly and proves the revive both ways
+  (helped → up; alone → dead), the Vantage pattern (push/bump proven in
+  isolation) applied to co-op grace.
+
 ### NET · Fernclash — deterministic multiplayer (lockstep + rollback netcode) ✅
 
 The engine was always a lockstep core (`step(inputs)` pure, seeded rng,
