@@ -155,6 +155,44 @@ never invent them; (2) keep them generous enough that tuning breathes, tight
 enough that pacing regressions fail. These are proxies, not proof of fun —
 the filmstrip and a human/AI look stay in the loop.
 
+## Channel 4 — feel gates (the professional floor, made checkable)
+
+Channel 3 measures *pacing* from a timeline; Channel 4 gates the small set of feel
+**fundamentals** that separate amateur from professional and that are genuinely
+mechanical, not matters of taste. Each returns human-readable issues (empty = pass),
+exactly like `layoutIssues` — so wiring one in is one line. This is the direct
+answer to "green tests, dead game": turn more of *feel* green.
+
+```ts
+import { forgivenessIssues, graceWindowIssues, feedbackIssues,
+         salienceIssues, telegraphIssues, cameraIssues, lookAheadIssues } from '@hayao';
+```
+
+1. **Forgiveness.** `forgivenessIssues(cfg)` audits the grace windows (coyote,
+   jump-buffer, corner-nudge) against a floor; `graceWindowIssues(label, W, accepts)`
+   *behaviourally* proves a window accepts an input `0..W` frames late and refuses
+   `W+1` — the exact edge FUN law 5 demands. (updrift proves a 4-frame coyote window
+   by walking a rig off a lip and jumping D frames later.)
+2. **Feedback completeness.** Declare a `FeedbackContract` (event → channels +
+   shake/hit-stop), then `feedbackIssues(contract, events)` proves every significant
+   event answers on ≥ 2 senses within the frame, with juice bounded (min to read,
+   max to not nauseate).
+3. **Readability.** `salienceIssues(render(), avatarFill, background)` proves the
+   avatar out-contrasts both the background and the median scenery fill (WCAG
+   luminance, from pure draw data). `telegraphIssues(timeline, minFrames)` proves
+   every threat activation is preceded by ≥ `minFrames` of telegraph — reactive play
+   needs danger to announce itself.
+4. **Camera lawfulness.** `cameraIssues(samples)` proves the follow never snaps
+   (bounded speed) or jerks (bounded acceleration); `lookAheadIssues(cam, target)`
+   proves it leads the motion rather than trailing. Sample the *follow* position
+   (exclude screen shake), and drop the pre-start frame (no camera exists yet).
+
+The full four-gate suite wired on a real game lives in
+[`examples/updrift/verify.ts`](../examples/updrift/verify.ts); the authoring side is
+[docs/JUICE.md](JUICE.md). Gate on the fundamentals; the *soul* above the floor
+stays authored (a director, not a proof) — but the floor no amateur clears is now
+machine-enforced.
+
 ---
 
 ## The gate (`npm run verify`)

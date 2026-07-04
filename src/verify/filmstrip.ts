@@ -27,11 +27,13 @@ export interface FilmstripOptions {
 export function renderFilmstrip(world: World, frames: string[][], opts: FilmstripOptions): string {
   const panels = Math.max(2, opts.panels ?? 12);
   const every = Math.max(1, Math.ceil(frames.length / (panels - 1)));
-  const shots: { frame: number; inner: string }[] = [{ frame: 0, inner: commandsToSVGInner(world.render()) }];
+  // Each panel salts its gradient/shadow <defs> ids with its own prefix so the
+  // composited document never cross-references (SVG `url(#…)` is document-global).
+  const shots: { frame: number; inner: string }[] = [{ frame: 0, inner: commandsToSVGInner(world.render(), 'p0') }];
   for (let i = 0; i < frames.length; i++) {
     world.step(frames[i]);
     if ((i + 1) % every === 0 || i === frames.length - 1) {
-      shots.push({ frame: i + 1, inner: commandsToSVGInner(world.render()) });
+      shots.push({ frame: i + 1, inner: commandsToSVGInner(world.render(), `p${shots.length}`) });
     }
   }
 

@@ -1311,3 +1311,99 @@ portfolio `verify` unchanged (no golden drift on the other 26 games).
   walks the rest of the way in, so the on-screen offset peaks well past the
   deadzone (420px vs 180px here). The feel probe window has to come from a run
   you actually watched, or it fails on correct behaviour.
+
+### E7 · Atmospheric render — gradient/glow paint + parallax depth (driftlight) ✅
+
+**What the engine lacked.** The `Paint` vocabulary was flat colour strings only:
+`fill`/`stroke` hex, nothing else. That is the ceiling between "flat woodblock"
+and *luminous* — no way to render a dawn sky, a lantern's glow, water that
+reflects light, or fog. The prior games are all flat-fill; the art toolkit
+(`shapes`/`texture`/`autotile`) shapes silhouettes but can't light them.
+
+**What was upgraded (all reusable, folded into `src/render`).**
+- **Gradient fills** — `LinearGradient`/`RadialGradient` in OBJECT-BOUNDING-BOX
+  space (coords 0..1 of the shape's bounds, so one gradient reads on any size),
+  carried as pure data on `Paint.gradient`. Builders `linearGradient(stops,
+  angleDeg)` / `radialGradient(stops, {cx,cy,r})` take colours (auto-spaced) or
+  explicit `{offset,color}`. SVG emits `<defs>`; Canvas maps the unit box to px.
+- **Soft glow / drop shadow** — `Paint.shadow = {color, blur, dx?, dy?}`;
+  `glow(c,b)` (symmetric) and `dropShadow(c,b,dx,dy)`. SVG `feDropShadow`,
+  Canvas `shadowBlur`. This single primitive is what makes the lantern and
+  fireflies *emit* light rather than just be coloured discs.
+- **`ParallaxLayer`** (`src/scene/parallax.ts`) — a cosmetic depth layer that
+  sets its own position to `camPos·(1−factor)`, yielding an effective scroll of
+  exactly `factor`; 0 pins to screen (far), 1 is full world scroll (near). No
+  render-core surgery — pure scene-node math over the active `Camera2D`.
+
+**Convention / traps this cost.** SVG `url(#id)` references are DOCUMENT-global,
+but the filmstrip composites N frames into ONE document — so gradient/shadow def
+ids MUST be salted per render. `commandsToSVGInner(cmds, idPrefix)` now takes a
+prefix; `renderFilmstrip` passes `p{panel}`. Without it, panel 3's fill resolves
+to panel 0's gradient. Two more: (1) the `Sprite` constructor hand-copies paint
+fields and silently dropped the new `gradient`/`shadow` until added — new `Paint`
+keys need a line there; (2) `serializeProps` must return a COPY of any mutable
+array (`gathered.slice()`) — returning the live reference lets a later mutation
+corrupt an already-taken snapshot, surfacing only as a snapshot-restore hash
+divergence, never in normal play.
+
+**What transfers.** Every game gains gradients + glow for free — skies, water,
+health bars, lit projectiles, rim-light. Because paint is cosmetic data on
+cosmetic nodes it never enters `world.hash()`: driftlight recolours the sky every
+frame and the golden replay hash is unchanged. The "looks judge sees only a
+static SVG" gate still binds — all richness is static per frame (the day arc is a
+function of downstream progress, not wall-clock), so the filmstrip reads true.
+
+**Driver game — Driftlight (ambient art-runner).** A paper lantern auto-drifts a
+night river to the dawn sea; steer across-stream (↑/↓) to thread rock gates and
+gather firefly-light that feeds a draining flame (win: reach the sea lit; lose:
+flame out). The course is a deterministic chain of gates with rocks derived
+around each gap and lights strung on the safe line, so tracking the path both
+survives and refuels — the winnability proof. Flame tuned to a nervous sawtooth
+(a perfect line dips to 44%, ends 81%); a human who misses lights dies. Sim state
+(px/py/flame/gathered/won/lost) is hashed; sky/water/glow/parallax are cosmetic.
+5 tests + full verify green, golden pinned.
+
+---
+
+## Wave — the content-volume unlock: solver-backed generation + a generated flagship
+
+The campaign proved hayao could make *one* verified level reliably; the honest gap
+was *volume* — an agent hand-authoring forty balanced rooms is where quality falls
+apart. This wave closes it by making generation first-class, then proving it with a
+flagship built entirely from generated content.
+
+**Loop 0 — generate, don't hand-author.** Three engine modules:
+- `content/generate.ts` — `generateLevels(factory, {count, band})`: build candidate
+  `Puzzle`s from a seeded rng, `solve()` each, keep only the ones proven winnable
+  *inside a difficulty band*. Genre-agnostic (the factory is any `Puzzle` builder);
+  each kept level carries the sub-seed that reproduces it, so a campaign ships as a
+  list of seeds, not a folder of maps. A capped/exhausted search counts as "unknown,
+  reject" — a level only ships if actually proven.
+- `content/campaign.ts` — `composeCampaign`: stitch per-act generators (each with its
+  own band and, optionally, its own factory → mechanic/board changes as data) into an
+  ordered, escalating campaign with an honest length estimate.
+- `verify/ramp.ts` — `rampIssues` / `assertRamp`: prove the *curve*, not just each
+  level — escalation (finale at the peak), no cliffs (bounded step), forward progress
+  dominates, real variety. The campaign-level analogue of `assertSolvable`.
+
+**Loop 2 — the flagship, Lanternfold.** A Lights-Out lantern puzzle chosen because
+its taps are self-inverse, so any scramble from solved is *guaranteed* winnable and
+the solver's minimum-tap count is a clean difficulty metric — the ideal generator
+target. 42 boards across four acts, generated + solver-proven, composed into a ramp
+that climbs 2→8 taps, shipped as `levels.ts` (verify asserts the committed data
+equals a fresh compose, so it can't drift from what's proven). Art is code-as-art:
+radial-gradient lantern glow, soft shadows, a dusk-sky gradient — never a placeholder
+square. Covers all six proof channels.
+
+**Depth ceiling, learned by probing.** Plus-stencil Lights-Out saturates low
+(3×3/4×4 → min-depth ~7); a satisfying finale needed board-shape tuning (5×3 reaches
+8 with cheap BFS) and monotone per-act bands. Lesson: set generator bands from the
+*measured* solution-depth distribution, not a guess — the generator loudly fails to
+fill an impossible band, which is the right failure.
+
+**Loop 1 — distribution for agents.** `create-hayao` (npm create) scaffolds a
+runnable project whose starter *already* generates a proven campaign; `scripts/eval.ts`
+(`npm run eval`) scores every game on the six proof channels + an overall verified
+rate — the AI-first KPI (the metric isn't stars, it's "did it come out provable").
+`llms.txt` / `AGENTS.md` now foreground "generate + prove"; `docs/GALLERY.md` frames
+the portfolio as proof-forward, not faith-based.

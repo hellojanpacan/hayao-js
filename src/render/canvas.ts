@@ -2,6 +2,7 @@
 // node count would bite. Same display list, immediate-mode painting, DPR-aware.
 
 import { sortCommands, type DrawCommand, type Paint } from './commands';
+import { canvasGradient, shapeBBox } from './paint';
 import type { Renderer, RendererConfig } from './renderer';
 
 export class Canvas2DRenderer implements Renderer {
@@ -51,14 +52,34 @@ export class Canvas2DRenderer implements Renderer {
       const t = c.transform;
       ctx.transform(t.a, t.b, t.c, t.d, t.e, t.f);
       ctx.globalAlpha = (c as Paint).opacity ?? 1;
+      const sh = (c as Paint).shadow;
+      if (sh) {
+        ctx.shadowColor = sh.color;
+        ctx.shadowBlur = sh.blur;
+        ctx.shadowOffsetX = sh.dx ?? 0;
+        ctx.shadowOffsetY = sh.dy ?? 0;
+      }
       this.paint(ctx, c);
       ctx.restore();
     }
   }
 
-  private stroke(ctx: CanvasRenderingContext2D, c: Paint): void {
-    if (c.fill && c.fill !== 'none') {
-      ctx.fillStyle = c.fill;
+  /** Resolve a fill: a gradient (mapped to the shape's bbox) or a solid color. */
+  private fillFor(ctx: CanvasRenderingContext2D, c: DrawCommand): string | CanvasGradient | undefined {
+    const p = c as Paint;
+    if (p.gradient) {
+      const bbox = shapeBBox(c);
+      if (bbox && bbox.w > 0 && bbox.h > 0) return canvasGradient(ctx, p.gradient, bbox);
+      const stops = p.gradient.stops; // path/degenerate box → fall back to last stop
+      return stops.length ? stops[stops.length - 1].color : p.fill;
+    }
+    return p.fill;
+  }
+
+  private stroke(ctx: CanvasRenderingContext2D, c: DrawCommand): void {
+    const fill = this.fillFor(ctx, c);
+    if (fill && fill !== 'none') {
+      ctx.fillStyle = fill;
       ctx.fill();
     }
     if (c.stroke) {
@@ -97,8 +118,9 @@ export class Canvas2DRenderer implements Renderer {
       case 'path':
         {
           const p = new Path2D(c.d);
-          if (c.fill && c.fill !== 'none') {
-            ctx.fillStyle = c.fill;
+          const fill = this.fillFor(ctx, c);
+          if (fill && fill !== 'none') {
+            ctx.fillStyle = fill;
             ctx.fill(p);
           }
           if (c.stroke) {

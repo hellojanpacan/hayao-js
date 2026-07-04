@@ -16,6 +16,7 @@ export * from './scene/node';
 export { Node as Node2D } from './scene/node';
 export * from './scene/nodes';
 export * from './scene/cameraController';
+export * from './scene/parallax';
 export * from './scene/pool';
 export * from './scene/tween';
 export * from './scene/particles';
@@ -41,6 +42,7 @@ export * from './physics/rigidQueries';
 
 // ── render: display list + backends ─────────────────────────────
 export * from './render/commands';
+export * from './render/paint';
 export * from './render/renderer';
 export * from './render/svgString';
 export * from './render/svg';
@@ -65,6 +67,14 @@ export * from './procgen/rooms';
 
 // ── audio ───────────────────────────────────────────────────────
 export * from './audio/audio';
+export * from './audio/pcm';
+export * from './audio/synth';
+export * from './audio/analysis';
+export * from './audio/theory';
+export * from './audio/music';
+export * from './audio/lint';
+export * from './audio/match';
+export * from './audio/adaptive';
 
 // ── ui: DOM overlays + shell + settings ─────────────────────────
 export * from './ui/overlay';
@@ -81,7 +91,10 @@ export * from './verify/driver';
 export * from './verify/bot';
 export * from './verify/layout';
 export * from './verify/feel';
+export * from './verify/gates';
+export * from './verify/ramp';
 export * from './verify/filmstrip';
+export * from './verify/audioFilmstrip';
 
 // ── logic: pure engine primitives (FSM, weighted tables, graph search) ─
 export * from './logic/fsm';
@@ -94,8 +107,11 @@ export * from './persist/storage';
 export * from './persist/codec';
 export * from './persist/save';
 
-// ── content: data-driven wave/spawn directors + upgrade trees ───
+// ── content: data-driven wave/spawn directors + upgrade trees + levels ───
 export * from './content/dsl';
+export * from './content/level';
+export * from './content/generate';
+export * from './content/campaign';
 
 // ── net: deterministic multiplayer (lockstep / rollback) ────────
 export * from './net/players';

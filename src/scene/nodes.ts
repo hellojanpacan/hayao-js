@@ -32,6 +32,8 @@ export class Sprite extends Node {
       strokeWidth: config.strokeWidth,
       opacity: config.opacity,
       round: config.round,
+      gradient: config.gradient,
+      shadow: config.shadow,
     };
   }
 
