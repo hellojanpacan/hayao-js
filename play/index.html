@@ -45,7 +45,7 @@
       section.sec .desc { color: var(--sumi-soft); font-size: 15.5px; max-width: 66ch; margin: 0 0 20px; }
 
       /* featured rail */
-      .rail { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+      .rail { display: grid; grid-template-columns: repeat(auto-fit, minmax(228px, 1fr)); gap: 18px; }
       .fcard { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--washi-2); display: flex; flex-direction: column; transition: border-color .12s; }
       .fcard:hover { border-color: var(--ai-2); }
       .fcard .thumb { aspect-ratio: 16/9; background: #e4d8bd; border-bottom: 1px solid var(--line); }
@@ -101,7 +101,7 @@
       <header class="top">
         <div class="lab">the store</div>
         <h1>Play the engine.</h1>
-        <p>Twenty-seven games, every one machine-verified before it shipped. Three are art-finished in the house woodblock style; the rest
+        <p>Twenty-eight games, every one machine-verified before it shipped. Four are art-finished in the house woodblock style; the rest
           are honest engine <em>slices</em> — each one built to stress one capability end to end, playable in the browser and readable at the
           source. This is what “make a game with hayao” produces today.</p>
       </header>
@@ -133,6 +133,14 @@
               <span class="genre">island town builder</span><h3>Tarnholm</h3>
               <p>An island drawn as a printed sea chart — teal water, sand-rimmed land, little roofed buildings. Every roof scores by its neighbours, live under the cursor; skill nearly doubles random play.</p>
               <div class="links"><a href="../examples/tarnholm/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/tarnholm">source →</a></div>
+            </div>
+          </div>
+          <div class="fcard">
+            <a class="thumb" href="../examples/driftlight/index.html"><img src="../shots/driftlight.svg" alt="Driftlight" /></a>
+            <div class="body">
+              <span class="genre">atmospheric drift</span><h3>Driftlight</h3>
+              <p>A paper lantern drifts a night river to the dawn sea — gradient skies, soft glow, and parallax banks, all cosmetic so the lush view never touches the hash. The renderer's gradient/glow/parallax leap, shown off.</p>
+              <div class="links"><a href="../examples/driftlight/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/driftlight">source →</a></div>
             </div>
           </div>
         </div>

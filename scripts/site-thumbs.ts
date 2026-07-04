@@ -12,6 +12,8 @@ import { bearerBot, type LwProbe } from '../examples/lanternway/bot';
 import { rootwardGame, rwState } from '../examples/rootward/game';
 import { tarnholmGame, thState } from '../examples/tarnholm/game';
 import { bestPlacement, currentBuilding, place } from '../examples/tarnholm/logic';
+import { driftlightGame } from '../examples/driftlight/game';
+import { driftBot, type DlProbe } from '../examples/driftlight/bot';
 
 const W = 1280;
 const H = 720;
@@ -60,6 +62,17 @@ function save(slug: string, background: string, world: World): void {
   }
   w.step([]); // let the view paint the placements
   save('tarnholm', tarnholmGame.background as string, w);
+}
+
+// Driftlight — the lantern mid-river, sky gradient + glow + parallax banks.
+{
+  const w = createWorld(driftlightGame);
+  for (let f = 0; f < 260; f++) {
+    const p = w.probe() as unknown as DlProbe;
+    if (p.won || p.lost) break;
+    w.step(driftBot(p));
+  }
+  save('driftlight', driftlightGame.background as string, w);
 }
 
 console.log('thumbnails written.');
