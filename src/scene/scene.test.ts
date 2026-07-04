@@ -6,6 +6,40 @@ import { deserializeNode } from './registry';
 import { World } from '../world';
 
 describe('scene tree', () => {
+  it('hands onUpdate a self-contained world context (input/rng/time), no closure needed', () => {
+    const world = new World({ seed: 1 });
+    const root = new Node({ name: 'root' });
+    // Behaviour reaches input straight off ctx — never closes over `world`.
+    root.onUpdate = (n, _dt, ctx) => {
+      if (ctx.input.isDown('right')) n.pos.x += 1;
+      (n as unknown as { sawRng: boolean }).sawRng = typeof ctx.rng.float === 'function';
+    };
+    world.setRoot(root);
+    world.runSteps(3, () => ['right']); // fast-forward exactly 3 steps, right held
+    expect(root.pos.x).toBe(3);
+    expect((root as unknown as { sawRng: boolean }).sawRng).toBe(true);
+  });
+
+  it('runSteps advances an exact count (no realtime clamp)', () => {
+    const world = new World({ seed: 1 });
+    world.setRoot(new Node({ name: 'root' }));
+    world.runSteps(72);
+    expect(world.frame).toBe(72); // advance(1200) would clamp to ~15
+  });
+
+  it('rect Sprite is center-anchored by default, top-left on request (#22)', () => {
+    const world = new World({ seed: 1 });
+    const root = new Node({ name: 'root' });
+    root.addChild(new Sprite({ name: 'c', pos: { x: 100, y: 100 }, shape: { kind: 'rect', w: 40, h: 20 }, fill: '#000' }));
+    root.addChild(new Sprite({ name: 'tl', pos: { x: 100, y: 100 }, shape: { kind: 'rect', w: 40, h: 20, anchor: 'topLeft' }, fill: '#000' }));
+    world.setRoot(root);
+    const rects = world.render().filter((c) => c.kind === 'rect') as Array<{ x: number; y: number; transform: { e: number; f: number } }>;
+    // center-anchored: local origin at (-w/2,-h/2) → drawn at pos + (-20,-10)
+    expect({ x: rects[0].transform.e + rects[0].x, y: rects[0].transform.f + rects[0].y }).toEqual({ x: 80, y: 90 });
+    // top-left: local origin at (0,0) → drawn at pos exactly
+    expect({ x: rects[1].transform.e + rects[1].x, y: rects[1].transform.f + rects[1].y }).toEqual({ x: 100, y: 100 });
+  });
+
   it('updates in fixed depth-first order', () => {
     const order: string[] = [];
     const world = new World({ seed: 1 });

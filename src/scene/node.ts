@@ -4,6 +4,7 @@
 
 import type { Rng } from '../core/rng';
 import type { Clock } from '../core/clock';
+import type { InputState } from '../input/actions';
 import { Signal } from '../core/events';
 import {
   IDENTITY,
@@ -14,10 +15,17 @@ import {
 } from '../core/math';
 import type { DrawCommand } from '../render/commands';
 
-/** What a live node can see of its host world. The World implements this. */
+/**
+ * What a live node can see of its host world. The World implements this — it is
+ * exactly the read-only context handed to update callbacks, so a behaviour can
+ * reach input/rng/clock/time WITHOUT closing over the `world` from build(). That
+ * closure-free property is what lets a node be lifted out and reused verbatim.
+ */
 export interface WorldContext {
   readonly rng: Rng;
   readonly clock: Clock;
+  /** Sampled input for this step — `ctx.input.isDown('jump')`, `ctx.input.axis('pointer.x')`. */
+  readonly input: InputState;
   /** Queue a node to be freed at the end of the current step (safe during iteration). */
   requestFree(node: Node): void;
   /** Seconds elapsed in sim time. */
@@ -27,7 +35,8 @@ export interface WorldContext {
 /** A composable update unit attached to a node (favour over deep inheritance). */
 export interface Behavior {
   ready?(node: Node): void;
-  update?(node: Node, dt: number): void;
+  /** `ctx` is the host world (input/rng/clock/time) — self-contained, no closure needed. */
+  update?(node: Node, dt: number, ctx: WorldContext): void;
   exit?(node: Node): void;
   /** Optional tag for lookup/serialization. */
   readonly kind?: string;
@@ -71,8 +80,12 @@ export class Node {
   readonly children: Node[] = [];
   world: WorldContext | null = null;
 
-  /** Optional inline update without subclassing: node.onUpdate = (n, dt) => {…}. */
-  onUpdate?: (node: Node, dt: number) => void;
+  /**
+   * Optional inline update without subclassing. The third argument is the host
+   * world context (input/rng/clock/time), so the callback is self-contained —
+   * `node.onUpdate = (n, dt, ctx) => { if (ctx.input.isDown('jump')) … }`.
+   */
+  onUpdate?: (node: Node, dt: number, ctx: WorldContext) => void;
 
   private behaviors: Behavior[] = [];
   private signals = new Map<string, Signal<unknown>>();
@@ -160,8 +173,9 @@ export class Node {
 
   updateTree(dt: number): void {
     if (this._freed) return;
-    for (const b of this.behaviors) b.update?.(this, dt);
-    this.onUpdate?.(this, dt);
+    const ctx = this.world as WorldContext; // set once in-tree (updateTree runs after enterTree)
+    for (const b of this.behaviors) b.update?.(this, dt, ctx);
+    this.onUpdate?.(this, dt, ctx);
     this.onProcess(dt);
     // Copy children so structural changes during update are safe.
     for (const c of this.children.slice()) c.updateTree(dt);

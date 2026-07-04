@@ -7,8 +7,21 @@ import type { DrawCommand, Paint, TextAlign } from '../render/commands';
 import { Node, type NodeConfig, type WorldContext } from './node';
 
 // ── Sprite ────────────────────────────────────────────────────────
+/**
+ * A Sprite's shape. ORIGIN CONVENTIONS differ per kind — a Sprite's `pos` is the
+ * node origin, and each shape places itself relative to it:
+ *  - `rect`   → CENTER-anchored by default: drawn from (-w/2,-h/2), so `pos` is its
+ *               middle. Pass `anchor: 'topLeft'` to place `pos` at the top-left
+ *               corner instead (the canvas mental model) — no half-size offset.
+ *  - `circle` → CENTER-anchored: `pos` is the center.
+ *  - `glyph`  → CENTER-anchored (align 'center').
+ *  - `poly`   → LOCAL coordinates: `points` are relative to `pos` as-is (put your
+ *               own 0,0 wherever you like).
+ *  - `path`   → LOCAL coordinates: `d` is drawn relative to `pos`.
+ * (`Text` is anchored by its `align`, not centered — see the Text node.)
+ */
 export type Shape =
-  | { kind: 'rect'; w: number; h: number; r?: number }
+  | { kind: 'rect'; w: number; h: number; r?: number; anchor?: 'center' | 'topLeft' }
   | { kind: 'circle'; radius: number }
   | { kind: 'poly'; points: number[]; closed?: boolean }
   | { kind: 'path'; d: string }
@@ -41,9 +54,11 @@ export class Sprite extends Node {
     const p = this.paint;
     const base = { transform: world, z: this.z, ...p };
     switch (this.shape.kind) {
-      case 'rect':
-        out.push({ kind: 'rect', x: -this.shape.w / 2, y: -this.shape.h / 2, w: this.shape.w, h: this.shape.h, r: this.shape.r, ...base });
+      case 'rect': {
+        const tl = this.shape.anchor === 'topLeft';
+        out.push({ kind: 'rect', x: tl ? 0 : -this.shape.w / 2, y: tl ? 0 : -this.shape.h / 2, w: this.shape.w, h: this.shape.h, r: this.shape.r, ...base });
         break;
+      }
       case 'circle':
         out.push({ kind: 'circle', cx: 0, cy: 0, radius: this.shape.radius, ...base });
         break;

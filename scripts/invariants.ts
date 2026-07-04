@@ -59,10 +59,13 @@ const WALL_CLOCK = [
 const MATH_RANDOM = { rule: 'nondeterminism: Math.random()', re: /\bMath\.random\s*\(/ };
 // Implementation-defined Math functions differ between JS engines (V8/JSC/SM),
 // which desyncs cross-machine netplay. Sim code must use the dmath equivalents
-// (dsin/dcos/datan2/dexp2/dhypot). sqrt/abs/floor/round/min/max are IEEE-exact
+// (every banned call has one). sqrt/abs/floor/round/min/max are IEEE-exact
 // and stay allowed. Tests may reference Math.* to compare against dmath.
 const MATH_IMPL_DEFINED = {
-  rule: 'nondeterminism: implementation-defined Math.* (use dmath: dsin/dcos/datan2/dexp2/dhypot)',
+  rule:
+    'nondeterminism: implementation-defined Math.* — use the dmath replacement: ' +
+    'sin/cos→dsin/dcos, tan→dsin/dcos, atan/atan2→datan/datan2, exp→dexp, exp2/pow-of-2→dexp2, ' +
+    'pow→dpow, log→dlog, log2→dlog2, log10→dlog10, hypot→dhypot',
   re: /\bMath\.(sin|cos|tan|asin|acos|atan2?|hypot|pow|exp|expm1|log2|log10|log1p|log|sinh|cosh|tanh|cbrt)\s*\(/,
 };
 

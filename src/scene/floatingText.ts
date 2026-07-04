@@ -123,6 +123,7 @@ export class FloatingText extends Node {
         opacity,
         transform: world,
         z: this.z,
+        transient: true, // drifting popup — layout lints skip it (see verify/layout)
       });
     }
   }

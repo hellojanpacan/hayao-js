@@ -64,6 +64,13 @@ interface Base extends Paint {
   transform: Transform;
   /** Painter's-order key; ties broken by tree order. Default 0. */
   z: number;
+  /**
+   * Transient view chrome — a drifting popup, particle, or tween that lives for
+   * a moment and is never something the player reads for meaning. Layout lints
+   * (see verify/layout) skip these by default: a "+10" floating over a HUD label
+   * is motion, not a collision. Set by cosmetic emitters (FloatingText/Particles).
+   */
+  transient?: boolean;
 }
 
 export interface RectCommand extends Base {

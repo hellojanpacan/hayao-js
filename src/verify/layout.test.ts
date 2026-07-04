@@ -32,6 +32,37 @@ describe('layoutIssues', () => {
     expect(layoutIssues([T('+4', 300, 300), R(300, 300, 64, 64, 6, 0.1)])).toEqual([]);
   });
 
+  it('flags text buried under an opaque higher-z shape (the invisible-label bug, #31)', () => {
+    // tile at z4 fully covering a label at default z0 → painted underneath, invisible.
+    const issues = layoutIssues([T('42', 300, 300, 0), R(300, 300, 64, 64, 4, 1)]);
+    expect(issues.some((i) => i.includes('hidden behind'))).toBe(true);
+    // Same tile with the label lifted above it (z6) is fine.
+    expect(layoutIssues([T('42', 300, 300, 6), R(300, 300, 64, 64, 4, 1)])).toEqual([]);
+    // A translucent overlay above the text is not an occluder.
+    expect(layoutIssues([T('42', 300, 300, 0), R(300, 300, 64, 64, 4, 0.3)])).toEqual([]);
+  });
+
+  it('skips transient popups/particles by default (#26), but lints them on request', () => {
+    const popup: DrawCommand = { kind: 'text', text: '+10', x: 0, y: 0, size: 20, align: 'center', transform: { ...IDENTITY, e: 645, f: 102 }, z: 40, transient: true };
+    const hud = T('score 0', 640, 100, 40);
+    expect(layoutIssues([hud, popup])).toEqual([]); // motion, not a collision
+    expect(layoutIssues([hud, popup], { includeTransient: true }).length).toBeGreaterThan(0);
+  });
+
+  it('flags low-contrast shapes and text when a background is given (#30)', () => {
+    // near-black bomb on near-black ground (the reported case).
+    const bomb: DrawCommand = { kind: 'circle', cx: 0, cy: 0, radius: 20, fill: '#191c24', transform: { ...IDENTITY, e: 200, f: 200 }, z: 5 };
+    const issues = layoutIssues([bomb], { background: '#0e1220' });
+    expect(issues.some((i) => i.includes('vanishes into the ground'))).toBe(true);
+    // A bright shape on the same ground is fine.
+    const coin: DrawCommand = { kind: 'circle', cx: 0, cy: 0, radius: 20, fill: '#ffd24a', transform: { ...IDENTITY, e: 200, f: 200 }, z: 5 };
+    expect(layoutIssues([coin], { background: '#0e1220' })).toEqual([]);
+    // Faint text below the AA bar is flagged.
+    const faint = T('hint', 640, 400, 5);
+    (faint as { fill?: string }).fill = '#2a2f3a';
+    expect(layoutIssues([faint], { background: '#0e1220' }).some((i) => i.includes('barely readable'))).toBe(true);
+  });
+
   it('flags overlapping texts', () => {
     const issues = layoutIssues([T('first line of text', 640, 100), T('second line of text', 650, 104)]);
     expect(issues.some((i) => i.includes('overlap'))).toBe(true);

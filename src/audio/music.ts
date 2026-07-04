@@ -7,7 +7,7 @@
 
 import { Rng } from '../core/rng';
 import { TAU } from '../core/math';
-import { dexp, dexp2, dlog2 } from '../core/dmath';
+import { dexp, dexp2, dpow } from '../core/dmath';
 import { renderSound, type SoundSpec } from './synth';
 import { pitchToFreq } from './theory';
 import { applyReverb, type ReverbOptions } from './reverb';
@@ -214,11 +214,6 @@ function applyCompressor(bus: StereoBuffer, amount: number): void {
 /** dB → linear amplitude (2^(dB/6.0206)); Math.pow is banned in src. */
 function dbToLin(db: number): number {
   return dexp2(db / 6.020599913);
-}
-/** Positive-base power via dmath (Math.pow is banned in src). */
-function dpow(base: number, exp: number): number {
-  if (base <= 0) return 0;
-  return dexp2(exp * dlog2(base));
 }
 
 /**

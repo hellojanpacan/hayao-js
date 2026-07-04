@@ -5,8 +5,9 @@ Every game in this repo ships a `verify.ts` suite that **machine-proves** its
 claims — and you can run the proof yourself:
 
 ```sh
-npm run verify           # prove the whole portfolio (solver + determinism + gates)
-npm run eval             # scorecard: verified rate + proof coverage per game
+npm run verify                        # prove the whole portfolio (solver + determinism + gates)
+npm run verify -- lanternfold sokoban # just these — scopes every stage, not only the feel audit
+npm run eval                          # scorecard: verified rate + proof coverage per game
 npm run eval -- lanternfold sokoban   # just these
 ```
 

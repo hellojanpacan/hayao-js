@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { dsin, dcos, datan, datan2, dexp2, dhypot, dlog, dlog10, dlog2 } from './dmath';
+import { dsin, dcos, datan, datan2, dexp2, dhypot, dlog, dlog10, dlog2, dpow } from './dmath';
 import { Rng } from './rng';
 
 // Deterministic sample points via the seeded Rng — no Math.random in tests.
@@ -75,6 +75,27 @@ describe('dmath: deterministic transcendentals', () => {
     expect(dlog(0)).toBe(-Infinity);
     expect(dlog(-1)).toBeNaN();
     expect(dlog(1)).toBe(0);
+  });
+
+  it('dpow matches Math.pow within 1e-13 relative and is exact on integer exponents', () => {
+    // Integer exponents run the exact multiply chain — bit-exact, incl. negative base.
+    expect(dpow(2, 10)).toBe(1024);
+    expect(dpow(-2, 3)).toBe(-8);
+    expect(dpow(-2, 2)).toBe(4);
+    expect(dpow(5, -2)).toBe(1 / 25);
+    expect(dpow(7, 0)).toBe(1);
+    expect(dpow(0, 0)).toBe(1); // matches Math.pow
+    expect(dpow(0, 3)).toBe(0);
+    expect(dpow(0, -1)).toBe(Infinity);
+    // Fractional exponents route through dexp2/dlog2.
+    for (const base of [0.1, 0.5, 1.5, 2, 7, 100]) {
+      for (const exp of [2.4, 1 / 2.4, 0.5, -1.7, 3.3]) {
+        const exact = Math.pow(base, exp);
+        expect(Math.abs(dpow(base, exp) - exact) / Math.max(Math.abs(exact), 1e-9)).toBeLessThan(1e-13);
+      }
+    }
+    // Negative base with a non-integer exponent is complex → NaN, like Math.pow.
+    expect(dpow(-2, 0.5)).toBeNaN();
   });
 
   it('handles non-finite input without lying', () => {

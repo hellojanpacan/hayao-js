@@ -223,3 +223,32 @@ const INV_LN2 = 1.44269504088896338700e0; // 1/ln(2)
 export const dlog10 = (x: number): number => dlog(x) * INV_LN10;
 /** Deterministic base-2 logarithm. */
 export const dlog2 = (x: number): number => dlog(x) * INV_LN2;
+
+// ── power ────────────────────────────────────────────────────────
+// Math.pow is implementation-defined and banned in the sim. This is the one
+// sanctioned replacement (four subsystems used to hand-roll it privately).
+// Integer exponents run an exact multiply chain — bit-identical everywhere and
+// valid for negative bases; other cases route through dexp2(exp·dlog2(base)).
+
+/** Deterministic base^exp (bit-identical across JS engines). */
+export function dpow(base: number, exp: number): number {
+  if (Number.isNaN(base) || Number.isNaN(exp)) return NaN;
+  if (exp === 0) return 1; // includes 0^0 = 1, matching Math.pow
+  if (exp === 1) return base;
+  // Exact path for integer exponents: repeated squaring on |exp|, bit-exact and
+  // the only route that stays valid for a negative base.
+  if (Number.isInteger(exp) && Math.abs(exp) <= 1024) {
+    let n = Math.abs(exp);
+    let b = base;
+    let r = 1;
+    while (n > 0) {
+      if (n & 1) r *= b;
+      n >>= 1;
+      if (n > 0) b *= b;
+    }
+    return exp < 0 ? 1 / r : r;
+  }
+  if (base > 0) return dexp2(exp * dlog2(base));
+  if (base === 0) return exp > 0 ? 0 : Infinity;
+  return NaN; // negative base, non-integer exponent → complex → NaN (like Math.pow)
+}
