@@ -67,6 +67,11 @@ function ride(gain = 0.42, bars = 8): Track {
 function hats(gain = 0.4, bars = 8): Track {
   return { name: 'hat', instrument: { ...INSTRUMENTS.hat, highpass: 5000, volume: 0.2 }, gain, pan: -0.1, patterns: [hatFoot()], sequence: Array(bars).fill(0) };
 }
+/** A whisper of vinyl/room warmth — the noir-record patina. Tasteful: a warm,
+ * low noise bed, not hiss (vinyl "works well in jazzy funk", used sparingly). */
+function vinyl(gain = 0.32, bars = 8): Track {
+  return { name: 'vinyl', instrument: { wave: 'noise', attack: 0.6, release: 0.6, sustainLevel: 1, volume: 0.03, lowpass: 3000, highpass: 380 }, gain, patterns: [[n('C4', bars * 4, 1)]], sequence: [0] };
+}
 
 export interface AlbumTrack {
   id: string;
@@ -153,7 +158,7 @@ function rainOnTheAvenue(): Song {
   };
   const brush: Track = { name: 'brush', instrument: { ...INSTRUMENTS.snare, volume: 0.12, highpass: 1500, release: 0.16 }, gain: 0.4, patterns: [[rest(1), n('D4', 1, 0.4), rest(1), n('D4', 1, 0.45)]], sequence: Array(8).fill(0) };
   return {
-    bpm: 62, tracks: [bass, rhodes, lead, brush, ride(0.24)],
+    bpm: 62, tracks: [vinyl(0.3), bass, rhodes, lead, brush, ride(0.24)],
     swing: 0.5, humanize: 0.4, velBrightness: 0.6,
     reverb: { wet: 0.34, roomSize: 0.85, damp: 0.55 }, master: { lowCut: 0.24, presence: 0.16, air: 0.05, compress: 0.65 },
   };
@@ -181,7 +186,7 @@ function stakeout(): Song {
   };
   const comping: Track = { name: 'guitar', instrument: { ...INSTRUMENTS.jazzGuitar, volume: 0.22 }, gain: 0.5, pan: -0.2, patterns: comp(A, 4, 'Eb4', 0.5), sequence: [0, 1, 2, 3, 4, 5, 6, 7] };
   return {
-    bpm: 96, tracks: [bass, comping, vibe, ride(0.3), hats(0.28)],
+    bpm: 96, tracks: [vinyl(0.28), bass, comping, vibe, ride(0.3), hats(0.28)],
     swing: 0.62, humanize: 0.34, velBrightness: 0.6,
     reverb: { wet: 0.22, roomSize: 0.65, damp: 0.5 }, master: { lowCut: 0.24, presence: 0.13, air: 0.04, compress: 0.45 },
   };
@@ -266,7 +271,7 @@ function smokeAndMirrors(): Song {
   const kick: Track = { name: 'kick', instrument: { ...INSTRUMENTS.kick, volume: 0.55 }, gain: 0.62, patterns: [[n('Ab1', 1, 0.85), rest(2), n('Ab1', 0.5, 0.55), rest(0.5)]], sequence: Array(8).fill(0) };
   const snare: Track = { name: 'snare', instrument: { ...INSTRUMENTS.rimshot, volume: 0.22 }, gain: 0.5, patterns: [[rest(2), n('D4', 1, 0.7), rest(1)]], sequence: Array(8).fill(0) };
   return {
-    bpm: 84, tracks: [bass, rhodes, vibe, kick, snare, ride(0.28), hats(0.24)],
+    bpm: 84, tracks: [vinyl(0.32), bass, rhodes, vibe, kick, snare, ride(0.28), hats(0.24)],
     swing: 0.56, humanize: 0.3, velBrightness: 0.62,
     reverb: { wet: 0.26, roomSize: 0.72, damp: 0.55 }, master: { lowCut: 0.24, presence: 0.14, air: 0.04, compress: 0.45 },
   };
@@ -299,7 +304,7 @@ function lastCall(): Song {
   };
   const brush: Track = { name: 'brush', instrument: { ...INSTRUMENTS.snare, volume: 0.12, highpass: 1500, release: 0.15 }, gain: 0.42, patterns: [[rest(1), n('D4', 1, 0.42), rest(1), n('D4', 1, 0.46)]], sequence: Array(8).fill(0) };
   return {
-    bpm: 76, tracks: [bass, rhodes, lead, brush, ride(0.26)],
+    bpm: 76, tracks: [vinyl(0.3), bass, rhodes, lead, brush, ride(0.26)],
     swing: 0.56, humanize: 0.36, velBrightness: 0.6,
     reverb: { wet: 0.3, roomSize: 0.8, damp: 0.5 }, master: { lowCut: 0.38, presence: 0.28, air: 0.09, compress: 0.65 },
   };
