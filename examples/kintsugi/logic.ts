@@ -66,6 +66,8 @@ export interface KgState {
   boss: BossState | null;
   /** Boss ids already defeated (persists; unseals arenas). */
   bossesDefeated: string[];
+  /** Region ids the Mender has entered (drives the map). */
+  visited: string[];
 }
 
 /** Spawn a room's enemies fresh from its spec (tile coords → world px). */
@@ -142,6 +144,7 @@ export function initialState(): KgState {
     hitstop: 0,
     boss: spawnBossFor(KINTSUGI_WORLD.start, []),
     bossesDefeated: [],
+    visited: [KINTSUGI_WORLD.start],
   };
 }
 
@@ -305,6 +308,7 @@ export function stepKintsugi(s: KgState, pad: PadInput, dt: number, attack = fal
       s.boss = spawnBossFor(target, s.bossesDefeated);
       s.orbs = [];
       s.atk = 0;
+      if (!s.visited.includes(target)) s.visited.push(target);
       ev.transitioned = true;
     }
   }

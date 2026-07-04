@@ -38,6 +38,7 @@ import { ATTACK_TIME, IFRAMES, type EnemyState } from './combat';
 import { type BossState } from './boss';
 import { MusicDirector } from './music';
 import { StoryCards, ABILITY_LINES, SHARD_LINE, GUARDIAN_INTRO } from './story';
+import { buildMapNode } from './map';
 
 const PROLOGUE_SUB = 'Mend the broken world — seam by golden seam.';
 
@@ -50,6 +51,7 @@ export const KG_INPUT_MAP: InputMap = {
   dash: ['ShiftLeft', 'ShiftRight', 'KeyX', 'KeyL'],
   attack: ['KeyC', 'KeyJ'],
   restart: ['KeyR'],
+  map: ['Tab', 'KeyM'],
 };
 
 const VIEW_W = RW * TS; // 1280
@@ -90,6 +92,8 @@ class KintsugiView extends Node {
   private lastBiome = '';
   private story!: StoryCards;
   private shownGuardians = new Set<string>();
+  private mapLayer = new Node({ name: 'mapLayer' });
+  private mapOpen = false;
 
   private get kg(): KgState {
     const w = this.world as World;
@@ -104,6 +108,8 @@ class KintsugiView extends Node {
     this.addChild(this.room);
     this.addChild(this.actor);
     this.addChild(this.hud);
+    this.mapLayer.cosmetic = true;
+    this.addChild(this.mapLayer);
     this.story = new StoryCards(this.hud);
     this.rebuildRoom();
     this.buildHud();
@@ -149,7 +155,7 @@ class KintsugiView extends Node {
     // controls hint in the tutorial grove
     if (biomeOf(region) === 'grove') {
       this.room.addChild(new Sprite({ pos: { x: VIEW_W / 2, y: VIEW_H - 30 }, z: 46, shape: { kind: 'rect', w: 900, h: 34, r: 10 }, fill: withAlpha(KENTO.sumi, 0.7), stroke: KENTO.kinako, strokeWidth: 1.5 }));
-      this.room.addChild(new Text({ name: 'controls', text: 'Arrows move · Z jump · X dash · C strike · R restart', pos: { x: VIEW_W / 2, y: VIEW_H - 30 }, z: 47, size: 18, align: 'center', fill: KENTO.gofun }));
+      this.room.addChild(new Text({ name: 'controls', text: 'Arrows move · Z jump · X dash · C strike · Tab map · R restart', pos: { x: VIEW_W / 2, y: VIEW_H - 30 }, z: 47, size: 17, align: 'center', fill: KENTO.gofun }));
     }
 
     this.sig = `${region}|${kg.taken.length}`;
@@ -305,12 +311,23 @@ class KintsugiView extends Node {
     return g;
   }
 
+  private rebuildMap(): void {
+    for (const c of this.mapLayer.children.slice()) this.mapLayer.removeChild(c);
+    if (this.mapOpen) this.mapLayer.addChild(buildMapNode(this.kg));
+  }
+
   // ── loop ──────────────────────────────────────────────────────────
   protected override onProcess(dt: number): void {
     if (!this.world) return;
     const w = this.world as World;
     const input = w.input;
     this.phase += dt;
+
+    if (input.justPressed('map')) {
+      this.mapOpen = !this.mapOpen;
+      this.rebuildMap();
+    }
+    if (this.mapOpen) return; // the world pauses while the map is open
 
     if (input.justPressed('restart')) return this.restart();
     const kg = this.kg;
@@ -350,8 +367,13 @@ class KintsugiView extends Node {
     }
     if (ev.picked) {
       const pk = KINTSUGI_WORLD.pickups.find((p) => p.id === ev.picked);
-      const line = pk && !pk.grants.startsWith('shard:') ? ABILITY_LINES[pk.grants] : SHARD_LINE;
-      if (line) this.story.line(line, kg.p.x + 10, kg.p.y - 24);
+      if (pk && !pk.grants.startsWith('shard:')) {
+        // a golden power returns — a real unlock moment
+        const name = pk.grants.charAt(0).toUpperCase() + pk.grants.slice(1);
+        this.story.card(name, ABILITY_LINES[pk.grants] ?? 'A seam mended.', 4.5);
+      } else {
+        this.story.line(SHARD_LINE, kg.p.x + 10, kg.p.y - 24);
+      }
     }
     // threat intensity → music adapts (percussion, tempo, darker melody)
     let inten = kg.iframes > 0 ? 0.6 : 0;
@@ -387,6 +409,8 @@ class KintsugiView extends Node {
     this.shownGuardians.clear();
     this.lastBiome = '';
     this.phase = 0;
+    this.mapOpen = false;
+    this.rebuildMap();
     hideScreen();
     this.story.clear();
     this.story.card('Kintsugi', PROLOGUE_SUB, 8);
