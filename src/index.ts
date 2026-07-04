@@ -103,6 +103,7 @@ export * from './content/dsl';
 export * from './content/level';
 export * from './content/generate';
 export * from './content/campaign';
+export * from './content/worldgraph';
 
 // ── net: deterministic multiplayer (lockstep / rollback) ────────
 export * from './net/players';
