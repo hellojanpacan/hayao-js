@@ -19,8 +19,9 @@ describe('chord vocabulary', () => {
     // G7alt = b9 #9 b13, no 5
     const alt = chordNotes('G7alt', 4);
     expect(alt[0]).toBe(noteToMidi('G4'));
+    expect(alt).toContain(noteToMidi('G4') + 4); // major 3rd (B)
     expect(alt).toContain(noteToMidi('G4') + 13); // b9 (Ab)
-    expect(alt).toContain(noteToMidi('G4') + 15); // #9
+    expect(alt).toContain(noteToMidi('G4') + 20); // b13 (Eb)
   });
 
   it('builds extended chords (9/11/13)', () => {
