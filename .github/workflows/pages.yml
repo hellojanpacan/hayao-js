@@ -10,9 +10,14 @@ permissions:
   pages: write
   id-token: write
 
+# Serialize Pages deployments: queue them, never cancel one mid-flight. Canceling
+# an in-progress run does NOT release the server-side Pages deployment lock, so a
+# following deploy would hit "Deployment failed, try again later" (seen when two
+# PRs merge seconds apart). `cancel-in-progress: false` makes the next run wait
+# for the current one to finish — GitHub's recommended setting for Pages.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
