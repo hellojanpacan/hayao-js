@@ -38,7 +38,10 @@
   "files": [
     "dist",
     "bin",
-    "docs/API.md"
+    "docs/QUICKSTART.md",
+    "docs/API.md",
+    "docs/VERIFICATION.md",
+    "docs/CONVENTIONS.md"
   ],
   "engines": {
     "node": ">=18"
