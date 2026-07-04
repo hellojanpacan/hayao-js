@@ -1,5 +1,4 @@
 import { describe, it, expect } from 'vitest';
-import { mkdirSync, writeFileSync } from 'node:fs';
 import { Node, IDENTITY, renderToSVGString, KENTO, type DrawCommand } from '@hayao';
 import { menderNode, motionFrom, type Motion, type MenderPose } from './mender';
 
@@ -45,19 +44,17 @@ describe('Mender figure', () => {
     expect(motionFrom(true, 999, 0, false, false, true)).toBe('hurt');
   });
 
-  it('emits a pose contact-sheet for visual review', () => {
-    const H = 60;
+  it('renders a full pose sheet to valid SVG (in-memory)', () => {
     const scene = new Node({ name: 'sheet' });
     MOTIONS.forEach((motion, i) => {
-      const n = menderNode({ x: 0, y: 0, w: 26, h: H, facing: 1, phase: 0.28, motion, attackT: 0.5, hurtT: motion === 'hurt' ? 0.8 : 0 });
+      const n = menderNode({ x: 0, y: 0, w: 26, h: 60, facing: 1, phase: 0.28, motion, attackT: 0.5, hurtT: motion === 'hurt' ? 0.8 : 0 });
       n.pos = { x: 110 + i * 150, y: 190 };
       scene.addChild(n);
     });
     const out: DrawCommand[] = [];
     scene.collectDraw(out, IDENTITY);
     const svg = renderToSVGString(out, 1130, 340, KENTO.kuro);
-    mkdirSync('shots/kintsugi', { recursive: true });
-    writeFileSync('shots/kintsugi/mender-poses.svg', svg);
     expect(out.length).toBeGreaterThan(70);
+    expect(svg.startsWith('<svg')).toBe(true);
   });
 });

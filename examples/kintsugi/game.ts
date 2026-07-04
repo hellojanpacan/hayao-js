@@ -7,6 +7,7 @@
 import {
   Node,
   Sprite,
+  Text,
   audio,
   linearGradient,
   radialGradient,
@@ -35,7 +36,9 @@ import { biomeArt } from './biome';
 import { menderNode, motionFrom } from './mender';
 import { ATTACK_TIME, IFRAMES, type EnemyState } from './combat';
 import { MusicDirector } from './music';
-import { StoryCards, PROLOGUE, ABILITY_LINES, SHARD_LINE, GUARDIAN_INTRO } from './story';
+import { StoryCards, ABILITY_LINES, SHARD_LINE, GUARDIAN_INTRO } from './story';
+
+const PROLOGUE_SUB = 'Mend the broken world — seam by golden seam.';
 
 export const KG_INPUT_MAP: InputMap = {
   left: ['ArrowLeft', 'KeyA'],
@@ -103,7 +106,7 @@ class KintsugiView extends Node {
     this.story = new StoryCards(this.hud);
     this.rebuildRoom();
     this.buildHud();
-    this.story.card('Kintsugi', PROLOGUE, 8);
+    this.story.card('Kintsugi', PROLOGUE_SUB, 8);
   }
 
   // ── room rendering ────────────────────────────────────────────────
@@ -141,6 +144,12 @@ class KintsugiView extends Node {
 
     // fog / vignette
     this.room.addChild(new Sprite({ pos: { x: VIEW_W / 2, y: VIEW_H / 2 }, z: 45, shape: { kind: 'rect', w: VIEW_W, h: VIEW_H }, gradient: radialGradient([withAlpha(KENTO.yohaku, 0), withAlpha(KENTO.yohaku, 0.28)], { r: 0.75 }) }));
+
+    // controls hint in the tutorial grove
+    if (biomeOf(region) === 'grove') {
+      this.room.addChild(new Sprite({ pos: { x: VIEW_W / 2, y: VIEW_H - 30 }, z: 46, shape: { kind: 'rect', w: 900, h: 34, r: 10 }, fill: withAlpha(KENTO.sumi, 0.7), stroke: KENTO.kinako, strokeWidth: 1.5 }));
+      this.room.addChild(new Text({ name: 'controls', text: 'Arrows move · Z jump · X dash · C strike · R restart', pos: { x: VIEW_W / 2, y: VIEW_H - 30 }, z: 47, size: 18, align: 'center', fill: KENTO.gofun }));
+    }
 
     this.sig = `${region}|${kg.taken.length}`;
   }
@@ -347,7 +356,7 @@ class KintsugiView extends Node {
     this.phase = 0;
     hideScreen();
     this.story.clear();
-    this.story.card('Kintsugi', PROLOGUE, 8);
+    this.story.card('Kintsugi', PROLOGUE_SUB, 8);
     this.rebuildRoom();
     this.updateActor();
     this.updateHud();
