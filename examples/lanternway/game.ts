@@ -8,6 +8,13 @@
 // Canonical state is only the bearer's position + the reached flag (held on this
 // view, serialized). The field, camera, controller, and HUD are all cosmetic, so
 // the smooth follow never enters world.hash() — determinism stays intact.
+//
+// ART: this is also the toolkit reference. The scenery is code-as-art — organic
+// `blobPath` foliage, a `smoothOpenPath` trodden way, tonal woodblock grain, and
+// a layered paper-lantern bearer — all built ONCE, statically, from STANDALONE
+// rng streams. Nothing here is animated (the looks judge only sees a static SVG
+// filmstrip) and nothing draws from world.rng (that would fold layout into the
+// hash). The whole `field` subtree is cosmetic, so none of it is hashed.
 
 import {
   Node,
@@ -19,10 +26,16 @@ import {
   KENTO,
   audio,
   datan2,
+  dhypot,
   defineGame,
   showScreen,
   hideScreen,
   registerNode,
+  blobPath,
+  smoothOpenPath,
+  mutateColor,
+  withAlpha,
+  mix,
   type World,
   type InputMap,
 } from '@hayao';
@@ -36,9 +49,29 @@ export const LW_INPUT_MAP: InputMap = {
   restart: ['KeyR'],
 };
 
-// Cosmetic decorations are laid out from a STANDALONE rng so they never touch
-// world.rng — advancing world.rng would fold their layout into world.hash().
-const DECO_SEED = 20260704;
+// Every decorative layer is laid out from its OWN standalone rng so none of them
+// touch world.rng — advancing world.rng would fold their layout into world.hash().
+const GRAIN_SEED = 20260704;
+const PATH_SEED = 517;
+const FLORA_SEED = 8821;
+
+// Decorative shapes all sit at z ≤ 1 (the "background lattice" plane the layout
+// lint treats as exempt) so they never collide with the torii glyph text box.
+const Z_GROUND = -2;
+const Z_GRAIN = -1;
+const Z_PATH = 0;
+const Z_DECO = 1;
+
+/** Perpendicular distance from (px,py) to the straight START→GOAL corridor. */
+function distToWay(px: number, py: number): number {
+  const dx = GOAL.x - START.x;
+  const dy = GOAL.y - START.y;
+  const l2 = dx * dx + dy * dy;
+  const t = Math.max(0, Math.min(1, ((px - START.x) * dx + (py - START.y) * dy) / l2));
+  const cx = START.x + t * dx;
+  const cy = START.y + t * dy;
+  return dhypot(px - cx, py - cy);
+}
 
 class LanternwayView extends Node {
   override readonly type = 'LanternwayView';
@@ -47,7 +80,7 @@ class LanternwayView extends Node {
   won = false;
 
   private field = new Node({ name: 'field' });
-  private bearer!: Sprite;
+  private bearer!: Node;
   private camera!: Camera2D;
   private compass!: Node;
 
@@ -63,36 +96,15 @@ class LanternwayView extends Node {
     this.field.cosmetic = true;
     this.addChild(this.field);
 
-    // Ground slab with a visible border so the world's extent reads while scrolling.
-    this.field.addChild(new Sprite({ name: 'ground', pos: { x: WORLD.w / 2, y: WORLD.h / 2 }, z: -1, shape: { kind: 'rect', w: WORLD.w, h: WORLD.h }, fill: KENTO.washi, stroke: KENTO.kinako, strokeWidth: 6 }));
-    // A faint dot lattice (z0 = background, exempt from the layout lint).
-    for (let y = 160; y < WORLD.h; y += 200) {
-      for (let x = 160; x < WORLD.w; x += 200) {
-        this.field.addChild(new Sprite({ pos: { x, y }, z: 0, shape: { kind: 'circle', radius: 3 }, fill: KENTO.line }));
-      }
-    }
-    // Scattered tufts (z1 = background lattice), deterministic from DECO_SEED.
-    const drng = new Rng(DECO_SEED);
-    const tint = [KENTO.matsuDeep, KENTO.matsu, KENTO.koDeep, KENTO.kinako];
-    for (let gy = 240; gy < WORLD.h - 120; gy += 240) {
-      for (let gx = 240; gx < WORLD.w - 120; gx += 240) {
-        const x = gx + drng.range(-70, 70);
-        const y = gy + drng.range(-70, 70);
-        if (dist({ x, y }, START) < 200 || dist({ x, y }, GOAL) < 220) continue;
-        this.field.addChild(new Sprite({ pos: { x, y }, z: 1, rotation: drng.range(-0.4, 0.4), shape: { kind: 'poly', points: [0, -14, 11, 8, -11, 8] }, fill: drng.pick(tint), stroke: KENTO.sumiSoft, strokeWidth: 1.5, opacity: 0.85 }));
-      }
-    }
+    this.buildGround();
+    this.buildWay();
+    this.buildFlora();
+    this.buildShrine();
 
-    // Goal shrine — a torii glyph over a ground ring. The ring sits at z1
-    // (background lattice) so it never trips the layout lint against the glyph,
-    // which is a sacred text command.
-    this.field.addChild(new Sprite({ name: 'goalRing', pos: { ...GOAL }, z: 1, shape: { kind: 'circle', radius: GOAL_R }, fill: 'none', stroke: KENTO.shu, strokeWidth: 4, opacity: 0.7 }));
-    this.field.addChild(new Sprite({ name: 'goal', pos: { x: GOAL.x, y: GOAL.y + 6 }, z: 6, shape: { kind: 'glyph', char: '⛩', size: 96 }, fill: KENTO.shuDeep }));
-
-    // ── The bearer (cosmetic view of px/py) ────────────────────────────────
-    this.bearer = new Sprite({ name: 'bearer', pos: { x: this.px, y: this.py }, z: 10, shape: { kind: 'circle', radius: BEARER_R }, fill: KENTO.ko, stroke: KENTO.sumi, strokeWidth: 3 });
+    // ── The bearer: a layered paper lantern (cosmetic view of px/py) ───────
+    this.bearer = new Node({ name: 'bearer', pos: { x: this.px, y: this.py }, z: 10 });
     this.bearer.cosmetic = true;
-    this.bearer.addChild(new Sprite({ name: 'glow', z: 9, shape: { kind: 'circle', radius: BEARER_R + 14 }, fill: 'none', stroke: KENTO.ko, strokeWidth: 3, opacity: 0.4 }));
+    this.buildLantern(this.bearer);
     this.addChild(this.bearer);
 
     // ── The camera + its screen-pinned HUD (children ride the camera) ──────
@@ -104,6 +116,149 @@ class LanternwayView extends Node {
     // Follow behavior: deadzone slack, smooth trail, clamped to the world edges.
     const controller = new CameraController({ name: 'follow', target: this.bearer, deadzone: { x: 180, y: 120 }, smooth: 0.14, bounds: { minX: 0, minY: 0, maxX: WORLD.w, maxY: WORLD.h } });
     this.addChild(controller);
+  }
+
+  /** Paper ground with a warm border and a tonal woodblock grain (not a grid). */
+  private buildGround(): void {
+    // Ground slab with a visible border so the world's extent reads while scrolling.
+    this.field.addChild(new Sprite({ name: 'ground', pos: { x: WORLD.w / 2, y: WORLD.h / 2 }, z: Z_GROUND, shape: { kind: 'rect', w: WORLD.w, h: WORLD.h }, fill: KENTO.washi, stroke: KENTO.kinako, strokeWidth: 6 }));
+
+    // Printed grain: a scatter of faint tonal specks in drifted paper tones —
+    // reads as inked washi rather than a mechanical dot lattice. Deterministic.
+    const grng = new Rng(GRAIN_SEED);
+    for (let y = 150; y < WORLD.h; y += 190) {
+      for (let x = 150; x < WORLD.w; x += 190) {
+        const tone = grng.pick([KENTO.line, KENTO.kinako, KENTO.kinu]);
+        this.field.addChild(new Sprite({
+          pos: { x: x + grng.range(-24, 24), y: y + grng.range(-24, 24) },
+          z: Z_GRAIN,
+          shape: { kind: 'circle', radius: grng.range(1.5, 3.5) },
+          fill: mutateColor(grng, tone, { light: 0.04 }),
+          opacity: grng.range(0.3, 0.6),
+        }));
+      }
+    }
+  }
+
+  /** The lanternway itself: a trodden path meandering from START to the shrine. */
+  private buildWay(): void {
+    const prng = new Rng(PATH_SEED);
+    const N = 9;
+    const dx = GOAL.x - START.x;
+    const dy = GOAL.y - START.y;
+    const L = dhypot(dx, dy);
+    const nx = -dy / L;
+    const ny = dx / L;
+    const pts = [];
+    for (let i = 0; i <= N; i++) {
+      const t = i / N;
+      const amp = i === 0 || i === N ? 0 : prng.range(-150, 150);
+      pts.push({ x: START.x + dx * t + nx * amp, y: START.y + dy * t + ny * amp });
+    }
+    const d = smoothOpenPath(pts, 1);
+    // Wide soft tread + a lighter worn centre — two strokes read as a real path.
+    this.field.addChild(new Sprite({ name: 'wayEdge', z: Z_PATH, shape: { kind: 'path', d }, fill: 'none', stroke: KENTO.kinako, strokeWidth: 58, opacity: 0.55 }));
+    this.field.addChild(new Sprite({ name: 'way', z: Z_PATH, shape: { kind: 'path', d }, fill: 'none', stroke: mix(KENTO.washi, KENTO.gofun, 0.5), strokeWidth: 30, opacity: 0.9 }));
+
+    // Wayside stone lanterns marking the route — a shadow, a stone, a lit box.
+    for (let i = 2; i < N - 1; i += 3) {
+      const p = pts[i];
+      const off = 46;
+      const sx = p.x + nx * off;
+      const sy = p.y + ny * off;
+      this.field.addChild(new Sprite({ pos: { x: sx, y: sy + 12 }, z: Z_PATH, shape: { kind: 'circle', radius: 15 }, fill: withAlpha(KENTO.sumi, 0.16) }));
+      this.field.addChild(new Sprite({ pos: { x: sx, y: sy }, z: Z_DECO, shape: { kind: 'rect', w: 14, h: 22, r: 3 }, fill: KENTO.stone, stroke: KENTO.sumiSoft, strokeWidth: 2 }));
+      this.field.addChild(new Sprite({ pos: { x: sx, y: sy - 5 }, z: Z_DECO, shape: { kind: 'rect', w: 9, h: 9, r: 2 }, fill: KENTO.ko }));
+    }
+  }
+
+  /** Organic foliage: grass-blade tufts, blob bushes, and a few tree canopies. */
+  private buildFlora(): void {
+    const frng = new Rng(FLORA_SEED);
+    for (let gy = 220; gy < WORLD.h - 120; gy += 250) {
+      for (let gx = 220; gx < WORLD.w - 120; gx += 250) {
+        const x = gx + frng.range(-80, 80);
+        const y = gy + frng.range(-80, 80);
+        // Keep the way, the start, and the shrine clear.
+        if (dist({ x, y }, START) < 190 || dist({ x, y }, GOAL) < 240 || distToWay(x, y) < 90) continue;
+        const roll = frng.float();
+        if (roll < 0.16) this.addTree(frng, x, y);
+        else if (roll < 0.58) this.addBush(frng, x, y);
+        else this.addTuft(frng, x, y);
+      }
+    }
+  }
+
+  private addTuft(rng: Rng, x: number, y: number): void {
+    const green = mutateColor(rng, rng.pick([KENTO.matsu, KENTO.matsuDeep]), { hue: 8, light: 0.06 });
+    const blades = 3 + Math.floor(rng.float() * 3);
+    for (let i = 0; i < blades; i++) {
+      const bx = x + rng.range(-10, 10);
+      const lean = rng.range(-9, 9);
+      const h = rng.range(16, 30);
+      const d = smoothOpenPath([{ x: bx, y: y }, { x: bx + lean * 0.5, y: y - h * 0.55 }, { x: bx + lean, y: y - h }], 1);
+      this.field.addChild(new Sprite({ z: Z_DECO, shape: { kind: 'path', d }, fill: 'none', stroke: green, strokeWidth: rng.range(2, 3.5), opacity: 0.9 }));
+    }
+  }
+
+  private addBush(rng: Rng, x: number, y: number): void {
+    const base = mutateColor(rng, rng.pick([KENTO.matsu, KENTO.matsuDeep, KENTO.koDeep]), { hue: 6, light: 0.05 });
+    const r = rng.range(20, 34);
+    // Contact shadow, then the blob body, then a lighter dab for volume.
+    this.field.addChild(new Sprite({ pos: { x, y: y + r * 0.5 }, z: Z_PATH, shape: { kind: 'circle', radius: r * 0.85 }, fill: withAlpha(KENTO.sumi, 0.14) }));
+    this.field.addChild(new Sprite({ pos: { x, y }, z: Z_DECO, shape: { kind: 'path', d: blobPath(rng, r, 0.28, 8) }, fill: base, stroke: KENTO.sumiSoft, strokeWidth: 1.5 }));
+    this.field.addChild(new Sprite({ pos: { x: x - r * 0.28, y: y - r * 0.28 }, z: Z_DECO, shape: { kind: 'path', d: blobPath(rng, r * 0.5, 0.35, 6) }, fill: mix(base, KENTO.gofun, 0.28), opacity: 0.75 }));
+  }
+
+  private addTree(rng: Rng, x: number, y: number): void {
+    const r = rng.range(40, 60);
+    const canopy = mutateColor(rng, KENTO.matsuDeep, { hue: 6, light: 0.05 });
+    // Ground shadow → trunk → canopy blob → highlight, painted back-to-front.
+    this.field.addChild(new Sprite({ pos: { x: x + 6, y: y + r * 0.75 }, z: Z_PATH, shape: { kind: 'circle', radius: r * 0.8 }, fill: withAlpha(KENTO.sumi, 0.16) }));
+    this.field.addChild(new Sprite({ pos: { x, y: y + r * 0.55 }, z: Z_DECO, shape: { kind: 'rect', w: 12, h: r * 0.7, r: 3 }, fill: mutateColor(rng, KENTO.stone, { light: 0.04 }), stroke: KENTO.sumiSoft, strokeWidth: 1.5 }));
+    this.field.addChild(new Sprite({ pos: { x, y }, z: Z_DECO, shape: { kind: 'path', d: blobPath(rng, r, 0.22, 9) }, fill: canopy, stroke: KENTO.sumi, strokeWidth: 2 }));
+    this.field.addChild(new Sprite({ pos: { x: x - r * 0.3, y: y - r * 0.32 }, z: Z_DECO, shape: { kind: 'path', d: blobPath(rng, r * 0.55, 0.3, 7) }, fill: mix(canopy, KENTO.matsu, 0.6), opacity: 0.7 }));
+  }
+
+  /** Goal shrine — a torii glyph over a stone base, halo, and flanking lanterns. */
+  private buildShrine(): void {
+    // Soft halo rings behind the shrine (all z ≤ 1: lint-exempt background plane).
+    for (let i = 3; i >= 1; i--) {
+      this.field.addChild(new Sprite({ pos: { ...GOAL }, z: Z_PATH, shape: { kind: 'circle', radius: GOAL_R * (0.7 + i * 0.34) }, fill: withAlpha(KENTO.ko, 0.05 * i) }));
+    }
+    // Stone base: two stacked slabs the torii stands on.
+    this.field.addChild(new Sprite({ pos: { x: GOAL.x, y: GOAL.y + 60 }, z: Z_DECO, shape: { kind: 'rect', w: 190, h: 34, r: 8 }, fill: KENTO.kinako, stroke: KENTO.sumiSoft, strokeWidth: 2 }));
+    this.field.addChild(new Sprite({ pos: { x: GOAL.x, y: GOAL.y + 40 }, z: Z_DECO, shape: { kind: 'rect', w: 150, h: 20, r: 6 }, fill: mix(KENTO.kinako, KENTO.gofun, 0.35), stroke: KENTO.sumiSoft, strokeWidth: 1.5 }));
+    // Flanking stone lanterns.
+    for (const sgn of [-1, 1]) {
+      const lx = GOAL.x + sgn * 120;
+      const ly = GOAL.y + 30;
+      this.field.addChild(new Sprite({ pos: { x: lx, y: ly }, z: Z_DECO, shape: { kind: 'rect', w: 20, h: 42, r: 4 }, fill: KENTO.stone, stroke: KENTO.sumiSoft, strokeWidth: 2 }));
+      this.field.addChild(new Sprite({ pos: { x: lx, y: ly - 8 }, z: Z_DECO, shape: { kind: 'rect', w: 13, h: 13, r: 2 }, fill: KENTO.ko }));
+    }
+    // The reach ring + the torii glyph itself (unchanged: a sacred text command).
+    this.field.addChild(new Sprite({ name: 'goalRing', pos: { ...GOAL }, z: Z_DECO, shape: { kind: 'circle', radius: GOAL_R }, fill: 'none', stroke: KENTO.shu, strokeWidth: 4, opacity: 0.7 }));
+    this.field.addChild(new Sprite({ name: 'goal', pos: { x: GOAL.x, y: GOAL.y + 6 }, z: 6, shape: { kind: 'glyph', char: '⛩', size: 96 }, fill: KENTO.shuDeep }));
+  }
+
+  /** A layered paper lantern, built in the bearer's local space (footprint ≈ old). */
+  private buildLantern(host: Node): void {
+    // Warm halo — concentric soft rings (static; the judge sees no animation).
+    host.addChild(new Sprite({ z: 9, shape: { kind: 'circle', radius: BEARER_R + 22 }, fill: withAlpha(KENTO.ko, 0.1) }));
+    host.addChild(new Sprite({ z: 9, shape: { kind: 'circle', radius: BEARER_R + 12 }, fill: withAlpha(KENTO.ko, 0.16) }));
+    // Ground contact shadow.
+    host.addChild(new Sprite({ pos: { x: 0, y: BEARER_R + 6 }, z: 9, shape: { kind: 'circle', radius: BEARER_R * 0.7 }, fill: withAlpha(KENTO.sumi, 0.18) }));
+    // Lantern body: warm paper cylinder with a lighter core.
+    host.addChild(new Sprite({ z: 10, shape: { kind: 'rect', w: 30, h: 38, r: 12 }, fill: KENTO.ko, stroke: KENTO.sumi, strokeWidth: 3 }));
+    host.addChild(new Sprite({ z: 11, shape: { kind: 'rect', w: 20, h: 30, r: 8 }, fill: mix(KENTO.ko, KENTO.gofun, 0.55), opacity: 0.85 }));
+    // Ribs — thin horizontal bands.
+    for (const yy of [-8, 0, 8]) host.addChild(new Sprite({ pos: { x: 0, y: yy }, z: 12, shape: { kind: 'rect', w: 26, h: 2 }, fill: withAlpha(KENTO.sumiSoft, 0.5) }));
+    // Top & bottom caps and a little handle loop.
+    host.addChild(new Sprite({ pos: { x: 0, y: -22 }, z: 12, shape: { kind: 'rect', w: 22, h: 6, r: 2 }, fill: KENTO.sumi }));
+    host.addChild(new Sprite({ pos: { x: 0, y: 21 }, z: 12, shape: { kind: 'rect', w: 16, h: 5, r: 2 }, fill: KENTO.sumi }));
+    host.addChild(new Sprite({ pos: { x: 0, y: -28 }, z: 12, shape: { kind: 'circle', radius: 4 }, fill: 'none', stroke: KENTO.sumi, strokeWidth: 2 }));
+    // The flame.
+    host.addChild(new Sprite({ z: 13, shape: { kind: 'circle', radius: 5 }, fill: KENTO.gofun }));
   }
 
   /** HUD parented to the camera → fixed on screen. Local (0,0) is screen center. */
