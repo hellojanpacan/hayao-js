@@ -38,7 +38,10 @@
   "files": [
     "dist",
     "bin",
-    "docs/API.md"
+    "docs/QUICKSTART.md",
+    "docs/API.md",
+    "docs/VERIFICATION.md",
+    "docs/CONVENTIONS.md"
   ],
   "engines": {
     "node": ">=18"
@@ -55,15 +58,19 @@
     "test:watch": "vitest",
     "api": "tsx scripts/api-digest.ts",
     "invariants": "tsx scripts/invariants.ts",
-    "verify": "tsx scripts/invariants.ts && tsx scripts/verify.ts",
+    "verify": "tsx scripts/invariants.ts && tsx scripts/verify.ts && tsx scripts/feel.ts",
     "eval": "tsx scripts/eval.ts",
     "create": "node bin/create-hayao.mjs",
     "prepublishOnly": "npm run check && npm test && npm run build:lib",
     "relay": "node scripts/relay.mjs",
     "palette": "tsx scripts/palette-audit.ts",
+    "audio": "tsx scripts/audio-render.ts",
+    "feel": "tsx scripts/feel.ts",
+    "judge": "tsx scripts/judge.ts",
     "thumbs": "tsx scripts/site-thumbs.ts"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@types/node": "^22.10.0",
     "esbuild": "^0.28.0",
     "tsx": "^4.19.0",

@@ -1,6 +1,14 @@
 // Procedural audio bus. Code-as-sound: zzfx-style tone synthesis + an ambient
 // pad, no audio files. A no-op when there's no AudioContext (Node/headless), so
 // automated runs are silent by construction (a narrow-js invariant).
+//
+// The bus also plays the data-driven engine: renderSound (SoundSpec → samples)
+// and renderSong (Song → stereo mix) are pure and deterministic; here they're
+// rendered at the live context's sample rate and pushed through the SFX/music
+// buses as AudioBuffers, so the same specs that verify headlessly also sound.
+
+import { renderSound, type SoundSpec } from './synth';
+import { renderSong, songDuration, type Song } from './music';
 
 export interface Volumes {
   master: number;
@@ -111,6 +119,62 @@ export class AudioBus {
   /** Play a sequence of tones as an arpeggio/chord. */
   play(tones: Tone[]): void {
     for (const t of tones) this.tone(t);
+  }
+
+  /**
+   * Play a data-defined SoundSpec through the SFX bus. The spec is rendered to
+   * samples (deterministically, at the context rate) and played as an
+   * AudioBuffer — the same SoundSpec that a verify suite proves headlessly.
+   * No-op without an AudioContext.
+   */
+  playSpec(spec: SoundSpec, opts: { pan?: number; gain?: number; when?: number } = {}): void {
+    if (!this.ctx || !this.sfxGain) return;
+    const sig = renderSound(spec, { sampleRate: this.ctx.sampleRate });
+    const buf = this.ctx.createBuffer(1, sig.length, this.ctx.sampleRate);
+    buf.copyToChannel(new Float32Array(sig), 0);
+    const src = this.ctx.createBufferSource();
+    src.buffer = buf;
+    const g = this.ctx.createGain();
+    g.gain.value = opts.gain ?? 1;
+    src.connect(g);
+    if (opts.pan !== undefined && typeof this.ctx.createStereoPanner === 'function') {
+      const p = this.ctx.createStereoPanner();
+      p.pan.value = Math.max(-1, Math.min(1, opts.pan));
+      g.connect(p);
+      p.connect(this.sfxGain);
+    } else {
+      g.connect(this.sfxGain);
+    }
+    src.start(this.ctx.currentTime + (opts.when ?? 0));
+  }
+
+  /**
+   * Render a Song offline and play it on the music bus. Returns a stop handle.
+   * `loop` repeats the musical body (excluding the ring-out tail). No-op without
+   * an AudioContext.
+   */
+  playSong(song: Song, opts: { loop?: boolean } = {}): () => void {
+    if (!this.ctx || !this.musicGain) return () => {};
+    const mix = renderSong(song, { sampleRate: this.ctx.sampleRate });
+    const buf = this.ctx.createBuffer(2, mix.left.length, this.ctx.sampleRate);
+    buf.copyToChannel(new Float32Array(mix.left), 0);
+    buf.copyToChannel(new Float32Array(mix.right), 1);
+    const src = this.ctx.createBufferSource();
+    src.buffer = buf;
+    if (opts.loop) {
+      src.loop = true;
+      src.loopStart = 0;
+      src.loopEnd = songDuration(song); // loop the body, not the tail
+    }
+    src.connect(this.musicGain);
+    src.start();
+    return () => {
+      try {
+        src.stop();
+      } catch {
+        /* already stopped */
+      }
+    };
   }
 
   /** Convenience SFX. */

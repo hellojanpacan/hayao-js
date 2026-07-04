@@ -282,3 +282,70 @@ export function lookAheadIssues(cameraSamples: readonly Vec2[], targetSamples: r
   if (Math.abs(tgtDY) > minLead && Math.sign(camDY) !== 0 && Math.sign(camDY) !== Math.sign(tgtDY)) issues.push('camera drifts opposite the target on Y — the view lags behind instead of leading');
   return issues;
 }
+
+// ── The declarative floor: one spec, all applicable gates ────────────────────
+// A game DECLARES its feel contract once (`export const feel: FeelSpec`); the
+// portfolio audit (`npm run feel`) and the game's own verify then run every gate
+// the spec provides inputs for. This is how the floor rises for ALL output: new
+// games declare a spec by definition-of-done, and the audit reports coverage.
+
+export interface FeelSpec {
+  /** The avatar's fill color — enables the salience gate. */
+  avatarFill?: string;
+  /** Background color (defaults to the game's `background`). */
+  background?: string;
+  /** Controller grace config — enables the forgiveness gate (PlatformerConfig fits). */
+  forgiveness?: ForgivenessSpec;
+  /** Declared feedback contract + the events that must be covered — enables the feedback gate. */
+  feedback?: { contract: FeedbackContract; events: readonly string[] };
+  /** True for scrolling games — enables the camera gate (needs sampled positions). */
+  scrolls?: boolean;
+}
+
+/** Runtime inputs the audit/verify computes and hands to the aggregator. */
+export interface FeelContext {
+  /** A rendered display list (drive a few frames, then `world.render()`). */
+  commands?: DrawCommand[];
+  /** Sampled camera-follow positions over a run (exclude the pre-start frame). */
+  camSamples?: readonly Vec2[];
+  /** Matching target positions, for the look-ahead check. */
+  targetSamples?: readonly Vec2[];
+  /** Fixed timestep for the camera gate (default 1/60). */
+  dt?: number;
+  /** Background fallback if the spec omits one. */
+  background?: string;
+}
+
+export interface FeelReport {
+  ok: boolean;
+  /** One entry per gate that actually ran (given the spec + context). */
+  sections: { gate: string; issues: string[] }[];
+  /** Gates the spec asks for but that lacked the runtime context to run. */
+  skipped: string[];
+}
+
+/**
+ * Run every feel gate the spec provides inputs for, returning a structured report.
+ * Static gates (forgiveness, feedback) run from the spec alone; salience needs a
+ * rendered display list; the camera gate needs sampled positions. Gates whose
+ * context is missing are reported as `skipped`, never silently dropped.
+ */
+export function runFeelGates(spec: FeelSpec, ctx: FeelContext = {}): FeelReport {
+  const sections: { gate: string; issues: string[] }[] = [];
+  const skipped: string[] = [];
+  const bg = spec.background ?? ctx.background ?? '#ffffff';
+  if (spec.forgiveness) sections.push({ gate: 'forgiveness', issues: forgivenessIssues(spec.forgiveness) });
+  if (spec.feedback) sections.push({ gate: 'feedback', issues: feedbackIssues(spec.feedback.contract, spec.feedback.events) });
+  if (spec.avatarFill) {
+    if (ctx.commands) sections.push({ gate: 'salience', issues: salienceIssues(ctx.commands, spec.avatarFill, bg) });
+    else skipped.push('salience (no rendered frame)');
+  }
+  if (spec.scrolls) {
+    if (ctx.camSamples && ctx.camSamples.length >= 3) {
+      const issues = cameraIssues(ctx.camSamples, { dt: ctx.dt });
+      if (ctx.targetSamples) issues.push(...lookAheadIssues(ctx.camSamples, ctx.targetSamples));
+      sections.push({ gate: 'camera', issues });
+    } else skipped.push('camera (no sampled positions)');
+  }
+  return { ok: sections.every((s) => s.issues.length === 0), sections, skipped };
+}

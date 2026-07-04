@@ -21,6 +21,8 @@ import {
   AMBIENT_PRESETS,
   FLOAT_PRESETS,
   autotileToCommands,
+  Rng,
+  gradient,
   KENTO,
   withAlpha,
   mix,
@@ -34,6 +36,7 @@ import {
   type InputMap,
   type BoolGrid,
   type PlatformerState,
+  type FeelSpec,
 } from '@hayao';
 import {
   MAP,
@@ -44,6 +47,8 @@ import {
   GOAL_PX,
   FLARE,
   CONFIG,
+  FEEDBACK,
+  FEEDBACK_EVENTS,
   createUpdriftState,
   stepUpdrift,
   reachedGoal,
@@ -61,6 +66,15 @@ export const UP_INPUT_MAP: InputMap = {
 
 const AVATAR_FILL = KENTO.ko; // bright ochre "lantern" — pops off the twilight ground (salience gate)
 const SKY = KENTO.kuro;
+
+/** The declared feel contract — audited by `npm run feel` and updrift's verify. */
+export const feel: FeelSpec = {
+  avatarFill: AVATAR_FILL,
+  background: SKY,
+  forgiveness: CONFIG,
+  feedback: { contract: FEEDBACK, events: FEEDBACK_EVENTS },
+  scrolls: true,
+};
 
 // ── Canonical state (hashed) ────────────────────────────────────────────────
 interface UpState {
@@ -111,14 +125,15 @@ class UpdriftView extends Node {
     for (const c of this.children.slice()) this.removeChild(c);
     this.crystalNodes = [];
 
-    // ── Parallax backdrop: far ridgelines drift slow, mist drifts faster ──────
-    const far = new ParallaxLayer({ name: 'peaks-far', factor: 0.25, z: -30 });
-    far.addChild(this.ridge(WORLD.h * 0.55, 520, KENTO.aiDeep, 0));
-    far.addChild(this.ridge(WORLD.h * 0.68, 700, mix(KENTO.aiDeep, SKY, 0.35), 260));
-    this.addChild(far);
-    const near = new ParallaxLayer({ name: 'peaks-near', factor: 0.5, z: -20 });
-    near.addChild(this.ridge(WORLD.h * 0.8, 900, mix(KENTO.ai, SKY, 0.5), 120));
-    this.addChild(near);
+    // ── Parallax star haze: faint stars spanning the whole climb, drifting slow
+    // so the ascent reads as movement through depth (the pinned sky is built on
+    // the camera in buildSky, so it's always framed — see below).
+    const stars = new ParallaxLayer({ name: 'stars', factor: 0.35, z: -60 });
+    const srng = new Rng(20260705);
+    for (let i = 0; i < 60; i++) {
+      stars.addChild(new Sprite({ pos: { x: srng.range(0, WORLD.w), y: srng.range(0, WORLD.h) }, z: -60, shape: { kind: 'circle', radius: srng.range(0.8, 1.8) }, fill: withAlpha(KENTO.gofun, srng.range(0.12, 0.4)) }));
+    }
+    this.addChild(stars);
 
     // ── Terrain silhouette from the solid grid (art toolkit: autotile) ────────
     const solids: BoolGrid = Array.from({ length: MAP.rows }, (_, y) => Array.from({ length: MAP.cols }, (_, x) => MAP.tiles[y * MAP.cols + x] === 1));
@@ -173,14 +188,41 @@ class UpdriftView extends Node {
     this.camera.cosmetic = true;
     this.shaker.addChild(this.camera);
     this.addChild(new CameraController({ name: 'follow', target: this.avatar, camera: this.camera, deadzone: { x: 320, y: 90 }, smooth: 0.12, bounds: { minX: 0, minY: 0, maxX: WORLD.w, maxY: WORLD.h } }));
+    this.buildSky(this.camera);
     this.buildHud(this.camera);
     this.syncAvatar();
   }
 
-  private ridge(baseY: number, w: number, fill: string, offset: number): Sprite {
-    // A soft mountain silhouette as one filled polygon spanning the world width.
-    const pts = [offset - 40, WORLD.h, offset - 40, baseY, offset + w * 0.28, baseY - 150, offset + w * 0.5, baseY - 40, offset + w * 0.74, baseY - 190, offset + w, baseY, offset + w, WORLD.h];
-    return new Sprite({ z: 0, shape: { kind: 'poly', points: pts }, fill, opacity: 0.9 });
+  /** Screen-pinned night backdrop (parented to the camera, so it's always framed
+   *  on the long vertical climb): a graded sky, a low moon, and two ridgelines in
+   *  receding dusk tones — atmospheric perspective that fills the former void. */
+  private buildSky(cam: Camera2D): void {
+    const W = 1280;
+    const H = 720;
+    // Graded sky: deep indigo overhead → a faint dusk glow toward the horizon.
+    const bands = gradient([KENTO.yohaku, mix(KENTO.aiDeep, KENTO.yohaku, 0.55), mix(KENTO.aiDeep, KENTO.fujiDeep, 0.5)], 14);
+    const bh = H / bands.length;
+    bands.forEach((c, i) => cam.addChild(new Sprite({ pos: { x: 0, y: -H / 2 + bh * (i + 0.5) }, z: -100, shape: { kind: 'rect', w: W, h: bh + 1 }, fill: c })));
+    // A low moon with a soft halo, upper-left.
+    cam.addChild(new Sprite({ pos: { x: -380, y: -210 }, z: -97, shape: { kind: 'circle', radius: 58 }, fill: 'none', stroke: withAlpha(KENTO.asagi, 0.3), strokeWidth: 12 }));
+    cam.addChild(new Sprite({ pos: { x: -380, y: -210 }, z: -96, shape: { kind: 'circle', radius: 34 }, fill: mix(KENTO.gofun, KENTO.asagi, 0.3) }));
+    // Two ridgelines along the lower half — far (lighter, taller) then near (darker).
+    cam.addChild(this.ridge(300, mix(KENTO.ai, KENTO.gofun, 0.12), -92, 71));
+    cam.addChild(this.ridge(200, mix(KENTO.aiDeep, KENTO.yohaku, 0.4), -88, 137));
+  }
+
+  /** A jagged ridge silhouette spanning the screen, peaks rising `peak` px above
+   *  the screen bottom. Screen-space (camera-local, origin = screen center). */
+  private ridge(peak: number, fill: string, z: number, seed: number): Sprite {
+    const W = 1280;
+    const H = 720;
+    const base = H / 2 + 30; // just past the bottom edge
+    const rng = new Rng(seed);
+    const pts: number[] = [-W / 2 - 20, base];
+    const n = 8;
+    for (let i = 0; i <= n; i++) pts.push(-W / 2 + (W / n) * i, base - peak * (0.45 + rng.float() * 0.55));
+    pts.push(W / 2 + 20, base);
+    return new Sprite({ z, shape: { kind: 'poly', points: pts }, fill, opacity: 0.95 });
   }
 
   private buildHud(cam: Camera2D): void {

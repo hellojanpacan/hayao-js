@@ -1,7 +1,7 @@
 // Gleamvale: the combat sim (logic.ts, in world.state) + a cosmetic view with
 // the genre's juice — hit-stop, knockback flashes, screen shake, slash arcs.
 
-import { KENTO, Node, PARTICLE_PRESETS, Particles, Shaker, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World, dcos, dsin, datan2 } from '@hayao';
+import { KENTO, Node, PARTICLE_PRESETS, Particles, Shaker, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World, type FeelSpec, dcos, dsin, datan2 } from '@hayao';
 import { initialGv, parseRoom, stepGv, DOOR_RECT, KEY_AT, PLAYER, TILE_SIZE, type GvState } from './logic';
 import { ROOMS } from './rooms';
 
@@ -152,3 +152,6 @@ export const gleamvaleGame = defineGame({
 });
 
 export { ROOMS };
+
+/** Declared feel contract — audited by `npm run feel`. */
+export const feel: FeelSpec = { avatarFill: PAL.hero };
