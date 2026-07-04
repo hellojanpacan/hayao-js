@@ -14,6 +14,7 @@ import {
   glow,
   withAlpha,
   mix,
+  dhypot,
   KENTO,
   composeTransform,
   IDENTITY,
@@ -34,6 +35,7 @@ import { roomRows, MARK_PICKUPS, RW, RH, TS } from './rooms';
 import { biomeArt } from './biome';
 import { menderNode, motionFrom } from './mender';
 import { ATTACK_TIME, IFRAMES, type EnemyState } from './combat';
+import { MusicDirector } from './music';
 
 export const KG_INPUT_MAP: InputMap = {
   left: ['ArrowLeft', 'KeyA'],
@@ -76,6 +78,8 @@ class KintsugiView extends Node {
   private sig = '';
   private shownBeats = new Set<string>();
   private ended = false;
+  private music = new MusicDirector();
+  private lastBiome = '';
 
   private get kg(): KgState {
     const w = this.world as World;
@@ -271,13 +275,24 @@ class KintsugiView extends Node {
     if (ev.saved) audio.success();
     if (ev.died) audio.blip(150);
 
-    // story beat on first entry to a biome
+    // story beat + adaptive music on entering a biome
     const biome = biomeOf(kg.region);
+    if (biome !== this.lastBiome) {
+      this.music.setBiome(biome);
+      this.lastBiome = biome;
+    }
     if (!this.shownBeats.has(biome)) {
       this.shownBeats.add(biome);
       const meta = biomeMeta(biome);
       if (meta) this.flashBiomeName(meta.name);
     }
+    // threat intensity → music adapts (percussion, tempo, darker melody)
+    let inten = kg.iframes > 0 ? 0.6 : 0;
+    for (const e of kg.enemies) {
+      const d = dhypot(e.x + e.w / 2 - (kg.p.x + 10), e.y + e.h / 2 - (kg.p.y + 15));
+      inten = Math.max(inten, 1 - d / 380);
+    }
+    this.music.update(dt, Math.max(0, Math.min(1, inten)));
 
     if (this.sig !== `${kg.region}|${kg.taken.length}`) this.rebuildRoom();
     this.updateActor();
@@ -306,6 +321,7 @@ class KintsugiView extends Node {
     (w.state as Record<string, unknown>).kg = initialState();
     this.ended = false;
     this.shownBeats.clear();
+    this.lastBiome = '';
     this.phase = 0;
     hideScreen();
     this.rebuildRoom();
