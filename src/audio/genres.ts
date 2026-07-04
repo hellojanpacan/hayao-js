@@ -92,7 +92,8 @@ function lofi(): Song {
   const kick: Track = { name: 'kick', instrument: { ...INSTRUMENTS.kick, volume: 0.75 }, gain: 0.82, patterns: [[n('C2', 1, 0.9), rest(1), n('C2', 0.5, 0.6), rest(0.5), n('C2', 0.5, 0.4), rest(0.5)]], sequence: Array(8).fill(0) };
   const snare: Track = { name: 'snare', instrument: { ...INSTRUMENTS.rimshot, volume: 0.24, lowpass: 4000 }, gain: 0.6, patterns: [[rest(1), n('C4', 1, 0.7), rest(1), n('C4', 1, 0.7)]], sequence: Array(8).fill(0) };
   const hat: Track = { name: 'hat', instrument: { ...INSTRUMENTS.hat, volume: 0.14, highpass: 2500, lowpass: 6000 }, gain: 0.45, pan: 0.2, patterns: [[n('C6', 0.5, 0.5), n('C6', 0.5, 0.3)]], sequence: Array(16).fill(0) };
-  const vinyl: Track = { name: 'vinyl', instrument: { wave: 'noise', attack: 0.5, release: 0.5, sustainLevel: 1, volume: 0.05, lowpass: 4200, highpass: 700 }, gain: 0.5, patterns: [[n('C4', 16, 1)]], sequence: [0] };
+  // a whisper of vinyl warmth — much subtler than before (was too much hiss)
+  const vinyl: Track = { name: 'vinyl', instrument: { wave: 'noise', attack: 0.5, release: 0.5, sustainLevel: 1, volume: 0.022, lowpass: 2800, highpass: 400 }, gain: 0.3, patterns: [[n('C4', 16, 1)]], sequence: [0] };
   const keys: Track = {
     name: 'keys', instrument: { ...INSTRUMENTS.piano, volume: 0.3, lowpass: 2800 }, gain: 0.48, pan: 0.15,
     patterns: [
