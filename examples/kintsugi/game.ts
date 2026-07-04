@@ -18,6 +18,9 @@ import {
   KENTO,
   composeTransform,
   IDENTITY,
+  Rng,
+  blobPath,
+  smoothOpenPath,
   gridFromRows,
   autotileToCommands,
   defineGame,
@@ -35,8 +38,10 @@ import { roomRows, markerPos, RW, RH, TS } from './rooms';
 import { biomeArt } from './biome';
 import { menderNode, motionFrom } from './mender';
 import { ATTACK_TIME, IFRAMES, type EnemyState } from './combat';
+import { type BossState } from './boss';
 import { MusicDirector } from './music';
 import { StoryCards, ABILITY_LINES, SHARD_LINE, GUARDIAN_INTRO } from './story';
+import { buildMapNode } from './map';
 
 const PROLOGUE_SUB = 'Mend the broken world — seam by golden seam.';
 
@@ -49,6 +54,7 @@ export const KG_INPUT_MAP: InputMap = {
   dash: ['ShiftLeft', 'ShiftRight', 'KeyX', 'KeyL'],
   attack: ['KeyC', 'KeyJ'],
   restart: ['KeyR'],
+  map: ['Tab', 'KeyM'],
 };
 
 const VIEW_W = RW * TS; // 1280
@@ -89,6 +95,8 @@ class KintsugiView extends Node {
   private lastBiome = '';
   private story!: StoryCards;
   private shownGuardians = new Set<string>();
+  private mapLayer = new Node({ name: 'mapLayer' });
+  private mapOpen = false;
 
   private get kg(): KgState {
     const w = this.world as World;
@@ -103,6 +111,8 @@ class KintsugiView extends Node {
     this.addChild(this.room);
     this.addChild(this.actor);
     this.addChild(this.hud);
+    this.mapLayer.cosmetic = true;
+    this.addChild(this.mapLayer);
     this.story = new StoryCards(this.hud);
     this.rebuildRoom();
     this.buildHud();
@@ -119,12 +129,8 @@ class KintsugiView extends Node {
 
     // backdrop sky
     this.room.addChild(new Sprite({ pos: { x: VIEW_W / 2, y: VIEW_H / 2 }, z: -100, shape: { kind: 'rect', w: VIEW_W + 20, h: VIEW_H + 20 }, gradient: linearGradient([art.skyTop, mix(art.skyTop, art.skyBot, 0.5), art.skyBot], 90) }));
-    // distant silhouettes (cheap parallax feel — static per room)
-    for (let i = 0; i < 4; i++) {
-      const x = 160 + i * 320;
-      const h = 150 + ((i * 53) % 90);
-      this.room.addChild(new Sprite({ pos: { x, y: VIEW_H - 120 }, z: -90, shape: { kind: 'poly', points: [-160, 120, -70, -h + 120, 20, 40, 110, -h + 60, 190, 120], closed: true }, fill: withAlpha(art.far, 0.55) }));
-    }
+    // biome-specific midground scenery + ambient motes (depth, not a void)
+    this.buildScenery(art, biomeOf(region), region);
 
     // walls (autotiled woodblock)
     const grid = gridFromRows(rows, '#');
@@ -148,10 +154,73 @@ class KintsugiView extends Node {
     // controls hint in the tutorial grove
     if (biomeOf(region) === 'grove') {
       this.room.addChild(new Sprite({ pos: { x: VIEW_W / 2, y: VIEW_H - 30 }, z: 46, shape: { kind: 'rect', w: 900, h: 34, r: 10 }, fill: withAlpha(KENTO.sumi, 0.7), stroke: KENTO.kinako, strokeWidth: 1.5 }));
-      this.room.addChild(new Text({ name: 'controls', text: 'Arrows move · Z jump · X dash · C strike · R restart', pos: { x: VIEW_W / 2, y: VIEW_H - 30 }, z: 47, size: 18, align: 'center', fill: KENTO.gofun }));
+      this.room.addChild(new Text({ name: 'controls', text: 'Arrows move · Z jump · X dash · C strike · Tab map · R restart', pos: { x: VIEW_W / 2, y: VIEW_H - 30 }, z: 47, size: 17, align: 'center', fill: KENTO.gofun }));
     }
 
     this.sig = `${region}|${kg.taken.length}`;
+  }
+
+  /** Biome-specific midground scenery + ambient motes — depth, not a void. */
+  private buildScenery(art: ReturnType<typeof biomeArt>, biome: string, region: string): void {
+    let seed = 0;
+    for (const c of region) seed = (seed * 31 + c.charCodeAt(0)) >>> 0;
+    const rng = new Rng(seed || 1);
+    const far = withAlpha(art.far, 0.5);
+    const mid = withAlpha(mix(art.far, KENTO.sumi, 0.4), 0.7);
+    const horizon = VIEW_H - 96;
+
+    if (biome === 'grove') {
+      for (let i = 0; i < 6; i++) {
+        const x = 90 + i * 200 + rng.range(-40, 40);
+        const ch = rng.range(70, 120);
+        this.room.addChild(new Sprite({ pos: { x, y: horizon - ch * 0.25 }, z: -88, shape: { kind: 'rect', w: 10, h: ch * 0.5 }, fill: mid }));
+        this.room.addChild(new Sprite({ pos: { x, y: horizon - ch * 0.6 }, z: -87, shape: { kind: 'path', d: blobPath(rng, ch * 0.5, 0.24, 7) }, fill: mid }));
+      }
+    } else if (biome === 'cistern') {
+      for (let i = 0; i < 8; i++) {
+        const x = 70 + i * 150 + rng.range(-30, 30);
+        const h = rng.range(60, 150);
+        this.room.addChild(new Sprite({ z: -88, shape: { kind: 'poly', points: [x - 14, 0, x + 14, 0, x, h], closed: true }, fill: far }));
+      }
+      for (let i = 0; i < 6; i++) {
+        const x = 120 + i * 190 + rng.range(-30, 30);
+        const h = rng.range(40, 90);
+        this.room.addChild(new Sprite({ z: -88, shape: { kind: 'poly', points: [x - 16, horizon, x + 16, horizon, x, horizon - h], closed: true }, fill: mid }));
+      }
+    } else if (biome === 'ember') {
+      for (let i = 0; i < 7; i++) {
+        const x = 80 + i * 170 + rng.range(-30, 30);
+        const h = rng.range(120, 240);
+        this.room.addChild(new Sprite({ pos: { x, y: horizon - h / 2 }, z: -88, shape: { kind: 'rect', w: rng.range(24, 44), h, r: 3 }, fill: mid }));
+        this.room.addChild(new Sprite({ pos: { x, y: horizon - h }, z: -87, shape: { kind: 'circle', radius: 8 }, gradient: radialGradient([withAlpha(art.glow, 0.7), withAlpha(art.glow, 0)]), shadow: glow(withAlpha(art.glow, 0.6), 14) }));
+      }
+    } else if (biome === 'sky') {
+      for (let i = 0; i < 7; i++) {
+        const x = rng.range(60, 1220);
+        const y = rng.range(120, 420);
+        this.room.addChild(new Sprite({ pos: { x, y }, z: -88, shape: { kind: 'path', d: blobPath(rng, rng.range(50, 110), 0.3, 7) }, fill: withAlpha(art.far, 0.32) }));
+      }
+    } else {
+      for (let i = 0; i < 9; i++) {
+        const x = 60 + i * 140 + rng.range(-30, 30);
+        const len = rng.range(120, 300);
+        const pts = [];
+        let yy = 0;
+        let xx = x;
+        for (let s = 0; s < 5; s++) {
+          pts.push({ x: xx, y: yy });
+          yy += len / 4;
+          xx += rng.range(-24, 24);
+        }
+        this.room.addChild(new Sprite({ z: -88, shape: { kind: 'path', d: smoothOpenPath(pts, 1) }, stroke: mid, strokeWidth: rng.range(3, 7), round: true, fill: 'none' }));
+      }
+    }
+
+    for (let i = 0; i < 14; i++) {
+      const x = rng.range(40, 1240);
+      const y = rng.range(60, horizon);
+      this.room.addChild(new Sprite({ pos: { x, y }, z: 15, shape: { kind: 'circle', radius: rng.range(1.5, 3.5) }, fill: withAlpha(art.glow, rng.range(0.2, 0.5)), shadow: glow(withAlpha(art.glow, 0.5), rng.range(3, 7)) }));
+    }
   }
 
   private addSpikes(tx: number, ty: number, color: string): void {
@@ -229,13 +298,21 @@ class KintsugiView extends Node {
       const x = VIEW_W - 40 - i * 30;
       this.hud.addChild(new Sprite({ pos: { x, y: 40 }, z: 100, shape: { kind: 'rect', w: 8, h: 22, r: 4 }, fill: has ? KENTO.ko : withAlpha(KENTO.sumi, 0.5), stroke: KENTO.gofun, strokeWidth: 1.5, shadow: has ? glow(withAlpha(KENTO.ko, 0.8), 6) : undefined }));
     });
+    // guardian HP bar (top centre) during a boss fight
+    if (kg.boss) {
+      const frac = Math.max(0, kg.boss.hp / kg.boss.maxHp);
+      const bw = 520;
+      this.hud.addChild(new Sprite({ pos: { x: VIEW_W / 2, y: 78 }, z: 100, shape: { kind: 'rect', w: bw + 8, h: 16, r: 8 }, fill: withAlpha(KENTO.sumi, 0.7), stroke: KENTO.kinako, strokeWidth: 2 }));
+      this.hud.addChild(new Sprite({ pos: { x: VIEW_W / 2 - (bw * (1 - frac)) / 2, y: 78 }, z: 101, shape: { kind: 'rect', w: Math.max(2, bw * frac), h: 10, r: 5 }, gradient: linearGradient([KENTO.shu, KENTO.shuDeep], 0), shadow: glow(withAlpha(KENTO.shu, 0.7), 8) }));
+    }
   }
 
   // ── actor ─────────────────────────────────────────────────────────
   private updateActor(): void {
     for (const c of this.actor.children.slice()) this.actor.removeChild(c);
     const kg = this.kg;
-    // enemies (behind the Mender)
+    // the guardian, then enemies (behind the Mender)
+    if (kg.boss) this.actor.addChild(this.bossNode(kg.boss));
     for (const e of kg.enemies) this.actor.addChild(this.enemyNode(e));
     for (const o of kg.orbs) this.actor.addChild(new Sprite({ pos: { x: o.x, y: o.y }, z: 26, shape: { kind: 'circle', radius: 7 }, gradient: radialGradient([KENTO.gofun, KENTO.shu, withAlpha(KENTO.shuDeep, 0)]), shadow: glow(withAlpha(KENTO.shu, 0.9), 10) }));
 
@@ -251,7 +328,32 @@ class KintsugiView extends Node {
       hurtT: justHurt ? 1 : 0,
     });
     node.pos = { x: p.x + 10, y: p.y + 18 };
+    // a soft gold aura so the Mender is always instantly findable
+    this.actor.addChild(new Sprite({ pos: { x: p.x + 10, y: p.y + 16 }, z: 24, shape: { kind: 'circle', radius: 30 }, gradient: radialGradient([withAlpha(KENTO.ko, 0.28), withAlpha(KENTO.ko, 0)]), shadow: glow(withAlpha(KENTO.ko, 0.35), 12) }));
     this.actor.addChild(node);
+  }
+
+  /** A boss guardian: a great cracked vessel, biome-tinted, red grief-seams. */
+  private bossNode(b: BossState): Node {
+    const tint: Record<string, string> = {
+      drowned_bell: KENTO.asagiDeep,
+      cinder_warden: KENTO.kakiDeep,
+      gale: KENTO.fuji,
+      grief: KENTO.fujiDeep,
+    };
+    const base = mix(tint[b.id] ?? KENTO.sumi, KENTO.kuro, 0.35);
+    const tell = b.st === 'tell';
+    const g = new Node({ pos: { x: b.x + b.w / 2, y: b.y + b.h / 2 }, z: 25 });
+    g.cosmetic = true;
+    g.addChild(new Sprite({ pos: { x: 0, y: b.h * 0.4 }, z: 24, shape: { kind: 'circle', radius: b.w * 0.7 }, fill: withAlpha(KENTO.yohaku, 0.25) }));
+    g.addChild(new Sprite({ z: 25, shape: { kind: 'rect', w: b.w, h: b.h, r: b.w * 0.28 }, gradient: linearGradient([mix(base, KENTO.gofun, 0.12), base], 90), stroke: KENTO.shuDeep, strokeWidth: 3, shadow: b.hurt > 0 ? glow(KENTO.gofun, 14) : tell ? glow(withAlpha(KENTO.shu, 0.9), 20) : glow(withAlpha(tint[b.id] ?? KENTO.fuji, 0.5), 14) }));
+    // grief seams
+    for (const [sx, sy] of [[-0.22, -0.2], [0.18, -0.05], [-0.05, 0.2]] as [number, number][]) {
+      g.addChild(new Sprite({ pos: { x: sx * b.w, y: sy * b.h }, z: 26, shape: { kind: 'poly', points: [-b.w * 0.12, -b.h * 0.06, b.w * 0.04, 0, -b.w * 0.06, b.h * 0.1], closed: false }, stroke: KENTO.shu, strokeWidth: 2, round: true, fill: 'none', shadow: glow(withAlpha(KENTO.shu, 0.6), 4) }));
+    }
+    // two lit eyes
+    for (const ex of [-0.16, 0.16]) g.addChild(new Sprite({ pos: { x: ex * b.w, y: -b.h * 0.14 }, z: 27, shape: { kind: 'circle', radius: 4 }, fill: b.hurt > 0 ? KENTO.gofun : KENTO.shu, shadow: glow(KENTO.shu, 6) }));
+    return g;
   }
 
   /** A grief-hardened guardian: dark cracked ceramic with red seams + a lit eye. */
@@ -273,12 +375,23 @@ class KintsugiView extends Node {
     return g;
   }
 
+  private rebuildMap(): void {
+    for (const c of this.mapLayer.children.slice()) this.mapLayer.removeChild(c);
+    if (this.mapOpen) this.mapLayer.addChild(buildMapNode(this.kg));
+  }
+
   // ── loop ──────────────────────────────────────────────────────────
   protected override onProcess(dt: number): void {
     if (!this.world) return;
     const w = this.world as World;
     const input = w.input;
     this.phase += dt;
+
+    if (input.justPressed('map')) {
+      this.mapOpen = !this.mapOpen;
+      this.rebuildMap();
+    }
+    if (this.mapOpen) return; // the world pauses while the map is open
 
     if (input.justPressed('restart')) return this.restart();
     const kg = this.kg;
@@ -318,8 +431,13 @@ class KintsugiView extends Node {
     }
     if (ev.picked) {
       const pk = KINTSUGI_WORLD.pickups.find((p) => p.id === ev.picked);
-      const line = pk && !pk.grants.startsWith('shard:') ? ABILITY_LINES[pk.grants] : SHARD_LINE;
-      if (line) this.story.line(line, kg.p.x + 10, kg.p.y - 24);
+      if (pk && !pk.grants.startsWith('shard:')) {
+        // a golden power returns — a real unlock moment
+        const name = pk.grants.charAt(0).toUpperCase() + pk.grants.slice(1);
+        this.story.card(name, ABILITY_LINES[pk.grants] ?? 'A seam mended.', 4.5);
+      } else {
+        this.story.line(SHARD_LINE, kg.p.x + 10, kg.p.y - 24);
+      }
     }
     // threat intensity → music adapts (percussion, tempo, darker melody)
     let inten = kg.iframes > 0 ? 0.6 : 0;
@@ -327,6 +445,7 @@ class KintsugiView extends Node {
       const d = dhypot(e.x + e.w / 2 - (kg.p.x + 10), e.y + e.h / 2 - (kg.p.y + 15));
       inten = Math.max(inten, 1 - d / 380);
     }
+    if (kg.boss) inten = 1; // full threat during a guardian fight
     this.music.update(dt, Math.max(0, Math.min(1, inten)));
     this.story.update(dt);
 
@@ -354,6 +473,8 @@ class KintsugiView extends Node {
     this.shownGuardians.clear();
     this.lastBiome = '';
     this.phase = 0;
+    this.mapOpen = false;
+    this.rebuildMap();
     hideScreen();
     this.story.clear();
     this.story.card('Kintsugi', PROLOGUE_SUB, 8);

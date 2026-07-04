@@ -251,3 +251,19 @@ prefix. The general trap: any markup fragment that mints `id`/`url(#…)` pairs 
 only self-contained until someone embeds two copies in one document. If a
 fragment can be composited, its ids need a namespace parameter — assume it will
 be, and thread the salt from the start.
+
+## A flagship is a scaling problem once the verifiable spine exists
+The intimidating part of "build a real metroidvania, not a slice" looks like the
+30 rooms, the bosses, the music, the story. It isn't. Those are volume — and
+volume is cheap when each unit is proven in isolation (a room's exits vs. the
+graph; a boss's beatability; a biome's looks against a rubric). The hard part is
+the *one* thing that makes the whole structure trustworthy: a machine-checkable
+model of progression. And the move that unlocks it is a **reduction to a primitive
+you already have** — metroidvania progression IS a `Puzzle` (state = where you are
++ what you hold; moves = traverse a gated edge / take a pickup), so the engine's
+existing `solve()` proves a 100% order exists and state-enumeration proves no
+softlock. Once that spine is proven and the geometry is tested to honour it, the
+rest is authoring against a contract that can't lie. When a task feels too big to
+verify, look for the reduction: the thing you're building is usually an instance
+of something the engine can already prove — lock-and-key dungeons, tech trees,
+quest chains, ability gates are all the same Puzzle.
