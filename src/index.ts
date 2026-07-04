@@ -132,6 +132,7 @@ export * from './net/browser';
 // ── world + app ─────────────────────────────────────────────────
 export * from './world';
 export * from './app/game';
+export * from './app/tuning';
 export * from './app/browser';
 
 /** Engine version. */

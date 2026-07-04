@@ -3,7 +3,7 @@
 // Wall-clock only feeds the accumulator (how many steps to run) — replays use the
 // input log, not wall time, so the sim stays deterministic.
 
-import type { GameDefinition, SplashConfig } from './game';
+import type { CreateWorldOptions, GameDefinition, SplashConfig } from './game';
 import { createWorld } from './game';
 import { KeyboardSource, PointerSource } from '../input/source';
 import type { Vec2 } from '../core/math';
@@ -25,6 +25,8 @@ export interface RunOptions {
   /** Start the pause/settings shell (Esc). Default true. */
   shell?: boolean;
   onRestart?: () => void;
+  /** World creation overrides (seed, tuning) — applied on start AND restart. */
+  world?: CreateWorldOptions;
 }
 
 export interface GameHandle {
@@ -73,7 +75,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
   const height = def.height ?? 720;
   const background = def.background ?? '#f3ecdb';
 
-  let world = createWorld(def);
+  let world = createWorld(def, opts.world);
   const renderer: Renderer =
     opts.renderer === 'canvas'
       ? new Canvas2DRenderer({ width, height, background })
@@ -100,7 +102,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
 
   const renderFrame = () => renderer.draw(world.render());
   const restart = () => {
-    world = createWorld(def);
+    world = createWorld(def, opts.world);
     renderFrame();
   };
 
