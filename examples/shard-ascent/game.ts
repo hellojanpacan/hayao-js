@@ -18,6 +18,7 @@ import {
   stepPlatformer,
   tileAt,
   TILE,
+  type FeelSpec,
   type InputMap,
   type PadInput,
   type PlatformerState,
@@ -221,3 +222,6 @@ export const shardAscentGame = defineGame({
     return { frame: world.frame, time: world.time, level: s.level, deaths: s.deaths, shard: s.shard, won: s.won, x: s.p.x + CFG.width / 2, y: s.p.y + CFG.height / 2, vx: s.p.vx, vy: s.p.vy, onGround: s.p.onGround };
   },
 });
+
+/** Declared feel contract — audited by `npm run feel`. */
+export const feel: FeelSpec = { avatarFill: PAL.wisp, forgiveness: CFG };

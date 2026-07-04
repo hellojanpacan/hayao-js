@@ -2,7 +2,7 @@
 // in place, hide extras) — rebuilding hundreds of nodes per frame is an
 // allocation storm. Runs on the Canvas2D backend (see main.ts).
 
-import { KENTO, Node, NodePool, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World } from '@hayao';
+import { KENTO, Node, NodePool, Sprite, Text, TILE, audio, defineGame, hideScreen, registerNode, showScreen, tileAt, type InputMap, type World, type FeelSpec } from '@hayao';
 import { arenaMap, initialEw, stepEw, E_TUNE, P_TUNE, TILE_SIZE, UPGRADES, WIN_AT, type EwState } from './logic';
 
 export const EW_INPUT_MAP: InputMap = {
@@ -127,3 +127,6 @@ export const emberwakeGame = defineGame({
     return { frame: world.frame, time: s.time, x: s.x, y: s.y, hp: s.hp, level: s.level, kills: s.kills, alive: s.enemies.length, bullets: s.bullets.length, choosing: !!s.choice, choiceIds: s.choice ? s.choice.map((i) => UPGRADES[i].id) : [], dead: s.dead, won: s.won, enemies: s.enemies.slice(0, 64).map((e) => ({ x: e.x, y: e.y, kind: e.kind })) };
   },
 });
+
+/** Declared feel contract — audited by `npm run feel`. */
+export const feel: FeelSpec = { avatarFill: PAL.hero };
