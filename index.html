@@ -94,7 +94,7 @@
       .idea { border-left: 3px solid var(--shu); padding: 6px 0 6px 18px; margin: 18px 0; font-family: var(--mincho); font-size: 20px; color: var(--sumi); max-width: 60ch; line-height: 1.5; }
 
       /* featured trio preview */
-      .trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 22px; }
+      .trio { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-top: 22px; }
       .fcard { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--washi-2); display: flex; flex-direction: column; }
       .fcard:hover { border-color: var(--ai-2); }
       .fcard .thumb { aspect-ratio: 16/9; background: #e4d8bd; border-bottom: 1px solid var(--line); overflow: hidden; }
@@ -176,7 +176,7 @@
 
       <!-- Receipts: how we know it isn't slop -->
       <div class="proofbar" role="group" aria-label="Engine proof metrics">
-        <div><span class="n">27</span><span class="k">games, one per genre</span></div>
+        <div><span class="n">28</span><span class="k">machine-verified games</span></div>
         <div><span class="n">485</span><span class="k">tests, green in CI</span></div>
         <div><span class="n">100%</span><span class="k">levels solver/bot-proven</span></div>
         <div><span class="n">bit-exact</span><span class="k">replay hashes</span></div>
@@ -198,9 +198,9 @@
 
       <section class="band">
         <div class="lab">the store</div>
-        <h2>Twenty-seven machine-verified games — start with three finished ones.</h2>
+        <h2>Twenty-eight machine-verified games — start with four finished ones.</h2>
         <p>Most engines demo a slice — some particles, a physics box. Hayao ships whole games, because a whole game is the proof the engine is
-          complete. These three are art-finished in the house woodblock style; the rest are playable engine slices you can read and fork.</p>
+          complete. These four are art-finished in the house woodblock style; the rest are playable engine slices you can read and fork.</p>
         <div class="trio">
           <a class="fcard" href="./examples/lanternway/index.html">
             <div class="thumb"><img src="./shots/lanternway.svg" alt="Lanternway" /></div>
@@ -214,8 +214,12 @@
             <div class="thumb"><img src="./shots/tarnholm.svg" alt="Tarnholm" /></div>
             <div class="body"><span class="genre">island town builder</span><h3>Tarnholm</h3><p>Every roof scores by its neighbours, live under the cursor — placement skill is proven to nearly double random play.</p></div>
           </a>
+          <a class="fcard" href="./examples/driftlight/index.html">
+            <div class="thumb"><img src="./shots/driftlight.svg" alt="Driftlight" /></div>
+            <div class="body"><span class="genre">atmospheric drift</span><h3>Driftlight</h3><p>A paper lantern drifts a night river to the dawn sea — the renderer's gradient, glow, and parallax leap, cosmetic so the lush view never touches the hash.</p></div>
+          </a>
         </div>
-        <p class="more"><a href="./play/">Browse all 27 games in the store →</a></p>
+        <p class="more"><a href="./play/">Browse all 28 games in the store →</a></p>
       </section>
 
       <section class="band">
