@@ -226,3 +226,28 @@ their own constructor instead of asking the caller to remember. A forgetful game
 can't pollute determinism even by accident. When an invariant is easy to violate
 and expensive to catch, move the guarantee into the type's construction so the
 safe path is the only path.
+
+## A render capability lands in the shared paint vocabulary, not per-game code
+The instinct for "make this game look impressive" is to write clever art in the
+game. But the highest-leverage upgrade is one field on the backend-agnostic
+display list: adding `gradient` and `shadow` to `Paint` lit *every* game at once
+— skies, water, glowing projectiles, health bars — and cost nothing in
+determinism because commands are never hashed (the same reason the art
+primitives are safe). A gradient in OBJECT-BOUNDING-BOX space (0..1 of the
+shape's own bounds) is size- and position-independent, so one descriptor reads
+on a 12px firefly and a 3000px sky alike; the SVG backend emits `<defs>`, the
+Canvas backend maps the unit box to pixels, and neither the game nor the display
+list knows which backend it feeds. When a whole class of games wants a new look,
+push the capability down to the display list and let the backends resolve it —
+don't paint it by hand upstream.
+
+## Ids in a reusable fragment collide when the fragment is composited
+`renderToSVGString` was only ever one document, so gradient/filter ids like `g0`
+were unique by construction. The moment the filmstrip stitches N frames into ONE
+`<svg>`, `url(#g0)` — which is DOCUMENT-global in SVG — makes panel 3's fill
+resolve to panel 0's gradient: silent cross-bleed the golden hash can't catch
+(it hashes state, not markup). The fix is to salt ids by a caller-supplied
+prefix. The general trap: any markup fragment that mints `id`/`url(#…)` pairs is
+only self-contained until someone embeds two copies in one document. If a
+fragment can be composited, its ids need a namespace parameter — assume it will
+be, and thread the salt from the start.

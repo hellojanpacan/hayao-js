@@ -16,6 +16,7 @@ export * from './scene/node';
 export { Node as Node2D } from './scene/node';
 export * from './scene/nodes';
 export * from './scene/cameraController';
+export * from './scene/parallax';
 export * from './scene/pool';
 export * from './scene/tween';
 export * from './scene/particles';
@@ -41,6 +42,7 @@ export * from './physics/rigidQueries';
 
 // ── render: display list + backends ─────────────────────────────
 export * from './render/commands';
+export * from './render/paint';
 export * from './render/renderer';
 export * from './render/svgString';
 export * from './render/svg';
