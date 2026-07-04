@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hayao.js — Sound Studio</title>
+    <meta name="description" content="Deterministic, code-authored, headless-verified game audio. Five genres composed as data and synthesized live in your browser by the hayao engine." />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%23f1ebdd'/%3E%3Crect x='32' y='30' width='58' height='58' fill='none' stroke='%23242019' stroke-width='3' opacity='.32'/%3E%3Cpath d='M32 88 h24 M32 88 v-24' fill='none' stroke='%23b5442d' stroke-width='10'/%3E%3Cpath d='M66 88 h20' fill='none' stroke='%23b5442d' stroke-width='10'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --washi: #f1ebdd; --washi-2: #f8f3e9; --sumi: #242019; --sumi-soft: #4f473b;
+        --stone: #6f6555; --ai: #2b4257; --ai-2: #5a7994; --shu: #b5442d; --matsu: #4a7a3a;
+        --ko: #94741d; --line: #ddd3bf;
+        --mincho: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
+        --body: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
+        --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+        color-scheme: light;
+      }
+      * { box-sizing: border-box; }
+      html, body { margin: 0; min-height: 100%; background: var(--washi); color: var(--sumi);
+        font-family: var(--body); line-height: 1.65; -webkit-font-smoothing: antialiased; }
+      .wrap { max-width: 940px; margin: 0 auto; padding: 0 32px; }
+      a { color: var(--ai); text-decoration: none; border-bottom: 1px solid var(--line); }
+      a:hover { border-bottom-color: var(--ai-2); }
+      .lab { font-variant: small-caps; font-size: 13px; letter-spacing: .14em; color: var(--stone); }
+      nav { border-bottom: 1px solid var(--line); }
+      nav .wrap { display: flex; align-items: center; gap: 22px; padding: 16px 32px; }
+      nav .brand { font-family: var(--mincho); font-weight: 700; font-size: 20px; border: none; color: var(--sumi); }
+      nav .sp { flex: 1; }
+
+      header { padding: 54px 0 26px; }
+      h1 { font-family: var(--mincho); font-weight: 700; font-size: 44px; margin: 0 0 10px; letter-spacing: .004em; }
+      .sub { font-size: 18px; color: var(--sumi-soft); max-width: 62ch; margin: 0; }
+      .meta { margin-top: 16px; font-family: var(--mono); font-size: 12.5px; color: var(--stone); }
+      .meta b { color: var(--shu); font-weight: 600; }
+
+      section { padding: 26px 0; }
+      h2 { font-family: var(--mincho); font-weight: 600; font-size: 22px; margin: 0 0 4px; }
+      .hint { color: var(--sumi-soft); font-size: 15px; margin: 0 0 18px; }
+
+      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 14px; }
+      .card { border: 1px solid var(--line); border-radius: 8px; background: var(--washi-2); padding: 16px 16px 14px;
+        display: flex; flex-direction: column; gap: 8px; transition: border-color .15s, box-shadow .15s; }
+      .card.active { border-color: var(--shu); box-shadow: 0 0 0 1px var(--shu); }
+      .card h3 { font-family: var(--mincho); font-weight: 600; font-size: 18px; margin: 0; }
+      .card p { font-size: 13.5px; color: var(--sumi-soft); margin: 0; flex: 1; }
+      .row { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
+      button { font-family: var(--mono); font-size: 13px; cursor: pointer; border: 1px solid var(--line);
+        background: var(--washi); color: var(--sumi); border-radius: 5px; padding: 7px 14px; transition: background .12s, border-color .12s; }
+      button:hover { border-color: var(--ai-2); background: var(--washi-2); }
+      button.play { background: var(--sumi); color: var(--washi); border-color: var(--sumi); font-weight: 600; }
+      button.play:hover { background: var(--shu); border-color: var(--shu); }
+      button.play.on { background: var(--shu); border-color: var(--shu); }
+      .badge { font-family: var(--mono); font-size: 11px; color: var(--stone); }
+
+      .sfx { display: flex; flex-wrap: wrap; gap: 10px; }
+
+      .viz { margin-top: 22px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #1a1814; min-height: 60px; }
+      .viz svg { display: block; width: 100%; height: auto; }
+      .viz .placeholder { color: #8a8474; font-family: var(--mono); font-size: 13px; padding: 22px; }
+
+      .controls { display: flex; align-items: center; gap: 14px; margin-top: 18px; font-family: var(--mono); font-size: 13px; color: var(--sumi-soft); }
+      input[type=range] { accent-color: var(--shu); }
+
+      footer { border-top: 1px solid var(--line); margin-top: 30px; padding: 26px 0 60px; color: var(--stone); font-size: 13.5px; }
+      code { font-family: var(--mono); font-size: 12.5px; background: var(--washi-2); border: 1px solid var(--line); border-radius: 4px; padding: 1px 6px; }
+    </style>
+  </head>
+  <body>
+    <nav><div class="wrap">
+      <a class="brand" href="../index.html">hayao<span style="color:var(--stone);font-weight:500">.js</span></a>
+      <span class="lab">Sound Studio</span>
+      <span class="sp"></span>
+      <a href="../index.html">← all examples</a>
+    </div></nav>
+
+    <div class="wrap">
+      <header>
+        <span class="lab">code · not files</span>
+        <h1>Sound Studio</h1>
+        <p class="sub">Every sound here is <b>generated live</b> by the hayao engine from a few dozen lines of
+          data — no audio files, no samples. The music is deterministic and machine-verified: the same
+          <code>Song</code> renders byte-identical PCM in Node, so it's tested like any other code.</p>
+        <p class="meta">synthesis: pure TypeScript · <b>zero dependencies</b> · rendered headlessly &amp; feature-tested · played through the Web Audio API</p>
+      </header>
+
+      <section>
+        <h2>Music — five genres, composed as data</h2>
+        <p class="hint">Click to play a looping track. Each is built with the engine's theory helpers (scales,
+          diatonic chords, roman-numeral progressions, voice-leading) and shows its rendered waveform + spectrogram.</p>
+        <div class="grid" id="genres"></div>
+        <div class="viz" id="viz"><div class="placeholder">▶ play a track to see its waveform &amp; spectrogram</div></div>
+        <div class="controls">
+          <label>volume <input id="vol" type="range" min="0" max="100" value="70" /></label>
+          <span id="nowplaying"></span>
+        </div>
+      </section>
+
+      <section>
+        <h2>Sound effects — parametric, one line each</h2>
+        <p class="hint">Each SFX is a plain <code>SoundSpec</code> object synthesized on the fly (ZzFX-style, but named &amp; deterministic).</p>
+        <div class="sfx" id="sfx"></div>
+      </section>
+
+      <footer class="wrap-inner">
+        Built with <a href="https://www.npmjs.com/package/hayao">hayao</a> · the audio engine is documented in
+        <code>docs/AUDIO.md</code>. This whole page drives the real published API —
+        <code>renderSong</code>, <code>audio.playSong</code>, <code>audio.playSpec</code>, <code>renderAudioFilmstrip</code>.
+      </footer>
+    </div>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
