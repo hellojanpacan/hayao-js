@@ -5,6 +5,6 @@ dist-site/
 .DS_Store
 .vite/
 coverage/
-shots/
+/shots/
 .claude/settings.local.json
 scratchpad/

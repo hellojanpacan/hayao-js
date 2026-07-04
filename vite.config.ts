@@ -11,6 +11,11 @@ const root = dirname(fileURLToPath(import.meta.url));
 function exampleInputs(): Record<string, string> {
   const dir = resolve(root, 'examples');
   const inputs: Record<string, string> = { hub: resolve(root, 'index.html') };
+  // The three site doors: marketing landing (hub, above), the store, the roadmap.
+  for (const page of ['play', 'roadmap']) {
+    const html = resolve(root, page, 'index.html');
+    if (existsSync(html)) inputs[page] = html;
+  }
   if (existsSync(dir)) {
     for (const slug of readdirSync(dir)) {
       const html = resolve(dir, slug, 'index.html');
