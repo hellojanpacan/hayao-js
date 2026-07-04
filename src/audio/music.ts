@@ -250,6 +250,19 @@ export const INSTRUMENTS: Record<string, Instrument> = {
   // choir "aah": soft, wide, slow
   choir: { wave: 'triangle', attack: 0.28, release: 0.9, sustainLevel: 0.9, volume: 0.22, lowpass: 2000, detune: 20, vibrato: 0.1, vibratoFreq: 4.5 },
   glocken: { wave: 'sine', attack: 0.001, decay: 0.6, sustainLevel: 0, release: 0.4, volume: 0.34, fm: 4, fmFreq: 1600 },
+  // ── jazz / funk voices ──
+  // vibraphone: soft FM bell, slow bloom, gentle tremolo (motor)
+  vibraphone: { wave: 'sine', attack: 0.002, decay: 0.5, sustainLevel: 0.25, release: 0.7, volume: 0.4, fm: 2, fmFreq: 880, tremolo: 0.25, tremoloFreq: 5 },
+  // clavinet: bright, percussive, funky — square with a fast pluck
+  clav: { wave: 'square', duty: 0.35, attack: 0.001, decay: 0.08, sustainLevel: 0.25, release: 0.08, volume: 0.32, lowpass: 3800, detune: 4 },
+  // upright/electric bass: round, short, a little sub
+  uprightBass: { wave: 'triangle', attack: 0.004, decay: 0.12, sustainLevel: 0.5, release: 0.1, volume: 0.5, lowpass: 1100, sub: 0.35 },
+  // muted trumpet: reedy saw, filtered, a touch of vibrato
+  mutedTrumpet: { wave: 'saw', attack: 0.03, decay: 0.08, sustainLevel: 0.75, release: 0.14, volume: 0.3, lowpass: 2600, detune: 4, vibrato: 0.09, vibratoFreq: 6 },
+  // jazz guitar: warm triangle pluck
+  jazzGuitar: { wave: 'triangle', attack: 0.004, decay: 0.35, sustainLevel: 0.2, release: 0.25, volume: 0.34, lowpass: 2400, detune: 5 },
+  // horn section stab: brighter, punchier brass
+  horns: { wave: 'saw', attack: 0.02, decay: 0.08, sustainLevel: 0.7, release: 0.12, volume: 0.3, lowpass: 3600, detune: 10, punch: 0.4 },
   // ── bass ──
   bass: { wave: 'saw', attack: 0.006, release: 0.06, volume: 0.5, lowpass: 900, detune: 6, sub: 0.3 },
   subBass: { wave: 'sine', attack: 0.004, release: 0.08, volume: 0.6, lowpass: 400, sub: 0.5, punch: 0.2 },
@@ -258,4 +271,6 @@ export const INSTRUMENTS: Record<string, Instrument> = {
   snare: { wave: 'noise', attack: 0.001, decay: 0.05, sustainLevel: 0.2, release: 0.12, highpass: 1200, volume: 0.5 },
   hat: { wave: 'noise', attack: 0.001, release: 0.04, highpass: 6000, volume: 0.28 },
   rimshot: { wave: 'noise', attack: 0.001, release: 0.03, highpass: 3000, lowpass: 7000, volume: 0.3 },
+  // ride cymbal: a pinged, sustained wash with some body
+  ride: { wave: 'noise', attack: 0.001, decay: 0.15, sustainLevel: 0.3, release: 0.5, volume: 0.2, highpass: 2400, lowpass: 11000 },
 };

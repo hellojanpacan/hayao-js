@@ -71,6 +71,7 @@ export * from './audio/pcm';
 export * from './audio/synth';
 export * from './audio/analysis';
 export * from './audio/theory';
+export * from './audio/chord';
 export * from './audio/reverb';
 export * from './audio/music';
 export * from './audio/lint';
