@@ -30,7 +30,7 @@ import {
 } from '@hayao';
 import { KINTSUGI_WORLD, ABILITY_ORDER, BIOMES } from './world';
 import { initialState, stepKintsugi, padFrom, pickupsIn, mapFor, START_HP, type KgState } from './logic';
-import { roomRows, MARK_PICKUPS, RW, RH, TS } from './rooms';
+import { roomRows, markerPos, RW, RH, TS } from './rooms';
 import { biomeArt } from './biome';
 import { menderNode, motionFrom } from './mender';
 import { ATTACK_TIME, IFRAMES, type EnemyState } from './combat';
@@ -137,7 +137,7 @@ class KintsugiView extends Node {
         else if (t === 2) this.room.addChild(new Sprite({ pos: { x: tx * TS + TS / 2, y: ty * TS + 3 }, z: 11, shape: { kind: 'rect', w: TS, h: 6, r: 3 }, fill: art.accent, stroke: art.wallEdge, strokeWidth: 1.5 })); // ONEWAY
       }
     }
-    this.addMarkers(region, kg.taken, art);
+    this.addMarkers(region, kg.taken);
 
     // fog / vignette
     this.room.addChild(new Sprite({ pos: { x: VIEW_W / 2, y: VIEW_H / 2 }, z: 45, shape: { kind: 'rect', w: VIEW_W, h: VIEW_H }, gradient: radialGradient([withAlpha(KENTO.yohaku, 0), withAlpha(KENTO.yohaku, 0.28)], { r: 0.75 }) }));
@@ -154,20 +154,28 @@ class KintsugiView extends Node {
     this.room.addChild(g);
   }
 
-  private addMarkers(region: string, taken: readonly string[], art: ReturnType<typeof biomeArt>): void {
-    const rows = roomRows(region)!;
-    for (let ty = 0; ty < RH; ty++) {
-      const row = rows[ty];
-      for (let tx = 0; tx < RW; tx++) {
-        const ch = row[tx];
-        const px = tx * TS + TS / 2;
-        const py = ty * TS + TS / 2;
-        if (ch === 'S' && !taken.includes(MARK_PICKUPS.S)) this.addShrine(px, py, 'ability');
-        else if (ch === 'E' && !taken.includes(MARK_PICKUPS.E)) this.addShard(px, py);
-        else if (ch === 'K') this.addSaveShrine(px, py);
-        void art;
-      }
+  private addMarkers(region: string, taken: readonly string[]): void {
+    for (const p of KINTSUGI_WORLD.pickups) {
+      if (p.region !== region || taken.includes(p.id)) continue;
+      const isShard = p.grants.startsWith('shard:');
+      const pos = markerPos(region, isShard ? 'E' : 'P');
+      if (!pos) continue;
+      if (isShard) this.addShard(pos.x, pos.y);
+      else this.addShrine(pos.x, pos.y, 'ability');
     }
+    const save = markerPos(region, 'K');
+    if (save) this.addSaveShrine(save.x, save.y);
+    const kiln = markerPos(region, 'W');
+    if (kiln) this.addKiln(kiln.x, kiln.y);
+  }
+
+  /** The heart-kiln (the goal): a great warm beacon to relight. */
+  private addKiln(x: number, y: number): void {
+    const g = new Node({ pos: { x, y }, z: 20 });
+    g.addChild(new Sprite({ z: 18, shape: { kind: 'circle', radius: 120 }, gradient: radialGradient([withAlpha(KENTO.ko, 0.5), withAlpha(KENTO.kaki, 0.2), withAlpha(KENTO.kaki, 0)]), shadow: glow(withAlpha(KENTO.ko, 0.9), 50) }));
+    g.addChild(new Sprite({ pos: { x: 0, y: 20 }, z: 20, shape: { kind: 'rect', w: 90, h: 70, r: 16 }, gradient: linearGradient([mix(KENTO.stone, KENTO.kakiDeep, 0.4), KENTO.sumi], 90), stroke: KENTO.sumi, strokeWidth: 3 }));
+    g.addChild(new Sprite({ pos: { x: 0, y: 24 }, z: 21, shape: { kind: 'circle', radius: 26 }, gradient: radialGradient([KENTO.gofun, KENTO.ko, withAlpha(KENTO.kakiDeep, 0)]), shadow: glow(KENTO.ko, 24) }));
+    this.room.addChild(g);
   }
 
   private addShrine(x: number, y: number, _kind: string): void {

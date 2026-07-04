@@ -8,14 +8,13 @@ import {
   stepPlatformer,
   createPlatformerState,
   tilemapFromAscii,
-  asciiEntities,
   type PlatformerState,
   type PadInput,
   type TilemapData,
 } from '@hayao';
 import { KINTSUGI_WORLD, ABIL } from './world';
 import { configFor } from './abilities';
-import { roomSpec, roomRows, entryFor, MARK_PICKUPS, RW, RH, TS, type Dir } from './rooms';
+import { roomSpec, roomRows, entryFor, markerPos, RW, RH, TS, type Dir } from './rooms';
 import {
   spawnEnemy,
   stepEnemies,
@@ -85,24 +84,22 @@ export function mapFor(region: string): TilemapData {
   return m;
 }
 
-/** Uncollected pickup markers in a region: world position + world-graph pickup id. */
+/** Uncollected pickups in a region (identity from the world graph, position from
+ * the room's 'P' ability-shrine / 'E' ember-shard marker). */
 export function pickupsIn(region: string, taken: readonly string[]): { x: number; y: number; id: string; char: string }[] {
-  const rows = roomRows(region);
-  if (!rows) return [];
   const out: { x: number; y: number; id: string; char: string }[] = [];
-  for (const e of asciiEntities(rows, TS)) {
-    const id = MARK_PICKUPS[e.char];
-    if (id && !taken.includes(id)) out.push({ x: e.x, y: e.y, id, char: e.char });
+  for (const p of KINTSUGI_WORLD.pickups) {
+    if (p.region !== region || taken.includes(p.id)) continue;
+    const char = p.grants.startsWith('shard:') ? 'E' : 'P';
+    const pos = markerPos(region, char);
+    if (pos) out.push({ x: pos.x, y: pos.y, id: p.id, char });
   }
   return out;
 }
 
-/** The save-shrine tile (marker 'K') world position in a region, if any. */
+/** The save-shrine ('K') world position in a region, if any. */
 function shrineIn(region: string): { x: number; y: number } | null {
-  const rows = roomRows(region);
-  if (!rows) return null;
-  for (const e of asciiEntities(rows, TS)) if (e.char === 'K') return { x: e.x, y: e.y };
-  return null;
+  return markerPos(region, 'K');
 }
 
 function grantOf(pickupId: string): string {

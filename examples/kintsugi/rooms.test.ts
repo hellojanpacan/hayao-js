@@ -36,6 +36,11 @@ describe('Kintsugi rooms — geometry honours the proven graph', () => {
       const spec = roomSpec(region)!;
       for (const [dir, target] of Object.entries(spec.exits) as [Dir, string][]) {
         if (!authored.has(target)) continue; // neighbour in another biome, not yet authored
+        // one-way drops legitimately have no return exit
+        const oneWay =
+          KINTSUGI_WORLD.edges.some((e) => e.oneWay && e.from === region && e.to === target) &&
+          !KINTSUGI_WORLD.edges.some((e) => !e.oneWay && ((e.from === region && e.to === target) || (e.from === target && e.to === region)));
+        if (oneWay) continue;
         const back = roomSpec(target)!;
         expect(back.exits[OPPOSITE[dir]]).toBe(region);
       }
@@ -45,7 +50,7 @@ describe('Kintsugi rooms — geometry honours the proven graph', () => {
   it('the start room and its shrine are authored', () => {
     expect(AUTHORED_REGIONS).toContain(KINTSUGI_WORLD.start);
     expect(AUTHORED_REGIONS).toContain('grove_shrine');
-    // the Goldstep marker exists in the shrine
-    expect(buildRoom(roomSpec('grove_shrine')!).some((r) => r.includes('S'))).toBe(true);
+    // the ability-shrine marker exists in the shrine
+    expect(buildRoom(roomSpec('grove_shrine')!).some((r) => r.includes('P'))).toBe(true);
   });
 });
