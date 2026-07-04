@@ -2,7 +2,7 @@
 // honest (no water = no growth; seasons wither), the energy budget truly
 // bounds a day, reinvestment beats hoarding, and the year replays.
 
-import { checkDeterministic, createWorld } from '@hayao';
+import { checkDeterministic, createWorld, renderFilmstrip } from '@hayao';
 import { initialFr, pidx, seasonOf, stepFr, CROPS, ENERGY_PER_DAY, GOAL_COINS, SEASON_CROP, YEAR_DAYS, type FrAction, type FrState } from './logic';
 import { fernrowGame } from './game';
 import type { VerifyContext } from '../../scripts/verify';
@@ -103,4 +103,7 @@ export default async function verify(t: VerifyContext) {
   t.golden('diligent year', world.hash());
   const rep = checkDeterministic(() => createWorld(fernrowGame), { frames });
   t.check(rep.ok ? 'the year replays deterministically' : `diverged at frame ${rep.divergedAt}`, rep.ok);
+
+  // 6. Filmstrip of the year, for the looks judgement (does the farm read?).
+  t.artifact('year-filmstrip.svg', renderFilmstrip(createWorld(fernrowGame), frames, { width: 1280, height: 720, background: fernrowGame.background, panels: 8 }));
 }

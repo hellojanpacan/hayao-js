@@ -13,6 +13,7 @@ import { rootwardGame, rwState } from '../examples/rootward/game';
 import { tarnholmGame, thState } from '../examples/tarnholm/game';
 import { bestPlacement, currentBuilding, place } from '../examples/tarnholm/logic';
 import { driftlightGame } from '../examples/driftlight/game';
+import { fernrowGame } from '../examples/fernrow/game';
 import { driftBot, type DlProbe } from '../examples/driftlight/bot';
 
 const W = 1280;
@@ -73,6 +74,19 @@ function save(slug: string, background: string, world: World): void {
     w.step(driftBot(p));
   }
   save('driftlight', driftlightGame.background as string, w);
+}
+
+// Fernrow — a worked patch: a few rows tilled, planted, and watered in spring.
+{
+  const w = createWorld(fernrowGame);
+  const press = (a: string) => { w.step([a]); w.step([]); };
+  for (let row = 0; row < 3; row++) {
+    for (let col = 0; col < 5; col++) { press('till'); press('plant'); press('water'); if (col < 4) press('right'); }
+    for (let col = 0; col < 4; col++) press('left');
+    if (row < 2) press('down');
+  }
+  for (let i = 0; i < 10; i++) w.step([]);
+  save('fernrow', fernrowGame.background as string, w);
 }
 
 console.log('thumbnails written.');
