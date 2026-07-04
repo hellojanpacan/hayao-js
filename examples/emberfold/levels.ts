@@ -1,0 +1,48 @@
+// GENERATED — do not edit by hand. The shippable campaign: solver-verified merge
+// boards as pure data (seed + deal recipe + proven minimum-slide depth).
+// Regenerate after changing campaign.ts acts; verify.ts asserts this file matches
+// a fresh compose, so it can never silently drift from what the solver proves.
+import type { LevelRecord } from './logic';
+
+export const EMBER_LEVELS: LevelRecord[] = [
+  { seed: 122972752, cols: 4, rows: 4, stones: 0, embers: 5, fours: 0, target: 8, depth: 2, act: 0, actName: "Kindling" },
+  { seed: 156527990, cols: 4, rows: 4, stones: 0, embers: 5, fours: 0, target: 8, depth: 2, act: 0, actName: "Kindling" },
+  { seed: 173305609, cols: 4, rows: 4, stones: 0, embers: 5, fours: 0, target: 8, depth: 2, act: 0, actName: "Kindling" },
+  { seed: 223638466, cols: 4, rows: 4, stones: 0, embers: 5, fours: 0, target: 8, depth: 2, act: 0, actName: "Kindling" },
+  { seed: 240416085, cols: 4, rows: 4, stones: 0, embers: 5, fours: 0, target: 8, depth: 2, act: 0, actName: "Kindling" },
+  { seed: 139750371, cols: 4, rows: 4, stones: 0, embers: 5, fours: 0, target: 8, depth: 3, act: 0, actName: "Kindling" },
+  { seed: 190083228, cols: 4, rows: 4, stones: 0, embers: 5, fours: 0, target: 8, depth: 3, act: 0, actName: "Kindling" },
+  { seed: 206860847, cols: 4, rows: 4, stones: 0, embers: 5, fours: 0, target: 8, depth: 3, act: 0, actName: "Kindling" },
+  { seed: 3150166795, cols: 4, rows: 4, stones: 2, embers: 7, fours: 1, target: 16, depth: 4, act: 1, actName: "Bellows" },
+  { seed: 3907330603, cols: 4, rows: 4, stones: 2, embers: 7, fours: 1, target: 16, depth: 4, act: 1, actName: "Bellows" },
+  { seed: 3890552984, cols: 4, rows: 4, stones: 2, embers: 7, fours: 1, target: 16, depth: 4, act: 1, actName: "Bellows" },
+  { seed: 3200499652, cols: 4, rows: 4, stones: 2, embers: 7, fours: 1, target: 16, depth: 4, act: 1, actName: "Bellows" },
+  { seed: 3974441079, cols: 4, rows: 4, stones: 2, embers: 7, fours: 1, target: 16, depth: 4, act: 1, actName: "Bellows" },
+  { seed: 3991218698, cols: 4, rows: 4, stones: 2, embers: 7, fours: 1, target: 16, depth: 4, act: 1, actName: "Bellows" },
+  { seed: 3217277271, cols: 4, rows: 4, stones: 2, embers: 7, fours: 1, target: 16, depth: 4, act: 1, actName: "Bellows" },
+  { seed: 3250832509, cols: 4, rows: 4, stones: 2, embers: 7, fours: 1, target: 16, depth: 4, act: 1, actName: "Bellows" },
+  { seed: 3873775365, cols: 4, rows: 4, stones: 2, embers: 7, fours: 1, target: 16, depth: 4, act: 1, actName: "Bellows" },
+  { seed: 3940885841, cols: 4, rows: 4, stones: 2, embers: 7, fours: 1, target: 16, depth: 5, act: 1, actName: "Bellows" },
+  { seed: 3234054890, cols: 4, rows: 4, stones: 2, embers: 7, fours: 1, target: 16, depth: 5, act: 1, actName: "Bellows" },
+  { seed: 4007996317, cols: 4, rows: 4, stones: 2, embers: 7, fours: 1, target: 16, depth: 5, act: 1, actName: "Bellows" },
+  { seed: 349616121, cols: 5, rows: 5, stones: 3, embers: 13, fours: 2, target: 32, depth: 6, act: 2, actName: "Forge" },
+  { seed: 2331951449, cols: 5, rows: 5, stones: 3, embers: 13, fours: 2, target: 32, depth: 6, act: 2, actName: "Forge" },
+  { seed: 383171359, cols: 5, rows: 5, stones: 3, embers: 13, fours: 2, target: 32, depth: 6, act: 2, actName: "Forge" },
+  { seed: 399948978, cols: 5, rows: 5, stones: 3, embers: 13, fours: 2, target: 32, depth: 6, act: 2, actName: "Forge" },
+  { seed: 450281835, cols: 5, rows: 5, stones: 3, embers: 13, fours: 2, target: 32, depth: 6, act: 2, actName: "Forge" },
+  { seed: 433504216, cols: 5, rows: 5, stones: 3, embers: 13, fours: 2, target: 32, depth: 6, act: 2, actName: "Forge" },
+  { seed: 332838502, cols: 5, rows: 5, stones: 3, embers: 13, fours: 2, target: 32, depth: 6, act: 2, actName: "Forge" },
+  { seed: 316060883, cols: 5, rows: 5, stones: 3, embers: 13, fours: 2, target: 32, depth: 6, act: 2, actName: "Forge" },
+  { seed: 2298396211, cols: 5, rows: 5, stones: 3, embers: 13, fours: 2, target: 32, depth: 7, act: 2, actName: "Forge" },
+  { seed: 299283264, cols: 5, rows: 5, stones: 3, embers: 13, fours: 2, target: 32, depth: 7, act: 2, actName: "Forge" },
+  { seed: 2315173830, cols: 5, rows: 5, stones: 3, embers: 13, fours: 2, target: 32, depth: 7, act: 2, actName: "Forge" },
+  { seed: 2281618592, cols: 5, rows: 5, stones: 3, embers: 13, fours: 2, target: 32, depth: 7, act: 2, actName: "Forge" },
+  { seed: 2186182514, cols: 5, rows: 5, stones: 5, embers: 15, fours: 2, target: 32, depth: 8, act: 3, actName: "Crucible" },
+  { seed: 2186035419, cols: 5, rows: 5, stones: 5, embers: 15, fours: 2, target: 32, depth: 8, act: 3, actName: "Crucible" },
+  { seed: 2219590657, cols: 5, rows: 5, stones: 5, embers: 15, fours: 2, target: 32, depth: 8, act: 3, actName: "Crucible" },
+  { seed: 131693085, cols: 5, rows: 5, stones: 5, embers: 15, fours: 2, target: 32, depth: 8, act: 3, actName: "Crucible" },
+  { seed: 4208551334, cols: 5, rows: 5, stones: 5, embers: 15, fours: 2, target: 32, depth: 8, act: 3, actName: "Crucible" },
+  { seed: 2337181085, cols: 5, rows: 5, stones: 5, embers: 15, fours: 2, target: 32, depth: 8, act: 3, actName: "Crucible" },
+  { seed: 2320403466, cols: 5, rows: 5, stones: 5, embers: 15, fours: 2, target: 32, depth: 9, act: 3, actName: "Crucible" },
+  { seed: 47804990, cols: 5, rows: 5, stones: 5, embers: 15, fours: 2, target: 32, depth: 11, act: 3, actName: "Crucible" },
+];

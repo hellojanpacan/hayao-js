@@ -49,12 +49,51 @@ land here and in [LESSONS.md](LESSONS.md).
 | 21 | Narrative decisions | Reigns-lite | content DSL, long-arc balance sim | ✅ |
 | 22 | Physics demolition | Angry Birds × Crush the Castle | RIGID-BODY DYNAMICS: stacks, joints, CCD, sleep, contact events | ✅ |
 | 23 | Pinball | brass-parlor table | kinematic motor paddles, extreme-speed CCD in tight geometry, no-dead-pocket proof | ✅ |
+| 24 | Slide-and-merge puzzle | 2048 × stone blocks | reduce an endless-arcade genre to a solver-provable finite puzzle; merge-run resolution across partitions | ✅ |
 
 Order of battle: waves grouped by shared engine needs — movement/collision
 (2–5), mass/perf (6–9), turn/UI (10–14), atmosphere/sim (15–21). Order may be
 re-shuffled as lessons emerge.
 
 ## Entries
+
+### 24 · Emberfold — slide-and-merge puzzle (2048 × stone blocks) ✅
+
+**The gap it closes.** 2048 is one of the most-cloned 2D games there is, but it
+resists this repo's core claim: endless random-spawn arcade play can't be
+*machine-proven winnable*. Emberfold takes the merge, drops the parts that fight
+proof, and adds a twist that puts them back as difficulty: a **finite, dealt board
+with no spawns** — slide the whole grid, equal embers fuse to their double — plus
+**immovable stone blocks** that partition every row and column into independent
+merge-runs. The result is a pure `Puzzle<Grid, Move>` the BFS solver bites on
+exactly like Sokoban: 40 boards, every one proven fusable to its target, the
+minimum-slide **par proven honest**, the curve proven to ramp 2→11.
+
+**No engine gap — it's a reduction.** Zero `src/` changes. The whole game rides
+existing primitives: `composeCampaign` + `generateLevels` deal candidate boards
+(stones, then a 4, then the 2s) from a seeded `Rng` and keep only the in-band,
+solver-proven ones; the campaign ships as `LevelRecord[]` (seed + deal recipe +
+proven depth), re-derived identically everywhere and asserted equal to a fresh
+compose so it can't drift. Art is code-as-art: embers are warm gradient tiles that
+glow hotter as they climb the heat ramp; stones are cold slate; the forge breathes a
+radial glow — all cosmetic, so only the dealt grid enters `world.hash()`. Covers all
+six proof channels (100% eval coverage).
+
+**What the probe taught.** The solver counts *slides*, not merges — and one slide
+can cascade many fusions, so depths sit LOW (2–11) and cluster tight. Two knobs
+actually move difficulty: **material** (embers·2 + fours·4 must exceed the target
+with slack, or the board is unsolvable — an early A4 config dealt heat 28 for a
+target of 32 and every candidate was correctly rejected) and **stones + board size**
+(partitions force feeding runs in the right order → deeper search). Lesson, same as
+Lanternfold's: set generator bands from the *measured* depth distribution, and let
+the generator loudly fail an impossible band rather than ship a thin act.
+
+**What transfers.** The move that made it provable is the general one: to fit an
+"endless" or randomness-driven arcade genre into the solver's frame, **strip the
+nondeterminism and re-add the challenge as spatial structure.** No-spawn 2048 is to
+2048 what a Sokoban level is to a warehouse — the same verb, made finite and fair.
+The stone-as-partition trick (resolve each maximal non-stone run independently, then
+stitch) is a clean pattern for any grid-slide mechanic that wants obstacles.
 
 ### B2 · Gravewell — benchmark reproduction of Black Hole Square (js13k 2021, #9) ✅
 
