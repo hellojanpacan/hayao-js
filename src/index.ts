@@ -16,6 +16,7 @@ export * from './scene/node';
 export { Node as Node2D } from './scene/node';
 export * from './scene/nodes';
 export * from './scene/cameraController';
+export * from './scene/parallax';
 export * from './scene/pool';
 export * from './scene/tween';
 export * from './scene/particles';
@@ -81,6 +82,7 @@ export * from './verify/driver';
 export * from './verify/bot';
 export * from './verify/layout';
 export * from './verify/feel';
+export * from './verify/gates';
 export * from './verify/filmstrip';
 
 // ── logic: pure engine primitives (FSM, weighted tables, graph search) ─
@@ -96,6 +98,7 @@ export * from './persist/save';
 
 // ── content: data-driven wave/spawn directors + upgrade trees ───
 export * from './content/dsl';
+export * from './content/level';
 
 // ── net: deterministic multiplayer (lockstep / rollback) ────────
 export * from './net/players';
