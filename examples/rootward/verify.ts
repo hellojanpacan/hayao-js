@@ -2,7 +2,7 @@
 // counter system is REAL (an equal-cost arrow-only build loses to tanks; the
 // mixed build doesn't), waves ramp monotonically, and it replays.
 
-import { checkDeterministic, createWorld } from '@hayao';
+import { checkDeterministic, createWorld, renderFilmstrip } from '@hayao';
 import { waveHp, TOWERS, WAVES, type RwState, type TowerKind } from './logic';
 import { rootwardGame, rwState } from './game';
 import type { VerifyContext } from '../../scripts/verify';
@@ -83,7 +83,14 @@ export default async function verify(t: VerifyContext) {
   const ramps = hps.every((h, i) => i === 0 || h >= hps[i - 1] * 0.55) && hps[hps.length - 1] === Math.max(...hps);
   t.check(`wave pressure ramps with breathers (${hps.join(' → ')})`, ramps);
 
-  // 5. Determinism over the winning defence.
+  // 5. Determinism over the winning defence (the cosmetic meadow must not leak
+  //    into the hash — it's built from standalone rng streams).
   const rep = checkDeterministic(() => createWorld(rootwardGame), { frames: log.slice(0, 10800) });
   t.check(rep.ok ? 'defence sim is deterministic across runs' : `diverged at frame ${rep.divergedAt}`, rep.ok);
+
+  // 6. Filmstrip of the defence, for the looks judgement (does the meadow read?).
+  t.artifact(
+    'defence-filmstrip.svg',
+    renderFilmstrip(createWorld(rootwardGame), log.slice(0, 10800), { width: 1280, height: 720, background: rootwardGame.background, panels: 8 }),
+  );
 }
