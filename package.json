@@ -26,6 +26,9 @@
   "main": "./dist/index.js",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "create-hayao": "./bin/create-hayao.mjs"
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -34,6 +37,7 @@
   },
   "files": [
     "dist",
+    "bin",
     "docs/API.md"
   ],
   "engines": {
@@ -52,6 +56,8 @@
     "api": "tsx scripts/api-digest.ts",
     "invariants": "tsx scripts/invariants.ts",
     "verify": "tsx scripts/invariants.ts && tsx scripts/verify.ts",
+    "eval": "tsx scripts/eval.ts",
+    "create": "node bin/create-hayao.mjs",
     "prepublishOnly": "npm run check && npm test && npm run build:lib",
     "relay": "node scripts/relay.mjs",
     "palette": "tsx scripts/palette-audit.ts",

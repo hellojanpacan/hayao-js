@@ -12,7 +12,12 @@ hold the invariants.
   calls, example imports, example file contract)
 - `npm run verify` — CI gate: invariants + proves examples winnable + deterministic
 - `npm run api` — regenerate `docs/API.md` (the greppable public surface)
+- `npm run eval` — score every example on proof coverage (winnable · determinism ·
+  ramp · feel · generated · code-as-art) + the overall verified rate
 - `npm run build` — production build
+
+To start a NEW project outside this repo: `npm create hayao@latest my-game`
+scaffolds a runnable game whose starter already generates a solver-proven campaign.
 
 ## Skills (Claude Code)
 - `/new-game` — scaffold + build a new example via the BUILDLOG loop
@@ -57,6 +62,12 @@ the verify suites. When a session trips one anyway, log it in
   on `Set`/object-key order in the sim.
 - **Write small modules, one file per Write**, as soon as each is drafted (large
   single-shot files stall agent streams).
+- **Generate content; don't hand-author volume.** For anything past a handful of
+  levels, express the level as a `Puzzle` factory and let `generateLevels` /
+  `composeCampaign` (content/) emit solver-verified levels inside a difficulty
+  band, then prove the curve with `rampIssues` / `assertRamp`. An hour of content
+  is a list of seeds, every one proven — not forty hand-drawn maps. The reference
+  is `examples/lanternfold` (a 42-level campaign composed entirely this way).
 
 ## The verification recipe (short)
 ```ts
