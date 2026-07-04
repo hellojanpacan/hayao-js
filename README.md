@@ -3,9 +3,9 @@
 [![ci](https://github.com/hellojanpacan/hayao-js/actions/workflows/ci.yml/badge.svg)](https://github.com/hellojanpacan/hayao-js/actions/workflows/ci.yml)
 
 **Play the machine-verified example games at [hayao.dev/play](https://hayao.dev/play/).**
-Three are art-finished in the house woodblock style (Lanternway, Rootward,
-Tarnholm); the rest are playable engine slices. See where it's headed on the
-[roadmap](https://hayao.dev/roadmap/).
+Four are art-finished in the house woodblock style (Lanternway, Rootward,
+Tarnholm, Driftlight); the rest are playable engine slices. See where it's headed
+on the [roadmap](https://hayao.dev/roadmap/).
 
 **An AI-first game engine.** A deterministic, headless-native simulation kernel
 with a Godot-style scene tree, pluggable renderers (SVG / Canvas / headless),
@@ -45,6 +45,46 @@ npm run verify   # run the determinism + solver harness over all examples
 
 A game is one folder under `examples/<slug>/`, imports **only** from `@hayao`,
 and is a `defineGame()` call. See [docs/CONVENTIONS.md](docs/CONVENTIONS.md).
+
+## Start a new game in one command
+
+```sh
+npm create hayao@latest my-game   # scaffolds a runnable project
+cd my-game && npm install
+npm run verify                    # prove every level winnable — no browser
+npm run dev                       # play it
+```
+
+The scaffolded starter isn't a hello-world — it already **generates a solver-proven,
+ramped campaign**, so an AI author lands in a project that knows the invariants
+(`AGENTS.md`) and can prove its own output from the first commit.
+
+## Generate an hour of proven content, don't hand-author it
+
+The hard part of "make me a whole game" was never one level — it was *forty* balanced
+ones. hayao closes that gap: express a level as a `Puzzle` factory and let the
+**solver-backed generator** compose the campaign.
+
+```ts
+import { composeCampaign, assertRamp } from '@hayao';
+
+const campaign = composeCampaign({
+  seed: 7,
+  acts: [
+    { name: 'Shallows', count: 12, minDepth: 2, maxDepth: 4, factory: makeLevel },
+    { name: 'Deep',     count: 14, minDepth: 5, maxDepth: 7, factory: makeLevel },
+    { name: 'Abyss',    count: 16, minDepth: 8, maxDepth: 12, factory: makeLevel },
+  ],
+});
+assertRamp(campaign.difficulty);   // the whole curve is proven well-shaped
+```
+
+Every level is `solve()`-proven winnable inside its difficulty band; `assertRamp`
+proves the curve escalates without cliffs. An hour of content ships as a **list of
+seeds**, each provable — not forty hand-drawn maps. The reference is
+[examples/lanternfold](examples/lanternfold) — a 42-level lantern-lighting campaign
+composed entirely this way, with `npm run eval` scoring proof coverage across the
+whole portfolio.
 
 ## The layers
 
@@ -87,9 +127,11 @@ reasoning in [docs/ENGINE.md](docs/ENGINE.md).
 
 ## Documentation
 
+- [docs/QUICKSTART.md](docs/QUICKSTART.md) — **using `hayao` from npm**: install (it's ESM-only), define a game, and prove it correct headlessly — a complete runnable example.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — the authoritative design and the determinism contract.
 - [docs/CONVENTIONS.md](docs/CONVENTIONS.md) — how games are structured, house style, definition of done.
 - [docs/VERIFICATION.md](docs/VERIFICATION.md) — the two verification channels; how to prove a game correct.
+- [docs/GALLERY.md](docs/GALLERY.md) — the verified gallery: what "machine-proven" means per game, and how to run the proof yourself.
 - [docs/ENGINE.md](docs/ENGINE.md) — why a custom engine, and when NOT to use one.
 - [docs/LESSONS.md](docs/LESSONS.md) — transferable lessons from real LLM-authored game builds.
 - [docs/FRICTION.md](docs/FRICTION.md) — process-lesson log: what fought an AI session and what check/doc now prevents it.

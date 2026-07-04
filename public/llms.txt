@@ -5,13 +5,21 @@
 > verification harness — designed so an LLM can author, test, and prove correct a whole
 > game without ever opening a browser. Same seed, same build → same result, every run.
 
-Install: `npm i hayao`. Import only from `@hayao`. MIT licensed.
+Start a new project in one command: `npm create hayao@latest my-game` (scaffolds a
+runnable project whose starter game already generates a solver-proven, ramped
+campaign). Or add to an existing project: `npm i hayao`. Import only from `@hayao`.
+MIT licensed.
 
 Key invariants when writing hayao games:
 - All randomness flows through `world.rng`; never `Date.now`, `Math.random`, or argless `new Date` in the sim.
 - Turn-based/puzzle rules live in a pure `Puzzle<State, Move>` module; every level is machine-proven winnable.
+- **Generate content, don't hand-author volume.** `generateLevels` / `composeCampaign`
+  emit solver-verified levels inside a difficulty band; `rampIssues` / `assertRamp`
+  prove the whole curve is well-shaped. An hour of content ships as a list of seeds,
+  every level proven — not forty hand-drawn maps. See `examples/lanternfold`.
 - DOM is for menus only; pure-view scene nodes set `cosmetic = true` so they stay out of `world.hash()`.
 - Verify with `npm run check`, `npm test`, `npm run verify`; assert on `world.probe()` / `world.hash()`.
+  `npm run eval` scores every game on proof coverage (winnable · determinism · ramp · feel · generated · code-as-art).
 
 ## Docs
 
@@ -26,6 +34,7 @@ Key invariants when writing hayao games:
 ## Examples
 
 - [Playable gallery](https://hayao.dev/): machine-verified games, one per genre, playable in the browser
+- [Lanternfold source](https://github.com/hellojanpacan/hayao-js/tree/main/examples/lanternfold): the generator reference — a 42-level campaign composed entirely by the solver-backed generator (`composeCampaign`), every level proven winnable and the ramp proven well-shaped
 - [Sokoban source](https://github.com/hellojanpacan/hayao-js/tree/main/examples/sokoban): the reference example — copy this to start a new game
 - [All example sources](https://github.com/hellojanpacan/hayao-js/tree/main/examples): every game's pure logic, view, tests, and golden replay
 
