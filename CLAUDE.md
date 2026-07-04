@@ -14,4 +14,11 @@ that matter most:
 5. **Verify before you present.** `npm run check`, `npm test`, `npm run verify` —
    assert on `world.probe()`/`hash()`, judge looks from a headless SVG only.
 
-Start from `examples/sokoban/` — it is the reference for every convention.
+**Design from the mechanic, not from the corpus.** The examples are *convention
+references* (how the API is wired, how state/view split) and *proof fixtures* —
+they are **not** a menu of what to build. Don't survey `examples/` for ideas;
+decide what the game is as if the corpus didn't exist, then borrow only its
+structure. For "how do I use one primitive?" (physics, particles, camera,
+pathfinding, tweens, procgen, audio) read the matching `sandboxes/` lab — a
+single mechanic in isolation — not a whole game. `examples/sokoban/` is the
+reference for the logic/view split; `sandboxes/` is the reference for the parts.

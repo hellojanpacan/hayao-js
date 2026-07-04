@@ -22,6 +22,16 @@ function exampleInputs(): Record<string, string> {
       if (existsSync(html)) inputs[slug] = html;
     }
   }
+  // Sandboxes: single-mechanic labs. Same zero-config auto-discovery as examples,
+  // but a separate folder so the example *file contract* (logic/verify/golden)
+  // never applies to them — a sandbox is a scene + knobs, not a full game.
+  const sbDir = resolve(root, 'sandboxes');
+  if (existsSync(sbDir)) {
+    for (const slug of readdirSync(sbDir)) {
+      const html = resolve(sbDir, slug, 'index.html');
+      if (existsSync(html)) inputs[`sb-${slug}`] = html;
+    }
+  }
   return inputs;
 }
 

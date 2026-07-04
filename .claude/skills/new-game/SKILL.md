@@ -9,13 +9,24 @@ You are running one iteration of the Build-Measure-Learn loop defined in
 `docs/BUILDLOG.md`. Do the steps IN ORDER; the failure mode this skill exists
 to prevent is the half-scaffold (a bare `logic.ts` with nothing around it).
 
-## 1. Spec (before any code)
+## 1. Spec (before any code — and before opening `examples/`)
+
+**Design from the mechanic first.** Decide what the game *is* from its core
+mechanic and player fantasy, as if the example corpus didn't exist. The existing
+games are proof fixtures built fast to stress one capability each — their ambition
+is a floor, not a template. Do NOT scan `examples/` for "what to build"; that is
+the groupthink spiral that keeps every new game as small as the last. Aim at the
+engine's real ceiling (Godot/GameMaker), and if the idea resembles an existing
+example, push it until it does something none of them do.
 
 Write down, in your response or the BUILDLOG entry draft:
-- Genre + title blend (see the roster in `docs/BUILDLOG.md` — claim the next
-  unclaimed row unless the user named one).
+- The **core mechanic** in one sentence, and the **player fantasy** it serves —
+  written before any genre label.
+- Genre + title blend. The `docs/BUILDLOG.md` roster tracks coverage; use it to
+  avoid *duplicating* a genre, not to pick the smallest unclaimed row.
 - 3–5 stress goals: what this game challenges in the ENGINE (perf, collision,
   pathfinding…) and in DESIGN (feel, pacing, readability).
+- One thing this game does that **no existing example does**.
 - The **fun target**: one sentence on what must feel good for a human.
 
 ## 2. Read the ground truth
