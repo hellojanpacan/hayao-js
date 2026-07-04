@@ -64,6 +64,7 @@
     "prepublishOnly": "npm run check && npm test && npm run build:lib",
     "relay": "node scripts/relay.mjs",
     "palette": "tsx scripts/palette-audit.ts",
+    "audio": "tsx scripts/audio-render.ts",
     "feel": "tsx scripts/feel.ts",
     "judge": "tsx scripts/judge.ts",
     "thumbs": "tsx scripts/site-thumbs.ts"
