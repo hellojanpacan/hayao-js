@@ -1404,3 +1404,49 @@ runnable project whose starter *already* generates a proven campaign; `scripts/e
 (`npm run eval`) scores every game on the six proof channels + verified rate — the
 AI-first KPI. `llms.txt` / `AGENTS.md` now foreground "generate + prove";
 `docs/GALLERY.md` frames the portfolio as proof-forward, not faith-based.
+
+### F1 · Kintsugi — the flagship metroidvania ✅
+
+**The gap it closes.** Every prior example is a *slice* — one capability, one
+screen, sixty seconds. The roadmap's honest admission was "an Ori-scale
+metroidvania is not yet in the box." Kintsugi puts it in the box: a hand-authored,
+ability-gated, **30-room / 5-biome** metroidvania with combat, four multi-phase
+bosses, adaptive music, a plotted arc, and a map — machine-proven completable and
+softlock-free.
+
+**The one engine gap, and why it's the whole point.** The metroidvania spine was
+proven in miniature already (sproutveil's negative gate proofs; gleamvale's combat
+with zero engine changes). The missing piece was a *verifiable* world model — and
+it collapses onto an existing primitive: **progression IS a `Puzzle`.** State =
+(region, pickups taken); a move is "traverse a gated edge" or "collect a pickup".
+So the engine's `solve()` BFS proves a valid 100% seam order EXISTS, and — because
+abilities are monotonic — enumerating the reachable state graph proves NO SOFTLOCK
+(the only remaining hazard once one-way drops enter). Shipped as
+`src/content/worldgraph.ts` (`proveCompletable`/`proveFullCompletion`/
+`findSoftlocks`/`reachableRegions`/`validateWorld`) and merged first, on its own.
+
+**Geometry proven to honour the graph.** Rooms are authored as data (a spec →
+40×22 ASCII); a test asserts every room exit corresponds to a real graph edge and
+that seams are reciprocal (one-way drops exempted). The graph is the contract; the
+geometry can't silently contradict it.
+
+**What "publishable" took, layer by layer.** The Mender (procedural articulated
+figure, 7 poses, gold-seam kintsugi motif). Combat (swept hitbox, hit-stop,
+i-frames, FSM enemies) — reused from the proven kit. Four guardians (one multi-
+phase FSM escalating by HP, sealing its arena until slain). A per-biome adaptive
+`MusicDirector` (key/mode/mood + threat layers) built on the audio bus so it
+no-ops headlessly. Story beats (prologue, area cards, ability & guardian lines).
+A fog-of-war map from the same graph. A looks pass against `docs/JUDGE.md` —
+biome-specific midground (grove trees / cistern dripstone / ember forge-chimneys /
+sky clouds / heart roots) + ambient motes to kill the empty-void look.
+
+**Verified.** Winnability is proven the metroidvania way (the graph solver, a
+stronger guarantee than any single bot run) + a deterministic tutorial romp with a
+pinned golden + first-screen layout-lint/control-hints + an opening filmstrip.
+Everything visual is cosmetic (world.state.kg is the only hashed truth). ~36
+example tests; whole portfolio green.
+
+**What transfers.** The lesson that carried the whole build: a flagship is a
+*scaling* problem, not an invention problem, once the verifiable spine exists —
+and the spine is a reduction to a primitive you already have. Progression graphs,
+lock-and-key dungeons, tech trees, and quest chains are all the same `Puzzle`.
