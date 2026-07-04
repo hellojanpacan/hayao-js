@@ -40,9 +40,15 @@ canvas-clipped region is empty and it unwraps `None`. `scripts/svg-sanitize.mjs`
 culls exactly those off-canvas layer-forcing elements before rasterizing — lossless,
 since an off-canvas element draws nothing — so all games render. Rasterization also
 runs in an isolated child process, so any *other* pathological SVG skips one image
-rather than aborting the run. (One caveat: resvg renders with system fonts, so a
-game's text may show as fallback/□ glyphs in the PNG — judge composition from these,
-and read fine text live in-browser.)
+rather than aborting the run.
+
+**Fonts.** `scripts/judge-fonts.mjs` feeds resvg a MINIMAL controlled set — one serif
+(the default family) plus a symbol font — with system fonts OFF. That renders text
+TRUE: with system fonts on, a run containing one exotic glyph (e.g. `⛩`) makes resvg
+reassign the whole line to a glyph-poor CJK font → the entire line turns to boxes; a
+small set keeps Latin in the serif and falls back per-glyph, so at worst a single
+decorative emoji shows as `□`, never a whole line. Candidate font paths cover macOS
+and common Linux locations; if none exist it falls back to system fonts.
 
 ## The rubric
 
