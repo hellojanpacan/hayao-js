@@ -162,10 +162,11 @@ A game is done when ALL of the following hold. This is a checklist, not a vibe.
 4. **Deterministic replay verified** — `assertDeterministic(game, seed,
    inputLog)` passes: two runs of the same seed + input log produce an identical
    `world.hash()` at every checkpoint.
-5. **A headless SVG screenshot reviewed** — render a representative frame with
-   `HeadlessRenderer.toSVGString()` and actually look at it: palette, layering,
-   contrast, legibility. Aesthetics are judged here and ONLY here; correctness
-   was already proven numerically in steps 3–4.
+5. **The vision judge run and its high findings fixed** — `npm run judge <slug>`
+   renders the game to PNG; actually LOOK at it and score against
+   [JUDGE.md](JUDGE.md) (readability, depth, palette, juice, motion, chrome). Fix
+   every high-severity finding with cosmetic changes (the golden hash must stay
+   unchanged). "Passes the gates" is not "looks shipped"; this closes that gap.
 6. **A complete loop exists** — start → play → win/lose → restart, keyboard-only,
    and `restart` fully rebuilds world state (no leaked nodes, no stale RNG).
 7. **The full run's hash is pinned** — `t.golden('full run', world.hash())` in
@@ -175,3 +176,9 @@ A game is done when ALL of the following hold. This is a checklist, not a vibe.
    metrics with tuned windows, plus a `renderFilmstrip` artifact reviewed for
    motion/readability (VERIFICATION §Channel 3). Windows come from a run you
    judged, not from thin air.
+9. **A feel spec is declared and its gates pass** — `export const feel: FeelSpec`
+   in `game.ts` (avatar fill for salience; controller config for forgiveness; a
+   feedback contract; `scrolls` for the camera gate). `npm run feel` runs every
+   gate the spec enables and is part of `npm run verify` — the professional FLOOR
+   is now a CI gate, not a hope (VERIFICATION §Channel 4). Declare only what is
+   honestly true; a false contract is worse than none.

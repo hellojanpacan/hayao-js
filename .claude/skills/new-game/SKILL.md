@@ -64,9 +64,15 @@ card for the game to the root `index.html` hub (copy an existing
    `recordTimeline`-based metrics gated on windows derived from a run you
    actually judged — plus a `renderFilmstrip` artifact
    (`t.artifact('run-filmstrip.svg', …)`) reviewed for motion and readability.
-5. Headless SVG screenshot (`HeadlessRenderer.toSVGString()`) — judge palette,
-   layering, contrast, legibility. Looks only, never correctness.
-6. Complete loop: start → play → win/lose → restart, keyboard-only.
+5. **Declare a feel spec** — `export const feel: FeelSpec` in `game.ts` (avatar
+   fill; controller config; feedback contract; `scrolls`). `npm run feel` (now
+   part of `npm run verify`) runs the four feel gates — the professional floor
+   (docs/VERIFICATION.md §Channel 4). Declare only what is honestly true.
+6. **Run the vision judge** — `npm run judge <slug>`, then VIEW the PNGs and score
+   against docs/JUDGE.md; fix every high-severity finding (cosmetic only — the
+   golden hash must stay unchanged). Use `/judge` to drive the loop. This is where
+   "passes the gates" becomes "looks shipped."
+7. Complete loop: start → play → win/lose → restart, keyboard-only.
 
 The full definition of done is `docs/CONVENTIONS.md` §Definition of done — it
 is a checklist, not a vibe.
