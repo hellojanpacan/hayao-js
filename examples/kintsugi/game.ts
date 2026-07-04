@@ -7,7 +7,6 @@
 import {
   Node,
   Sprite,
-  Text,
   audio,
   linearGradient,
   radialGradient,
@@ -36,6 +35,7 @@ import { biomeArt } from './biome';
 import { menderNode, motionFrom } from './mender';
 import { ATTACK_TIME, IFRAMES, type EnemyState } from './combat';
 import { MusicDirector } from './music';
+import { StoryCards, PROLOGUE, ABILITY_LINES, SHARD_LINE, GUARDIAN_INTRO } from './story';
 
 export const KG_INPUT_MAP: InputMap = {
   left: ['ArrowLeft', 'KeyA'],
@@ -53,6 +53,10 @@ const VIEW_H = 720;
 
 const biomeOf = (region: string): string => KINTSUGI_WORLD.regions.find((r) => r.id === region)?.biome ?? 'grove';
 const biomeMeta = (id: string) => BIOMES.find((b) => b.id === id);
+const firstSentence = (s: string): string => {
+  const i = s.indexOf('. ');
+  return i >= 0 ? s.slice(0, i + 1) : s;
+};
 
 /** A node that blits precomputed draw commands (e.g. autotile output). */
 class Blit extends Node {
@@ -80,6 +84,8 @@ class KintsugiView extends Node {
   private ended = false;
   private music = new MusicDirector();
   private lastBiome = '';
+  private story!: StoryCards;
+  private shownGuardians = new Set<string>();
 
   private get kg(): KgState {
     const w = this.world as World;
@@ -94,8 +100,10 @@ class KintsugiView extends Node {
     this.addChild(this.room);
     this.addChild(this.actor);
     this.addChild(this.hud);
+    this.story = new StoryCards(this.hud);
     this.rebuildRoom();
     this.buildHud();
+    this.story.card('Kintsugi', PROLOGUE, 8);
   }
 
   // ── room rendering ────────────────────────────────────────────────
@@ -275,7 +283,7 @@ class KintsugiView extends Node {
     if (ev.saved) audio.success();
     if (ev.died) audio.blip(150);
 
-    // story beat + adaptive music on entering a biome
+    // story beats + adaptive music on entering a biome / room
     const biome = biomeOf(kg.region);
     if (biome !== this.lastBiome) {
       this.music.setBiome(biome);
@@ -284,7 +292,17 @@ class KintsugiView extends Node {
     if (!this.shownBeats.has(biome)) {
       this.shownBeats.add(biome);
       const meta = biomeMeta(biome);
-      if (meta) this.flashBiomeName(meta.name);
+      if (meta) this.story.card(meta.name, firstSentence(meta.beat));
+    }
+    const intro = GUARDIAN_INTRO[kg.region];
+    if (intro && !this.shownGuardians.has(kg.region)) {
+      this.shownGuardians.add(kg.region);
+      this.story.card(biomeMeta(biome)?.name ?? '', intro, 6);
+    }
+    if (ev.picked) {
+      const pk = KINTSUGI_WORLD.pickups.find((p) => p.id === ev.picked);
+      const line = pk && !pk.grants.startsWith('shard:') ? ABILITY_LINES[pk.grants] : SHARD_LINE;
+      if (line) this.story.line(line, kg.p.x + 10, kg.p.y - 24);
     }
     // threat intensity → music adapts (percussion, tempo, darker melody)
     let inten = kg.iframes > 0 ? 0.6 : 0;
@@ -293,16 +311,11 @@ class KintsugiView extends Node {
       inten = Math.max(inten, 1 - d / 380);
     }
     this.music.update(dt, Math.max(0, Math.min(1, inten)));
+    this.story.update(dt);
 
     if (this.sig !== `${kg.region}|${kg.taken.length}`) this.rebuildRoom();
     this.updateActor();
     this.updateHud();
-  }
-
-  private flashBiomeName(name: string): void {
-    const t = new Text({ name: 'biomeName', text: name, pos: { x: VIEW_W / 2, y: 130 }, z: 105, size: 40, align: 'center', fill: KENTO.gofun, font: 'Georgia, serif' });
-    this.hud.addChild(t);
-    // a simple fade via a timer node would be nicer; for now it lives until room rebuild
   }
 
   private win(): void {
@@ -321,9 +334,12 @@ class KintsugiView extends Node {
     (w.state as Record<string, unknown>).kg = initialState();
     this.ended = false;
     this.shownBeats.clear();
+    this.shownGuardians.clear();
     this.lastBiome = '';
     this.phase = 0;
     hideScreen();
+    this.story.clear();
+    this.story.card('Kintsugi', PROLOGUE, 8);
     this.rebuildRoom();
     this.updateActor();
     this.updateHud();
