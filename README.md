@@ -3,9 +3,9 @@
 [![ci](https://github.com/hellojanpacan/hayao-js/actions/workflows/ci.yml/badge.svg)](https://github.com/hellojanpacan/hayao-js/actions/workflows/ci.yml)
 
 **Play the machine-verified example games at [hayao.dev/play](https://hayao.dev/play/).**
-Three are art-finished in the house woodblock style (Lanternway, Rootward,
-Tarnholm); the rest are playable engine slices. See where it's headed on the
-[roadmap](https://hayao.dev/roadmap/).
+Four are art-finished in the house woodblock style (Lanternway, Rootward,
+Tarnholm, Driftlight); the rest are playable engine slices. See where it's headed
+on the [roadmap](https://hayao.dev/roadmap/).
 
 **An AI-first game engine.** A deterministic, headless-native simulation kernel
 with a Godot-style scene tree, pluggable renderers (SVG / Canvas / headless),
@@ -127,6 +127,7 @@ reasoning in [docs/ENGINE.md](docs/ENGINE.md).
 
 ## Documentation
 
+- [docs/QUICKSTART.md](docs/QUICKSTART.md) — **using `hayao` from npm**: install (it's ESM-only), define a game, and prove it correct headlessly — a complete runnable example.
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — the authoritative design and the determinism contract.
 - [docs/CONVENTIONS.md](docs/CONVENTIONS.md) — how games are structured, house style, definition of done.
 - [docs/VERIFICATION.md](docs/VERIFICATION.md) — the two verification channels; how to prove a game correct.
