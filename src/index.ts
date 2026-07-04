@@ -100,6 +100,7 @@ export * from './persist/save';
 // ── content: data-driven wave/spawn directors + upgrade trees ───
 export * from './content/dsl';
 export * from './content/level';
+export * from './content/worldgraph';
 
 // ── net: deterministic multiplayer (lockstep / rollback) ────────
 export * from './net/players';
