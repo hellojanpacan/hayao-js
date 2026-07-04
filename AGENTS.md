@@ -25,13 +25,32 @@ scaffolds a runnable game whose starter already generates a solver-proven campai
 - `/retro` — end-of-session: log process friction to `docs/FRICTION.md` and
   land the doc/check fix that prevents a recurrence.
 
+## Design from the mechanic, not from the corpus
+The examples exist to **prove the engine** and to **show conventions** — they are
+proof fixtures, not a catalogue of what a hayao game may be. They were built fast
+to stress one capability each, so their *ambition* is a floor, not a ceiling.
+Treat them accordingly:
+- Decide what the game is **from its core mechanic and player fantasy**, as if the
+  corpus didn't exist. Do NOT open `examples/` asking "what should I make?" — that
+  is how thirty simple prototypes quietly become the design spec for the next one.
+- Reach for an example only to answer **"how is this wired?"** (state/view split,
+  `defineGame`, probes) — never **"what should this be?"**.
+- To learn ONE primitive in isolation (physics, particles, camera, pathfinding,
+  tweens, procgen, audio), read the matching `sandboxes/<x>-lab` — a single
+  mechanic with tunable knobs, no genre attached. Sandboxes teach you to *compose
+  parts*; games would teach you to *imitate a genre*.
+- Aim above the corpus. If the idea resembles an existing example, push it until
+  it does something no example does. The engine's ceiling is Godot/GameMaker, not
+  the last prototype in `examples/`.
+
 ## Before writing game code
 1. Read `docs/FUN.md` (the design playbook: universal laws, your genre's
    cheat sheet, and the before-you-author-content checklist).
 2. Read `docs/CONVENTIONS.md` (structure, house style, definition of done).
 3. Read `docs/VERIFICATION.md` (how you will test what you build).
 4. Grep `docs/API.md` (or `src/index.ts`) for the REAL API. Never guess a name.
-5. Copy `examples/sokoban/` — it is the living reference for every convention.
+5. Copy `examples/sokoban/` for its **structure** (the logic/view split, the file
+   contract) — not its scope. Consult `sandboxes/` for how each primitive is used.
 
 ## Hard invariants
 The statically checkable ones are enforced by `npm run invariants` (first

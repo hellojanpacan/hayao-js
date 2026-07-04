@@ -217,6 +217,22 @@
         </div>
       </section>
 
+      <section class="sec">
+        <div class="head"><div class="lab">sandboxes</div><h2>Poke the engine</h2></div>
+        <p class="desc">Not games — single-mechanic labs. Each isolates <em>one</em> primitive with the knobs exposed, so you can see how a part
+          behaves before you compose it into anything. This is the reference for “how do I use X?”; the games above are the reference for “how is a game
+          <em>structured</em>.” Source: <a href="https://github.com/hellojanpacan/hayao-js/tree/main/sandboxes">sandboxes/</a>.</p>
+        <div class="grid">
+          <div class="card"><span class="genre">rigid bodies</span><h3><a href="../sandboxes/physics-lab/index.html">Physics Lab</a></h3><p>Drop bodies into a bin and watch the constraint solver stack them. Knobs: SPACE drop, X box/circle, ↑↓ gravity, R clear. The <code>createRigidWorld</code> primitive, alone.</p><div class="links"><a href="../sandboxes/physics-lab/index.html">open →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/sandboxes/physics-lab">source →</a></div></div>
+          <div class="card"><span class="genre">particles</span><h3><a href="../sandboxes/particle-studio/index.html">Particle Studio</a></h3><p>A fountain of the <code>PARTICLE_PRESETS</code>; SPACE fires a big burst. Knobs: X cycles preset, ↑↓ count. Seeded, so the same run re-derives.</p><div class="links"><a href="../sandboxes/particle-studio/index.html">open →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/sandboxes/particle-studio">source →</a></div></div>
+          <div class="card"><span class="genre">camera follow</span><h3><a href="../sandboxes/camera-lab/index.html">Camera Lab</a></h3><p>Drive a dot; a <code>Camera2D</code> + <code>CameraController</code> chases it through a deadzone, smoothed, edge-clamped. Knobs: arrows move, Z/X deadzone, C smoothing.</p><div class="links"><a href="../sandboxes/camera-lab/index.html">open →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/sandboxes/camera-lab">source →</a></div></div>
+          <div class="card"><span class="genre">pathfinding</span><h3><a href="../sandboxes/pathfinding-demo/index.html">Pathfinding Demo</a></h3><p>Paint walls and watch <code>astarGrid</code> re-solve instantly. Knobs: arrows move cursor, SPACE wall, X goal, Z diagonal, R clear. Fully deterministic.</p><div class="links"><a href="../sandboxes/pathfinding-demo/index.html">open →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/sandboxes/pathfinding-demo">source →</a></div></div>
+          <div class="card"><span class="genre">tween &amp; easing</span><h3><a href="../sandboxes/juice-lab/index.html">Juice Lab</a></h3><p>Every <code>EASINGS</code> curve plotted at once with a marker sweeping along it, so you can see each one's character. Knobs: ↑↓ sweep speed, Z pause.</p><div class="links"><a href="../sandboxes/juice-lab/index.html">open →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/sandboxes/juice-lab">source →</a></div></div>
+          <div class="card"><span class="genre">procedural generation</span><h3><a href="../sandboxes/procgen-lab/index.html">Procgen Lab</a></h3><p>Seeded cellular-automata caverns via <code>generateCave</code>; the same seed always re-derives the same cave. Knobs: SPACE re-roll, ↑↓ fill %, X smoothing passes.</p><div class="links"><a href="../sandboxes/procgen-lab/index.html">open →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/sandboxes/procgen-lab">source →</a></div></div>
+          <div class="card"><span class="genre">procedural audio</span><h3><a href="../sandboxes/synth-lab/index.html">Synth Lab</a></h3><p>The zzfx-style synth (<code>audio.playSpec</code>) with the waveform plotted live. Knobs: SPACE play, ↑↓ pitch, X waveform, ←→ envelope. No sound files.</p><div class="links"><a href="../sandboxes/synth-lab/index.html">open →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/sandboxes/synth-lab">source →</a></div></div>
+        </div>
+      </section>
+
       <footer>
         hayao.js · MIT · <a href="../">home</a> · <a href="https://hayao.js.org/">docs</a> · <a href="../roadmap/">roadmap</a> · <a href="https://github.com/hellojanpacan/hayao-js">GitHub</a><br />
         Every game ships a <code>verify.ts</code> suite that machine-proves its truth — solver proofs, bot runs, replay hashes. Run the lot with <code>npm run verify</code>.
