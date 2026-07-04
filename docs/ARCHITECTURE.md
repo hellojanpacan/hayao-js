@@ -121,6 +121,54 @@ text (narrow-js lesson: humans compare canvas text to DOM and canvas loses).
 
 ---
 
+## Core vs. recipes: the seam that keeps the engine small
+
+The engine is broad by design (444 exports across 26 genres of tooling). Broad is
+fine; **broad-and-fused is not**. If "add a genre" means adding genre logic *to the
+framework*, every new game makes the engine heavier instead of the ecosystem
+richer, and the barrel calcifies into an API nobody can safely change.
+
+So there is a seam:
+
+- **core** — everything behind `@hayao` that is *genre-agnostic*: world, rng, hash,
+  clock, the scene tree, physics, render backends, and the verify harness. Every
+  export here is public API, maintained forever. Deleting a piece would break many
+  games.
+- **recipes** ([`recipes/`](../recipes)) — genre *feel* as patterns you **copy
+  into your game** and own, not APIs you import. A platformer's input→juice wiring,
+  a wave director, a draft loop. Deleting one only changes *its* game.
+
+> If deleting it breaks another game, it's core. If it only changes this game, it's
+> a recipe — copy it, don't import it.
+
+This inversion is a **staged migration**, stated honestly: the barrel is not split
+yet, and genre helpers still live under `@hayao`. What is in place is the seam and
+its doctrine (`recipes/README.md`), plus the first artifact that clearly belongs in
+*core* rather than a recipe — the level format.
+
+### content/ — geometry as provable data (the level format)
+
+A `LevelData` is a plain-JSON stage: ASCII terrain, a spawn, a goal, legend-tagged
+entities. It earns a place in core the way a scene does — because a solver can bite
+on it:
+
+- **`defineLevel` / `levelIssues`** — author and validate a stage as data.
+- **`levelToTilemap`** — realize its collision geometry.
+- **`levelReachable`** (flood) and **`platformerReachable`** (foothold + jump-arc) —
+  *prove the goal reachable from the data alone*, before any node is built. This is
+  "procgen connectivity gate FIRST" (FUN law) made checkable for hand-authored
+  stages too.
+- **`diffLevels`** — a structural diff, so a data-authored stage is *iterable*:
+  change three tiles, see exactly three changes — not a rewritten `build()` only a
+  human can eyeball.
+
+The reference instance is [`examples/updrift`](../examples/updrift): its whole
+ascent is generated as `LevelData`, proven climbable by `platformerReachable`, then
+skinned by a `cosmetic` view. Geometry-as-data is core; the *feel* laid over it is a
+recipe ([`recipes/platformer-feel.md`](../recipes/platformer-feel.md)).
+
+---
+
 ## Determinism rules (the contract that makes all of the above true)
 1. All randomness flows through `Rng`. `Math.random()` is banned in `src/` and games.
 2. No wall-clock reads in the sim (`Date.now()`, `performance.now()`) — time comes
