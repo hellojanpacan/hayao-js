@@ -33,6 +33,17 @@ loop. Fixes must stay **cosmetic** — the judge changes how a game *looks*, nev
 it *plays*; the golden replay hash must be unchanged after a judge pass (view nodes
 are `cosmetic`, so it will be).
 
+**Rasterizer robustness.** `@resvg/resvg-js` 2.6.2 has a bug: it *panics* (an
+uncatchable native abort) when an element that forces an isolation layer
+(`opacity<1`, `filter`, `mask`, `clip-path`) sits entirely off-canvas — the layer's
+canvas-clipped region is empty and it unwraps `None`. `scripts/svg-sanitize.mjs`
+culls exactly those off-canvas layer-forcing elements before rasterizing — lossless,
+since an off-canvas element draws nothing — so all games render. Rasterization also
+runs in an isolated child process, so any *other* pathological SVG skips one image
+rather than aborting the run. (One caveat: resvg renders with system fonts, so a
+game's text may show as fallback/□ glyphs in the PNG — judge composition from these,
+and read fine text live in-browser.)
+
 ## The rubric
 
 Score each 1–5. A game is "shipped" when every axis is ≥ 4 and nothing is a 1–2.
