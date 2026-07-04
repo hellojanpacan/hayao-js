@@ -16,6 +16,18 @@ import {
 import { KINTSUGI_WORLD, ABIL } from './world';
 import { configFor } from './abilities';
 import { roomSpec, roomRows, entryFor, MARK_PICKUPS, RW, RH, TS, type Dir } from './rooms';
+import {
+  spawnEnemy,
+  stepEnemies,
+  resolvePlayerAttack,
+  attackHitbox,
+  ATTACK_TIME,
+  HITSTOP,
+  IFRAMES,
+  PLAYER_KNOCK,
+  type EnemyState,
+  type Orb,
+} from './combat';
 
 const OPPOSITE: Record<Dir, Dir> = { left: 'right', right: 'left', up: 'down', down: 'up' };
 
@@ -39,6 +51,23 @@ export interface KgState {
   /** Set true when a save shrine was just touched (for a view flourish). */
   savedFlash: number;
   won: boolean;
+  // ── combat ──
+  enemies: EnemyState[];
+  orbs: Orb[];
+  /** Swing timer, counts down from ATTACK_TIME; 0 = not swinging. */
+  atk: number;
+  /** Whether the current swing has already landed a hit. */
+  atkHit: boolean;
+  /** Invulnerability seconds after taking damage. */
+  iframes: number;
+  /** Frozen-frames on a landed hit (juice), in seconds. */
+  hitstop: number;
+}
+
+/** Spawn a room's enemies fresh from its spec (tile coords → world px). */
+export function spawnRoomEnemies(region: string): EnemyState[] {
+  const spec = roomSpec(region);
+  return (spec?.enemies ?? []).map((e) => spawnEnemy(e.kind, e.x * TS, e.y * TS));
 }
 
 export const START_HP = 4;
@@ -96,6 +125,12 @@ export function initialState(): KgState {
     save: { region: KINTSUGI_WORLD.start, x: shr ? shr.x : p.x, y: shr ? shr.y - TS : p.y },
     savedFlash: 0,
     won: false,
+    enemies: spawnRoomEnemies(KINTSUGI_WORLD.start),
+    orbs: [],
+    atk: 0,
+    atkHit: false,
+    iframes: 0,
+    hitstop: 0,
   };
 }
 
@@ -107,41 +142,93 @@ export interface KgEvents {
   jumped: boolean;
   dashed: boolean;
   landed: boolean;
+  attacked: boolean;
+  hitEnemy: boolean;
+  killed: number;
+  hurt: boolean;
 }
 
-const NO_EV: KgEvents = { transitioned: false, picked: null, saved: false, died: false, jumped: false, dashed: false, landed: false };
+const NO_EV: KgEvents = { transitioned: false, picked: null, saved: false, died: false, jumped: false, dashed: false, landed: false, attacked: false, hitEnemy: false, killed: 0, hurt: false };
 
 const overlaps = (ax: number, ay: number, aw: number, ah: number, bx: number, by: number, bw: number, bh: number): boolean =>
   ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
 
+function respawnAtSave(s: KgState): void {
+  s.deaths += 1;
+  s.hp = s.maxHp;
+  s.region = s.save.region;
+  s.p = createPlatformerState(s.save.x, s.save.y);
+  s.enemies = spawnRoomEnemies(s.region);
+  s.orbs = [];
+  s.atk = 0;
+  s.atkHit = false;
+  s.iframes = 1;
+}
+
 /** Advance the Mender one fixed step. Mutates `s`; returns events for the view. */
-export function stepKintsugi(s: KgState, pad: PadInput, dt: number): KgEvents {
+export function stepKintsugi(s: KgState, pad: PadInput, dt: number, attack = false): KgEvents {
   if (s.won) return { ...NO_EV };
   const ev: KgEvents = { ...NO_EV };
   const cfg = configFor(s.abilities);
   const map = mapFor(s.region);
+  const w = cfg.width;
+  const h = cfg.height;
+
+  // Hit-stop: hold the frame briefly on impact for weighty, readable hits.
+  if (s.hitstop > 0) {
+    s.hitstop = Math.max(0, s.hitstop - dt);
+    return ev;
+  }
+  if (s.iframes > 0) s.iframes = Math.max(0, s.iframes - dt);
+  if (s.savedFlash > 0) s.savedFlash = Math.max(0, s.savedFlash - dt);
+
+  // Begin a swing (the gold blade).
+  if (attack && s.atk <= 0) {
+    s.atk = ATTACK_TIME;
+    s.atkHit = false;
+    ev.attacked = true;
+  }
 
   const pe = stepPlatformer(s.p, pad, dt, map, cfg);
   ev.jumped = pe.jumped || pe.airJumped || pe.wallJumped;
   ev.dashed = pe.dashed;
   ev.landed = pe.landed;
-  if (s.savedFlash > 0) s.savedFlash = Math.max(0, s.savedFlash - dt);
 
-  // Death (hazard / fell out): lose a heart and return to the last shrine.
-  if (s.p.dead || pe.died) {
-    s.deaths += 1;
-    s.hp = s.maxHp;
-    s.region = s.save.region;
-    const sp = roomSpec(s.region)!;
-    const back = createPlatformerState(s.save.x, s.save.y);
-    s.p = back;
-    void sp;
+  // Resolve the active swing against enemies (once per swing).
+  if (s.atk > 0) {
+    s.atk = Math.max(0, s.atk - dt);
+    if (!s.atkHit) {
+      const box = attackHitbox(s.p.x, s.p.y, w, h, s.p.facing, s.atk);
+      if (box) {
+        const res = resolvePlayerAttack(box, s.p.x + w / 2, s.enemies);
+        if (res.hits > 0) {
+          s.atkHit = true;
+          s.hitstop = HITSTOP / 60;
+          ev.hitEnemy = true;
+          ev.killed = res.killed;
+        }
+      }
+    }
+  }
+
+  // Enemies act; their contact/orbs deal damage (respecting i-frames).
+  const er = stepEnemies(s.enemies, s.orbs, s.p.x, s.p.y, w, h, dt, map);
+  for (let i = s.enemies.length - 1; i >= 0; i--) if (s.enemies[i].hp <= 0) s.enemies.splice(i, 1);
+  if (er.playerDmg > 0 && s.iframes <= 0) {
+    s.hp -= er.playerDmg;
+    s.iframes = IFRAMES;
+    s.p.vx += er.knockDir * PLAYER_KNOCK;
+    s.p.vy -= 150;
+    s.hitstop = 3 / 60;
+    ev.hurt = true;
+  }
+
+  // Death: hazard, fell out, or ran out of hearts → back to the last shrine.
+  if (s.p.dead || pe.died || s.hp <= 0) {
+    respawnAtSave(s);
     ev.died = true;
     return ev;
   }
-
-  const w = cfg.width;
-  const h = cfg.height;
 
   // Save shrine: standing on it records the checkpoint + heals.
   const shr = shrineIn(s.region);
@@ -183,6 +270,9 @@ export function stepKintsugi(s: KgState, pad: PadInput, dt: number): KgEvents {
       s.p.y = entry.y * TS;
       // keep vertical momentum through vertical seams; damp horizontal
       s.p.vx *= 0.3;
+      s.enemies = spawnRoomEnemies(target);
+      s.orbs = [];
+      s.atk = 0;
       ev.transitioned = true;
     }
   }

@@ -7,6 +7,7 @@
 // connect; these specs place the physical seam and the platforming between them.
 
 import { ABIL } from './world';
+import type { EnemyKind } from './combat';
 
 export const RW = 40; // room width in tiles
 export const RH = 22; // room height in tiles
@@ -25,6 +26,8 @@ export interface RoomSpec {
   hazard?: Span[];
   /** Markers: char → [x,y] tile. e.g. shrine pickups. */
   marks?: { char: string; x: number; y: number }[];
+  /** Enemies spawned (fresh) each time the room is entered; tile coords. */
+  enemies?: { kind: EnemyKind; x: number; y: number }[];
 }
 
 // Fixed seam positions so adjacent rooms connect cleanly. Horizontal seams sit at
@@ -111,6 +114,7 @@ const GROVE: RoomSpec[] = [
       [20, 13, 5, 1], // higher platform under the up-exit
     ],
     hazard: [[27, 19, 9]], // the dash-pit below the right seam
+    enemies: [{ kind: 'husk', x: 12, y: 18 }],
   },
   {
     region: 'grove_climb',
@@ -121,6 +125,10 @@ const GROVE: RoomSpec[] = [
       [14, 13, 4, 1],
       [22, 10, 4, 1], // highest single-jump platform
       [17, 5, 6, 1], // ledge under the up-exit — reachable only with Goldstep
+    ],
+    enemies: [
+      { kind: 'husk', x: 28, y: 18 },
+      { kind: 'mote', x: 20, y: 11 },
     ],
   },
   {

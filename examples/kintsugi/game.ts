@@ -33,6 +33,7 @@ import { initialState, stepKintsugi, padFrom, pickupsIn, mapFor, START_HP, type 
 import { roomRows, MARK_PICKUPS, RW, RH, TS } from './rooms';
 import { biomeArt } from './biome';
 import { menderNode, motionFrom } from './mender';
+import { ATTACK_TIME, IFRAMES, type EnemyState } from './combat';
 
 export const KG_INPUT_MAP: InputMap = {
   left: ['ArrowLeft', 'KeyA'],
@@ -72,8 +73,6 @@ class KintsugiView extends Node {
   private actor = new Node({ name: 'actor' });
   private hud = new Node({ name: 'hud' });
   private phase = 0;
-  private viewAttack = 0;
-  private hurtView = 0;
   private sig = '';
   private shownBeats = new Set<string>();
   private ended = false;
@@ -207,16 +206,42 @@ class KintsugiView extends Node {
   private updateActor(): void {
     for (const c of this.actor.children.slice()) this.actor.removeChild(c);
     const kg = this.kg;
+    // enemies (behind the Mender)
+    for (const e of kg.enemies) this.actor.addChild(this.enemyNode(e));
+    for (const o of kg.orbs) this.actor.addChild(new Sprite({ pos: { x: o.x, y: o.y }, z: 26, shape: { kind: 'circle', radius: 7 }, gradient: radialGradient([KENTO.gofun, KENTO.shu, withAlpha(KENTO.shuDeep, 0)]), shadow: glow(withAlpha(KENTO.shu, 0.9), 10) }));
+
     const p = kg.p;
-    const attacking = this.viewAttack > 0;
-    const motion = motionFrom(p.onGround, p.vx, p.vy, p.dashing > 0, attacking, this.hurtView > 0);
+    const attacking = kg.atk > 0;
+    const justHurt = kg.iframes > IFRAMES - 0.22;
+    // blink while invulnerable
+    if (kg.iframes > 0 && !justHurt && Math.floor(this.phase * 20) % 2 === 0) return;
+    const motion = motionFrom(p.onGround, p.vx, p.vy, p.dashing > 0, attacking, justHurt);
     const node = menderNode({
       x: p.x, y: p.y, w: 20, h: 36, facing: p.facing, phase: this.phase, motion,
-      attackT: attacking ? 1 - this.viewAttack / 0.28 : 0,
-      hurtT: this.hurtView > 0 ? this.hurtView / 0.3 : 0,
+      attackT: attacking ? 1 - kg.atk / ATTACK_TIME : 0,
+      hurtT: justHurt ? 1 : 0,
     });
     node.pos = { x: p.x + 10, y: p.y + 18 };
     this.actor.addChild(node);
+  }
+
+  /** A grief-hardened guardian: dark cracked ceramic with red seams + a lit eye. */
+  private enemyNode(e: EnemyState): Node {
+    const g = new Node({ pos: { x: e.x + e.w / 2, y: e.y + e.h / 2 }, z: 25 });
+    g.cosmetic = true;
+    const tell = e.st === 'tell';
+    const body = mix(KENTO.sumi, KENTO.kuro, 0.4);
+    g.addChild(new Sprite({ z: 24, shape: { kind: 'circle', radius: e.w * 0.7 }, fill: withAlpha(KENTO.yohaku, 0.2) }));
+    if (e.kind === 'mote') {
+      g.addChild(new Sprite({ z: 25, shape: { kind: 'poly', points: [0, -e.h / 2, e.w / 2, 0, 0, e.h / 2, -e.w / 2, 0], closed: true }, fill: body, stroke: KENTO.shuDeep, strokeWidth: 2, shadow: tell ? glow(withAlpha(KENTO.shu, 0.9), 12) : undefined }));
+    } else {
+      g.addChild(new Sprite({ z: 25, shape: { kind: 'rect', w: e.w, h: e.h, r: e.w * 0.32 }, fill: body, stroke: KENTO.shuDeep, strokeWidth: 2.5, shadow: e.hurt > 0 ? glow(KENTO.gofun, 10) : undefined }));
+    }
+    // red grief seams
+    g.addChild(new Sprite({ z: 26, shape: { kind: 'poly', points: [-e.w * 0.2, -e.h * 0.2, e.w * 0.05, 0, -e.w * 0.1, e.h * 0.24], closed: false }, stroke: KENTO.shu, strokeWidth: 1.6, round: true, fill: 'none', shadow: glow(withAlpha(KENTO.shu, 0.6), 4) }));
+    // eye
+    g.addChild(new Sprite({ pos: { x: e.face * e.w * 0.16, y: -e.h * 0.08 }, z: 27, shape: { kind: 'circle', radius: 3 }, fill: e.hurt > 0 ? KENTO.gofun : KENTO.shu, shadow: glow(KENTO.shu, 5) }));
+    return g;
   }
 
   // ── loop ──────────────────────────────────────────────────────────
@@ -225,8 +250,6 @@ class KintsugiView extends Node {
     const w = this.world as World;
     const input = w.input;
     this.phase += dt;
-    if (this.viewAttack > 0) this.viewAttack = Math.max(0, this.viewAttack - dt);
-    if (this.hurtView > 0) this.hurtView = Math.max(0, this.hurtView - dt);
 
     if (input.justPressed('restart')) return this.restart();
     const kg = this.kg;
@@ -234,19 +257,19 @@ class KintsugiView extends Node {
       if (!this.ended) this.win();
       return;
     }
-    if (input.justPressed('attack') && this.viewAttack <= 0) {
-      this.viewAttack = 0.28;
-      audio.blip(300);
-    }
 
     const pad = padFrom(input);
-    const ev = stepKintsugi(kg, pad, dt);
+    const ev = stepKintsugi(kg, pad, dt, input.justPressed('attack'));
 
+    if (ev.attacked) audio.blip(300);
     if (ev.jumped) audio.blip(520);
     if (ev.dashed) audio.blip(380);
+    if (ev.hitEnemy) audio.blip(680);
+    if (ev.killed > 0) audio.chime();
+    if (ev.hurt) audio.blip(180);
     if (ev.picked) audio.chime();
     if (ev.saved) audio.success();
-    if (ev.died) { audio.blip(150); this.hurtView = 0.3; }
+    if (ev.died) audio.blip(150);
 
     // story beat on first entry to a biome
     const biome = biomeOf(kg.region);
