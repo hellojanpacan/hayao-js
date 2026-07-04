@@ -199,7 +199,54 @@ export function estimateTempo(sig: Samples, sampleRate = SAMPLE_RATE): number {
     }
   }
   if (bestLag === 0) return 0;
-  return (60 * envRate) / bestLag;
+  // Autocorrelation readily locks onto a subdivision or a multiple; fold the
+  // result into a musical range so a slow rubato piece doesn't read as 4× tempo.
+  let bpm = (60 * envRate) / bestLag;
+  while (bpm > 150) bpm /= 2;
+  while (bpm > 0 && bpm < 70) bpm *= 2;
+  return bpm;
+}
+
+/** Crest factor in dB (peak / rms). Music usually lives ~8–20 dB; a tiny value
+ * means it's squashed/distorted, a huge value means it's mostly silence. */
+export function crestFactorDb(sig: Samples): number {
+  const r = rms(sig);
+  if (r < 1e-9) return 0;
+  return dbfs(peakAmp(sig)) - dbfs(r);
+}
+
+/** Fractional energy in coarse frequency bands — the spectral balance of a mix.
+ * Returns fractions (summing to ~1) for sub / bass / lowMid / mid / high / air. */
+export interface BandBalance {
+  sub: number; // 20–60 Hz
+  bass: number; // 60–250
+  lowMid: number; // 250–800
+  mid: number; // 800–2500
+  high: number; // 2500–8000
+  air: number; // 8000+
+}
+export function bandBalance(sig: Samples, sampleRate = SAMPLE_RATE): BandBalance {
+  const frameSize = 2048;
+  const edges = [20, 60, 250, 800, 2500, 8000, sampleRate / 2];
+  const acc = new Float64Array(6);
+  if (sig.length >= 64) {
+    for (let start = 0; start + 64 <= sig.length; start += frameSize) {
+      const mag = magnitudeSpectrum(sig.subarray(start, Math.min(start + frameSize, sig.length)));
+      const binHz = sampleRate / (mag.length * 2);
+      for (let k = 0; k < mag.length; k++) {
+        const f = k * binHz;
+        const p = mag[k] * mag[k];
+        for (let b = 0; b < 6; b++) {
+          if (f >= edges[b] && f < edges[b + 1]) {
+            acc[b] += p;
+            break;
+          }
+        }
+      }
+    }
+  }
+  const total = acc.reduce((a, b) => a + b, 0) || 1;
+  return { sub: acc[0] / total, bass: acc[1] / total, lowMid: acc[2] / total, mid: acc[3] / total, high: acc[4] / total, air: acc[5] / total };
 }
 
 /** A compact numeric fingerprint of a signal — the audio-filmstrip's assertions. */

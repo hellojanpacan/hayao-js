@@ -6,6 +6,7 @@
 // Web Audio, no files, fully headless and hashable.
 
 import { Rng } from '../core/rng';
+import { TAU } from '../core/math';
 import { renderSound, type SoundSpec } from './synth';
 import { pitchToFreq } from './theory';
 import { applyReverb, type ReverbOptions } from './reverb';
@@ -53,6 +54,24 @@ export interface Song {
   swing?: number;
   /** Humanize 0..1 — small seeded timing/velocity jitter so it doesn't feel robotic. */
   humanize?: number;
+  /**
+   * Velocity→brightness 0..1 — how much a soft note darkens (like a real
+   * instrument: harder = brighter). Scales each voice's lowpass by velocity.
+   * Default 0.5. This is what turns a velocity map into actual phrasing.
+   */
+  velBrightness?: number;
+  /**
+   * Sidechain "pump": a beat-synced ducking of the whole mix — the breathing
+   * signature of electronic music. depth 0..1, beatsPerCycle sets the pulse
+   * (default 1 = every beat).
+   */
+  sidechain?: { depth?: number; beatsPerCycle?: number };
+  /**
+   * Master EQ (a light mastering pass): `lowCut` tucks boomy sub/bass, and
+   * `presence`/`air` lift high-mid clarity and top-end sparkle — so the mix
+   * isn't bass-dominant and the melody cuts through. Each 0..1.
+   */
+  master?: { lowCut?: number; presence?: number; air?: number };
 }
 
 function patternBeats(pattern: Note[]): number {
@@ -93,6 +112,10 @@ export function renderSong(song: Song, opts: { sampleRate?: number; normalizePea
   const durSec = songDuration(song) + tail;
   const bus = createStereo(durSec, sr);
 
+  const swing = Math.max(0, Math.min(1, song.swing ?? 0));
+  const humanize = Math.max(0, Math.min(1, song.humanize ?? 0));
+  const velBright = Math.max(0, Math.min(1, song.velBrightness ?? 0.5));
+
   song.tracks.forEach((track, ti) => {
     const gain = track.gain ?? 0.7;
     const pan = track.pan ?? 0;
@@ -103,22 +126,35 @@ export function renderSong(song: Song, opts: { sampleRate?: number; normalizePea
       if (!pattern) continue;
       for (const note of pattern) {
         if (note.pitch !== null && note.pitch !== undefined) {
-          const startSample = Math.round(beat * secPerBeat * sr);
+          // Swing: push off-beat 8ths later (straight 8ths → shuffled feel).
+          // A note on an odd 8th (the "and") slides toward the triplet grid.
+          const eighth = Math.round(beat * 2);
+          const onOff8 = Math.abs(beat * 2 - eighth) < 1e-4 && eighth % 2 === 1;
+          const swingBeat = onOff8 ? beat + swing * 0.2 : beat;
+          // Humanize: tiny seeded timing (±ms) and velocity nudges so it breathes.
+          const timeJitter = humanize > 0 ? rng.range(-1, 1) * humanize * 0.012 : 0;
+          const startSample = Math.round((swingBeat * secPerBeat + timeJitter) * sr);
           const noteSec = note.beats * secPerBeat;
-          const vel = note.vel ?? 1;
+          const velJitter = humanize > 0 ? rng.range(-1, 1) * humanize * 0.12 : 0;
+          const vel = Math.max(0.05, Math.min(1, (note.vel ?? 1) + velJitter));
           const pitches = Array.isArray(note.pitch) ? note.pitch : [note.pitch];
           const attack = track.instrument.attack ?? 0.005;
           const decay = track.instrument.decay ?? 0;
           const sustain = Math.max(0.01, noteSec - attack - decay);
+          // Velocity → brightness: soft notes get a lower cutoff, so a velocity
+          // map reads as dynamics/timbre, not just loudness.
+          const baseLp = track.instrument.lowpass;
+          const lp = baseLp && velBright > 0 ? baseLp * (1 - velBright * (1 - vel)) : baseLp;
           for (const p of pitches) {
             const spec: SoundSpec = {
               ...track.instrument,
               freq: pitchToFreq(p, a4),
               sustain,
               volume: (track.instrument.volume ?? 0.5) * vel,
+              ...(lp !== undefined ? { lowpass: lp } : {}),
             };
             const sig = renderSound(spec, { rng, sampleRate: sr });
-            mixMono(bus, sig, startSample, gain, pan);
+            mixMono(bus, sig, Math.max(0, startSample), gain, pan);
           }
         }
         beat += note.beats;
@@ -126,9 +162,69 @@ export function renderSong(song: Song, opts: { sampleRate?: number; normalizePea
     }
   });
 
+  if (song.sidechain) {
+    const depth = Math.max(0, Math.min(1, song.sidechain.depth ?? 0.5));
+    const cycleSec = (song.sidechain.beatsPerCycle ?? 1) * secPerBeat;
+    applyPump(bus, cycleSec, depth);
+  }
+  if (song.reverb) applyReverb(bus, song.reverb);
+  if (song.master) applyMasterEq(bus, song.master);
   softClipInPlace(bus);
   normalize(bus, opts.normalizePeak ?? 0.89);
   return bus;
+}
+
+/**
+ * A light master-EQ pass: tuck lows and lift presence/air so a warm, lowpassed
+ * synth mix doesn't turn boomy and the melody stays clear. Built from one-pole
+ * shelves (subtract a lowpassed copy for the cut, add highpassed copies for the
+ * lifts). Deterministic — pure per-sample arithmetic.
+ */
+function applyMasterEq(bus: StereoBuffer, m: { lowCut?: number; presence?: number; air?: number }): void {
+  const sr = bus.sampleRate;
+  const lowCut = Math.max(0, m.lowCut ?? 0);
+  const presence = Math.max(0, m.presence ?? 0);
+  const air = Math.max(0, m.air ?? 0);
+  const coeff = (fc: number) => {
+    const x = TAU * fc * (1 / sr);
+    return x / (x + 1);
+  };
+  const aLow = coeff(240); // tuck the boomy region below ~240 Hz
+  const aPres = 1 - coeff(3200); // presence band above ~3.2 kHz
+  const aAir = 1 - coeff(9000); // air above ~9 kHz
+  for (const ch of [bus.left, bus.right]) {
+    let lp = 0;
+    let hpP = 0;
+    let hpPx = 0;
+    let hpA = 0;
+    let hpAx = 0;
+    for (let i = 0; i < ch.length; i++) {
+      const x = ch[i];
+      lp += aLow * (x - lp);
+      hpP = aPres * (hpP + x - hpPx);
+      hpPx = x;
+      hpA = aAir * (hpA + x - hpAx);
+      hpAx = x;
+      ch[i] = x - lowCut * lp + presence * hpP + air * hpA;
+    }
+  }
+}
+
+/**
+ * Apply a beat-synced ducking envelope (sidechain pump): the gain dips at each
+ * cycle start and recovers over the cycle. Deterministic — a pure function of
+ * sample index. The classic "four-on-the-floor breathing" without a compressor.
+ */
+function applyPump(bus: StereoBuffer, cycleSec: number, depth: number): void {
+  const sr = bus.sampleRate;
+  const period = Math.max(1, cycleSec * sr);
+  for (let i = 0; i < bus.left.length; i++) {
+    const frac = (i % period) / period; // 0 at the beat → 1 at the next
+    const recover = 1 - frac;
+    const duck = 1 - depth * recover * recover; // sharp dip, quick recover
+    bus.left[i] *= duck;
+    bus.right[i] *= duck;
+  }
 }
 
 /**
@@ -136,12 +232,30 @@ export function renderSong(song: Song, opts: { sampleRate?: number; normalizePea
  * timbre" defaults so a composer starts from something musical, then tweaks.
  */
 export const INSTRUMENTS: Record<string, Instrument> = {
-  lead: { wave: 'square', duty: 0.5, attack: 0.008, release: 0.08, volume: 0.4, lowpass: 4000 },
+  // ── melodic ──
+  lead: { wave: 'square', duty: 0.5, attack: 0.008, release: 0.08, volume: 0.4, lowpass: 4000, detune: 6 },
   pluck: { wave: 'triangle', attack: 0.002, decay: 0.06, sustainLevel: 0.3, release: 0.12, volume: 0.42 },
-  bass: { wave: 'saw', attack: 0.006, release: 0.06, volume: 0.5, lowpass: 900 },
-  pad: { wave: 'saw', attack: 0.12, release: 0.5, volume: 0.28, lowpass: 2200, vibrato: 0.1, vibratoFreq: 4 },
+  pad: { wave: 'saw', attack: 0.12, release: 0.5, volume: 0.26, lowpass: 2200, vibrato: 0.08, vibratoFreq: 4, detune: 14 },
   bell: { wave: 'sine', attack: 0.002, decay: 0.3, sustainLevel: 0.2, release: 0.5, volume: 0.4, fm: 3, fmFreq: 220 },
-  kick: { wave: 'sine', attack: 0.001, decay: 0.06, sustainLevel: 0, release: 0.08, slide: -24, volume: 0.7 },
+  // piano-ish: bright mallet attack, harmonic decay to a low sustain
+  piano: { wave: 'triangle', attack: 0.002, decay: 0.5, sustainLevel: 0.12, release: 0.35, volume: 0.42, lowpass: 3600, detune: 4 },
+  // electric piano / Rhodes: FM tine bark + long bloom
+  rhodes: { wave: 'sine', attack: 0.003, decay: 0.45, sustainLevel: 0.35, release: 0.4, volume: 0.4, fm: 2.2, fmFreq: 440, detune: 5 },
+  // string ensemble: detuned saws, slow bow, gentle vibrato
+  strings: { wave: 'saw', attack: 0.16, decay: 0.2, sustainLevel: 0.85, release: 0.6, volume: 0.24, lowpass: 2600, detune: 16, vibrato: 0.07, vibratoFreq: 5 },
+  // brass: bright saw with a punchy front
+  brass: { wave: 'saw', attack: 0.04, decay: 0.1, sustainLevel: 0.8, release: 0.16, volume: 0.3, lowpass: 3200, detune: 8, punch: 0.3 },
+  // organ: sine with sub weight and drawbar-ish steadiness
+  organ: { wave: 'sine', attack: 0.006, release: 0.05, sustainLevel: 1, volume: 0.32, sub: 0.5, detune: 3 },
+  // choir "aah": soft, wide, slow
+  choir: { wave: 'triangle', attack: 0.28, release: 0.9, sustainLevel: 0.9, volume: 0.22, lowpass: 2000, detune: 20, vibrato: 0.1, vibratoFreq: 4.5 },
+  glocken: { wave: 'sine', attack: 0.001, decay: 0.6, sustainLevel: 0, release: 0.4, volume: 0.34, fm: 4, fmFreq: 1600 },
+  // ── bass ──
+  bass: { wave: 'saw', attack: 0.006, release: 0.06, volume: 0.5, lowpass: 900, detune: 6, sub: 0.3 },
+  subBass: { wave: 'sine', attack: 0.004, release: 0.08, volume: 0.6, lowpass: 400, sub: 0.5, punch: 0.2 },
+  // ── drums ──
+  kick: { wave: 'sine', attack: 0.001, decay: 0.06, sustainLevel: 0, release: 0.08, slide: -24, volume: 0.7, sub: 0.3 },
   snare: { wave: 'noise', attack: 0.001, decay: 0.05, sustainLevel: 0.2, release: 0.12, highpass: 1200, volume: 0.5 },
   hat: { wave: 'noise', attack: 0.001, release: 0.04, highpass: 6000, volume: 0.28 },
+  rimshot: { wave: 'noise', attack: 0.001, release: 0.03, highpass: 3000, lowpass: 7000, volume: 0.3 },
 };

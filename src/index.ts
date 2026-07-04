@@ -71,10 +71,13 @@ export * from './audio/pcm';
 export * from './audio/synth';
 export * from './audio/analysis';
 export * from './audio/theory';
+export * from './audio/reverb';
 export * from './audio/music';
 export * from './audio/lint';
 export * from './audio/match';
 export * from './audio/adaptive';
+export * from './audio/quality';
+export * from './audio/genres';
 
 // ── ui: DOM overlays + shell + settings ─────────────────────────
 export * from './ui/overlay';

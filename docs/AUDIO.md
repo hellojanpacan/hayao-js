@@ -25,7 +25,26 @@ Meyda, FMOD/Wwise) but reimplemented fresh to fit the determinism invariant.
 | **Verifier** | `src/verify/audioFilmstrip.ts` | `renderAudioFilmstrip` (waveform + spectrogram + feature readout SVG) and `assertAudio` (feature-vector assertions). The audio analog of the visual filmstrip. |
 | **Match** | `src/audio/match.ts` | `featureDistance` / `matchReport` — compare a rendered track to a reference's feature vector. The engine of the AI-led improvement loop. |
 | **Adaptive/spatial** | `src/audio/adaptive.ts` | Pure RTPC curves, Web-Audio-exact distance-attenuation models, vertical-layer gains. FMOD/Wwise-in-miniature, deterministic. |
+| **Reverb** | `src/audio/reverb.ts` | Deterministic Freeverb (parallel combs → series allpass). Dry synths bloom into a room. |
+| **Genre songbook** | `src/audio/genres.ts` | Five hand-composed reference tracks (electronic, lo-fi, piano, orchestral, jazz-funk) — a demo *and* a test fixture. |
+| **Quality scorer** | `src/audio/quality.ts` | Objective 0–100 mix scoring vs genre-target windows: loudness, headroom, dynamics (crest), stereo width, spectral balance (mud/harshness/low-end), genre-fit. The hard gate for "is this good?" — proven to score good tracks high and bad mixes low. `npm run audio` prints it. |
 | **Playback** | `src/audio/audio.ts` | `AudioBus.playSpec` / `playSong` render the data at the live context rate and push it through the SFX/music buses. Still a no-op headless. |
+| **Showcase** | `sound/` | The **Sound Studio** web page (`/sound/`) plays every genre live and shows its filmstrip; drives the real published API. `npm run audio` regenerates WAV+SVG artifacts. |
+
+### Expressive / arrangement features (what lifts it above a MIDI demo)
+
+The synth grew a **detuned 2nd oscillator** (`detune`, cents) and **sub-oscillator**
+(`sub`) for warmth/weight. `renderSong` grew, all deterministic:
+- **`swing`** — delays off-beat 8ths toward the triplet grid (lo-fi, jazz).
+- **`humanize`** — seeded micro timing/velocity jitter so it breathes.
+- **`velBrightness`** — velocity scales each voice's lowpass, so a velocity map
+  reads as *phrasing* (soft = darker), not just loudness.
+- **`sidechain`** — a beat-synced ducking pump (the breath of electronic music).
+- **`reverb`** — per-song room.
+And theory grew **`voiceLead`** / **`openVoicing`** so progressions move by small
+steps instead of leaping in parallel root position — the biggest single cure for
+the "procedural" sound. These were driven by adversarial music-producer critics
+in the Build-Measure-Learn loop.
 
 ## The AI-first loop (Build → Measure → Learn)
 

@@ -11,6 +11,9 @@ const root = dirname(fileURLToPath(import.meta.url));
 function exampleInputs(): Record<string, string> {
   const dir = resolve(root, 'examples');
   const inputs: Record<string, string> = { hub: resolve(root, 'index.html') };
+  // The Sound Studio audio showcase is a first-class page, not an example game.
+  const soundPage = resolve(root, 'sound', 'index.html');
+  if (existsSync(soundPage)) inputs.sound = soundPage;
   if (existsSync(dir)) {
     for (const slug of readdirSync(dir)) {
       const html = resolve(dir, slug, 'index.html');

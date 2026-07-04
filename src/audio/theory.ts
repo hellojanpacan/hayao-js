@@ -117,3 +117,38 @@ export function progression(tonic: number, mode: ScaleName, romans: string[]): n
 export function transpose(notes: number[], semitones: number): number[] {
   return notes.map((n) => n + semitones);
 }
+
+/**
+ * Open a close-position chord: drop the root an octave so the voicing spreads
+ * out and the root/7th no longer clash in the same octave. Turns muddy stacked
+ * sevenths into something that breathes.
+ */
+export function openVoicing(chord: number[]): number[] {
+  if (chord.length < 2) return chord.slice();
+  return [chord[0] - 12, ...chord.slice(1)].sort((a, b) => a - b);
+}
+
+/**
+ * Smooth a progression's voice-leading. Each chord after the first is octave-
+ * shifted so its notes sit near the previous chord's register — voices move by
+ * small steps instead of leaping in parallel root position. The single biggest
+ * cure for the "MIDI demo" sound. Returns new chords (MIDI, sorted low→high).
+ */
+export function voiceLead(chords: number[][]): number[][] {
+  if (chords.length === 0) return [];
+  const out: number[][] = [chords[0].slice().sort((a, b) => a - b)];
+  for (let i = 1; i < chords.length; i++) {
+    const prev = out[i - 1];
+    const center = prev.reduce((a, b) => a + b, 0) / prev.length;
+    const voiced = chords[i]
+      .map((note) => {
+        let m = note;
+        while (m - center > 6) m -= 12;
+        while (center - m > 6) m += 12;
+        return m;
+      })
+      .sort((a, b) => a - b);
+    out.push(voiced);
+  }
+  return out;
+}
