@@ -7,6 +7,7 @@
 
 import { Rng } from '../core/rng';
 import { TAU } from '../core/math';
+import { dexp, dexp2, dlog2 } from '../core/dmath';
 import { renderSound, type SoundSpec } from './synth';
 import { pitchToFreq } from './theory';
 import { applyReverb, type ReverbOptions } from './reverb';
@@ -67,11 +68,12 @@ export interface Song {
    */
   sidechain?: { depth?: number; beatsPerCycle?: number };
   /**
-   * Master EQ (a light mastering pass): `lowCut` tucks boomy sub/bass, and
-   * `presence`/`air` lift high-mid clarity and top-end sparkle — so the mix
-   * isn't bass-dominant and the melody cuts through. Each 0..1.
+   * Master bus (a light mastering pass): `lowCut` tucks boomy sub/bass, and
+   * `presence`/`air` lift high-mid clarity and top-end sparkle. `compress`
+   * (0..1) applies a gentle glue compressor with makeup gain — evens dynamics
+   * and lifts perceived loudness (esp. sparse ballads). Each field 0..1.
    */
-  master?: { lowCut?: number; presence?: number; air?: number };
+  master?: { lowCut?: number; presence?: number; air?: number; compress?: number };
 }
 
 function patternBeats(pattern: Note[]): number {
@@ -169,9 +171,54 @@ export function renderSong(song: Song, opts: { sampleRate?: number; normalizePea
   }
   if (song.reverb) applyReverb(bus, song.reverb);
   if (song.master) applyMasterEq(bus, song.master);
+  if (song.master?.compress) applyCompressor(bus, song.master.compress);
   softClipInPlace(bus);
   normalize(bus, opts.normalizePeak ?? 0.89);
   return bus;
+}
+
+/**
+ * Gentle glue compressor with auto makeup. A feed-forward peak follower drives
+ * a soft-knee gain reduction; `amount` (0..1) scales how hard it works. Evens
+ * out dynamics and lifts perceived loudness — the mastering move that keeps a
+ * sparse ballad from sounding weak next to a dense funk cut. Deterministic.
+ */
+function applyCompressor(bus: StereoBuffer, amount: number): void {
+  const amt = Math.max(0, Math.min(1, amount));
+  const sr = bus.sampleRate;
+  const threshold = dbToLin(-20); // dB → linear
+  const ratio = 2 + amt * 3; // 2:1 … 5:1
+  const aAtt = dexp(-1 / (sr * 0.005)); // 5 ms attack
+  const aRel = dexp(-1 / (sr * 0.15)); // 150 ms release
+  const makeup = dbToLin(amt * 6); // up to +6 dB makeup
+  let env = 0;
+  const L = bus.left;
+  const R = bus.right;
+  for (let i = 0; i < L.length; i++) {
+    const x = Math.max(Math.abs(L[i]), Math.abs(R[i]));
+    const coeff = x > env ? aAtt : aRel;
+    env = coeff * env + (1 - coeff) * x;
+    let gain = 1;
+    if (env > threshold) {
+      // soft-knee-ish: compress the amount over threshold by the ratio
+      const over = env / threshold;
+      const compressed = threshold * dpow(over, 1 / ratio);
+      gain = compressed / env;
+    }
+    const g = gain * makeup;
+    L[i] *= g;
+    R[i] *= g;
+  }
+}
+
+/** dB → linear amplitude (2^(dB/6.0206)); Math.pow is banned in src. */
+function dbToLin(db: number): number {
+  return dexp2(db / 6.020599913);
+}
+/** Positive-base power via dmath (Math.pow is banned in src). */
+function dpow(base: number, exp: number): number {
+  if (base <= 0) return 0;
+  return dexp2(exp * dlog2(base));
 }
 
 /**
@@ -271,6 +318,6 @@ export const INSTRUMENTS: Record<string, Instrument> = {
   snare: { wave: 'noise', attack: 0.001, decay: 0.05, sustainLevel: 0.2, release: 0.12, highpass: 1200, volume: 0.5 },
   hat: { wave: 'noise', attack: 0.001, release: 0.04, highpass: 6000, volume: 0.28 },
   rimshot: { wave: 'noise', attack: 0.001, release: 0.03, highpass: 3000, lowpass: 7000, volume: 0.3 },
-  // ride cymbal: a pinged, sustained wash with some body
-  ride: { wave: 'noise', attack: 0.001, decay: 0.15, sustainLevel: 0.3, release: 0.5, volume: 0.2, highpass: 2400, lowpass: 11000 },
+  // ride cymbal: a clear "ping" with a short decaying wash — body, not sizzle
+  ride: { wave: 'noise', attack: 0.001, decay: 0.1, sustainLevel: 0.14, release: 0.32, volume: 0.2, highpass: 1600, lowpass: 7000 },
 };

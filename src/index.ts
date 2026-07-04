@@ -79,6 +79,7 @@ export * from './audio/match';
 export * from './audio/adaptive';
 export * from './audio/quality';
 export * from './audio/genres';
+export * from './audio/album';
 
 // ── ui: DOM overlays + shell + settings ─────────────────────────
 export * from './ui/overlay';

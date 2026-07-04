@@ -4,6 +4,7 @@
 
 import {
   GENRES,
+  ALBUM,
   audio,
   renderSong,
   renderAudioFilmstrip,
@@ -18,6 +19,9 @@ const vizEl = document.getElementById('viz')!;
 const sfxEl = document.getElementById('sfx')!;
 const nowEl = document.getElementById('nowplaying')!;
 const volEl = document.getElementById('vol') as HTMLInputElement;
+const tracklistEl = document.getElementById('tracklist')!;
+const albumVizEl = document.getElementById('album-viz')!;
+const albumConceptEl = document.getElementById('album-concept')!;
 
 let stopCurrent: (() => void) | null = null;
 let activeId: string | null = null;
@@ -25,25 +29,26 @@ const filmstripCache = new Map<string, string>();
 
 function clearActive() {
   document.querySelectorAll('.card').forEach((c) => c.classList.remove('active'));
+  document.querySelectorAll('.tracklist li').forEach((c) => c.classList.remove('on'));
   document.querySelectorAll('button.play').forEach((b) => {
     b.classList.remove('on');
     b.textContent = '▶ play';
   });
 }
 
-function showFilmstrip(id: string, song: Song) {
+function showFilmstrip(id: string, song: Song, target: HTMLElement) {
   const cached = filmstripCache.get(id);
   if (cached) {
-    vizEl.innerHTML = cached;
+    target.innerHTML = cached;
     return;
   }
-  vizEl.innerHTML = '<div class="placeholder">rendering waveform &amp; spectrogram…</div>';
+  target.innerHTML = '<div class="placeholder">rendering waveform &amp; spectrogram…</div>';
   // defer so playback starts instantly; the render is ~1s
   setTimeout(() => {
     const buf = renderSong(song, { sampleRate: 44100 });
     const svg = renderAudioFilmstrip(buf, { width: 880, timeBins: 180, freqBands: 56 });
     filmstripCache.set(id, svg);
-    if (activeId === id) vizEl.innerHTML = svg;
+    if (activeId === id) target.innerHTML = svg;
   }, 30);
 }
 
@@ -67,7 +72,40 @@ function playGenre(id: string, song: Song, btn: HTMLButtonElement) {
   btn.closest('.card')?.classList.add('active');
   const name = GENRES.find((g) => g.id === id)?.name ?? id;
   nowEl.textContent = `▸ now playing: ${name} (looping)`;
-  showFilmstrip(id, song);
+  showFilmstrip(id, song, vizEl);
+}
+
+// ── the featured album: Neon Precinct ──
+albumConceptEl.textContent = ALBUM.concept;
+for (const t of ALBUM.tracks) {
+  const song = t.make();
+  const li = document.createElement('li');
+  li.dataset.id = t.id;
+  li.innerHTML = `
+    <div>
+      <div class="tk-title">${t.title}</div>
+      <div class="tk-intent">${t.intent}</div>
+    </div>
+    <span class="tk-meta">${song.bpm} bpm</span>`;
+  tracklistEl.appendChild(li);
+  li.addEventListener('click', () => {
+    audio.start();
+    if (activeId === t.id) {
+      stopCurrent?.();
+      stopCurrent = null;
+      activeId = null;
+      clearActive();
+      nowEl.textContent = '';
+      return;
+    }
+    stopCurrent?.();
+    clearActive();
+    stopCurrent = audio.playSong(song, { loop: true });
+    activeId = t.id;
+    li.classList.add('on');
+    nowEl.textContent = `▸ now playing: Neon Precinct — ${t.title} (looping)`;
+    showFilmstrip(t.id, song, albumVizEl);
+  });
 }
 
 for (const g of GENRES) {
