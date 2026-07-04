@@ -6,7 +6,7 @@
 // spec always yields the same samples — hashable and verifiable in Node.
 
 import { TAU } from '../core/math';
-import { dsin, dexp2, dlog2 } from '../core/dmath';
+import { dsin, dexp2, dpow } from '../core/dmath';
 import { Rng } from '../core/rng';
 import { SAMPLE_RATE, type Samples } from './pcm';
 
@@ -130,13 +130,6 @@ function resolve(s: SoundSpec): Resolved {
     delay: Math.max(0, s.delay ?? 0),
     delayFeedback: Math.min(0.95, Math.max(0, s.delayFeedback ?? 0)),
   };
-}
-
-/** Deterministic power for positive base — invariants forbid Math.pow in src. */
-function dpow(base: number, exp: number): number {
-  if (base <= 0) return 0;
-  if (exp === 1) return base;
-  return dexp2(exp * dlog2(base));
 }
 
 /** semitone offset → frequency multiplier. */

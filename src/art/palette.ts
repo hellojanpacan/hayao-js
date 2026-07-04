@@ -7,7 +7,7 @@
 // palette-agnostic — this is a nice starting point, never a restriction.
 
 import type { Rng } from '../core/rng';
-import { dexp2, dlog2 } from '../core/dmath';
+import { dpow } from '../core/dmath';
 
 /**
  * The Kentō swatch set — the single source of truth every named palette derives
@@ -237,13 +237,9 @@ export function mutateColor(rng: Rng, hex: string, amounts: DriftAmounts = {}): 
 // ── gamma-correct (linear-space) interpolation + gradients ──────
 // super-castle blends in linear light, not sRGB — perceptually correct, no muddy
 // mid-tones. sRGB↔linear uses the exact IEC transfer curve; the 2.4 exponent
-// routes through dmath (dexp2/dlog2) so it's bit-identical across engines and
-// never trips the "no Math.pow" invariant.
+// routes through dmath's dpow so it's bit-identical across engines and never
+// trips the "no Math.pow" invariant.
 
-function dpow(base: number, exp: number): number {
-  if (base <= 0) return 0;
-  return dexp2(exp * dlog2(base));
-}
 const srgbToLinear = (c: number): number => (c <= 0.04045 ? c / 12.92 : dpow((c + 0.055) / 1.055, 2.4));
 const linearToSrgb = (c: number): number => (c <= 0.0031308 ? c * 12.92 : 1.055 * dpow(c, 1 / 2.4) - 0.055);
 

@@ -41,7 +41,8 @@
     "docs/QUICKSTART.md",
     "docs/API.md",
     "docs/VERIFICATION.md",
-    "docs/CONVENTIONS.md"
+    "docs/CONVENTIONS.md",
+    "docs/EMBED.md"
   ],
   "engines": {
     "node": ">=18"
@@ -52,13 +53,13 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "build:lib": "rm -rf dist && esbuild src/index.ts --bundle --format=esm --platform=neutral --target=es2022 --outfile=dist/index.js --sourcemap && tsc -p tsconfig.build.json",
+    "build:lib": "rm -rf dist && esbuild src/index.ts --bundle --format=esm --platform=neutral --target=es2022 --outfile=dist/index.js --sourcemap && esbuild src/index.ts --bundle --minify --format=esm --platform=neutral --target=es2022 --outfile=dist/index.min.js && esbuild src/index.ts --bundle --minify --format=iife --global-name=hayao --platform=neutral --target=es2022 --outfile=dist/hayao.global.js && tsc -p tsconfig.build.json",
     "check": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "api": "tsx scripts/api-digest.ts",
     "invariants": "tsx scripts/invariants.ts",
-    "verify": "tsx scripts/invariants.ts && tsx scripts/verify.ts && tsx scripts/feel.ts",
+    "verify": "tsx scripts/verify-all.ts",
     "eval": "tsx scripts/eval.ts",
     "create": "node bin/create-hayao.mjs",
     "prepublishOnly": "npm run check && npm test && npm run build:lib",

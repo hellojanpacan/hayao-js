@@ -95,11 +95,26 @@ export class World implements WorldContext {
     this.clock.tick();
   }
 
-  /** Feed real elapsed ms; runs 0+ fixed steps. Returns steps run. */
+  /**
+   * Feed REAL elapsed ms; runs 0+ fixed steps. Returns steps run. This is the
+   * realtime driver entry point — it CLAMPS realMs to the clock's maxFrameMs
+   * (default 250) to avoid a spiral of death, so `advance(1200)` runs ~15 steps,
+   * not 72. For headless tests/harnesses that want to fast-forward an exact
+   * number of steps, use `runSteps(n)` or `step()` — never `advance` with a big ms.
+   */
   advance(realMs: number, actionsDown: Iterable<string> = []): number {
     const steps = this.clock.advance(realMs);
     for (let i = 0; i < steps; i++) this.step(actionsDown);
     return steps;
+  }
+
+  /**
+   * Run exactly `n` fixed steps — the deterministic fast-forward for tests and
+   * headless drivers (unlike `advance`, no realtime clamp). Pass `actionsFor(i)`
+   * to script the input per step; omit it to hold nothing down.
+   */
+  runSteps(n: number, actionsFor?: (i: number) => Iterable<string>): void {
+    for (let i = 0; i < n; i++) this.step(actionsFor ? actionsFor(i) : []);
   }
 
   private flushFree(): void {

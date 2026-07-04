@@ -8,6 +8,20 @@ import type { Node } from '../scene/node';
 import { DEFAULT_INPUT_MAP, type InputLog, type InputMap } from '../input/actions';
 import type { ClockConfig } from '../core/clock';
 
+/**
+ * Optional boot splash. Rendered by the engine (so its colors are palette-guaranteed
+ * and never trip a contrast escape the way a hand-rolled loading <div> can) while
+ * `preload` runs. Pass `splash: false` to opt out entirely.
+ */
+export interface SplashConfig {
+  /** Splash headline (defaults to the game title). */
+  title?: string;
+  /** Background/foreground pair; defaults to a contrast-guaranteed pair from the game background. */
+  palette?: { bg: string; fg: string };
+  /** Keep the splash up at least this long, so a fast preload doesn't flash by. */
+  minDurationMs?: number;
+}
+
 export interface GameDefinition {
   title: string;
   width?: number;
@@ -20,6 +34,14 @@ export interface GameDefinition {
   build(world: World): Node;
   /** Optional compact probe snapshot for verification (defaults to World.probe). */
   probe?(world: World): Record<string, unknown>;
+  /**
+   * Awaited before the world starts stepping — load fonts, sprite atlases, a
+   * SoundFont, anything async. The engine holds a splash on screen until it
+   * resolves, so there is no asset pop-in and no ungoverned pre-first-frame window.
+   */
+  preload?(world: World): Promise<void>;
+  /** Boot splash config, or `false` to start on the first frame with no cover. */
+  splash?: SplashConfig | false;
 }
 
 /** Identity + defaults. Kept as a function so games read `export default defineGame({…})`. */

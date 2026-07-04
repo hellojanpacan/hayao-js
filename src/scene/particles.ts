@@ -120,6 +120,7 @@ export class Particles extends Node {
         opacity: Math.min(1, t * 2),
         transform: world,
         z: this.z,
+        transient: true,
       });
     }
   }
@@ -291,6 +292,7 @@ export class AmbientField extends Node {
           opacity: intensity,
           transform: world,
           z: this.z,
+          transient: true,
         });
       } else {
         out.push({
@@ -302,6 +304,7 @@ export class AmbientField extends Node {
           opacity: intensity,
           transform: world,
           z: this.z,
+          transient: true,
         });
       }
     }

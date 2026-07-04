@@ -3,7 +3,8 @@
 
 import { sortCommands, type DrawCommand, type Paint } from './commands';
 import { canvasGradient, shapeBBox } from './paint';
-import type { Renderer, RendererConfig } from './renderer';
+import { clientToDesign, type Renderer, type RendererConfig } from './renderer';
+import type { Vec2 } from '../core/math';
 
 export class Canvas2DRenderer implements Renderer {
   readonly width: number;
@@ -158,6 +159,11 @@ export class Canvas2DRenderer implements Renderer {
 
   get element(): HTMLCanvasElement {
     return this.canvas;
+  }
+
+  /** Map a pointer event's clientX/Y into design space (undoes the letterbox). */
+  toDesign(clientX: number, clientY: number): Vec2 {
+    return clientToDesign(this.canvas.getBoundingClientRect(), this.width, this.height, clientX, clientY);
   }
 
   dispose(): void {

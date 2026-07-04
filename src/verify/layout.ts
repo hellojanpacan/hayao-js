@@ -15,6 +15,7 @@
 import type { DrawCommand, TextCommand } from '../render/commands';
 import type { InputMap } from '../input/actions';
 import type { World } from '../world';
+import { contrastRatio } from './gates';
 
 export interface TextBox {
   cmd: TextCommand;
@@ -72,32 +73,84 @@ export interface LayoutOptions {
   backgroundZ?: number;
   /** Extra pixels of breathing room demanded around text (default 0 = touch is allowed, overlap is not). */
   margin?: number;
+  /**
+   * Lint transient view chrome too (floating popups, particles). Off by default:
+   * a "+10" drifting across a HUD label is motion, not a layout bug (see #26).
+   */
+  includeTransient?: boolean;
+  /**
+   * The page background these commands paint on. When given, contrast lints run
+   * (see `minContrast` / `minTextContrast`): a shape or label that barely differs
+   * from what sits under it is invisible even though the sim hashes fine (#30).
+   */
+  background?: string;
+  /**
+   * Minimum contrast ratio a solid foreground shape must hold against the
+   * background to count as visible at all (default 1.5). Only checked when
+   * `background` is set.
+   */
+  minContrast?: number;
+  /**
+   * Minimum contrast ratio text must hold against its backing (panel fill, or the
+   * background) — the WCAG AA readability bar (default 4.5). Only when `background`
+   * is set. Pass 0 to skip the text-contrast check while keeping shape contrast.
+   */
+  minTextContrast?: number;
 }
 
+const isTransient = (c: DrawCommand): boolean => (c as { transient?: boolean }).transient === true;
+const solidFill = (c: DrawCommand): string | undefined => {
+  const f = (c as { fill?: string }).fill;
+  if (!f || f === 'none') return undefined;
+  if ((c as { gradient?: unknown }).gradient) return undefined; // gradient bounds vary — skip
+  return f;
+};
+
 /**
- * Lint a display list for text readability. Returns human-readable issues
- * (empty = clean). Checks: text-vs-shape partial overlaps (rule 1) and
- * text-vs-text overlaps.
+ * Lint a display list for text readability and visibility. Returns human-readable
+ * issues (empty = clean). Checks:
+ *  1. text-vs-shape partial overlaps (a label half-under a shape),
+ *  2. text fully hidden behind an opaque higher-z shape (silent invisible labels, #31),
+ *  3. text-vs-text overlaps,
+ *  4. (opt-in via `background`) low-contrast shapes and text (#30).
+ * Transient commands (popups/particles) are skipped unless `includeTransient`.
  */
 export function layoutIssues(commands: DrawCommand[], opts: LayoutOptions = {}): string[] {
   const backgroundZ = opts.backgroundZ ?? 1;
   const margin = opts.margin ?? 0;
+  const bg = opts.background;
+  const minContrast = opts.minContrast ?? 1.5;
+  const minTextContrast = opts.minTextContrast ?? 4.5;
   const issues: string[] = [];
+  const lintable = opts.includeTransient ? commands : commands.filter((c) => !isTransient(c));
   const texts: TextBox[] = [];
-  for (const c of commands) if (c.kind === 'text' && (c as TextCommand).text.trim().length) texts.push(textBox(c as TextCommand));
+  for (const c of lintable) if (c.kind === 'text' && (c as TextCommand).text.trim().length) texts.push(textBox(c as TextCommand));
 
   for (const t of texts) {
+    const tz = t.cmd.z ?? 0;
     const r = { x: t.x - margin, y: t.y - margin, w: t.w + margin * 2, h: t.h + margin * 2 };
-    // A backing panel (any shape that fully contains the text, below it in
-    // paint order) occludes whatever sits underneath IT — collisions with
-    // shapes the panel covers are forgiven. This is how HUD scrims work.
+    // A backing panel fully contains the text and sits BELOW it in paint order
+    // (z ≤ text z). It absolves collisions with shapes it covers — HUD scrims.
+    // A containing shape ABOVE the text is not a panel; it buries the label.
     let panelZ = -Infinity;
-    for (const c of commands) {
+    let panelFill: string | undefined = bg;
+    for (const c of lintable) {
       if (c.kind === 'text') continue;
       const b = shapeBox(c);
-      if (b && contains(b, t) && (c.opacity === undefined || c.opacity >= 0.6)) panelZ = Math.max(panelZ, c.z ?? 0);
+      if (!b || !contains(b, t)) continue;
+      const opaque = c.opacity === undefined || c.opacity >= 0.6;
+      const cz = c.z ?? 0;
+      if (opaque && cz <= tz && cz >= panelZ) {
+        panelZ = cz;
+        panelFill = solidFill(c) ?? panelFill; // the nearest opaque backing under the text
+      }
+      // Occlusion (#31): an opaque shape that contains the text but paints ABOVE
+      // it hides the label entirely — no gate caught this before.
+      if (cz > tz && (c.opacity === undefined || c.opacity >= 0.9)) {
+        issues.push(`text "${clip(t.cmd.text)}" is hidden behind a ${c.kind} (z${cz} > text z${tz}) that fully covers it — give the text a higher z, or the shape a lower one`);
+      }
     }
-    for (const c of commands) {
+    for (const c of lintable) {
       if (c.kind === 'text') continue;
       if ((c.z ?? 0) <= backgroundZ) continue; // background lattice
       if ((c.z ?? 0) <= panelZ) continue; // hidden behind the text's panel
@@ -108,7 +161,29 @@ export function layoutIssues(commands: DrawCommand[], opts: LayoutOptions = {}):
         issues.push(`text "${clip(t.cmd.text)}" collides with a ${c.kind} (z${c.z}) at ~(${Math.round(b.x)},${Math.round(b.y)}) — back it with a panel, or stay clear`);
       }
     }
+    // Contrast (#30): text must read against whatever it sits on.
+    if (bg && minTextContrast > 0) {
+      const fg = t.cmd.fill;
+      if (fg && fg !== 'none' && (t.cmd.opacity === undefined || t.cmd.opacity >= 0.6)) {
+        const ratio = contrastRatio(fg, panelFill ?? bg);
+        if (ratio < minTextContrast) issues.push(`text "${clip(t.cmd.text)}" (${fg}) contrast is ${ratio.toFixed(2)}:1 on its backing (needs ≥ ${minTextContrast}:1) — barely readable`);
+      }
+    }
   }
+
+  // Contrast (#30): a solid foreground shape must differ from the background.
+  if (bg) {
+    for (const c of lintable) {
+      if (c.kind === 'text') continue;
+      if ((c.z ?? 0) <= backgroundZ) continue;
+      if (c.opacity !== undefined && c.opacity < 0.6) continue;
+      const fill = solidFill(c);
+      if (!fill) continue;
+      const ratio = contrastRatio(fill, bg);
+      if (ratio < minContrast) issues.push(`${c.kind} (${fill}, z${c.z}) contrast is ${ratio.toFixed(2)}:1 vs background ${bg} (needs ≥ ${minContrast}:1) — it vanishes into the ground`);
+    }
+  }
+
   for (let i = 0; i < texts.length; i++)
     for (let j = i + 1; j < texts.length; j++)
       if (overlaps(texts[i], texts[j])) issues.push(`texts "${clip(texts[i].cmd.text)}" and "${clip(texts[j].cmd.text)}" overlap`);

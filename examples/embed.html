@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hayao · single-file embed</title>
+    <style>
+      html, body { margin: 0; height: 100%; background: #141821; }
+      #app { position: absolute; inset: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+
+    <!--
+      OFFLINE / SINGLE-FILE RECIPE
+      ───────────────────────────
+      This loads the IIFE global build, which exposes `window.hayao`. Run
+      `npm run build:lib` first to emit dist/hayao.global.js (~190 KB, ~45 KB
+      gzipped). No bundler, no modules, no network beyond this one file.
+
+      For a TRULY single self-contained .html (Claude Artifact, js13k, itch.io
+      upload): paste the entire contents of dist/hayao.global.js in place of the
+      `src` below, i.e.  <script>…paste…</script>. See docs/EMBED.md.
+    -->
+    <script src="../dist/hayao.global.js"></script>
+    <script>
+      const { defineGame, runBrowser, Sprite, Text, vec2 } = hayao;
+
+      const game = defineGame({
+        title: 'Follow',
+        width: 800,
+        height: 600,
+        background: '#141821',
+        build(world) {
+          const root = new hayao.Node({ name: 'root' });
+          root.addChild(new Text({ text: 'move your pointer', pos: vec2(400, 60), size: 26, align: 'center', fill: '#f4efe3', z: 10 }));
+
+          // A dot that eases toward the pointer — reads pointer straight off the
+          // per-step context (ctx.input.axis), no out-of-engine glue.
+          const dot = new Sprite({ pos: vec2(400, 300), z: 5, shape: { kind: 'circle', radius: 26 }, fill: '#e8b04b' });
+          dot.onUpdate = (n, dt, ctx) => {
+            if (ctx.input.axis('pointer.down') || ctx.input.axis('pointer.x')) {
+              const tx = ctx.input.axis('pointer.x');
+              const ty = ctx.input.axis('pointer.y');
+              n.pos.x += (tx - n.pos.x) * Math.min(1, dt * 8);
+              n.pos.y += (ty - n.pos.y) * Math.min(1, dt * 8);
+            }
+          };
+          root.addChild(dot);
+          return root;
+        },
+      });
+
+      runBrowser(game, document.getElementById('app'), { renderer: 'canvas' });
+    </script>
+  </body>
+</html>

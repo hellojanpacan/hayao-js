@@ -41,8 +41,8 @@ export default defineGame({
       shape: { kind: 'circle', radius: 16 },
       fill: '#2485a6', stroke: '#232228', strokeWidth: 3,
     }));
-    player.onUpdate = (n, dt) => {
-      const move = (world.input.isDown('right') ? 1 : 0) - (world.input.isDown('left') ? 1 : 0);
+    player.onUpdate = (n, dt, ctx) => {       // ctx = the host world (input/rng/clock/time)
+      const move = (ctx.input.isDown('right') ? 1 : 0) - (ctx.input.isDown('left') ? 1 : 0);
       n.pos.x += move * 200 * dt;          // dt is the FIXED step — deterministic
     };
   },
@@ -54,6 +54,29 @@ export default defineGame({
 
 The engine, not game code, owns the clock, the rAF loop, focus, audio muting,
 and the DOM shell. Do not re-implement any of that inside a game.
+
+The third `onUpdate`/behavior argument is the **world context** (`input`, `rng`,
+`clock`, `time`) — prefer it over closing over `world` from `build()`, so a node's
+behavior is self-contained and liftable. For headless tests, `world.runSteps(n,
+i => actions)` fast-forwards an exact step count; `world.advance(realMs)` is the
+*realtime* driver and clamps big deltas to one frame budget (never use it to skip
+ahead in a test).
+
+## Pointer & continuous input
+
+Keyboard actions are the default and the only input that flows through the
+deterministic log. For games driven by *where* the cursor is (slice, aim, drag,
+point-and-click, placement), `runBrowser` wires a **`PointerSource`** that samples
+the cursor into `world.input.axes` each step, in DESIGN space:
+`ctx.input.axis('pointer.x' | 'pointer.y' | 'pointer.down')`. Need the mapping
+yourself? `handle.toDesign(clientX, clientY)` (or `renderer.toDesign`) undoes the
+letterbox once, so no game re-derives `getBoundingClientRect()` math.
+
+Determinism caveat: pointer axes are live host samples — they are NOT in the string
+input log or `world.hash()`, so a raw pointer trail does not replay the way key
+actions do. For lockstep/replay, **quantize at the host edge**: map a tap to an
+action (`input.press('fire')`) or snap position to a grid cell you feed as a
+discrete move. Keep raw pointer floats out of the sim's canonical state.
 
 
 ## The human-contact layer
@@ -128,6 +151,10 @@ undo, and time-travel free.
 - **Code-as-art, zero binary assets.** A `Sprite` is a vector `Shape`
   (`rect` / `circle` / `poly` / `path`) or a `glyph` (a Unicode character) —
   never a bitmap. Unicode glyphs (♞ ♝ ⚔ ☠ ✿) are instant, legible art.
+  **Shape origins:** `rect`/`circle`/`glyph` are CENTER-anchored on the node's
+  `pos` (a rect draws from `-w/2,-h/2`); `poly`/`path` points are local to `pos`.
+  Thinking in corners? Pass `{ kind: 'rect', w, h, anchor: 'topLeft' }` — otherwise
+  a top-left mental model lands the box half-a-size off.
 - **Default palette is Kentō** (`import { KENTO, MEADOW, DUSK } from '@hayao'`).
   It fuses the site's washi/sumi/ai/shu ink tokens with landscape hues loosely
   drawn from Miyazaki-16 — eight named hues, each with a `Deep` tone for light
@@ -146,7 +173,15 @@ undo, and time-travel free.
   `Text` nodes drawn into the scene. Humans compare in-scene type to the DOM
   around it and the scene loses. In-scene `Text` is for in-world labels only.
 - **Strict layering** via the `z` field on nodes/commands: background → world →
-  actors → fx → HUD. Nothing gameplay-critical may be occluded.
+  actors → fx → HUD. Nothing gameplay-critical may be occluded. In-world `Text`
+  defaults to `z=0`, so a label placed ON a sprite (a tile value, a score over a
+  token) needs an explicit `z` ABOVE that sprite or it paints underneath and is
+  silently invisible. `layoutIssues` now flags this (`text … hidden behind …`).
+- **Contrast is now headless-checkable.** Pass the page `background` to
+  `layoutIssues(commands, { background })` and it flags near-invisible fills and
+  sub-AA text from the hex alone — a first line of defense before the vision
+  judge. Still judge final contrast from a rendered SVG; the lint catches the
+  "dark shape on dark ground" class the pixel-blind proofs otherwise miss.
 
 ## Definition of done
 

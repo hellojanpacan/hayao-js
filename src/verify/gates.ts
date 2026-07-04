@@ -24,12 +24,10 @@
 
 import type { DrawCommand } from '../render/commands';
 import type { Vec2 } from '../core/math';
-import { dexp2, dhypot, dlog2 } from '../core/dmath';
+import { dhypot, dpow } from '../core/dmath';
 
 const dedupe = (a: string[]): string[] => [...new Set(a)];
 
-/** x^y via dmath (dexp2/dlog2) — bit-identical across engines, unlike Math.pow. */
-const dpow = (base: number, exp: number): number => (base <= 0 ? 0 : dexp2(exp * dlog2(base)));
 
 // ── 1. Forgiveness ──────────────────────────────────────────────────────────
 // Grace is a system, not polish (FUN law 5). Two checks: a static one on the
