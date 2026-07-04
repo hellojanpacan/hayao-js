@@ -84,6 +84,7 @@ export * from './verify/bot';
 export * from './verify/layout';
 export * from './verify/feel';
 export * from './verify/gates';
+export * from './verify/ramp';
 export * from './verify/filmstrip';
 
 // ── logic: pure engine primitives (FSM, weighted tables, graph search) ─
@@ -100,6 +101,8 @@ export * from './persist/save';
 // ── content: data-driven wave/spawn directors + upgrade trees ───
 export * from './content/dsl';
 export * from './content/level';
+export * from './content/generate';
+export * from './content/campaign';
 
 // ── net: deterministic multiplayer (lockstep / rollback) ────────
 export * from './net/players';

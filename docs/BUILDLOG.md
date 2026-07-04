@@ -1362,3 +1362,45 @@ survives and refuels — the winnability proof. Flame tuned to a nervous sawtoot
 (a perfect line dips to 44%, ends 81%); a human who misses lights dies. Sim state
 (px/py/flame/gathered/won/lost) is hashed; sky/water/glow/parallax are cosmetic.
 5 tests + full verify green, golden pinned.
+
+---
+
+## Wave — the content-volume unlock: solver-backed generation + a generated flagship
+
+The campaign proved hayao could make *one* verified level reliably; the honest gap
+was *volume* — an agent hand-authoring forty balanced rooms is where quality falls
+apart. This wave closes it by making generation first-class, then proving it with a
+flagship built entirely from generated content.
+
+**Loop 0 — generate, don't hand-author.** Three engine modules:
+- `content/generate.ts` — `generateLevels(factory, {count, band})`: build candidate
+  `Puzzle`s from a seeded rng, `solve()` each, keep only ones proven winnable
+  *inside a difficulty band*. Genre-agnostic; each kept level carries the sub-seed
+  that reproduces it, so a campaign ships as a list of seeds, not a folder of maps.
+  A capped/exhausted search counts as "unknown, reject" — a level only ships proven.
+- `content/campaign.ts` — `composeCampaign`: stitch per-act generators (each with its
+  own band and optional own factory → mechanic/board changes as data) into an
+  ordered, escalating campaign with an honest length estimate.
+- `verify/ramp.ts` — `rampIssues` / `assertRamp`: prove the *curve* — escalation
+  (finale at the peak), no cliffs, forward progress dominates, real variety. The
+  campaign-level analogue of `assertSolvable`.
+
+**Loop 2 — the flagship, Lanternfold.** A Lights-Out lantern puzzle chosen because
+its taps are self-inverse, so any scramble from solved is *guaranteed* winnable and
+the solver's minimum-tap count is a clean difficulty metric. 42 boards across four
+acts, generated + solver-proven, composed into a ramp that climbs 2→8 taps, shipped
+as `levels.ts` (verify asserts the committed data equals a fresh compose, so it
+can't drift). Art is code-as-art: radial-gradient lantern glow on a dusk-sky
+gradient — never a placeholder square. Covers all six proof channels.
+
+**Depth ceiling, learned by probing.** Plus-stencil Lights-Out saturates low
+(3×3/4×4 → min-depth ~7); a satisfying finale needed board-shape tuning (5×3 reaches
+8 with cheap BFS) and monotone per-act bands. Lesson: set generator bands from the
+*measured* solution-depth distribution — the generator loudly fails an impossible
+band, which is the right failure.
+
+**Loop 1 — distribution for agents.** `create-hayao` (`npm create hayao`) scaffolds a
+runnable project whose starter *already* generates a proven campaign; `scripts/eval.ts`
+(`npm run eval`) scores every game on the six proof channels + verified rate — the
+AI-first KPI. `llms.txt` / `AGENTS.md` now foreground "generate + prove";
+`docs/GALLERY.md` frames the portfolio as proof-forward, not faith-based.
