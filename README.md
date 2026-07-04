@@ -149,11 +149,11 @@ regenerated with `npm run thumbs`.
 ## Status
 
 **v0.2 — the 20-genre campaign is complete, plus the waves it triggered.**
-Twenty-six games live under `examples/`. The core twenty-one cover the most
+A growing portfolio of games lives under `examples/`. The core set covers the most
 popular 2D indie genres (platformer, metroidvania, Zelda-like, stealth, horde
 survival, bullet hell, tower defense, RTS, roguelike, deckbuilder, tactics,
 match-3, idle, farming, horror, city builder, rhythm, physics arcade, racing,
-narrative — plus the original Sokoban). On top of those sit two js13k-benchmark
+narrative — plus the original Sokoban). On top of those sit js13k-benchmark
 reproductions (Seamfold, Gravewell), a deterministic rigid-body physics wave
 (Rookspire demolition, Brasswick pinball), and a netplay showcase (Fernclash —
 lockstep + rollback across tabs). Every one ships a `verify.ts` suite that

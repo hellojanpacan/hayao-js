@@ -101,7 +101,7 @@
       <header class="top">
         <div class="lab">the store</div>
         <h1>Play the engine.</h1>
-        <p>Twenty-eight games, every one machine-verified before it shipped. Five are art-finished in the house woodblock style; the rest
+        <p><span id="game-count">many</span> games, every one machine-verified before it shipped. Several are art-finished in the house woodblock style; the rest
           are honest engine <em>slices</em> — each one built to stress one capability end to end, playable in the browser and readable at the
           source. This is what “make a game with hayao” produces today.</p>
       </header>
@@ -213,6 +213,7 @@
           <div class="card"><span class="genre">idle / incremental</span><h3><a href="../examples/lumen-forge/index.html">Lumen Forge</a></h3><p>DOM buttons flow through the deterministic input log; the whole pacing curve is simulation-verified.</p><div class="links"><a href="../examples/lumen-forge/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/lumen-forge">source →</a></div></div>
           <div class="card"><span class="genre">narrative decisions</span><h3><a href="../examples/emberreign/index.html">Emberreign</a></h3><p>Four meters, double-edged cards, story arcs — judgement proven to matter (19/20 vs 0/20 reigns) and every doom proven honest.</p><div class="links"><a href="../examples/emberreign/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/emberreign">source →</a></div></div>
           <div class="card"><span class="genre">2-player netplay duel</span><h3><a href="../examples/fernclash/index.html">Fernclash</a></h3><p>Sumo shoving on a fern ring — hot-seat or true lockstep netplay across tabs/machines, peers proven to agree bit-for-bit.</p><div class="links"><a href="../examples/fernclash/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/fernclash">source →</a></div></div>
+          <div class="card"><span class="genre">2-player co-op survival</span><h3><a href="../examples/kinfall/index.html">Kinfall</a></h3><p>A surviv.io duo on one keyboard: loot crates, orbit the horde, and haul your partner up before they bleed out as the storm ring closes. The pair-bot is proven to reach extraction and an idle pair proven to be wiped.</p><div class="links"><a href="../examples/kinfall/index.html">play →</a><a href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/kinfall">source →</a></div></div>
         </div>
       </section>
 
@@ -221,5 +222,19 @@
         Every game ships a <code>verify.ts</code> suite that machine-proves its truth — solver proofs, bot runs, replay hashes. Run the lot with <code>npm run verify</code>.
       </footer>
     </div>
+    <script>
+      // Derive the game count from the store itself so the copy never goes stale
+      // as games are added or removed. Counts unique example slugs linked below.
+      (function () {
+        var slugs = {};
+        document.querySelectorAll('a[href*="../examples/"]').forEach(function (a) {
+          var m = a.getAttribute('href').match(/\.\.\/examples\/([a-z0-9-]+)\//);
+          if (m) slugs[m[1]] = true;
+        });
+        var n = Object.keys(slugs).length;
+        var el = document.getElementById('game-count');
+        if (el && n) el.textContent = n;
+      })();
+    </script>
   </body>
 </html>
