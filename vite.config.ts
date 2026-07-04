@@ -49,7 +49,7 @@ export default defineConfig({
   test: {
     // Sim is headless-native, so most tests need no DOM at all → fast Node runner.
     environment: 'node',
-    include: ['src/**/*.test.ts', 'examples/**/*.test.ts'],
+    include: ['src/**/*.test.ts', 'examples/**/*.test.ts', 'scripts/**/*.test.mjs'],
     globals: true,
   },
 });
