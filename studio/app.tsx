@@ -14,11 +14,35 @@ interface GameEntry {
   url: string;
 }
 
+interface SessionEntry {
+  id: string;
+  game: string;
+  startedAt: string;
+  endReason: string;
+  frames: number;
+  annotations: number;
+  variant: string;
+}
+
 interface ServerState {
   buildRef: string;
-  sessions: Array<{ id: string }>;
+  sessions: SessionEntry[];
   /** Worktree builds registered by scripts/studio-variant.mjs. */
   variants: Record<string, { kind: string; ref: string; commit: string }>;
+}
+
+interface Report {
+  frames: number;
+  simSeconds: number;
+  reachedGoal: boolean;
+  deaths: number;
+  hesitations: Array<{ startFrame: number; frames: number }>;
+  deathClusters: Array<{ x: number; y: number; count: number }>;
+  futileVerbs: Array<{ action: string; futilePresses: number; totalPresses: number }>;
+  unusedActions: string[];
+  quit?: { frame: number; recentDeaths: number; recentHesitations: number; endReason: string };
+  annotations: Array<{ frame: number; tag: string; note?: string }>;
+  knobEvents: Array<{ frame: number; key: string; value: number | string }>;
 }
 
 /** Poll a same-origin iframe until the game inside publishes window.__studio. */
@@ -184,6 +208,111 @@ function Timeline({ handle }: { handle: StudioHandle }) {
   );
 }
 
+/**
+ * The player's own field notes: recorded sessions and the ethnographer's
+ * report — the same analysis the agent reads via MCP, rendered for humans.
+ * Numbers describe; deciding what they mean stays with the director.
+ */
+function SessionsDrawer({ sessions, onClose }: { sessions: SessionEntry[]; onClose: () => void }) {
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [report, setReport] = useState<Report | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const open = async (id: string) => {
+    setOpenId(id);
+    setReport(null);
+    setLoading(true);
+    try {
+      const r = await fetch(`/__studio/report/${encodeURIComponent(id)}`);
+      if (r.ok) setReport((await r.json()) as Report);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const secs = (frames: number) => `${Math.round(frames / 60)}s`;
+  return (
+    <div className="drawer" role="dialog" aria-label="sessions">
+      <div className="drawer-head">
+        <b>Playtests</b>
+        <span className="note">{sessions.length} recorded · tap one for its report</span>
+        <button className="hy" onClick={onClose} aria-label="close">
+          ✕
+        </button>
+      </div>
+      <div className="drawer-body">
+        {[...sessions].reverse().map((s) => (
+          <div key={s.id}>
+            <button className={`session-row${openId === s.id ? ' open' : ''}`} onClick={() => void open(s.id)}>
+              <span className="game">{s.game}</span>
+              <span className="note">
+                {s.variant !== 'dev' ? `${s.variant} · ` : ''}
+                {secs(s.frames)} · {s.endReason}
+                {s.annotations > 0 ? ` · ✗${s.annotations}` : ''}
+              </span>
+              <span className="note when">{new Date(s.startedAt).toLocaleTimeString()}</span>
+            </button>
+            {openId === s.id && (
+              <div className="report">
+                {loading && <span className="note">analyzing (exact replay)…</span>}
+                {report && (
+                  <>
+                    <div className="stat-row">
+                      <span className={report.reachedGoal ? 'good' : 'warn'}>{report.reachedGoal ? '✓ reached the goal' : '— did not finish'}</span>
+                      <span>{Math.round(report.simSeconds)}s played</span>
+                      <span>{report.deaths} deaths</span>
+                      <span>{report.hesitations.length} hesitations</span>
+                    </div>
+                    {report.quit && (
+                      <p>
+                        Stopped at frame {report.quit.frame} ({report.quit.endReason}) — {report.quit.recentDeaths} deaths and{' '}
+                        {report.quit.recentHesitations} hesitations in the final stretch.
+                      </p>
+                    )}
+                    {report.deathClusters.length > 0 && (
+                      <p>
+                        Deaths cluster at{' '}
+                        {report.deathClusters
+                          .slice(0, 3)
+                          .map((c) => `(${Math.round(c.x)}, ${Math.round(c.y)}) ×${c.count}`)
+                          .join(' · ')}
+                      </p>
+                    )}
+                    {report.hesitations.length > 0 && (
+                      <p>
+                        Longest pauses:{' '}
+                        {[...report.hesitations]
+                          .sort((a, b) => b.frames - a.frames)
+                          .slice(0, 3)
+                          .map((h) => `${(h.frames / 60).toFixed(1)}s @ frame ${h.startFrame}`)
+                          .join(' · ')}
+                      </p>
+                    )}
+                    {report.futileVerbs.length > 0 && (
+                      <p>
+                        Presses that did nothing:{' '}
+                        {report.futileVerbs.map((f) => `${f.action} (${f.futilePresses}/${f.totalPresses})`).join(' · ')}
+                      </p>
+                    )}
+                    {report.unusedActions.length > 0 && <p>Never used: {report.unusedActions.join(', ')}</p>}
+                    {report.annotations.length > 0 && (
+                      <p>
+                        Your notes:{' '}
+                        {report.annotations.map((a) => `"${a.note ?? a.tag}" @ ${a.frame}`).join(' · ')}
+                      </p>
+                    )}
+                    <p className="note">The agent sees this same report — ask it to act on any of these moments.</p>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export function App() {
   const [games, setGames] = useState<GameEntry[]>([]);
   const [state, setState] = useState<ServerState | null>(null);
@@ -194,6 +323,7 @@ export function App() {
   const [nonce, setNonce] = useState(0); // bumps to re-hook after iframe reloads
   const [dirty, setDirty] = useState(false);
   const [toast, setToast] = useState('');
+  const [showSessions, setShowSessions] = useState(false);
   const a = useFrameHandle(nonce);
   const b = useFrameHandle(nonce);
 
@@ -252,10 +382,13 @@ export function App() {
           <VariantOptions moduleVariants={variantNames} worktrees={state?.variants ?? {}} />
         </select>
         <div className="spacer" />
-        <span className="build">
-          {state ? `build ${state.buildRef} · ${state.sessions.length} sessions` : '…'}
-        </span>
+        <button className="hy" onClick={() => setShowSessions(true)}>
+          ▤ {state ? state.sessions.length : '…'} playtests
+        </button>
+        <span className="build">{state ? `build ${state.buildRef}` : ''}</span>
       </header>
+
+      {showSessions && state && <SessionsDrawer sessions={state.sessions} onClose={() => setShowSessions(false)} />}
 
       <main className="panes">
         {game && (

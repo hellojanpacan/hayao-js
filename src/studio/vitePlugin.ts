@@ -85,9 +85,69 @@ export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
       }
     },
     configureServer(server: ViteDevServer) {
+      /**
+       * Resolve a session's game TITLE to its live module via vite's SSR
+       * loader — the same module graph the browser uses, so the analyzer and
+       * the game share ONE engine instance (one node registry). Cached per
+       * title until the server restarts.
+       */
+      const titleToModule = new Map<string, string>();
+      async function loadGameByTitle(title: string): Promise<{ def: unknown; engine: Record<string, (...a: never[]) => unknown> }> {
+        const engine = (await server.ssrLoadModule('@hayao')) as Record<string, (...a: never[]) => unknown>;
+        const candidates: string[] = [];
+        const cached = titleToModule.get(title);
+        if (cached) candidates.push(cached);
+        for (const [parent] of [['examples'], ['sandboxes']] as const) {
+          const dir = resolve(projectRoot, parent);
+          if (!existsSync(dir)) continue;
+          for (const slug of readdirSync(dir)) {
+            for (const file of [`${parent}/${slug}/game.ts`, `${parent}/${slug}/${slug}.ts`]) {
+              if (existsSync(resolve(projectRoot, file))) candidates.push(`/${file}`);
+            }
+          }
+        }
+        if (existsSync(resolve(projectRoot, 'game.ts'))) candidates.push('/game.ts');
+        for (const path of candidates) {
+          try {
+            const mod = (await server.ssrLoadModule(path)) as Record<string, unknown>;
+            for (const v of Object.values(mod)) {
+              if (v && typeof v === 'object' && 'build' in v && 'title' in v && (v as { title: string }).title === title) {
+                titleToModule.set(title, path);
+                return { def: v, engine };
+              }
+            }
+          } catch {
+            /* a broken module must not take down the lookup */
+          }
+        }
+        throw new Error(`no game titled "${title}" found`);
+      }
+
       server.middlewares.use((req, res, next) => {
         void (async () => {
           const url = (req.url ?? '').split('?')[0];
+
+          // The ethnographer, for humans: analyze a recorded session and hand
+          // the report to the Studio UI. Cached per buildRef (same cache the
+          // MCP sidecar uses).
+          if (req.method === 'GET' && url.startsWith('/__studio/report/')) {
+            const id = decodeURIComponent(url.slice('/__studio/report/'.length));
+            if (!SAFE_ID.test(id)) return json(res, 400, { error: 'bad session id' });
+            const sessionPath = join(studioDir, 'sessions', `${id}.json`);
+            if (!existsSync(sessionPath)) return json(res, 404, { error: 'no such session' });
+            const session = JSON.parse(readFileSync(sessionPath, 'utf8')) as { game: string; buildRef?: string };
+            const reportsDir = join(studioDir, 'reports');
+            const cachePath = join(reportsDir, `${id}.json`);
+            if (existsSync(cachePath)) {
+              const cachedReport = JSON.parse(readFileSync(cachePath, 'utf8')) as { buildRef?: string };
+              if (cachedReport.buildRef === session.buildRef) return json(res, 200, cachedReport);
+            }
+            const { def, engine } = await loadGameByTitle(session.game);
+            const report = (engine.analyzePlaytest as (d: unknown, s: unknown) => unknown)(def, session);
+            mkdirSync(reportsDir, { recursive: true });
+            writeFileSync(cachePath, JSON.stringify(report, null, 1));
+            return json(res, 200, report);
+          }
 
           if (req.method === 'POST' && url === '/__studio/session') {
             const session = JSON.parse(await readBody(req)) as { id?: string };
@@ -176,7 +236,15 @@ export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
               .map((f) => {
                 try {
                   const s = JSON.parse(readFileSync(join(studioDir, 'sessions', f), 'utf8')) as Record<string, unknown>;
-                  return { id: s.id, game: s.game, startedAt: s.startedAt, endReason: s.endReason, frames: (s.inputLog as { frames?: unknown[] })?.frames?.length ?? 0 };
+                  return {
+                    id: s.id,
+                    game: s.game,
+                    startedAt: s.startedAt,
+                    endReason: s.endReason,
+                    frames: (s.inputLog as { frames?: unknown[] })?.frames?.length ?? 0,
+                    annotations: Array.isArray(s.annotations) ? s.annotations.length : 0,
+                    variant: (s.variant as { name?: string })?.name ?? 'dev',
+                  };
                 } catch {
                   return null;
                 }
