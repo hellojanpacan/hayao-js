@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { sproutveilGame } from './game';
 
-runBrowser(sproutveilGame, document.getElementById('app')!);
+runStudio(sproutveilGame, document.getElementById('app')!, { hot: import.meta.hot });
+import.meta.hot?.accept();

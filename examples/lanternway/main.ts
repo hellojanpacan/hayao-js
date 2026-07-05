@@ -1,5 +1,6 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { lanternwayGame } from './game';
 
 const mount = document.getElementById('app')!;
-runBrowser(lanternwayGame, mount);
+runStudio(lanternwayGame, mount, { hot: import.meta.hot });
+import.meta.hot?.accept();

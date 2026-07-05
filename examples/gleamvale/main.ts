@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { gleamvaleGame } from './game';
 
-runBrowser(gleamvaleGame, document.getElementById('app')!);
+runStudio(gleamvaleGame, document.getElementById('app')!, { hot: import.meta.hot });
+import.meta.hot?.accept();

@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { cadenceGame } from './game';
 
-runBrowser(cadenceGame, document.getElementById('app')!);
+runStudio(cadenceGame, document.getElementById('app')!, { hot: import.meta.hot });
+import.meta.hot?.accept();

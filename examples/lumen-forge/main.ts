@@ -2,12 +2,12 @@
 // the economy — they press input actions, which the sim consumes next step, so
 // clicking lives in the same deterministic input log as the keyboard.
 
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { cost, unlockedCount, TIERS, type EconomyState } from './logic';
 import { lfState, lumenForgeGame } from './game';
 
 const mount = document.getElementById('app')!;
-const handle = runBrowser(lumenForgeGame, mount);
+const handle = runStudio(lumenForgeGame, mount, { hot: import.meta.hot });
 
 const panel = document.createElement('div');
 panel.className = 'lf-panel';
@@ -58,3 +58,4 @@ setInterval(() => {
     (row as HTMLButtonElement).disabled = s.motes < c;
   });
 }, 100);
+import.meta.hot?.accept();

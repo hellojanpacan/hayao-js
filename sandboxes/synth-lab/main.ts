@@ -1,5 +1,6 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { synthLabGame } from './synth-lab';
 
 const mount = document.getElementById('app')!;
-runBrowser(synthLabGame, mount);
+runStudio(synthLabGame, mount, { hot: import.meta.hot });
+import.meta.hot?.accept();

@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { fernrowGame } from './game';
 
-runBrowser(fernrowGame, document.getElementById('app')!);
+runStudio(fernrowGame, document.getElementById('app')!, { hot: import.meta.hot });
+import.meta.hot?.accept();

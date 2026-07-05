@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { duskveilGame } from './game';
 
-runBrowser(duskveilGame, document.getElementById('app')!, { renderer: 'canvas' });
+runStudio(duskveilGame, document.getElementById('app')!, { renderer: 'canvas', hot: import.meta.hot });
+import.meta.hot?.accept();

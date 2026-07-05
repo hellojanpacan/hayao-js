@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { brasswickGame } from './game';
 
-runBrowser(brasswickGame, document.getElementById('app')!);
+runStudio(brasswickGame, document.getElementById('app')!, { hot: import.meta.hot });
+import.meta.hot?.accept();

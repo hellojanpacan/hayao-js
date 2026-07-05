@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { thornspireGame } from './game';
 
-runBrowser(thornspireGame, document.getElementById('app')!);
+runStudio(thornspireGame, document.getElementById('app')!, { hot: import.meta.hot });
+import.meta.hot?.accept();
