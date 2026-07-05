@@ -89,6 +89,7 @@
         <div class="spacer"></div>
         <div class="links">
           <a href="../play/">Play</a>
+          <a href="../sound/">Sound</a>
           <a href="../roadmap/" aria-current="page">Roadmap</a>
           <a class="ext" href="https://hayao.js.org/">Docs</a>
           <a class="ext" href="https://github.com/hellojanpacan/hayao-js">GitHub</a>
@@ -111,15 +112,15 @@
       </div>
 
       <section class="band">
-        <div class="lab">where it stands · v0.2</div>
+        <div class="lab">where it stands · v0.3</div>
         <h2>What's already true</h2>
         <p>The engine covers the popular 2D genres end to end, and every example proves its own truth in CI. The dimension that lags is
-          <b>art &amp; polish</b>: five games are art-finished, the rest render in functional placeholder style.</p>
+          <b>art &amp; polish</b>: eight games are art-finished, the rest render in functional placeholder style.</p>
         <div class="bars">
-          <div class="bar"><span>Engine breadth</span><div class="track"><div class="fill" style="width:96%"></div></div><span class="pct">27 genres</span></div>
-          <div class="bar"><span>Verification</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="pct">485 ✓</span></div>
+          <div class="bar"><span>Engine breadth</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="pct">33 games</span></div>
+          <div class="bar"><span>Verification</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="pct">775 ✓</span></div>
           <div class="bar"><span>Determinism</span><div class="track"><div class="fill" style="width:100%"></div></div><span class="pct">bit-exact</span></div>
-          <div class="bar"><span>Art-finished games</span><div class="track"><div class="fill warn" style="width:18%"></div></div><span class="pct">5 / 28</span></div>
+          <div class="bar"><span>Art-finished games</span><div class="track"><div class="fill warn" style="width:24%"></div></div><span class="pct">8 / 33</span></div>
           <div class="bar"><span>Benchmark ladder</span><div class="track"><div class="fill warn" style="width:33%"></div></div><span class="pct">2 / 6</span></div>
         </div>
       </section>
@@ -128,7 +129,7 @@
         <div class="lab">the work</div>
         <h2>What closes the gap</h2>
         <div class="status">
-          <div class="item"><h3><span class="dot wip"></span> Art pipeline propagation</h3><p>The code-as-art toolkit (palettes, organic shapes, autotile, textures) is proven on <a href="../examples/lanternway/index.html">Lanternway</a>, <a href="../examples/rootward/index.html">Rootward</a>, and <a href="../examples/tarnholm/index.html">Tarnholm</a>. Next: extract the shared cosmetic-layer helpers and lift the remaining games off placeholder art.</p></div>
+          <div class="item"><h3><span class="dot wip"></span> Art pipeline propagation</h3><p>The code-as-art toolkit (palettes, organic shapes, autotile, textures) is proven on eight games: <a href="../examples/lanternway/index.html">Lanternway</a>, <a href="../examples/rootward/index.html">Rootward</a>, <a href="../examples/tarnholm/index.html">Tarnholm</a>, <a href="../examples/driftlight/index.html">Driftlight</a>, <a href="../examples/fernrow/index.html">Fernrow</a>, <a href="../examples/kintsugi/index.html">Kintsugi</a>, <a href="../examples/lanternfold/index.html">Lanternfold</a>, and <a href="../examples/updrift/index.html">Updrift</a>. Next: extract the shared cosmetic-layer helpers and lift the remaining games off placeholder art.</p></div>
           <div class="item"><h3><span class="dot wip"></span> Fun &amp; juice defaults</h3><p>Game-feel — hit-stop, screen-shake, tweened readability — proven per-game today. Goal: make it the default an agent inherits, not something it must hand-author each time.</p></div>
           <div class="item"><h3><span class="dot todo"></span> Benchmark fidelity, rungs 3–6</h3><p>Reproduce harder human-ranked js13k winners under determinism + proof discipline, feeding each engine gap back into <code>src/</code>. See the ladder below.</p></div>
           <div class="item"><h3><span class="dot todo"></span> Long-form assembly</h3><p>From single verified games to an hour-long, multi-zone experience an agent can compose — the true test of the north-star prompt.</p></div>
@@ -163,7 +164,7 @@
       </section>
 
       <footer>
-        hayao.js · MIT · <a href="../">home</a> · <a href="../play/">play</a> · <a href="https://hayao.js.org/">docs</a> · <a href="https://github.com/hellojanpacan/hayao-js">GitHub</a><br />
+        hayao.js · MIT · <a href="../">home</a> · <a href="../play/">play</a> · <a href="../sound/">sound</a> · <a href="https://hayao.js.org/">docs</a> · <a href="https://github.com/hellojanpacan/hayao-js">GitHub</a><br />
         Status reflects v0.2 as of the current build. Percentages are directional, not a burn-down.
       </footer>
     </div>
