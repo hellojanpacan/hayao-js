@@ -12,6 +12,7 @@ import type {
   WallClockMark,
 } from './session';
 import type { TuningValues } from '../app/tuning';
+import type { WorldSnapshot } from '../world';
 
 export interface RecorderInit {
   game: string;
@@ -21,6 +22,8 @@ export interface RecorderInit {
   buildRef?: string;
   startedAt?: string;
   id?: string;
+  /** Segment sessions (post hot-swap) replay from this snapshot. */
+  startSnapshot?: WorldSnapshot;
 }
 
 let counter = 0;
@@ -99,6 +102,7 @@ export class SessionRecorder {
       seed: this.init.seed,
       variant: this.init.variant ?? { name: 'dev', kind: 'dev' },
       tuningValues: { ...this.init.tuningValues },
+      ...(this.init.startSnapshot ? { startSnapshot: this.init.startSnapshot } : {}),
       knobEvents: this.knobEvents.slice(),
       inputLog: { frames: this.frames.map((f) => f.slice()) },
       axesLog: this.axesLog.slice(),

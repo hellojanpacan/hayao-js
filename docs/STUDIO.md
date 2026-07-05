@@ -46,6 +46,18 @@ recorded** — this is a dev-server instrument only.
 `assertSnapshotStable`-grade hash equality is covered in
 `src/studio/session.test.ts`.
 
+## Hot-swap semantics (play across code edits)
+
+A game entry that passes `hot: import.meta.hot` to `runStudio` AND contains the
+literal line `import.meta.hot?.accept();` keeps its live world across code
+edits: on swap the old run snapshots into `hot.data`, the re-executed module
+restores it (new module's tuning wins), and the session splits into segments —
+the old one flushes as `hot-swap`, the new one records the restored snapshot as
+its `startSnapshot`, so **every segment stays bit-exactly replayable** despite
+the code change. Both lines are required: Vite marks HMR boundaries by
+statically scanning module source, so an `accept()` call inside the engine
+cannot mark your entry self-accepting — only the literal in your file can.
+
 ## Knob-change semantics
 
 Changing a knob mid-play is a **rebuild-with-carryover**: snapshot → new

@@ -58,7 +58,7 @@ function playLive(frames: Array<{ actions: string[]; pointerX?: number }>, knobA
   return { world, recorder };
 }
 
-const script = [
+const script: Array<{ actions: string[]; pointerX?: number }> = [
   ...Array.from({ length: 10 }, () => ({ actions: ['right'], pointerX: 50 })),
   ...Array.from({ length: 5 }, () => ({ actions: [] as string[], pointerX: 212.5 })),
   ...Array.from({ length: 10 }, () => ({ actions: ['left'], pointerX: 212.5 })),
@@ -97,6 +97,32 @@ describe('session record → replay', () => {
     expect(at15.frame).toBe(15);
     // Same prefix → same state: re-replaying yields an identical hash.
     expect(replaySession(chaseGame, session, 15).hash()).toBe(at15.hash());
+  });
+
+  it('replays a post-hot-swap segment from its startSnapshot bit-exactly', () => {
+    // Live play: 20 frames, then a "hot swap" — snapshot, restore into a fresh
+    // world (as runStudio does), and keep playing 15 frames into a new
+    // segment recorder that carries the snapshot as its origin.
+    const { world } = playLive(script.slice(0, 20));
+    const snap = world.snapshot();
+    const w2 = createWorld(chaseGame, { seed: 7 });
+    w2.restore(structuredClone(snap));
+    const segment = new SessionRecorder({
+      game: 'Chase',
+      seed: 7,
+      tuningValues: { speed: 120 },
+      startedAt: '2026-07-05T00:01:00.000Z',
+      startSnapshot: snap,
+    });
+    segment.screen('hot-swap');
+    for (const f of script.slice(20, 35)) {
+      if (f.pointerX !== undefined) w2.input.axes.set('pointer.x', f.pointerX);
+      segment.step(f.actions, w2.input.axes);
+      w2.step(f.actions);
+    }
+    const replayed = replaySession(chaseGame, JSON.parse(JSON.stringify(segment.toSession('quit'))));
+    expect(replayed.frame).toBe(w2.frame);
+    expect(replayed.hash()).toBe(w2.hash());
   });
 
   it('stamps events with the current frame and round-trips the artifact through JSON', () => {

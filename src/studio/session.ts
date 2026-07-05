@@ -8,7 +8,7 @@
 import { createWorld, type GameDefinition } from '../app/game';
 import type { TuningValues } from '../app/tuning';
 import type { InputLog } from '../input/actions';
-import type { World } from '../world';
+import type { World, WorldSnapshot } from '../world';
 
 /** Which build/variant produced a session — a report is never ambiguous about code. */
 export interface VariantRef {
@@ -44,7 +44,7 @@ export interface KnobEvent {
   value: number | string;
 }
 
-export type EndReason = 'goal' | 'quit' | 'restart' | 'navigate' | 'idle';
+export type EndReason = 'goal' | 'quit' | 'restart' | 'navigate' | 'idle' | 'hot-swap';
 
 export interface PlaytestSession {
   id: string;
@@ -56,6 +56,12 @@ export interface PlaytestSession {
   variant: VariantRef;
   /** Tuning at session start (resolved values). */
   tuningValues: TuningValues;
+  /**
+   * When play continued across a code hot-swap, the new segment records the
+   * world it resumed FROM — replay restores it before stepping, so even
+   * mid-development sessions stay bit-exactly re-executable.
+   */
+  startSnapshot?: WorldSnapshot;
   knobEvents: KnobEvent[];
   inputLog: InputLog;
   /** Delta-encoded analog axes: [frame, axis, value] whenever a value changed. */
@@ -87,6 +93,10 @@ export interface ReplayOptions {
 export function replaySession(def: GameDefinition, session: PlaytestSession, opts?: number | ReplayOptions): World {
   const o: ReplayOptions = typeof opts === 'number' ? { toFrame: opts } : (opts ?? {});
   const world = createWorld(def, { seed: session.seed, tuning: session.tuningValues });
+  if (session.startSnapshot) {
+    world.restore(structuredClone(session.startSnapshot));
+    def.attach?.(world);
+  }
   o.onWorld?.(world);
   const end = Math.min(o.toFrame ?? session.inputLog.frames.length, session.inputLog.frames.length);
   let axisIdx = 0;

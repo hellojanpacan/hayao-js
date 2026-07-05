@@ -29,6 +29,7 @@ import {
   audio,
   defineGame,
   knob,
+  registerNode,
   showScreen,
   hideScreen,
   type World,
@@ -361,6 +362,12 @@ class UpdriftView extends Node {
 function input_restart(w: World): boolean {
   return w.input.justPressed('restart');
 }
+
+// Restore support (Studio knob carryover / HMR / rollback): the view rebuilds
+// itself in onReady from world.state.up, so deserialization only needs the
+// type registered — no attach hook required. Edits to this file hot-swap
+// under a preserved world (see runStudio's `hot` option in main.ts).
+registerNode('UpdriftView', () => new UpdriftView({ name: 'updrift' }));
 
 export const updriftGame = defineGame({
   title: 'Updrift',

@@ -11,6 +11,12 @@ import { setScreenObserver } from '../ui/overlay';
 import { SessionRecorder } from './record';
 import type { EndReason, PlaytestSession, VariantRef } from './session';
 
+/** The slice of Vite's import.meta.hot the carryover needs (structural, no vite type dep). */
+export interface HotContext {
+  data: Record<string, unknown>;
+  dispose(cb: (data: Record<string, unknown>) => void): void;
+}
+
 export interface StudioOptions extends RunOptions {
   /**
    * Named A/B variants of this game. `?variant=<name>` picks one: its `patch`
@@ -20,6 +26,17 @@ export interface StudioOptions extends RunOptions {
   variants?: Record<string, Variant>;
   /** Variant identity override (worktree builds stamp commit info here). */
   variant?: VariantRef;
+  /**
+   * Pass `import.meta.hot` (only the game's own entry module has it) to carry
+   * the live world ACROSS code hot-swaps: snapshot on dispose, restore into
+   * the re-executed module. The old session flushes as 'hot-swap'; the new
+   * segment records the restored snapshot so it stays fully replayable.
+   *
+   * The entry MUST also contain the literal line `import.meta.hot?.accept();`
+   * — Vite decides HMR boundaries by statically scanning module source, so an
+   * accept() call inside this library cannot mark your entry self-accepting.
+   */
+  hot?: HotContext;
 }
 
 export interface StudioHandle extends GameHandle {
@@ -133,6 +150,29 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
     },
   });
 
+  // ── HMR carryover: play continues across code edits ─────────────────────────
+  const carried = opts.hot?.data.hayaoSnap as ReturnType<typeof handle.world.snapshot> | undefined;
+  if (carried) {
+    delete opts.hot!.data.hayaoSnap;
+    const snap = structuredClone(carried);
+    snap.tuning = { ...values }; // the NEW module's resolved tuning wins
+    handle.world.restore(snap);
+    def.attach?.(handle.world);
+    // The new segment replays from this exact state — record it as the origin.
+    recorder = new SessionRecorder({
+      game: def.title,
+      seed,
+      tuningValues: { ...values },
+      variant: variantRef,
+      startSnapshot: snap,
+    });
+    recorder.screen('hot-swap');
+  }
+  opts.hot?.dispose((data) => {
+    data.hayaoSnap = handle.world.snapshot();
+    cleanup('hot-swap');
+  });
+
   // Build identity comes from the dev server (git sha) — best-effort, async.
   void fetch('/__studio/state')
     .then((r) => (r.ok ? r.json() : null))
@@ -155,6 +195,18 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
   // Mobile Safari kills tabs without ceremony — autosave so a session is never lost.
   const autosave = window.setInterval(() => flush('idle'), 10_000);
 
+  /** Flush + release everything this run owns (stop() and HMR dispose share it). */
+  const cleanup = (reason: EndReason) => {
+    flush(reason, reason === 'hot-swap');
+    document.removeEventListener('visibilitychange', onVisibility);
+    window.removeEventListener('blur', onBlur);
+    window.removeEventListener('focus', onFocus);
+    window.removeEventListener('pagehide', onPageHide);
+    window.clearInterval(autosave);
+    setScreenObserver(null);
+    handle.stop();
+  };
+
   const studio: StudioHandle = {
     ...handle,
     get world() {
@@ -176,16 +228,7 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
     annotate: (tag, note) => recorder.annotate(tag, note),
     flush: (reason = 'idle') => flush(reason),
     session: () => recorder.toSession('idle'),
-    stop() {
-      flush('navigate');
-      document.removeEventListener('visibilitychange', onVisibility);
-      window.removeEventListener('blur', onBlur);
-      window.removeEventListener('focus', onFocus);
-      window.removeEventListener('pagehide', onPageHide);
-      window.clearInterval(autosave);
-      setScreenObserver(null);
-      handle.stop();
-    },
+    stop: () => cleanup('navigate'),
   };
 
   window.__studio = studio;
