@@ -215,6 +215,40 @@ server.registerTool(
 );
 
 server.registerTool(
+  'list_variants',
+  { description: 'Worktree variant builds registered for A/B comparison (.studio/variants.json). Module variants live in each game\'s variants.ts.' },
+  async () => {
+    const p = join(studioDir, 'variants.json');
+    return text(existsSync(p) ? JSON.parse(readFileSync(p, 'utf8')) : {});
+  },
+);
+
+server.registerTool(
+  'build_variant',
+  {
+    description:
+      'Build a git ref as an immutable worktree variant for side-by-side A/B in the Studio (e.g. name="before-fix", ref="HEAD~1"). Takes ~a minute; the human then picks it in a Studio pane.',
+    inputSchema: {
+      name: z.string().regex(/^[a-z0-9][a-z0-9._-]*$/i),
+      ref: z.string(),
+    },
+  },
+  async ({ name, ref }) => {
+    try {
+      const { stdout, stderr } = await execFileAsync('node', ['scripts/studio-variant.mjs', name, ref], {
+        cwd: root,
+        maxBuffer: 16 * 1024 * 1024,
+        timeout: 600_000,
+      });
+      return text({ ok: true, tail: `${stdout}\n${stderr}`.trim().split('\n').slice(-12).join('\n') });
+    } catch (err) {
+      const e = err as { stdout?: string; stderr?: string; message: string };
+      return text({ ok: false, tail: `${e.stdout ?? ''}\n${e.stderr ?? e.message}`.trim().split('\n').slice(-20).join('\n') });
+    }
+  },
+);
+
+server.registerTool(
   'get_playtest_report',
   {
     description:

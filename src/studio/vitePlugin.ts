@@ -6,9 +6,21 @@
 
 import type { Plugin, ViteDevServer } from 'vite';
 import { execSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, readdirSync, watch, writeFileSync } from 'node:fs';
-import { dirname, join, normalize, resolve } from 'node:path';
+import { createReadStream, existsSync, mkdirSync, readFileSync, readdirSync, statSync, watch, writeFileSync } from 'node:fs';
+import { dirname, extname, join, normalize, resolve } from 'node:path';
 import type { IncomingMessage, ServerResponse } from 'node:http';
+
+const MIME: Record<string, string> = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'text/javascript',
+  '.mjs': 'text/javascript',
+  '.css': 'text/css',
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.json': 'application/json',
+  '.woff2': 'font/woff2',
+  '.wasm': 'application/wasm',
+};
 
 export interface StudioPluginOptions {
   /** Where session/knob/variant files live. Default: `.studio` under the project root. */
@@ -102,9 +114,24 @@ export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
             return json(res, 200, games);
           }
 
+          // Immutable worktree-variant builds: /__studio/variants/<name>/… → static files.
+          if (req.method === 'GET' && url.startsWith('/__studio/variants/')) {
+            const rel = normalize(decodeURIComponent(url.slice('/__studio/variants/'.length)));
+            if (rel.split(/[/\\]/).includes('..')) return json(res, 400, { error: 'bad path' });
+            let file = join(studioDir, 'variants', rel);
+            if (existsSync(file) && statSync(file).isDirectory()) file = join(file, 'index.html');
+            if (!existsSync(file)) return json(res, 404, { error: 'no such variant file' });
+            res.statusCode = 200;
+            res.setHeader('content-type', MIME[extname(file)] ?? 'application/octet-stream');
+            createReadStream(file).pipe(res);
+            return;
+          }
+
           if (req.method === 'GET' && url === '/__studio/state') {
             const knobsPath = join(studioDir, 'knobs.json');
             const knobs = existsSync(knobsPath) ? (JSON.parse(readFileSync(knobsPath, 'utf8')) as unknown) : null;
+            const variantsPath = join(studioDir, 'variants.json');
+            const variants = existsSync(variantsPath) ? (JSON.parse(readFileSync(variantsPath, 'utf8')) as unknown) : {};
             const sessions = readdirSync(join(studioDir, 'sessions'))
               .filter((f) => f.endsWith('.json'))
               .map((f) => {
@@ -116,7 +143,7 @@ export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
                 }
               })
               .filter(Boolean);
-            return json(res, 200, { buildRef, knobs, sessions });
+            return json(res, 200, { buildRef, knobs, variants, sessions });
           }
 
           if (req.method === 'GET' && url === '/__studio/events') {

@@ -17,6 +17,8 @@ interface GameEntry {
 interface ServerState {
   buildRef: string;
   sessions: Array<{ id: string }>;
+  /** Worktree builds registered by scripts/studio-variant.mjs. */
+  variants: Record<string, { kind: string; ref: string; commit: string }>;
 }
 
 /** Poll a same-origin iframe until the game inside publishes window.__studio. */
@@ -43,8 +45,32 @@ function useFrameHandle(nonce: number): { frameRef: (el: HTMLIFrameElement | nul
 
 function paneUrl(game: GameEntry, seed: number, variant: string): string {
   const q = new URLSearchParams({ seed: String(seed) });
+  // 'wt:<name>' plays the same game page inside an immutable worktree build.
+  if (variant.startsWith('wt:')) return `/__studio/variants/${variant.slice(3)}${game.url}?${q}`;
   if (variant) q.set('variant', variant);
   return `${game.url}?${q}`;
+}
+
+function VariantOptions({ moduleVariants, worktrees }: { moduleVariants: Record<string, string>; worktrees: ServerState['variants'] }) {
+  return (
+    <>
+      <option value="">baseline</option>
+      {Object.entries(moduleVariants).map(([name, label]) => (
+        <option key={name} value={name}>
+          {label}
+        </option>
+      ))}
+      {Object.entries(worktrees).length > 0 && (
+        <optgroup label="worktree builds">
+          {Object.entries(worktrees).map(([name, v]) => (
+            <option key={name} value={`wt:${name}`}>
+              {name} @ {v.commit}
+            </option>
+          ))}
+        </optgroup>
+      )}
+    </>
+  );
 }
 
 /** Knob panel: leva controls generated from the game's declared tuning spec. */
@@ -165,12 +191,7 @@ export function App() {
         </select>
         <input type="number" value={seed} onChange={(e) => (setSeed(Number(e.target.value) || 1), setNonce((n) => n + 1))} aria-label="seed" style={{ width: 74 }} />
         <select value={variantA} onChange={(e) => (setVariantA(e.target.value), setNonce((n) => n + 1))} aria-label="variant A">
-          <option value="">baseline</option>
-          {Object.entries(variantNames).map(([name, label]) => (
-            <option key={name} value={name}>
-              {label}
-            </option>
-          ))}
+          <VariantOptions moduleVariants={variantNames} worktrees={state?.variants ?? {}} />
         </select>
         <div className="spacer" />
         <span className="build">
@@ -192,12 +213,7 @@ export function App() {
             <div className="pane-head">
               B · {variantB || 'baseline'} · seed {seed}
               <select value={variantB} onChange={(e) => setVariantB(e.target.value)} aria-label="variant B">
-                <option value="">baseline</option>
-                {Object.entries(variantNames).map(([name, label]) => (
-                  <option key={name} value={name}>
-                    {label}
-                  </option>
-                ))}
+                <VariantOptions moduleVariants={variantNames} worktrees={state?.variants ?? {}} />
               </select>
             </div>
             <iframe key={`b-${slug}-${seed}-${variantB}-${nonce}`} ref={b.frameRef} src={paneUrl(game, seed, variantB)} title="pane B" />
