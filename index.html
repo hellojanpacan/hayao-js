@@ -177,8 +177,8 @@
 
       <!-- Receipts: how we know it isn't slop -->
       <div class="proofbar" role="group" aria-label="Engine proof metrics">
-        <div><span class="n">33</span><span class="k">machine-verified games</span></div>
-        <div><span class="n">775</span><span class="k">tests, green in CI</span></div>
+        <div><span class="n" id="game-count-home">—</span><span class="k">machine-verified games</span></div>
+        <div><span class="n">all</span><span class="k">tests, green in CI</span></div>
         <div><span class="n">100%</span><span class="k">levels solver/bot-proven</span></div>
         <div><span class="n">bit-exact</span><span class="k">replay hashes</span></div>
         <div><span class="n">WCAG-AA</span><span class="k">palette-gated art</span></div>
@@ -247,6 +247,21 @@
     </div>
 
     <script>
+      // Derive game count from the play page so the proofbar never goes stale.
+      (async function() {
+        try {
+          const html = await fetch('./play/').then(r => r.text());
+          const doc = new DOMParser().parseFromString(html, 'text/html');
+          const slugs = {};
+          doc.querySelectorAll('a[href*="../examples/"]').forEach(function(a) {
+            var m = a.getAttribute('href').match(/\.\.\/examples\/([a-z0-9-]+)\//);
+            if (m) slugs[m[1]] = true;
+          });
+          var n = Object.keys(slugs).length;
+          var el = document.getElementById('game-count-home');
+          if (el && n) el.textContent = n;
+        } catch(e) {}
+      })();
       // Copy the cashable prompt (the one metric that matters: prompt → install).
       const copyBtn = document.getElementById('copyBtn');
       copyBtn?.addEventListener('click', async () => {
