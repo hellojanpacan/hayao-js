@@ -31,6 +31,13 @@ jobs:
       # publishing needs npm >= 11.5.1 (newer than Node 22's bundled npm).
       - run: npm install -g npm@latest
       - run: npm ci
+      # Guard: fail loudly if the version is un-bumped or the tag mismatches,
+      # instead of letting `npm publish` silently no-op a re-publish and ship a
+      # stale tarball (docs/FRICTION.md 2026-07-05).
+      - name: Preflight — version is new and matches the tag
+        run: node scripts/preflight-publish.mjs
+        env:
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
       # `npm publish` runs prepublishOnly (check + test + build:lib) first, then
       # publishes via OIDC. --provenance records a signed build attestation.
       - run: npm publish --provenance --access public

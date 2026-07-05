@@ -155,6 +155,10 @@ undo, and time-travel free.
   `pos` (a rect draws from `-w/2,-h/2`); `poly`/`path` points are local to `pos`.
   Thinking in corners? Pass `{ kind: 'rect', w, h, anchor: 'topLeft' }` — otherwise
   a top-left mental model lands the box half-a-size off.
+  **Outlined text:** a `Text` node carries `Paint`, so `stroke`/`strokeWidth`
+  outline the glyph (the outline lays UNDER the fill, so it frames rather than
+  eats the letter) — the way to make a label read on both light and dark grounds.
+  Don't stack offset copies to fake a halo; one `stroke` does it.
 - **Default palette is Kentō** (`import { KENTO, MEADOW, DUSK } from '@hayao'`).
   It fuses the site's washi/sumi/ai/shu ink tokens with landscape hues loosely
   drawn from Miyazaki-16 — eight named hues, each with a `Deep` tone for light
