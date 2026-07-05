@@ -1,6 +1,7 @@
 node_modules/
 dist/
 dist-site/
+dist-studio/
 *.log
 .DS_Store
 .vite/
