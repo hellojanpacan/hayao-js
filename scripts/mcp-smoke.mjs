@@ -72,8 +72,16 @@ if (sessions.length > 0) {
   const hasImage = res.content.some((c) => c.type === 'image');
   if (typeof summary.hash !== 'string') fail('inspect_moment returned no hash');
   console.log(`✓ inspect_moment(${id}) → frame ${summary.frame}, hash ${summary.hash.slice(0, 8)}…, png=${hasImage}`);
+
+  const rep = JSON.parse((await rpc('tools/call', { name: 'get_playtest_report', arguments: { sessionId: id } })).content[0].text);
+  if (typeof rep.frames !== 'number' || !Array.isArray(rep.hesitations)) fail('get_playtest_report malformed');
+  console.log(
+    `✓ get_playtest_report(${id}) → ${rep.frames} frames, ${rep.hesitations.length} hesitations, ` +
+      `${rep.deaths} deaths, ${rep.futileVerbs.length} futile verbs, unused: [${rep.unusedActions.join(', ')}]` +
+      `${rep.quit ? `, quit@${rep.quit.frame}` : ''}`,
+  );
 } else {
-  console.log('· no sessions on disk — inspect_moment skipped (play something in Studio first)');
+  console.log('· no sessions on disk — inspect_moment/report skipped (play something in Studio first)');
 }
 
 console.log('MCP smoke: all green');

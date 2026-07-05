@@ -15,7 +15,7 @@ import { execFile, execFileSync } from 'node:child_process';
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { promisify } from 'node:util';
-import { renderToSVGString, replaySession, type GameDefinition, type PlaytestSession } from '../src/index';
+import { analyzePlaytest, renderToSVGString, replaySession, type GameDefinition, type PlaytestSession } from '../src/index';
 
 const execFileAsync = promisify(execFile);
 const root = process.cwd();
@@ -212,6 +212,39 @@ server.registerTool(
       ],
     };
   },
+);
+
+server.registerTool(
+  'get_playtest_report',
+  {
+    description:
+      'The ethnographer: replay a session headlessly and return a compact factual report — hesitation spans (with the on-screen probe), death clusters, futile verbs, unused verbs, quit context, annotations. Telemetry DESCRIBES; propose fixes to the human, never auto-apply from metrics.',
+    inputSchema: { sessionId: z.string() },
+  },
+  async ({ sessionId }) => {
+    const session = readSession(sessionId);
+    const reportsDir = join(studioDir, 'reports');
+    const cachePath = join(reportsDir, `${sessionId}.json`);
+    // Cache key: same session + same code. buildRef changes bust it.
+    if (existsSync(cachePath)) {
+      const cached = JSON.parse(readFileSync(cachePath, 'utf8')) as { buildRef?: string };
+      if (cached.buildRef === session.buildRef) return text(cached);
+    }
+    const { def } = await loadGameByTitle(session.game);
+    const report = analyzePlaytest(def, session);
+    mkdirSync(reportsDir, { recursive: true });
+    writeFileSync(cachePath, JSON.stringify(report, null, 1));
+    return text(report);
+  },
+);
+
+server.registerTool(
+  'get_annotations',
+  {
+    description: 'The human\'s in-play annotations ("felt-bad @ frame N") for a session — each frame is a candidate for inspect_moment.',
+    inputSchema: { sessionId: z.string() },
+  },
+  async ({ sessionId }) => text(readSession(sessionId).annotations),
 );
 
 server.registerTool(

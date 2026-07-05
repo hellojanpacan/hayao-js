@@ -69,15 +69,26 @@ export interface PlaytestSession {
   consent?: { recorded: boolean; at: string };
 }
 
+export interface ReplayOptions {
+  toFrame?: number;
+  /** Observer called once with the fresh world BEFORE any step (subscribe to events here). */
+  onWorld?: (world: World) => void;
+  /** Observer called AFTER each step with the frame index just played. */
+  onFrame?: (world: World, frame: number) => void;
+}
+
 /**
  * Replay a session headlessly to `toFrame` (default: the whole log) and return
  * the live world. Bit-exact with the original run: axes deltas are applied
  * before the step that first saw them; knob events rebuild-with-carryover at
  * their frame exactly as the Studio panel did (including `def.attach`).
+ * A bare number as `opts` is `toFrame`.
  */
-export function replaySession(def: GameDefinition, session: PlaytestSession, toFrame?: number): World {
-  let world = createWorld(def, { seed: session.seed, tuning: session.tuningValues });
-  const end = Math.min(toFrame ?? session.inputLog.frames.length, session.inputLog.frames.length);
+export function replaySession(def: GameDefinition, session: PlaytestSession, opts?: number | ReplayOptions): World {
+  const o: ReplayOptions = typeof opts === 'number' ? { toFrame: opts } : (opts ?? {});
+  const world = createWorld(def, { seed: session.seed, tuning: session.tuningValues });
+  o.onWorld?.(world);
+  const end = Math.min(o.toFrame ?? session.inputLog.frames.length, session.inputLog.frames.length);
   let axisIdx = 0;
   let knobIdx = 0;
   const tuning: TuningValues = { ...session.tuningValues };
@@ -95,6 +106,7 @@ export function replaySession(def: GameDefinition, session: PlaytestSession, toF
       world.input.axes.set(name, value);
     }
     world.step(session.inputLog.frames[i]);
+    o.onFrame?.(world, i);
   }
   return world;
 }
