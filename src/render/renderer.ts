@@ -19,7 +19,24 @@ export interface Renderer {
    * (values fall outside 0..width/height there).
    */
   toDesign?(clientX: number, clientY: number): Vec2;
+  /**
+   * The drawn (letterboxed) design area within the mount, in mount-local px:
+   * `{ x, y, width, height, scale }`. Host-drawn UI (floating touch controls,
+   * DOM HUD) anchors to this rect instead of re-deriving the `object-fit:
+   * contain` math the backend already does for `toDesign`. Undefined for
+   * headless backends.
+   */
+  viewport?(): Viewport;
   dispose?(): void;
+}
+
+/** The drawn area within the mount: offset + size in host px, plus design→px scale. */
+export interface Viewport {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  scale: number;
 }
 
 export interface RendererConfig {
@@ -40,5 +57,21 @@ export function clientToDesign(rect: { left: number; top: number; width: number;
   return {
     x: (clientX - rect.left - offsetX) / scale,
     y: (clientY - rect.top - offsetY) / scale,
+  };
+}
+
+/**
+ * The centered uniform-fit rect for a design box inside an element of size
+ * `rect` — the inverse framing of `clientToDesign`, in element-local px. Shared
+ * by every DOM backend's `viewport()`.
+ */
+export function fitViewport(rect: { width: number; height: number }, width: number, height: number): Viewport {
+  const scale = Math.min(rect.width / width, rect.height / height) || 1;
+  return {
+    x: (rect.width - width * scale) / 2,
+    y: (rect.height - height * scale) / 2,
+    width: width * scale,
+    height: height * scale,
+    scale,
   };
 }

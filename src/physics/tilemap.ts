@@ -1,5 +1,11 @@
 // Tilemaps: grid collision geometry authored as ASCII. Plain data + pure
 // functions (house style) so maps serialize, hash, and diff cleanly.
+//
+// ORTHOGONAL ONLY. Every helper here — `tileAtPoint`, `mapWidth` — assumes a
+// square, axis-aligned lattice (`x/tileSize`). It is NOT iso-aware: on an
+// isometric map, use `iso()` from core for point→cell picking (`toGrid` then
+// floor) and keep the tilemap grid as your logical collision layer, indexing it
+// with the cell coords iso() returns. See docs/CONVENTIONS.md §Depth.
 
 export const TILE = {
   EMPTY: 0,

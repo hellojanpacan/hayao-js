@@ -5,7 +5,7 @@
 
 import type { World } from '../world';
 import type { InputLog } from '../input/actions';
-import { frameActions } from '../input/actions';
+import { frameActions, frameAxes } from '../input/actions';
 
 export type WorldFactory = () => World;
 
@@ -14,7 +14,7 @@ export function replay(makeWorld: WorldFactory, log: InputLog): { finalHash: str
   const world = makeWorld();
   const hashes: string[] = [];
   for (let i = 0; i < log.frames.length; i++) {
-    world.step(frameActions(log, i));
+    world.step(frameActions(log, i), frameAxes(log, i));
     hashes.push(world.hash());
   }
   return { finalHash: world.hash(), hashes };
@@ -70,15 +70,15 @@ export function assertSnapshotStable(
   warmup: number,
 ): { ok: boolean; hashA: string; hashB: string } {
   const original = makeWorld();
-  for (let i = 0; i < warmup; i++) original.step(frameActions(log, i));
+  for (let i = 0; i < warmup; i++) original.step(frameActions(log, i), frameAxes(log, i));
   const snap = original.snapshot();
 
   const restored = makeWorld();
   restored.restore(snap);
 
   for (let i = warmup; i < log.frames.length; i++) {
-    original.step(frameActions(log, i));
-    restored.step(frameActions(log, i));
+    original.step(frameActions(log, i), frameAxes(log, i));
+    restored.step(frameActions(log, i), frameAxes(log, i));
   }
   const hashA = original.hash();
   const hashB = restored.hash();

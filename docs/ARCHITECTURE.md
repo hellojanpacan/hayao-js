@@ -92,6 +92,22 @@ the OHYG lesson), **`Canvas2DRenderer`** (many primitives/particles), and
 without a GPU). Authoring is in a fixed **design space** (default 1280×720); the
 camera and backend handle DPR/scale/letterboxing.
 
+**A GPU backend is a fourth plug, not a rewrite** (see issue #39). The seam is
+already correct for it: the sim never reads the renderer, so a WebGL/WebGPU
+backend is another `DrawCommand[] → pixels` consumer and cannot touch
+`world.hash()` — determinism survives by construction. It stays deferred on
+purpose, gated on two things the project's "prove it" bar requires, not on
+effort: (1) a *driving* example whose entity density or post-FX genuinely
+exceeds what Canvas2D holds (we build from the mechanic, not from speculative
+ceilings), and (2) a headless **cross-renderer agreement** path — GPU output
+proven to match the SVG/headless reference at the command level — since a GPU
+framebuffer isn't diffable-as-text the way SVG is. Until both exist, a GPU
+backend would be unverifiable surface area, so the reference renderers remain
+SVG (golden, text-diffable) and Headless (command-level). Any GPU-only effect
+(shaders, batched particles) must enter as a **declarative command type** the
+headless/SVG backends can still see, so the verify channels keep working on the
+symbolic form.
+
 ### audio/ — code-as-sound
 A procedural Web Audio bus (master/music/sfx), zzfx-style tone synthesis and
 ambient pads (ported from OHYG). No audio files. A no-op in Node so headless runs
