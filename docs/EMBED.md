@@ -80,6 +80,11 @@ If you prefer modules, inline `dist/index.min.js` as a blob and dynamic-import i
 - **Assets.** If your game loads a webfont or atlas, use the `preload` +
   `splash` lifecycle (see [API.md](API.md)) so there's no pop-in — the engine
   holds a palette-guaranteed splash until preload resolves.
+- **Touch.** These targets (Artifacts, itch, js13k) are largely played on phones.
+  A keyboard game is unplayable there until you add `TouchControls` — a virtual
+  gamepad in one declaration that drives the same action set as keys:
+  `new TouchControls(handle, { left: ['up','down','left','right'], buttons: [{ action: 'fire' }] })`.
+  It only mounts on coarse-pointer devices by default. See CONVENTIONS §Pointer.
 - **The one gap the engine can't close.** The window between the browser
   *fetching* the file and the script *executing* is pre-engine by physics —
   nothing hayao can draw yet. Recipe B shrinks it to a single local file.

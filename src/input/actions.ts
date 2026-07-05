@@ -5,16 +5,39 @@
 /** action name → physical key codes (KeyboardEvent.code strings). */
 export type InputMap = Record<string, string[]>;
 
+/** Per-frame analog axis values (already quantized). Recorded into the log + hash. */
+export type AxisFrame = Record<string, number>;
+
 export class InputState {
   private down = new Set<string>();
   private prev = new Set<string>();
-  /** Analog axes (e.g. from gamepad or pointer), sampled per step. */
+  /**
+   * Analog axes (e.g. from pointer or gamepad), sampled per step. By default
+   * these are LIVE host samples — NOT hashed or logged (see PointerSource).
+   * Axes passed to `beginFrame`'s second argument are the exception: they are
+   * *logged* (enter `getState()` → hash, and the input log), so quantized analog
+   * aim replays bit-exactly. Both live and logged values read back via `axis()`.
+   */
   readonly axes = new Map<string, number>();
+  /** The subset of axes that are part of the deterministic log + hash this frame. */
+  private logged = new Map<string, number>();
 
-  /** Engine: set which actions are down this step (from live input or replay). */
-  beginFrame(actionsDown: Iterable<string>): void {
+  /**
+   * Engine: set which actions are down this step (from live input or replay).
+   * `axes` (optional) are QUANTIZED analog values that become part of the log
+   * and hash for this frame — use `snapAxis`/`quantizeAngle` at the host edge so
+   * replay and lockstep netplay reproduce analog aim exactly.
+   */
+  beginFrame(actionsDown: Iterable<string>, axes?: AxisFrame): void {
     this.prev = new Set(this.down);
     this.down = new Set(actionsDown);
+    this.logged.clear();
+    if (axes) {
+      for (const k in axes) {
+        this.logged.set(k, axes[k]);
+        this.axes.set(k, axes[k]);
+      }
+    }
   }
 
   isDown(action: string): boolean {
@@ -35,13 +58,43 @@ export class InputState {
     return [...this.down].sort();
   }
 
-  getState() {
-    return { down: [...this.down].sort(), prev: [...this.prev].sort() };
+  getState(): { down: string[]; prev: string[]; axes?: Array<[string, number]> } {
+    const s: { down: string[]; prev: string[]; axes?: Array<[string, number]> } = {
+      down: [...this.down].sort(),
+      prev: [...this.prev].sort(),
+    };
+    // Only emit axes when present, so games that never use logged axes keep their
+    // pinned hashes byte-for-byte.
+    if (this.logged.size > 0) s.axes = [...this.logged].sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
+    return s;
   }
-  setState(s: { down: string[]; prev: string[] }): void {
+  setState(s: { down: string[]; prev: string[]; axes?: Array<[string, number]> }): void {
     this.down = new Set(s.down);
     this.prev = new Set(s.prev);
+    this.logged.clear();
+    if (s.axes) for (const [k, v] of s.axes) {
+      this.logged.set(k, v);
+      this.axes.set(k, v);
+    }
   }
+}
+
+/**
+ * Quantize an analog value into `buckets` levels across `[min,max]` and return
+ * the SNAPPED value (deterministic — same input → same output on every engine).
+ * Feed the result through `beginFrame`'s axes so analog input is replay-exact.
+ */
+export function snapAxis(value: number, buckets: number, min = -1, max = 1): number {
+  if (buckets < 2 || max === min) return value;
+  const t = Math.min(1, Math.max(0, (value - min) / (max - min)));
+  const b = Math.round(t * (buckets - 1));
+  return min + (b / (buckets - 1)) * (max - min);
+}
+
+/** Snap an angle (radians) to the nearest of `buckets` evenly-spaced headings. */
+export function quantizeAngle(radians: number, buckets: number): number {
+  const step = (Math.PI * 2) / buckets;
+  return Math.round(radians / step) * step;
 }
 
 /** Map a set of raw key codes to the set of actions they trigger. */
@@ -56,9 +109,17 @@ export function keysToActions(map: InputMap, keysDown: Set<string>): string[] {
 /** Records the per-frame action-down sets → a compact, replayable input log. */
 export class InputRecorder {
   private frames: string[][] = [];
+  private axes: Array<AxisFrame | undefined> = [];
+  private anyAxes = false;
 
-  record(actionsDown: string[]): void {
+  record(actionsDown: string[], axes?: AxisFrame): void {
     this.frames.push(actionsDown.slice().sort());
+    if (axes && Object.keys(axes).length > 0) {
+      this.axes.push({ ...axes });
+      this.anyAxes = true;
+    } else {
+      this.axes.push(undefined);
+    }
   }
 
   get length(): number {
@@ -66,17 +127,27 @@ export class InputRecorder {
   }
 
   toLog(): InputLog {
-    return { frames: this.frames.map((f) => f.slice()) };
+    const log: InputLog = { frames: this.frames.map((f) => f.slice()) };
+    // Only carry the axes track when at least one frame had logged axes.
+    if (this.anyAxes) log.axes = this.axes.map((a) => (a ? { ...a } : undefined));
+    return log;
   }
 }
 
 export interface InputLog {
   frames: string[][];
+  /** Optional per-frame quantized analog axes, aligned to `frames` (absent = none). */
+  axes?: Array<AxisFrame | undefined>;
 }
 
 /** Replays a recorded log: returns the action set for frame index i. */
 export function frameActions(log: InputLog, i: number): string[] {
   return log.frames[i] ?? [];
+}
+
+/** The logged analog axes for frame index i, or undefined if none were recorded. */
+export function frameAxes(log: InputLog, i: number): AxisFrame | undefined {
+  return log.axes?.[i];
 }
 
 /** A default set of common bindings games can start from. */

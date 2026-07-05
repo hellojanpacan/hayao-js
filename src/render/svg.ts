@@ -3,7 +3,7 @@
 // browser verification trivial: querySelector IS the probe.
 
 import type { DrawCommand } from './commands';
-import { clientToDesign, type Renderer, type RendererConfig } from './renderer';
+import { clientToDesign, fitViewport, type Renderer, type RendererConfig, type Viewport } from './renderer';
 import { commandsToSVGInner } from './svgString';
 import type { Vec2 } from '../core/math';
 
@@ -63,6 +63,10 @@ export class SvgRenderer implements Renderer {
   /** Map a pointer event's clientX/Y into design space (undoes the letterbox). */
   toDesign(clientX: number, clientY: number): Vec2 {
     return clientToDesign(this.svg.getBoundingClientRect(), this.width, this.height, clientX, clientY);
+  }
+
+  viewport(): Viewport {
+    return fitViewport(this.svg.getBoundingClientRect(), this.width, this.height);
   }
 
   dispose(): void {

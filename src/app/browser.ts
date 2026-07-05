@@ -11,7 +11,7 @@ import type { DrawCommand } from '../render/commands';
 import { relLuminance } from '../verify/gates';
 import { SvgRenderer } from '../render/svg';
 import { Canvas2DRenderer } from '../render/canvas';
-import type { Renderer } from '../render/renderer';
+import type { Renderer, Viewport } from '../render/renderer';
 import { renderToSVGString } from '../render/svgString';
 import { audio } from '../audio/audio';
 import { settings } from '../ui/settings';
@@ -58,6 +58,8 @@ export interface GameHandle {
   canvas: HTMLElement | SVGElement | undefined;
   /** Map a pointer event's clientX/Y to design coordinates (undoes the letterbox). */
   toDesign(clientX: number, clientY: number): Vec2;
+  /** The drawn (letterboxed) area within the mount — anchor host-drawn UI here. */
+  viewport(): Viewport | undefined;
   /** Resolves after preload completes and the first real frame has rendered. */
   ready: Promise<void>;
   /** Run a callback once the game is ready (fires immediately if already ready). */
@@ -195,6 +197,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
     pointer,
     canvas: renderer.element,
     toDesign: (clientX, clientY) => renderer.toDesign?.(clientX, clientY) ?? { x: clientX, y: clientY },
+    viewport: () => renderer.viewport?.(),
     ready,
     onReady(cb) {
       if (booting) readyCbs.push(cb);

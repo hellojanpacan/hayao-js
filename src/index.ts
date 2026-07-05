@@ -4,6 +4,7 @@
 
 // ── core: the deterministic kernel ──────────────────────────────
 export * from './core/math';
+export * from './core/projection';
 export * from './core/dmath';
 export * from './core/rng';
 export * from './core/clock';
@@ -15,6 +16,7 @@ export * from './scene/node';
 // Node2D is an alias for Node — the base node already carries a 2D transform.
 export { Node as Node2D } from './scene/node';
 export * from './scene/nodes';
+export * from './scene/iso';
 export * from './scene/cameraController';
 export * from './scene/parallax';
 export * from './scene/pool';
@@ -85,6 +87,7 @@ export * from './audio/album';
 export * from './ui/overlay';
 export * from './ui/settings';
 export * from './ui/shell';
+export * from './ui/touch';
 export * from './ui/transition';
 
 // ── verify: the AI-first harness ────────────────────────────────
@@ -101,6 +104,7 @@ export * from './verify/ramp';
 export * from './verify/filmstrip';
 export * from './verify/audioFilmstrip';
 export * from './verify/ethnography';
+export * from './verify/dom';
 
 // ── logic: pure engine primitives (FSM, weighted tables, graph search) ─
 export * from './logic/fsm';

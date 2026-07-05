@@ -6,7 +6,7 @@ import { Clock, type ClockConfig } from './core/clock';
 import { EventBus } from './core/events';
 import { hashValue } from './core/hash';
 import { Rng } from './core/rng';
-import { InputState } from './input/actions';
+import { InputState, type AxisFrame } from './input/actions';
 import { Node, resetNodeIds, type WorldContext } from './scene/node';
 import { deserializeNode } from './scene/registry';
 import type { Camera2D } from './scene/nodes';
@@ -102,9 +102,9 @@ export class World implements WorldContext {
    * Advance exactly one fixed step with the given actions held down.
    * This is THE deterministic transition — call it from Node or the browser loop.
    */
-  step(actionsDown: Iterable<string> = []): void {
+  step(actionsDown: Iterable<string> = [], axes?: AxisFrame): void {
     this.ensureStarted();
-    this.input.beginFrame(actionsDown);
+    this.input.beginFrame(actionsDown, axes);
     this.root.updateTree(this.clock.dt);
     this.flushFree();
     this.clock.tick();
@@ -117,9 +117,9 @@ export class World implements WorldContext {
    * not 72. For headless tests/harnesses that want to fast-forward an exact
    * number of steps, use `runSteps(n)` or `step()` — never `advance` with a big ms.
    */
-  advance(realMs: number, actionsDown: Iterable<string> = []): number {
+  advance(realMs: number, actionsDown: Iterable<string> = [], axes?: AxisFrame): number {
     const steps = this.clock.advance(realMs);
-    for (let i = 0; i < steps; i++) this.step(actionsDown);
+    for (let i = 0; i < steps; i++) this.step(actionsDown, axes);
     return steps;
   }
 
@@ -128,8 +128,8 @@ export class World implements WorldContext {
    * headless drivers (unlike `advance`, no realtime clamp). Pass `actionsFor(i)`
    * to script the input per step; omit it to hold nothing down.
    */
-  runSteps(n: number, actionsFor?: (i: number) => Iterable<string>): void {
-    for (let i = 0; i < n; i++) this.step(actionsFor ? actionsFor(i) : []);
+  runSteps(n: number, actionsFor?: (i: number) => Iterable<string>, axesFor?: (i: number) => AxisFrame | undefined): void {
+    for (let i = 0; i < n; i++) this.step(actionsFor ? actionsFor(i) : [], axesFor?.(i));
   }
 
   private flushFree(): void {

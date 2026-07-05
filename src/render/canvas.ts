@@ -3,7 +3,7 @@
 
 import { sortCommands, type DrawCommand, type Paint } from './commands';
 import { canvasGradient, shapeBBox } from './paint';
-import { clientToDesign, type Renderer, type RendererConfig } from './renderer';
+import { clientToDesign, fitViewport, type Renderer, type RendererConfig, type Viewport } from './renderer';
 import type { Vec2 } from '../core/math';
 
 export class Canvas2DRenderer implements Renderer {
@@ -174,6 +174,10 @@ export class Canvas2DRenderer implements Renderer {
   /** Map a pointer event's clientX/Y into design space (undoes the letterbox). */
   toDesign(clientX: number, clientY: number): Vec2 {
     return clientToDesign(this.canvas.getBoundingClientRect(), this.width, this.height, clientX, clientY);
+  }
+
+  viewport(): Viewport {
+    return fitViewport(this.canvas.getBoundingClientRect(), this.width, this.height);
   }
 
   dispose(): void {

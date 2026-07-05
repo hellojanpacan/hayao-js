@@ -3,6 +3,8 @@
 // Timer is a deterministic countdown that emits a signal.
 
 import type { Transform } from '../core/math';
+import { dcos, dsin } from '../core/dmath';
+import { TAU } from '../core/math';
 import type { DrawCommand, Paint, TextAlign } from '../render/commands';
 import { Node, type NodeConfig, type WorldContext } from './node';
 
@@ -18,14 +20,39 @@ import { Node, type NodeConfig, type WorldContext } from './node';
  *  - `poly`   → LOCAL coordinates: `points` are relative to `pos` as-is (put your
  *               own 0,0 wherever you like).
  *  - `path`   → LOCAL coordinates: `d` is drawn relative to `pos`.
+ *  - `diamond`→ CENTER-anchored: a `w×h` rhombus (iso tile). `pos` is its middle.
+ *  - `regularPoly` → CENTER-anchored: `sides`-gon of circumradius `r`. `rotation`
+ *               (radians) turns it; 0 puts the first vertex straight up.
  * (`Text` is anchored by its `align`, not centered — see the Text node.)
+ *
+ * `diamond` and `regularPoly` are pure sugar over `poly` (resolved at draw time,
+ * no renderer change) — they exist so an iso tile or a hex reads as intent, not
+ * as four hand-typed corner numbers.
  */
 export type Shape =
   | { kind: 'rect'; w: number; h: number; r?: number; anchor?: 'center' | 'topLeft' }
   | { kind: 'circle'; radius: number }
   | { kind: 'poly'; points: number[]; closed?: boolean }
   | { kind: 'path'; d: string }
-  | { kind: 'glyph'; char: string; size: number };
+  | { kind: 'glyph'; char: string; size: number }
+  | { kind: 'diamond'; w: number; h: number }
+  | { kind: 'regularPoly'; sides: number; r: number; rotation?: number };
+
+/** Local poly points for a center-anchored `w×h` diamond (top, right, bottom, left). */
+export function diamondPoints(w: number, h: number): number[] {
+  return [0, -h / 2, w / 2, 0, 0, h / 2, -w / 2, 0];
+}
+
+/** Local poly points for a center-anchored regular `sides`-gon of circumradius `r`. */
+export function regularPolyPoints(sides: number, r: number, rotation = 0): number[] {
+  const pts: number[] = [];
+  // Start at the top (−90°) so an unturned polygon points up, then go clockwise.
+  for (let i = 0; i < sides; i++) {
+    const a = rotation - TAU / 4 + (TAU * i) / sides;
+    pts.push(dcos(a) * r, dsin(a) * r);
+  }
+  return pts;
+}
 
 export interface SpriteConfig extends NodeConfig, Paint {
   shape: Shape;
@@ -70,6 +97,12 @@ export class Sprite extends Node {
         break;
       case 'glyph':
         out.push({ kind: 'text', text: this.shape.char, x: 0, y: 0, size: this.shape.size, align: 'center', ...base });
+        break;
+      case 'diamond':
+        out.push({ kind: 'poly', points: diamondPoints(this.shape.w, this.shape.h), closed: true, ...base });
+        break;
+      case 'regularPoly':
+        out.push({ kind: 'poly', points: regularPolyPoints(this.shape.sides, this.shape.r, this.shape.rotation ?? 0), closed: true, ...base });
         break;
     }
   }

@@ -78,6 +78,48 @@ actions do. For lockstep/replay, **quantize at the host edge**: map a tap to an
 action (`input.press('fire')`) or snap position to a grid cell you feed as a
 discrete move. Keep raw pointer floats out of the sim's canonical state.
 
+**Replay-exact analog** (twin-stick aim, analog throttle): pass QUANTIZED axes as
+`world.step(actions, axes)`'s second argument. Those enter `getState()` → hash and
+the input log (`InputRecorder`/`frameAxes`), so `assertDeterministic` and netplay
+reproduce them. Snap at the edge with `snapAxis(v, buckets)` / `quantizeAngle(rad,
+buckets)`. Games that never pass axes keep their pinned hashes byte-for-byte.
+
+**Sustained virtual input.** `press()` is a one-shot tap (cleared after one step).
+For an on-screen control that models STATE (held joystick, hold-to-fire), use
+`input.setHeld(action, on)` — it stays in the action set every step until released,
+no re-press-per-frame.
+
+**Multitouch.** `pointer.read()`/`sample()` describe the primary pointer (unchanged).
+For two thumbs at once, `pointer.readAll()` returns every live touch with its stable
+`id`. Or skip the raw layer: **`TouchControls`** (`ui/`, sibling to `Shell`) renders
+floating sticks/buttons and drives the same action set via `setHeld` — a virtual
+gamepad in one declaration. Anchor host-drawn UI to the played area with
+`handle.viewport()` (letterbox rect + scale), never re-derived `getBoundingClientRect`.
+
+**Proving the host layer.** Touch/pointer host code is the one layer sim proofs
+can't see. `bootDom(def)` (`verify/dom`, under jsdom/happy-dom) boots the real
+`runBrowser` wiring, fires synthetic touches, and steps so you assert on `probe()`.
+
+
+## Depth & 2.5D (isometric / overlap)
+
+Painter's `z` is the one depth primitive: the renderer stable-sorts by it, ties
+broken by tree order. For any game where sprites overlap (top-down, iso), derive
+`z` from a depth axis instead of hand-setting it per mover:
+
+- **`DepthSort({ key })`** — a container that assigns each child's `z` from an
+  accessor at draw time (positions are final for the frame). `key: (n) => n.pos.y`
+  for top-down overlap; `key: (n) => n.gx + n.gy` for an iso lattice. It removes
+  per-node depth bookkeeping from every overlap game.
+- **`iso({ tileW, tileH, origin })`** — the grid↔screen projection (core, no
+  trig, hash-safe). `toScreen(gx, gy, elev?)` places a cell; `toGrid(sx, sy)`
+  inverts the ground plane so `pointer.x/y` → a tile coord. Use this for picking;
+  `physics/tilemap` is **orthogonal-only** and cannot pick on an iso map.
+- **`IsoPrism({ tileW, tileH, height, fill })`** — a raised tile as three
+  auto-shaded faces (top + two sides), one node instead of three hand-rolled
+  polys. Pairs with `DepthSort` keyed on `gx + gy`.
+- **`diamond` / `regularPoly` shapes** — sugar over `poly` so an iso tile or hex
+  reads as intent, not four re-typed corners.
 
 ## The human-contact layer
 
