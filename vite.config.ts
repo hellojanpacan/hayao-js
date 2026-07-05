@@ -3,6 +3,7 @@ import { defineConfig } from 'vitest/config';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { readdirSync, existsSync } from 'node:fs';
+import { hayaoStudio } from './src/studio/vitePlugin';
 
 const root = dirname(fileURLToPath(import.meta.url));
 
@@ -41,6 +42,9 @@ export default defineConfig({
   // MPA mode → missing pages 404 honestly instead of silently re-serving the hub
   // (narrow-js lesson: the SPA fallback eats navigation and reads as "nothing happens").
   appType: 'mpa',
+  // Cast: vitest/config bundles its own vite, so the two Plugin types are
+  // nominally (not structurally) different. Runtime shape is identical.
+  plugins: [hayaoStudio() as unknown as import('vitest/config').Plugin],
   resolve: {
     alias: {
       '@hayao': resolve(root, 'src/index.ts'),

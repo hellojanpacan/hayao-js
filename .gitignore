@@ -8,3 +8,6 @@ coverage/
 /shots/
 .claude/settings.local.json
 scratchpad/
+
+# Studio session/knob/variant artifacts (filesystem bus — local, never versioned)
+.studio/

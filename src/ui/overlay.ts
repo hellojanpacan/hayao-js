@@ -54,6 +54,16 @@ export function setOverlayHost(el: HTMLElement): void {
   host = el;
 }
 
+let screenObserver: ((kind: 'show' | 'hide', title?: string) => void) | null = null;
+/**
+ * Observe DOM screen chrome (menus/title/game-over) opening and closing —
+ * Studio's session recorder uses this to time menu dwell, which the sim can't
+ * see. Observer only; it must never mutate.
+ */
+export function setScreenObserver(cb: ((kind: 'show' | 'hide', title?: string) => void) | null): void {
+  screenObserver = cb;
+}
+
 /** Show a screen (replaces any current one). Returns a handle. */
 export function showScreen(spec: ScreenSpec): ScreenHandle {
   if (typeof document === 'undefined') {
@@ -61,6 +71,7 @@ export function showScreen(spec: ScreenSpec): ScreenHandle {
   }
   ensureStyle();
   hideScreen();
+  screenObserver?.('show', spec.title);
 
   const scrim = document.createElement('div');
   scrim.className = `hy-scrim${spec.dim === false ? '' : ' dim'}${spec.className ? ' ' + spec.className : ''}`;
@@ -120,7 +131,10 @@ export function showScreen(spec: ScreenSpec): ScreenHandle {
     close() {
       document.removeEventListener('keydown', onKey);
       scrim.remove();
-      if (active === handle) active = null;
+      if (active === handle) {
+        active = null;
+        screenObserver?.('hide', spec.title);
+      }
     },
   };
   active = handle;
