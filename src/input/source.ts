@@ -1,7 +1,36 @@
 // Browser input source: tracks physical keys and maps them to actions each step.
 // Kept separate from InputState so the pure sim never imports DOM.
+//
+// The INPUT-SOURCE CONTRACT (for custom sources like GamepadSource):
+//   - Implement sample(input: InputState): void — called once per fixed step,
+//     BEFORE world.advance(), to write quantized values into input.axes.
+//   - Optionally implement dispose(): void — called when the source is removed.
+//   - Axis key naming: dotted namespace, e.g. "gamepad.lx", "pointer.x".
+//   - QUANTIZE at the host edge (snapAxis / quantizeAngle) before writing axes
+//     so recorded logs replay bit-exactly on any machine.
+//   - For discrete input (button press → action), call keyboard.setHeld(action)
+//     so presses enter the same deterministic action log as keys.
+//   - Axes written by sample() are NOT part of world.hash() by default. To make
+//     analog input hash/replay-exact, pass the quantized axes as the second arg
+//     to world.step(actions, axes) — they then enter getState() and the log.
+//   See docs/CONVENTIONS.md §"Custom input sources" for full details.
 
 import { keysToActions, type InputMap, type InputState } from './actions';
+
+/**
+ * Minimal contract for a host-side input source. Implement this to feed any
+ * hardware (gamepad, MIDI, accelerometer, on-screen controls) into the sim's
+ * InputState.axes without touching the engine internals.
+ *
+ * The engine samples each registered source once per fixed step, BEFORE
+ * world.advance(). Register via RunOptions.sources or GameHandle.addSource().
+ */
+export interface InputSource {
+  /** Write quantized values into input.axes. Called before each world.advance(). */
+  sample(input: InputState): void;
+  /** Optional cleanup (remove listeners, release held actions). */
+  dispose?(): void;
+}
 import type { Vec2 } from '../core/math';
 
 export class KeyboardSource {

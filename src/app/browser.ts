@@ -5,12 +5,13 @@
 
 import type { CreateWorldOptions, GameDefinition, SplashConfig } from './game';
 import { createWorld } from './game';
-import { KeyboardSource, PointerSource } from '../input/source';
+import { KeyboardSource, PointerSource, type InputSource } from '../input/source';
 import type { Vec2 } from '../core/math';
 import type { DrawCommand } from '../render/commands';
 import { relLuminance } from '../verify/gates';
 import { SvgRenderer } from '../render/svg';
 import { Canvas2DRenderer } from '../render/canvas';
+import { WebGL2Renderer } from '../render/webgl';
 import type { Renderer, Viewport } from '../render/renderer';
 import { renderToSVGString } from '../render/svgString';
 import { audio } from '../audio/audio';
@@ -21,7 +22,8 @@ import { installCapture, isCaptureMode } from '../verify/capture';
 import type { World } from '../world';
 
 export interface RunOptions {
-  renderer?: 'svg' | 'canvas';
+  /** Rendering backend. Default 'svg'. Use 'webgl' for post-processing effects. */
+  renderer?: 'svg' | 'canvas' | 'webgl';
   /** Start the pause/settings shell (Esc). Default true. */
   shell?: boolean;
   onRestart?: () => void;
@@ -41,6 +43,13 @@ export interface RunOptions {
    * steps (no pause overlay — Studio's scrubber holds the sim with this).
    */
   isHeld?: () => boolean;
+  /**
+   * Extra input sources (e.g. GamepadSource) sampled each step alongside the
+   * built-in KeyboardSource and PointerSource. Each source's sample() is called
+   * before world.advance(), and dispose() on stop(). You can also add sources
+   * after the handle is returned via GameHandle.addSource().
+   */
+  sources?: InputSource[];
 }
 
 export interface GameHandle {
@@ -64,6 +73,17 @@ export interface GameHandle {
   ready: Promise<void>;
   /** Run a callback once the game is ready (fires immediately if already ready). */
   onReady(cb: () => void): void;
+  /**
+   * Register an extra input source (e.g. GamepadSource) to be sampled each step
+   * alongside PointerSource. Returns a cleanup function that removes the source
+   * (calling its dispose()) when invoked.
+   *
+   * Typical pattern:
+   *   const handle = runBrowser(def, mount);
+   *   const gamepad = new GamepadSource({ keyboard: handle.input });
+   *   const removeGamepad = handle.addSource(gamepad);
+   */
+  addSource(source: InputSource): () => void;
   stop(): void;
   restart(): void;
 }
@@ -95,7 +115,9 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
   const renderer: Renderer =
     opts.renderer === 'canvas'
       ? new Canvas2DRenderer({ width, height, background })
-      : new SvgRenderer({ width, height, background });
+      : opts.renderer === 'webgl'
+        ? new WebGL2Renderer({ width, height, background })
+        : new SvgRenderer({ width, height, background });
 
   mount.style.position = mount.style.position || 'relative';
   renderer.mount?.(mount);
@@ -103,6 +125,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
 
   const input = new KeyboardSource(def.inputMap ?? {}, document);
   const pointer = new PointerSource(renderer);
+  const extraSources: InputSource[] = [...(opts.sources ?? [])];
   const capture = isCaptureMode();
 
   // Start audio on first user gesture (autoplay policy).
@@ -162,6 +185,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
     last = now;
     if (!capture && !(shell?.isPaused) && !opts.isHeld?.()) {
       pointer.sample(world.input); // pointer.x/y/down into axes before the step reads them
+      for (const s of extraSources) s.sample(world.input);
       const actions = input.currentActions();
       const steps = world.advance(dt, actions);
       if (steps > 0) {
@@ -203,10 +227,20 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
       if (booting) readyCbs.push(cb);
       else cb();
     },
+    addSource(source: InputSource) {
+      extraSources.push(source);
+      return () => {
+        const i = extraSources.indexOf(source);
+        if (i !== -1) extraSources.splice(i, 1);
+        source.dispose?.();
+      };
+    },
     stop() {
       cancelAnimationFrame(raf);
       input.dispose();
       pointer.dispose();
+      for (const s of extraSources) s.dispose?.();
+      extraSources.length = 0;
       shell?.dispose();
       renderer.dispose?.();
     },
