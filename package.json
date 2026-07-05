@@ -27,22 +27,29 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "bin": {
-    "create-hayao": "./bin/create-hayao.mjs"
+    "create-hayao": "./bin/create-hayao.mjs",
+    "hayao-mcp": "./bin/hayao-mcp-cli.mjs"
   },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
+    },
+    "./studio": {
+      "types": "./dist/studio/vitePlugin.d.ts",
+      "import": "./dist/studio-plugin.js"
     }
   },
   "files": [
     "dist",
+    "dist-studio",
     "bin",
     "docs/QUICKSTART.md",
     "docs/API.md",
     "docs/VERIFICATION.md",
     "docs/CONVENTIONS.md",
-    "docs/EMBED.md"
+    "docs/EMBED.md",
+    "docs/STUDIO.md"
   ],
   "engines": {
     "node": ">=18"
@@ -53,7 +60,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "build:lib": "rm -rf dist && esbuild src/index.ts --bundle --format=esm --platform=neutral --target=es2022 --outfile=dist/index.js --sourcemap && esbuild src/index.ts --bundle --minify --format=esm --platform=neutral --target=es2022 --outfile=dist/index.min.js && esbuild src/index.ts --bundle --minify --format=iife --global-name=hayao --platform=neutral --target=es2022 --outfile=dist/hayao.global.js && tsc -p tsconfig.build.json",
+    "build:lib": "rm -rf dist && esbuild src/index.ts --bundle --format=esm --platform=neutral --target=es2022 --outfile=dist/index.js --sourcemap && esbuild src/index.ts --bundle --minify --format=esm --platform=neutral --target=es2022 --outfile=dist/index.min.js && esbuild src/index.ts --bundle --minify --format=iife --global-name=hayao --platform=neutral --target=es2022 --outfile=dist/hayao.global.js && esbuild src/studio/mcpMain.ts --bundle --format=esm --platform=node --target=es2022 --outfile=dist/mcp.js --external:@resvg/resvg-js --external:hayao && esbuild src/studio/vitePlugin.ts --bundle --format=esm --platform=node --target=es2022 --outfile=dist/studio-plugin.js --external:vite && cp scripts/rasterize-worker-lite.mjs dist/rasterize-worker-lite.mjs && tsc -p tsconfig.build.json",
+    "build:studio": "vite build -c vite.studio.config.ts",
     "check": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -62,7 +70,7 @@
     "verify": "tsx scripts/verify-all.ts",
     "eval": "tsx scripts/eval.ts",
     "create": "node bin/create-hayao.mjs",
-    "prepublishOnly": "npm run check && npm test && npm run build:lib",
+    "prepublishOnly": "npm run check && npm test && npm run build:lib && npm run build:studio",
     "relay": "node scripts/relay.mjs",
     "palette": "tsx scripts/palette-audit.ts",
     "audio": "tsx scripts/audio-render.ts",

@@ -8,7 +8,27 @@ import type { Plugin, ViteDevServer } from 'vite';
 import { execSync } from 'node:child_process';
 import { createReadStream, existsSync, mkdirSync, readFileSync, readdirSync, statSync, watch, writeFileSync } from 'node:fs';
 import { dirname, extname, join, normalize, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { IncomingMessage, ServerResponse } from 'node:http';
+
+/**
+ * The prebuilt Studio UI shipped with the package (dist-studio/). Projects
+ * with their own studio/index.html (this repo) serve the live page instead.
+ * Checked relative to this module: works from dist/studio-plugin.js (package)
+ * and from src/studio/vitePlugin.ts (repo, where ../../dist-studio also holds
+ * the build:studio output).
+ */
+function findPrebuiltStudio(): string | null {
+  for (const rel of ['../dist-studio', '../../dist-studio']) {
+    try {
+      const dir = fileURLToPath(new URL(rel, import.meta.url));
+      if (existsSync(join(dir, 'index.html'))) return dir;
+    } catch {
+      /* non-file URL context */
+    }
+  }
+  return null;
+}
 
 const MIME: Record<string, string> = {
   '.html': 'text/html; charset=utf-8',
@@ -111,7 +131,26 @@ export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
                 if (existsSync(join(dir, slug, 'index.html'))) games.push({ slug, kind, url: `${prefix}${slug}/` });
               }
             }
+            // create-hayao flat layout: the game IS the project root page.
+            if (games.length === 0 && existsSync(join(projectRoot, 'index.html')) && existsSync(join(projectRoot, 'game.ts'))) {
+              games.push({ slug: projectRoot.split('/').pop() ?? 'game', kind: 'project', url: '/' });
+            }
             return json(res, 200, games);
+          }
+
+          // The Studio UI for projects without their own studio/ page: serve
+          // the prebuilt app shipped in the hayao package.
+          if (req.method === 'GET' && (url === '/studio' || url.startsWith('/studio/')) && !existsSync(join(projectRoot, 'studio', 'index.html'))) {
+            const prebuilt = findPrebuiltStudio();
+            if (!prebuilt) return json(res, 404, { error: 'no prebuilt Studio UI in this hayao build' });
+            const rel = normalize(decodeURIComponent(url.replace(/^\/studio\/?/, '')));
+            if (rel.split(/[/\\]/).includes('..')) return json(res, 400, { error: 'bad path' });
+            let file = join(prebuilt, rel);
+            if (!existsSync(file) || statSync(file).isDirectory()) file = join(prebuilt, 'index.html');
+            res.statusCode = 200;
+            res.setHeader('content-type', MIME[extname(file)] ?? 'text/html; charset=utf-8');
+            createReadStream(file).pipe(res);
+            return;
           }
 
           // Immutable worktree-variant builds: /__studio/variants/<name>/… → static files.

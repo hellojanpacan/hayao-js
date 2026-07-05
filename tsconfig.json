@@ -22,7 +22,8 @@
     "baseUrl": ".",
     "paths": {
       "@hayao": ["./src/index.ts"],
-      "@hayao/*": ["./src/*"]
+      "@hayao/*": ["./src/*"],
+      "hayao": ["./src/index.ts"]
     }
   },
   "include": ["src", "examples", "sandboxes", "scripts", "studio", "bin", "vite.config.ts"]
