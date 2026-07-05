@@ -43,7 +43,8 @@
   "files": [
     "dist",
     "dist-studio",
-    "bin",
+    "bin/create-hayao.mjs",
+    "bin/hayao-mcp-cli.mjs",
     "docs/QUICKSTART.md",
     "docs/API.md",
     "docs/VERIFICATION.md",

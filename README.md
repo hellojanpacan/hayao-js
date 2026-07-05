@@ -86,6 +86,33 @@ seeds**, each provable — not forty hand-drawn maps. The reference is
 composed entirely this way, with `npm run eval` scoring proof coverage across the
 whole portfolio.
 
+## Close the one channel a machine can't: fun
+
+Hayao proves winnability, determinism, ramp, and feel-floors by machine. The one
+thing no headless gate can score is **fun** — and that takes a human. **Hayao
+Studio** is the instrument for that channel: `npm run dev`, open `/studio/`, and
+every human playtest becomes a bit-exactly replayable artifact the agent can read.
+
+```ts
+// main.ts — Studio-instrumented driver (drop-in for runBrowser)
+import { runStudio } from 'hayao';
+runStudio(game, document.getElementById('app')!, { hot: import.meta.hot });
+```
+
+```ts
+// vite.config.ts — the dev-server harness (sessions, live knobs, A/B, /studio/)
+import { hayaoStudio } from 'hayao/studio';
+export default { plugins: [hayaoStudio()] };
+```
+
+A session `(seed, tuning, inputLog, axes, knobEvents)` re-simulates the whole run
+in Node, so any metric is computable after the fact and any tick is re-inspectable.
+The bundled `hayao-mcp` sidecar is the agent's window in — `list_sessions`,
+`get_playtest_report` (hesitations, deaths, quit context), `inspect_moment`
+(replay any tick → probe + screenshot), `get_knob_state` (values the human
+accepted, to write back into `tuning:` defaults). Telemetry describes; the human
+directs. Full doctrine in [docs/STUDIO.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/STUDIO.md).
+
 ## The layers
 
 Everything is one npm package behind a single barrel — **`@hayao`**. Games
@@ -128,9 +155,11 @@ reasoning in [docs/ENGINE.md](https://github.com/hellojanpacan/hayao-js/blob/mai
 ## Documentation
 
 - [docs/QUICKSTART.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/QUICKSTART.md) — **using `hayao` from npm**: install (it's ESM-only), define a game, and prove it correct headlessly — a complete runnable example.
+- [docs/API.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/API.md) — the full, greppable public surface (every export + signature). Ships in the package.
 - [docs/ARCHITECTURE.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/ARCHITECTURE.md) — the authoritative design and the determinism contract.
 - [docs/CONVENTIONS.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/CONVENTIONS.md) — how games are structured, house style, definition of done.
 - [docs/VERIFICATION.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/VERIFICATION.md) — the two verification channels; how to prove a game correct.
+- [docs/STUDIO.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/STUDIO.md) — the human/AI playtest loop: sessions, live knobs, A/B variants, the MCP sidecar.
 - [docs/GALLERY.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/GALLERY.md) — the verified gallery: what "machine-proven" means per game, and how to run the proof yourself.
 - [docs/ENGINE.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/ENGINE.md) — why a custom engine, and when NOT to use one.
 - [docs/LESSONS.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/LESSONS.md) — transferable lessons from real LLM-authored game builds.
@@ -148,20 +177,26 @@ regenerated with `npm run thumbs`.
 
 ## Status
 
-**v0.2 — the 20-genre campaign is complete, plus the waves it triggered.**
-A growing portfolio of games lives under `examples/`. The core set covers the most
-popular 2D indie genres (platformer, metroidvania, Zelda-like, stealth, horde
-survival, bullet hell, tower defense, RTS, roguelike, deckbuilder, tactics,
-match-3, idle, farming, horror, city builder, rhythm, physics arcade, racing,
-narrative — plus the original Sokoban). On top of those sit js13k-benchmark
-reproductions (Seamfold, Gravewell), a deterministic rigid-body physics wave
-(Rookspire demolition, Brasswick pinball), and a netplay showcase (Fernclash —
-lockstep + rollback across tabs). Every one ships a `verify.ts` suite that
+**v0.3 — Hayao Studio: the human/AI playtest loop ships with the engine.**
+The v0.2 campaign covered the most popular 2D indie genres (platformer,
+metroidvania, Zelda-like, stealth, horde survival, bullet hell, tower defense,
+RTS, roguelike, deckbuilder, tactics, match-3, idle, farming, horror, city
+builder, rhythm, physics arcade, racing, narrative — plus the original Sokoban),
+and grew from there: js13k-benchmark reproductions (Seamfold, Gravewell), a
+deterministic rigid-body physics wave (Rookspire demolition, Brasswick pinball),
+a netplay showcase (Fernclash — lockstep + rollback across tabs), a 2-player
+co-op survival (Kinfall), and the flagship metroidvania (Kintsugi). 30+ example
+games now live under `examples/`, each shipping a `verify.ts` suite that
 machine-proves its truth: solver-proven puzzles, bot-beaten levels, duel-proven
-counter systems, win-rate-tuned balance, fairness gates for procgen,
-frame-exact timing windows, bit-for-bit peer agreement, golden replay hashes.
-400+ tests; `npm run verify` runs the whole portfolio. The campaign's findings — what each
-genre demanded of the engine and what generalized — live in
+counter systems, win-rate-tuned balance, fairness gates for procgen, frame-exact
+timing windows, bit-for-bit peer agreement, golden replay hashes.
+
+v0.3 adds the one channel a machine can't close on its own — **fun** — as a
+first-class, replayable instrument (Hayao Studio, above), plus a de-anchoring
+`sandboxes/` shelf: single-mechanic labs (physics, particles, camera,
+pathfinding, procgen, synth, juice) for learning one primitive in isolation.
+740+ tests; `npm run verify` runs the whole portfolio. What each genre demanded
+of the engine and what generalized lives in
 [docs/BUILDLOG.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/BUILDLOG.md).
 
 ## License
