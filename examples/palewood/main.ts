@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { palewoodGame } from './game';
 
-runBrowser(palewoodGame, document.getElementById('app')!, { renderer: 'canvas' });
+runStudio(palewoodGame, document.getElementById('app')!, { renderer: 'canvas', hot: import.meta.hot });
+import.meta.hot?.accept();

@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { shardAscentGame } from './game';
 
-runBrowser(shardAscentGame, document.getElementById('app')!);
+runStudio(shardAscentGame, document.getElementById('app')!, { hot: import.meta.hot });
+import.meta.hot?.accept();

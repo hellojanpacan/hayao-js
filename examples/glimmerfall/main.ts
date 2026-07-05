@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { glimmerfallGame } from './game';
 
-runBrowser(glimmerfallGame, document.getElementById('app')!);
+runStudio(glimmerfallGame, document.getElementById('app')!, { hot: import.meta.hot });
+import.meta.hot?.accept();

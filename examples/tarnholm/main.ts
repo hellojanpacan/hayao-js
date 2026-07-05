@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { tarnholmGame } from './game';
 
-runBrowser(tarnholmGame, document.getElementById('app')!);
+runStudio(tarnholmGame, document.getElementById('app')!, { hot: import.meta.hot });
+import.meta.hot?.accept();

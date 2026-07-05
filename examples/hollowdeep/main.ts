@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { hollowdeepGame } from './game';
 
-runBrowser(hollowdeepGame, document.getElementById('app')!);
+runStudio(hollowdeepGame, document.getElementById('app')!, { hot: import.meta.hot });
+import.meta.hot?.accept();

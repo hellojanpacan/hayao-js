@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { rootwardGame } from './game';
 
-runBrowser(rootwardGame, document.getElementById('app')!);
+runStudio(rootwardGame, document.getElementById('app')!, { hot: import.meta.hot });
+import.meta.hot?.accept();

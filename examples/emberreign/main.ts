@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { emberreignGame } from './game';
 
-runBrowser(emberreignGame, document.getElementById('app')!);
+runStudio(emberreignGame, document.getElementById('app')!, { hot: import.meta.hot });
+import.meta.hot?.accept();

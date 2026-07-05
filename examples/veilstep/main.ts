@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { veilstepGame } from './game';
 
-runBrowser(veilstepGame, document.getElementById('app')!);
+runStudio(veilstepGame, document.getElementById('app')!, { hot: import.meta.hot });
+import.meta.hot?.accept();

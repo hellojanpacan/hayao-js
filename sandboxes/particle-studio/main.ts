@@ -1,5 +1,6 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { particleStudioGame } from './particle-studio';
 
 const mount = document.getElementById('app')!;
-runBrowser(particleStudioGame, mount);
+runStudio(particleStudioGame, mount, { hot: import.meta.hot });
+import.meta.hot?.accept();

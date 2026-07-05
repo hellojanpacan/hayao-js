@@ -1,5 +1,6 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { emberfoldGame } from './game';
 
 const mount = document.getElementById('app')!;
-runBrowser(emberfoldGame, mount);
+runStudio(emberfoldGame, mount, { hot: import.meta.hot });
+import.meta.hot?.accept();

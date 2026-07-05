@@ -368,12 +368,12 @@ export const webglLabGame = defineGame({
     undo:    ['KeyU'],
   },
   build(world): Node {
-    (world.state as unknown as LabState) = {
-      effectIdx: 0, param: 0, storm: false,
-    };
-    const lab = new WebGLLab({ name: 'lab' });
-    world.root.addChild(lab);
-    return world.root;
+    world.state['effectIdx'] = 0;
+    world.state['param'] = 0;
+    world.state['storm'] = false;
+    const root = new Node({ name: 'webgl-lab' });
+    root.addChild(new WebGLLab({ name: 'lab' }));
+    return root;
   },
   probe(world) {
     const s = (world.state as unknown) as LabState;

@@ -1,5 +1,6 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { kintsugiGame } from './game';
 
 const mount = document.getElementById('app')!;
-runBrowser(kintsugiGame, mount);
+runStudio(kintsugiGame, mount, { hot: import.meta.hot });
+import.meta.hot?.accept();

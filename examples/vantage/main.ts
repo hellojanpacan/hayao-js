@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { vantageGame } from './game';
 
-runBrowser(vantageGame, document.getElementById('app')!);
+runStudio(vantageGame, document.getElementById('app')!, { hot: import.meta.hot });
+import.meta.hot?.accept();

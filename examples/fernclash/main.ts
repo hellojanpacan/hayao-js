@@ -9,7 +9,7 @@ import {
   BroadcastChannelTransport,
   connectWebSocket,
   hideScreen,
-  runBrowser,
+  runStudio,
   runBrowserNet,
   showScreen,
   type NetGameHandle,
@@ -29,7 +29,7 @@ async function makeTransport(): Promise<Transport> {
 
 function startLocal(): void {
   hideScreen();
-  runBrowser({ ...fernclashGame, inputMap: FC_LOCAL_INPUT_MAP }, mount);
+  runStudio({ ...fernclashGame, inputMap: FC_LOCAL_INPUT_MAP }, mount, { hot: import.meta.hot });
 }
 
 async function startNet(role: 'host' | 'join'): Promise<void> {
@@ -74,3 +74,4 @@ showScreen({
     { label: 'Join netplay', onSelect: () => void startNet('join') },
   ],
 });
+import.meta.hot?.accept();

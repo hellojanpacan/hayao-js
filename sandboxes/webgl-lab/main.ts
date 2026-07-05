@@ -1,7 +1,7 @@
 // WebGL lab driver. Wires the WebGL2Renderer and manages the post-processing
 // pipeline based on the game's world.state.effectIdx / param.
 
-import { runBrowser, WebGL2Renderer, WEBGL_EFFECTS, BLOOM_PIPELINE } from '@hayao';
+import { runStudio, WebGL2Renderer, WEBGL_EFFECTS, BLOOM_PIPELINE } from '@hayao';
 import { webglLabGame, EFFECTS, type LabState } from './webgl-lab';
 
 const mount = document.getElementById('app')!;
@@ -22,7 +22,7 @@ function effectPipeline(idx: number): Parameters<WebGL2Renderer['setPipeline']>[
 
 let lastEffectIdx = -1;
 
-const handle = runBrowser(webglLabGame, mount, {
+const handle = runStudio(webglLabGame, mount, {
   renderer: 'webgl',
   shell: false,
   onAdvance(world) {
@@ -42,4 +42,6 @@ const handle = runBrowser(webglLabGame, mount, {
     const eff = EFFECTS[idx];
     if (eff.uniform) renderer.setUniform(eff.uniform, s.param);
   },
+  hot: import.meta.hot,
 });
+import.meta.hot?.accept();

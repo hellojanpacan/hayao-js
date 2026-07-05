@@ -1,5 +1,6 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { pathfindingDemoGame } from './pathfinding-demo';
 
 const mount = document.getElementById('app')!;
-runBrowser(pathfindingDemoGame, mount);
+runStudio(pathfindingDemoGame, mount, { hot: import.meta.hot });
+import.meta.hot?.accept();

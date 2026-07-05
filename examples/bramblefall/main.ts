@@ -1,4 +1,5 @@
-import { runBrowser } from '@hayao';
+import { runStudio } from '@hayao';
 import { bramblefallGame } from './game';
 
-runBrowser(bramblefallGame, document.getElementById('app')!, { renderer: 'canvas' });
+runStudio(bramblefallGame, document.getElementById('app')!, { renderer: 'canvas', hot: import.meta.hot });
+import.meta.hot?.accept();
