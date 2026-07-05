@@ -22,6 +22,28 @@ surfaced, what changed so it can't recur (or "unfixed" — an open trap).
 
 ## Entries
 
+## 2026-07-05 — Repo drifted ahead of npm at an unchanged version → partial publish shipped
+
+- **Happened:** Studio, the `bin` CLIs, the `./studio` export subpath, and 5 of
+  6 docs were added to `package.json` (`files`/`bin`/`exports`) but the version
+  stayed `0.2.0` — same as the last publish. So npm kept serving the OLD, thin
+  `0.2.0` tarball (built from `files: ["dist", "docs/API.md"]`, no bin, no
+  `./studio`); none of the new surface ever reached consumers.
+- **Surfaced as:** a downstream `hayao` consumer reported "README links to docs
+  that aren't in the package" and "types look missing." Both traced to the stale
+  tarball, not the source: the README's doc links were relative (`docs/….md`)
+  so they 404 on npmjs.com, and `./studio`'s `types` pointer dangled because
+  `dist/studio/vitePlugin.d.ts` was never packed. (The "types missing" read was
+  itself wrong — `0.2.0` ships 77 `.d.ts` behind a re-export barrel — but the
+  broken `./studio` pointer made it plausible.) Nothing in-repo failed; `npm
+  publish` just silently no-ops a re-publish at an existing version.
+- **Fix landed:** bumped to `0.3.0`, rewrote README doc links to absolute
+  `github.com/.../blob/main/…` URLs (resolve on npm, GitHub, and in the
+  tarball). Rule: a `files`/`exports`/`bin` change is a publishable change —
+  bump the version in the same commit, or it never ships. Guard still open:
+  no CI check that fails a release when local version == `npm view hayao
+  version`, or diffs the packed tarball against an expected manifest.
+
 ## 2026-07-04 — `npm run verify -- <slug>` scopes nothing but the feel audit
 
 - **Happened:** iterating on a new game, ran `npm run verify -- emberfold` to

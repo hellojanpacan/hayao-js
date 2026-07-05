@@ -44,7 +44,7 @@ npm run verify   # run the determinism + solver harness over all examples
 ```
 
 A game is one folder under `examples/<slug>/`, imports **only** from `@hayao`,
-and is a `defineGame()` call. See [docs/CONVENTIONS.md](docs/CONVENTIONS.md).
+and is a `defineGame()` call. See [docs/CONVENTIONS.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/CONVENTIONS.md).
 
 ## Start a new game in one command
 
@@ -123,19 +123,19 @@ GUIs, binary scenes, and a bespoke language, all opaque to an LLM; hayao keeps
 the model and makes every part **text, typed, greppable, and headlessly
 verifiable**. Canvas engines couple the sim to the render loop and the browser;
 hayao decouples them so the sim is a pure function you can test in Node. Full
-reasoning in [docs/ENGINE.md](docs/ENGINE.md).
+reasoning in [docs/ENGINE.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/ENGINE.md).
 
 ## Documentation
 
-- [docs/QUICKSTART.md](docs/QUICKSTART.md) — **using `hayao` from npm**: install (it's ESM-only), define a game, and prove it correct headlessly — a complete runnable example.
-- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — the authoritative design and the determinism contract.
-- [docs/CONVENTIONS.md](docs/CONVENTIONS.md) — how games are structured, house style, definition of done.
-- [docs/VERIFICATION.md](docs/VERIFICATION.md) — the two verification channels; how to prove a game correct.
-- [docs/GALLERY.md](docs/GALLERY.md) — the verified gallery: what "machine-proven" means per game, and how to run the proof yourself.
-- [docs/ENGINE.md](docs/ENGINE.md) — why a custom engine, and when NOT to use one.
-- [docs/LESSONS.md](docs/LESSONS.md) — transferable lessons from real LLM-authored game builds.
-- [docs/FRICTION.md](docs/FRICTION.md) — process-lesson log: what fought an AI session and what check/doc now prevents it.
-- [AGENTS.md](AGENTS.md) — the operating manual for an AI author working in this repo.
+- [docs/QUICKSTART.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/QUICKSTART.md) — **using `hayao` from npm**: install (it's ESM-only), define a game, and prove it correct headlessly — a complete runnable example.
+- [docs/ARCHITECTURE.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/ARCHITECTURE.md) — the authoritative design and the determinism contract.
+- [docs/CONVENTIONS.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/CONVENTIONS.md) — how games are structured, house style, definition of done.
+- [docs/VERIFICATION.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/VERIFICATION.md) — the two verification channels; how to prove a game correct.
+- [docs/GALLERY.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/GALLERY.md) — the verified gallery: what "machine-proven" means per game, and how to run the proof yourself.
+- [docs/ENGINE.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/ENGINE.md) — why a custom engine, and when NOT to use one.
+- [docs/LESSONS.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/LESSONS.md) — transferable lessons from real LLM-authored game builds.
+- [docs/FRICTION.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/FRICTION.md) — process-lesson log: what fought an AI session and what check/doc now prevents it.
+- [AGENTS.md](https://github.com/hellojanpacan/hayao-js/blob/main/AGENTS.md) — the operating manual for an AI author working in this repo.
 
 ## The site
 
@@ -162,7 +162,7 @@ counter systems, win-rate-tuned balance, fairness gates for procgen,
 frame-exact timing windows, bit-for-bit peer agreement, golden replay hashes.
 400+ tests; `npm run verify` runs the whole portfolio. The campaign's findings — what each
 genre demanded of the engine and what generalized — live in
-[docs/BUILDLOG.md](docs/BUILDLOG.md).
+[docs/BUILDLOG.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/BUILDLOG.md).
 
 ## License
 
