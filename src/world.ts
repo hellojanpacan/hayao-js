@@ -19,6 +19,8 @@ export interface WorldConfig {
   /** Design-space dimensions (default 1280×720). */
   width?: number;
   height?: number;
+  /** Resolved tuning values (see app/tuning.ts). Sim state: hashed + snapshotted. */
+  tuning?: Record<string, number | string>;
 }
 
 /** Default engine event map; games extend it with their own keys. */
@@ -48,6 +50,7 @@ export class World implements WorldContext {
   private seed: number;
   private freeQueue: Node[] = [];
   private started = false;
+  private tuningValues: Record<string, number | string>;
 
   constructor(config: WorldConfig = {}) {
     this.seed = config.seed ?? 1;
@@ -55,7 +58,19 @@ export class World implements WorldContext {
     this.clock = new Clock(config.clock);
     this.width = config.width ?? 1280;
     this.height = config.height ?? 720;
+    this.tuningValues = { ...(config.tuning ?? {}) };
     this.root = new Node({ name: 'root' });
+  }
+
+  /**
+   * Read a tuning value resolved at world creation (declared default unless
+   * overridden). Throws on an undeclared key — a typo here would otherwise
+   * silently read `undefined` into the sim.
+   */
+  tune<T extends number | string = number>(key: string): T {
+    const v = this.tuningValues[key];
+    if (v === undefined) throw new Error(`tune('${key}'): no such knob declared in the game's tuning spec`);
+    return v as T;
   }
 
   get time(): number {
@@ -176,6 +191,8 @@ export class World implements WorldContext {
       input: this.input.getState(),
       state: this.state,
       tree: this.root.serialize(),
+      // Only when declared, so games without tuning keep their pinned hashes.
+      ...(Object.keys(this.tuningValues).length > 0 ? { tuning: this.tuningValues } : {}),
     });
   }
 
@@ -188,6 +205,7 @@ export class World implements WorldContext {
       input: this.input.getState(),
       state: structuredClone(this.state),
       tree: this.root.serialize(),
+      tuning: { ...this.tuningValues },
     };
   }
 
@@ -198,6 +216,7 @@ export class World implements WorldContext {
     this.clock.setState(snap.clock);
     this.input.setState(snap.input);
     this.state = structuredClone(snap.state);
+    if (snap.tuning) this.tuningValues = { ...snap.tuning };
     resetNodeIds(1_000_000); // avoid id collisions with the live session
     this.setRoot(deserializeNode(snap.tree));
     this.ensureStarted();
@@ -221,4 +240,6 @@ export interface WorldSnapshot {
   input: ReturnType<InputState['getState']>;
   state: Record<string, unknown>;
   tree: ReturnType<Node['serialize']>;
+  /** Resolved tuning values (absent in pre-tuning saves). */
+  tuning?: Record<string, number | string>;
 }

@@ -22,6 +22,10 @@ scaffolds a runnable game whose starter already generates a solver-proven campai
 ## Skills (Claude Code)
 - `/new-game` — scaffold + build a new example via the BUILDLOG loop
   (`.claude/skills/new-game/`). Use it instead of improvising the steps.
+- `/studio` — act on human playtests: the `hayao-studio` MCP server (.mcp.json)
+  reads `.studio/` sessions, replays any tick headlessly (`inspect_moment`),
+  and reports hesitations/deaths/futile verbs (`get_playtest_report`). Humans
+  play + tune declared knobs at `/studio/` on the dev server. `docs/STUDIO.md`.
 - `/retro` — end-of-session: log process friction to `docs/FRICTION.md` and
   land the doc/check fix that prevents a recurrence.
 

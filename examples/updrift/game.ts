@@ -28,6 +28,8 @@ import {
   mix,
   audio,
   defineGame,
+  knob,
+  registerNode,
   showScreen,
   hideScreen,
   type World,
@@ -114,10 +116,19 @@ class UpdriftView extends Node {
   private flare!: Sprite;
   private crystalNodes: Sprite[] = [];
   private height!: Text;
+  // Runtime config: declared CONFIG with Studio knob values applied. The LEVEL
+  // stays derived from the declared defaults — knobs tune feel on a fixed climb.
+  private cfg: typeof CONFIG = CONFIG;
 
   protected override onReady(): void {
     const w = this.world as World;
     if (!w.state.up) w.state.up = freshState();
+    this.cfg = {
+      ...CONFIG,
+      runSpeed: w.tune('runSpeed'),
+      jumpVelocity: w.tune('jumpVelocity'),
+      gravity: w.tune('gravity'),
+    };
     this.build();
   }
 
@@ -249,6 +260,7 @@ class UpdriftView extends Node {
           dashPressed: input.justPressed('dash'),
         },
         dt,
+        this.cfg,
       );
       this.applyFeel(ev, s);
       this.collect(s);
@@ -351,12 +363,29 @@ function input_restart(w: World): boolean {
   return w.input.justPressed('restart');
 }
 
+// Restore support (Studio knob carryover / HMR / rollback): the view rebuilds
+// itself in onReady from world.state.up, so deserialization only needs the
+// type registered — no attach hook required. Edits to this file hot-swap
+// under a preserved world (see runStudio's `hot` option in main.ts).
+registerNode('UpdriftView', () => new UpdriftView({ name: 'updrift' }));
+
 export const updriftGame = defineGame({
   title: 'Updrift',
   width: 1280,
   height: 720,
   background: SKY,
   inputMap: UP_INPUT_MAP,
+  // Feel knobs for Studio playtests. Defaults mirror CONFIG (the declared truth);
+  // the LEVEL is generated from CONFIG's envelope, so extreme knob values can make
+  // the climb unwinnable — that's a playtest finding, and `verify` still proves
+  // the shipped defaults.
+  tuning: {
+    knobs: [
+      knob.num('runSpeed', { default: CONFIG.runSpeed, min: 120, max: 520, step: 10, group: 'movement' }),
+      knob.num('jumpVelocity', { default: CONFIG.jumpVelocity, min: 320, max: 980, step: 10, group: 'jump' }),
+      knob.num('gravity', { default: CONFIG.gravity, min: 900, max: 3600, step: 50, group: 'jump' }),
+    ],
+  },
   build: () => new UpdriftView({ name: 'updrift' }),
   probe: (w: World) => {
     const s = upState(w);

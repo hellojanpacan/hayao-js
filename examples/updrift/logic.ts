@@ -123,9 +123,13 @@ export function createUpdriftState(): PlatformerState {
   return s;
 }
 
-/** Advance one fixed step; returns the feel events the view turns into juice. */
-export function stepUpdrift(s: PlatformerState, pad: PadInput, dt: number): PlatformerEvents {
-  return stepPlatformer(s, pad, dt, MAP, CONFIG);
+/**
+ * Advance one fixed step; returns the feel events the view turns into juice.
+ * `cfg` defaults to the declared CONFIG; the view passes a tuning-resolved copy
+ * so Studio knobs act on the sim while the LEVEL stays derived from defaults.
+ */
+export function stepUpdrift(s: PlatformerState, pad: PadInput, dt: number, cfg: PlatformerConfig = CONFIG): PlatformerEvents {
+  return stepPlatformer(s, pad, dt, MAP, cfg);
 }
 
 /**

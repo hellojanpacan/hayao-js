@@ -100,6 +100,7 @@ export * from './verify/gates';
 export * from './verify/ramp';
 export * from './verify/filmstrip';
 export * from './verify/audioFilmstrip';
+export * from './verify/ethnography';
 
 // ── logic: pure engine primitives (FSM, weighted tables, graph search) ─
 export * from './logic/fsm';
@@ -132,7 +133,13 @@ export * from './net/browser';
 // ── world + app ─────────────────────────────────────────────────
 export * from './world';
 export * from './app/game';
+export * from './app/tuning';
 export * from './app/browser';
+
+// ── studio (browser-safe parts; the vite plugin ships via `hayao/studio`) ──
+export * from './studio/session';
+export * from './studio/record';
+export * from './studio/run';
 
 /** Engine version. */
 export const VERSION = '0.2.0';

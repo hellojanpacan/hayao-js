@@ -1,6 +1,7 @@
 node_modules/
 dist/
 dist-site/
+dist-studio/
 *.log
 .DS_Store
 .vite/
@@ -8,3 +9,6 @@ coverage/
 /shots/
 .claude/settings.local.json
 scratchpad/
+
+# Studio session/knob/variant artifacts (filesystem bus — local, never versioned)
+.studio/

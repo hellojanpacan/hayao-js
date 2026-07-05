@@ -73,7 +73,13 @@ for (const file of files) {
   const rel = relative(root, file);
   // Browser drivers feed wall-clock into the fixed-step accumulator — the one
   // sanctioned use. app/browser.ts drives local play, net/browser.ts netplay.
-  const isBrowserDriver = rel === join('src', 'app', 'browser.ts') || rel === join('src', 'net', 'browser.ts');
+  // Studio's recorder/driver (run.ts, record.ts) timestamps session ARTIFACTS
+  // (observer data, never sim input) — same exemption, same reasoning.
+  const isBrowserDriver =
+    rel === join('src', 'app', 'browser.ts') ||
+    rel === join('src', 'net', 'browser.ts') ||
+    rel === join('src', 'studio', 'run.ts') ||
+    rel === join('src', 'studio', 'record.ts');
   const isMeasurement =
     rel.endsWith('.test.ts') || /^examples\/[^/]+\/verify\.ts$/.test(rel.replaceAll('\\', '/'));
   const lines = stripComments(readFileSync(file, 'utf8')).split('\n');

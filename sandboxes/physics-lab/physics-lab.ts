@@ -16,6 +16,7 @@ import {
   KENTO,
   registerNode,
   defineGame,
+  knob,
   type RigidWorld,
   type World,
 } from '@hayao';
@@ -35,6 +36,8 @@ class PhysicsLab extends Node {
   private hud!: Text;
 
   protected override onReady(): void {
+    // Tuning is the initial truth; the ↑↓ keys still nudge gravity live.
+    this.gravity = (this.world as World).tune('gravity');
     this.layer.cosmetic = true;
     this.addChild(this.layer);
     this.hud = new Text({ name: 'hud', pos: { x: 640, y: 44 }, size: 22, align: 'center', fill: MEADOW.inkSoft, text: '' });
@@ -55,13 +58,16 @@ class PhysicsLab extends Node {
   }
 
   private drop(): void {
-    const rng = (this.world as World).rng;
+    const w0 = this.world as World;
+    const rng = w0.rng;
+    const restitution = w0.tune('restitution');
+    const friction = w0.tune('friction');
     const x = 500 + rng.float() * 280;
     if (this.round) {
-      addBody(this.rw, { shape: { kind: 'circle', r: 20 + rng.float() * 16 }, x, y: 140, density: 0.9, friction: 0.5, restitution: 0.2 });
+      addBody(this.rw, { shape: { kind: 'circle', r: 20 + rng.float() * 16 }, x, y: 140, density: 0.9, friction, restitution });
     } else {
       const w = 34 + rng.float() * 28;
-      addBody(this.rw, { shape: polygonBox(w, w), x, y: 140, density: 0.9, friction: 0.6, restitution: 0.05 });
+      addBody(this.rw, { shape: polygonBox(w, w), x, y: 140, density: 0.9, friction, restitution: restitution * 0.25 });
     }
     this.dropped++;
     this.refreshHud();
@@ -121,6 +127,13 @@ export const physicsLabGame = defineGame({
   width: 1280,
   height: 720,
   background: MEADOW.bg,
+  tuning: {
+    knobs: [
+      knob.num('gravity', { default: 900, min: 0, max: 3000, step: 50, group: 'world' }),
+      knob.num('restitution', { default: 0.2, min: 0, max: 0.95, step: 0.05, group: 'bodies' }),
+      knob.num('friction', { default: 0.5, min: 0, max: 1, step: 0.05, group: 'bodies' }),
+    ],
+  },
   build: () => new PhysicsLab({ name: 'physics-lab' }),
   probe: (world) => {
     const lab = world.root.find('physics-lab') as PhysicsLab | null;

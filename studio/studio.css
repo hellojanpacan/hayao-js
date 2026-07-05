@@ -1,0 +1,164 @@
+/* Hayao Studio — kentō woodblock chrome, 380px-first. The play pane is the
+   hero; controls live in a bottom sheet on phones and a side rail on laptops. */
+:root {
+  --washi: #f1ebdd;
+  --washi-2: #f8f3e9;
+  --sumi: #242019;
+  --sumi-soft: #4f473b;
+  --stone: #6f6555;
+  --ai: #2b4257;
+  --shu: #b5442d;
+  --matsu: #4a7a3a;
+  --line: #ddd3bf;
+  --mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  color-scheme: light;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--washi);
+  color: var(--sumi);
+  font-family: 'Iowan Old Style', Palatino, Georgia, serif;
+  overscroll-behavior: none;
+}
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+header.bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--washi-2);
+  flex-wrap: wrap;
+}
+header.bar .brand {
+  font-weight: 700;
+  font-size: 17px;
+  color: var(--sumi);
+  text-decoration: none;
+  white-space: nowrap;
+}
+header.bar .brand .js {
+  font-size: 11px;
+  color: var(--stone);
+}
+header.bar select,
+header.bar input[type='number'] {
+  font: 13px var(--mono);
+  padding: 6px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--washi);
+  color: var(--sumi);
+  max-width: 44vw;
+}
+header.bar .spacer {
+  flex: 1;
+}
+header.bar .build {
+  font: 11px var(--mono);
+  color: var(--stone);
+}
+
+main.panes {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+.pane {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--line);
+}
+.pane:last-child {
+  border-right: none;
+}
+.pane .pane-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 10px;
+  font: 12px var(--mono);
+  color: var(--sumi-soft);
+  background: var(--washi-2);
+  border-bottom: 1px solid var(--line);
+}
+.pane iframe {
+  flex: 1;
+  width: 100%;
+  border: 0;
+  background: #fff;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--line);
+  background: var(--washi-2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+button.hy {
+  font: 600 13px var(--mono);
+  padding: 9px 14px;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  background: var(--washi);
+  color: var(--sumi);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+button.hy:active {
+  transform: translateY(1px);
+}
+button.hy.feel {
+  border-color: var(--shu);
+  color: var(--shu);
+}
+button.hy.accept {
+  border-color: var(--matsu);
+  color: var(--matsu);
+}
+.note {
+  font: 11px var(--mono);
+  color: var(--stone);
+}
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 86px;
+  transform: translateX(-50%);
+  background: var(--sumi);
+  color: var(--washi);
+  font: 12px var(--mono);
+  padding: 8px 14px;
+  border-radius: 8px;
+  z-index: 60;
+  pointer-events: none;
+}
+
+/* leva sits in a fixed panel; keep it clear of our action bar on phones. */
+@media (max-width: 720px) {
+  main.panes {
+    flex-direction: column;
+  }
+  .pane {
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+  header.bar .build {
+    display: none;
+  }
+}

@@ -7,6 +7,7 @@ import { World } from '../world';
 import type { Node } from '../scene/node';
 import { DEFAULT_INPUT_MAP, type InputLog, type InputMap } from '../input/actions';
 import type { ClockConfig } from '../core/clock';
+import { resolveTuning, type TuningSpec, type TuningValues } from './tuning';
 
 /**
  * Optional boot splash. Rendered by the engine (so its colors are palette-guaranteed
@@ -35,6 +36,18 @@ export interface GameDefinition {
   /** Optional compact probe snapshot for verification (defaults to World.probe). */
   probe?(world: World): Record<string, unknown>;
   /**
+   * Live-tunable parameters, declared once. Defaults ARE the config; Studio and
+   * tests override them via `createWorld(def, { tuning })` and the sim reads
+   * resolved values with `world.tune(key)`. Values are hashed + snapshotted.
+   */
+  tuning?: TuningSpec;
+  /**
+   * Re-attach behaviors/controllers after `world.restore()` rebuilds the tree
+   * from data (closures do not survive a restore). One contract serves every
+   * carryover path: Studio knob changes, variant toggles, HMR, and net rollback.
+   */
+  attach?(world: World): void;
+  /**
    * Awaited before the world starts stepping — load fonts, sprite atlases, a
    * SoundFont, anything async. The engine holds a splash on screen until it
    * resolves, so there is no asset pop-in and no ungoverned pre-first-frame window.
@@ -56,13 +69,24 @@ export function defineGame(def: GameDefinition): Required<Pick<GameDefinition, '
   };
 }
 
-/** Build a live, deterministic World from a game definition. No browser needed. */
-export function createWorld(def: GameDefinition, seedOverride?: number): World {
+export interface CreateWorldOptions {
+  seed?: number;
+  /** Overrides for declared tuning knobs (undeclared keys are dropped). */
+  tuning?: TuningValues;
+}
+
+/**
+ * Build a live, deterministic World from a game definition. No browser needed.
+ * `opts` as a bare number is the legacy seed override.
+ */
+export function createWorld(def: GameDefinition, opts?: number | CreateWorldOptions): World {
+  const o: CreateWorldOptions = typeof opts === 'number' ? { seed: opts } : (opts ?? {});
   const world = new World({
-    seed: seedOverride ?? def.seed ?? 1,
+    seed: o.seed ?? def.seed ?? 1,
     width: def.width ?? 1280,
     height: def.height ?? 720,
     clock: def.clock,
+    tuning: resolveTuning(def.tuning, o.tuning),
   });
   world.setRoot(def.build(world));
   if (def.probe) {

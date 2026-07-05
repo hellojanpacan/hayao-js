@@ -3,7 +3,7 @@
 // Wall-clock only feeds the accumulator (how many steps to run) — replays use the
 // input log, not wall time, so the sim stays deterministic.
 
-import type { GameDefinition, SplashConfig } from './game';
+import type { CreateWorldOptions, GameDefinition, SplashConfig } from './game';
 import { createWorld } from './game';
 import { KeyboardSource, PointerSource } from '../input/source';
 import type { Vec2 } from '../core/math';
@@ -25,6 +25,17 @@ export interface RunOptions {
   /** Start the pause/settings shell (Esc). Default true. */
   shell?: boolean;
   onRestart?: () => void;
+  /** World creation overrides (seed, tuning) — applied on start AND restart. */
+  world?: CreateWorldOptions;
+  /**
+   * Observer hook: called after each advance that ran ≥1 step, with the step
+   * count and the action set those steps saw. Every step in the batch saw the
+   * SAME actions and axes, so recording `steps × (actions, axes)` replays
+   * exactly. Studio's session recorder rides this; it must never mutate.
+   */
+  onAdvance?: (world: World, steps: number, actions: readonly string[]) => void;
+  /** Shell pause/resume observer (true = paused). */
+  onPause?: (paused: boolean) => void;
 }
 
 export interface GameHandle {
@@ -73,7 +84,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
   const height = def.height ?? 720;
   const background = def.background ?? '#f3ecdb';
 
-  let world = createWorld(def);
+  let world = createWorld(def, opts.world);
   const renderer: Renderer =
     opts.renderer === 'canvas'
       ? new Canvas2DRenderer({ width, height, background })
@@ -100,7 +111,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
 
   const renderFrame = () => renderer.draw(world.render());
   const restart = () => {
-    world = createWorld(def);
+    world = createWorld(def, opts.world);
     renderFrame();
   };
 
@@ -110,7 +121,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
       : new Shell({
           title: def.title,
           onRestart: opts.onRestart ?? restart,
-          onPause: () => {},
+          onPause: (paused) => opts.onPause?.(paused),
         });
 
   // ── Boot lifecycle: splash → preload → first frame → ready ──────────────
@@ -144,8 +155,12 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
     last = now;
     if (!capture && !(shell?.isPaused)) {
       pointer.sample(world.input); // pointer.x/y/down into axes before the step reads them
-      const steps = world.advance(dt, input.currentActions());
-      if (steps > 0) input.clearPressed(); // virtual taps held until sampled
+      const actions = input.currentActions();
+      const steps = world.advance(dt, actions);
+      if (steps > 0) {
+        input.clearPressed(); // virtual taps held until sampled
+        opts.onAdvance?.(world, steps, actions);
+      }
     }
     renderFrame();
     raf = requestAnimationFrame(loop);

@@ -90,10 +90,11 @@ export interface PointerTarget {
  * reads `world.input.axis('pointer.x')` — no out-of-engine letterbox glue.
  *
  * Determinism note: axes are host-sampled live input and are NOT part of the
- * string input log or the world hash, so a pointer trail does not replay from a
- * recorded log the way key actions do. For lockstep netplay or exact replay,
- * QUANTIZE the pointer into an action (map a tap to a key via KeyboardSource.press,
- * or snap position to a grid cell you feed as a discrete move). See docs/CONVENTIONS.md.
+ * string input log or the world hash. `sample()` QUANTIZES design coords to a
+ * 1/8-px grid so a recorded axes log (Studio sessions) replays bit-exactly —
+ * the sim only ever sees the quantized values, live or replayed. For lockstep
+ * netplay, still prefer discrete actions (map a tap to a key via
+ * KeyboardSource.press, or snap position to a grid cell). See docs/CONVENTIONS.md.
  */
 export class PointerSource {
   private clientX = 0;
@@ -142,8 +143,10 @@ export class PointerSource {
    */
   sample(input: InputState): void {
     const r = this.read();
-    input.axes.set('pointer.x', r.x);
-    input.axes.set('pointer.y', r.y);
+    // 1/8-px grid: sub-pixel precision no game needs, exact float replay for free.
+    const q = (v: number) => Math.round(v * 8) / 8;
+    input.axes.set('pointer.x', q(r.x));
+    input.axes.set('pointer.y', q(r.y));
     input.axes.set('pointer.down', r.down ? 1 : 0);
   }
 
