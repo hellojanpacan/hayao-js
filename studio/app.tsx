@@ -6,6 +6,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Leva, useControls } from 'leva';
+import QRCode from 'qrcode';
 import type { StudioHandle } from '@hayao';
 
 interface GameEntry {
@@ -29,6 +30,8 @@ interface ServerState {
   sessions: SessionEntry[];
   /** Worktree builds registered by scripts/studio-variant.mjs. */
   variants: Record<string, { kind: string; ref: string; commit: string }>;
+  /** LAN addresses of this dev server (phone play). */
+  urls: string[];
 }
 
 interface Report {
@@ -217,6 +220,38 @@ function Timeline({ handle }: { handle: StudioHandle }) {
 }
 
 /**
+ * Phone play: scan and the couch playtest starts. Sessions record to the same
+ * .studio/ bus regardless of which device played — develop mobile games on
+ * the device they're for.
+ */
+function PhoneModal({ urls, onClose }: { urls: string[]; onClose: () => void }) {
+  const lan = urls[0] ? `${urls[0].replace(/\/$/, '')}/studio/` : null;
+  const [qr, setQr] = useState<string | null>(null);
+  useEffect(() => {
+    if (lan) void QRCode.toDataURL(lan, { margin: 1, width: 260, color: { dark: '#242019', light: '#f8f3e9' } }).then(setQr);
+  }, [lan]);
+  return (
+    <div className="drawer" role="dialog" aria-label="phone play" onClick={onClose}>
+      <div className="phone-card" onClick={(e) => e.stopPropagation()}>
+        <b>Play on your phone</b>
+        {lan ? (
+          <>
+            {qr && <img src={qr} alt="QR to the Studio on your LAN" width={260} height={260} />}
+            <code>{lan}</code>
+            <span className="note">Same Wi-Fi. Touch works out of the box; every session records here.</span>
+          </>
+        ) : (
+          <span className="note">No LAN address — the dev server isn't exposed on the network.</span>
+        )}
+        <button className="hy" onClick={onClose}>
+          close
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/**
  * The player's own field notes: recorded sessions and the ethnographer's
  * report — the same analysis the agent reads via MCP, rendered for humans.
  * Numbers describe; deciding what they mean stays with the director.
@@ -225,10 +260,12 @@ function SessionsDrawer({
   sessions,
   onClose,
   onWatch,
+  onImported,
 }: {
   sessions: SessionEntry[];
   onClose: () => void;
   onWatch: (entry: SessionEntry, at?: number) => void;
+  onImported: () => void;
 }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const [report, setReport] = useState<Report | null>(null);
@@ -246,12 +283,41 @@ function SessionsDrawer({
     }
   };
 
+  // The manual playtester circle: a tester sends you their session file (⬇ on
+  // their machine), you drop it in here — same artifact, same reports, tapes.
+  const importSessions = async (files: FileList | null) => {
+    if (!files) return;
+    for (const file of files) {
+      try {
+        const body = await file.text();
+        JSON.parse(body); // refuse garbage before it reaches the bus
+        await fetch('/__studio/session', { method: 'POST', headers: { 'content-type': 'application/json' }, body });
+      } catch {
+        /* skip unreadable files */
+      }
+    }
+    onImported();
+  };
+
   const secs = (frames: number) => `${Math.round(frames / 60)}s`;
   return (
-    <div className="drawer" role="dialog" aria-label="sessions">
+    <div
+      className="drawer"
+      role="dialog"
+      aria-label="sessions"
+      onDragOver={(e) => e.preventDefault()}
+      onDrop={(e) => {
+        e.preventDefault();
+        void importSessions(e.dataTransfer.files);
+      }}
+    >
       <div className="drawer-head">
         <b>Playtests</b>
-        <span className="note">{sessions.length} recorded · tap one for its report</span>
+        <span className="note">{sessions.length} recorded · tap for report · drop session files to import</span>
+        <label className="hy" role="button">
+          ⬆ import
+          <input type="file" accept=".json" multiple hidden onChange={(e) => void importSessions(e.target.files)} />
+        </label>
         <button className="hy" onClick={onClose} aria-label="close">
           ✕
         </button>
@@ -266,7 +332,18 @@ function SessionsDrawer({
                 {secs(s.frames)} · {s.endReason}
                 {s.annotations > 0 ? ` · ✗${s.annotations}` : ''}
               </span>
-              <span className="note when">{new Date(s.startedAt).toLocaleTimeString()}</span>
+              <span className="note when">
+                {new Date(s.startedAt).toLocaleTimeString()}{' '}
+                <a
+                  className="moment-link"
+                  href={`/__studio/session/${encodeURIComponent(s.id)}`}
+                  download={`${s.id}.json`}
+                  onClick={(e) => e.stopPropagation()}
+                  title="download this session (send it to the developer)"
+                >
+                  ⬇
+                </a>
+              </span>
             </button>
             {openId === s.id && (
               <div className="report">
@@ -354,7 +431,10 @@ export function App() {
   const [dirty, setDirty] = useState(false);
   const [toast, setToast] = useState('');
   const [showSessions, setShowSessions] = useState(false);
+  const [showPhone, setShowPhone] = useState(false);
   const [tape, setTape] = useState<{ id: string; at?: number } | null>(null); // pane A watches a past session
+
+  const refreshState = () => void fetch('/__studio/state').then(async (r) => setState((await r.json()) as ServerState));
   const a = useFrameHandle(nonce);
   const b = useFrameHandle(nonce);
 
@@ -413,16 +493,22 @@ export function App() {
           <VariantOptions moduleVariants={variantNames} worktrees={state?.variants ?? {}} />
         </select>
         <div className="spacer" />
+        <button className="hy" onClick={() => setShowPhone(true)} aria-label="play on phone">
+          📱
+        </button>
         <button className="hy" onClick={() => setShowSessions(true)}>
           ▤ {state ? state.sessions.length : '…'} playtests
         </button>
         <span className="build">{state ? `build ${state.buildRef}` : ''}</span>
       </header>
 
+      {showPhone && state && <PhoneModal urls={state.urls} onClose={() => setShowPhone(false)} />}
+
       {showSessions && state && (
         <SessionsDrawer
           sessions={state.sessions}
           onClose={() => setShowSessions(false)}
+          onImported={refreshState}
           onWatch={(entry, at) => {
             // Route the tape to the right game page (title → slug convention).
             const target = games.find((g) => g.slug === slugify(entry.game)) ?? games.find((g) => g.slug === slug);

@@ -262,7 +262,9 @@ export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
                 }
               })
               .filter(Boolean);
-            return json(res, 200, { buildRef, knobs, variants, sessions });
+            // LAN addresses for the phone-play QR (vite binds host:true).
+            const urls = server.resolvedUrls?.network ?? [];
+            return json(res, 200, { buildRef, knobs, variants, sessions, urls });
           }
 
           if (req.method === 'GET' && url === '/__studio/events') {
