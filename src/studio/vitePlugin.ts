@@ -85,6 +85,23 @@ export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
             return json(res, 200, { ok: true });
           }
 
+          if (req.method === 'GET' && url === '/__studio/games') {
+            // Playable pages for the Studio picker. Titles/knobs come from the
+            // iframe's window.__studio once a game loads — this only lists URLs.
+            const games: Array<{ slug: string; kind: string; url: string }> = [];
+            for (const [parent, kind, prefix] of [
+              ['examples', 'example', '/examples/'],
+              ['sandboxes', 'gym', '/sandboxes/'],
+            ] as const) {
+              const dir = resolve(projectRoot, parent);
+              if (!existsSync(dir)) continue;
+              for (const slug of readdirSync(dir)) {
+                if (existsSync(join(dir, slug, 'index.html'))) games.push({ slug, kind, url: `${prefix}${slug}/` });
+              }
+            }
+            return json(res, 200, games);
+          }
+
           if (req.method === 'GET' && url === '/__studio/state') {
             const knobsPath = join(studioDir, 'knobs.json');
             const knobs = existsSync(knobsPath) ? (JSON.parse(readFileSync(knobsPath, 'utf8')) as unknown) : null;

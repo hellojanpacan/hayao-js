@@ -5,14 +5,20 @@
 // API the Studio shell page drives across the iframe boundary.
 
 import { runBrowser, type GameHandle, type RunOptions } from '../app/browser';
-import { resolveTuning, type TuningValues } from '../app/tuning';
+import { resolveTuning, type TuningSpec, type TuningValues, type Variant } from '../app/tuning';
 import type { GameDefinition } from '../app/game';
 import { setScreenObserver } from '../ui/overlay';
 import { SessionRecorder } from './record';
 import type { EndReason, PlaytestSession, VariantRef } from './session';
 
 export interface StudioOptions extends RunOptions {
-  /** Variant identity to stamp on sessions (module/worktree variants set this). */
+  /**
+   * Named A/B variants of this game. `?variant=<name>` picks one: its `patch`
+   * rewrites the definition, its `tuning` seeds the knob values (explicit
+   * `?tuning=`/opts overrides still win). Sessions are stamped with the name.
+   */
+  variants?: Record<string, Variant>;
+  /** Variant identity override (worktree builds stamp commit info here). */
   variant?: VariantRef;
 }
 
@@ -21,6 +27,14 @@ export interface StudioHandle extends GameHandle {
   setKnob(key: string, value: number | string): void;
   /** Current resolved tuning values. */
   knobValues(): TuningValues;
+  /** The game's declared knob spec (the Studio panel builds its controls from this). */
+  tuningSpec(): TuningSpec | undefined;
+  /** Declared A/B variants: name → label. */
+  variants(): Record<string, string>;
+  /** The variant this run is playing (name + kind, worktrees include commit). */
+  activeVariant(): VariantRef;
+  /** The game title (the Studio page labels panes with it). */
+  title(): string;
   /** Drop a human annotation at the current frame ("felt bad here"). */
   annotate(tag: string, note?: string): void;
   /** Flush the session artifact to the dev server now. */
@@ -54,10 +68,18 @@ function urlOverrides(): { seed?: number; tuning?: TuningValues } {
   return out;
 }
 
-export function runStudio(def: GameDefinition, mount: HTMLElement, opts: StudioOptions = {}): StudioHandle {
+export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: StudioOptions = {}): StudioHandle {
   const url = urlOverrides();
+
+  // Variant resolution: ?variant= picks a named alternative; its patch rewrites
+  // the def, its tuning seeds the overrides (explicit URL/opts tuning wins).
+  const variantName = typeof location !== 'undefined' ? new URLSearchParams(location.search).get('variant') : null;
+  const variantDef = variantName ? opts.variants?.[variantName] : undefined;
+  const def = variantDef?.patch ? variantDef.patch(baseDef) : baseDef;
+  const variantRef: VariantRef = opts.variant ?? (variantDef && variantName ? { name: variantName, kind: 'module' } : { name: 'dev', kind: 'dev' });
+
   const seed = opts.world?.seed ?? url.seed ?? def.seed ?? 1;
-  const overrides = { ...url.tuning, ...opts.world?.tuning };
+  const overrides = { ...variantDef?.tuning, ...url.tuning, ...opts.world?.tuning };
   const tuningValues = resolveTuning(def.tuning, overrides);
   const values: TuningValues = { ...tuningValues };
   const start = typeof performance !== 'undefined' ? performance.now() : 0;
@@ -66,7 +88,7 @@ export function runStudio(def: GameDefinition, mount: HTMLElement, opts: StudioO
     game: def.title,
     seed,
     tuningValues,
-    ...(opts.variant ? { variant: opts.variant } : {}),
+    variant: variantRef,
   });
   let flushed = false;
 
@@ -104,7 +126,7 @@ export function runStudio(def: GameDefinition, mount: HTMLElement, opts: StudioO
         game: def.title,
         seed,
         tuningValues: { ...values },
-        ...(opts.variant ? { variant: opts.variant } : {}),
+        variant: variantRef,
         buildRef: recorder.buildRef,
       });
       (opts.onRestart ?? handle.restart)();
@@ -147,6 +169,10 @@ export function runStudio(def: GameDefinition, mount: HTMLElement, opts: StudioO
       recorder.knob(key, value);
     },
     knobValues: () => ({ ...values }),
+    tuningSpec: () => def.tuning,
+    variants: () => Object.fromEntries(Object.entries(opts.variants ?? {}).map(([name, v]) => [name, v.label])),
+    activeVariant: () => ({ ...variantRef }),
+    title: () => def.title,
     annotate: (tag, note) => recorder.annotate(tag, note),
     flush: (reason = 'idle') => flush(reason),
     session: () => recorder.toSession('idle'),

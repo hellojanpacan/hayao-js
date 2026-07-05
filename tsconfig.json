@@ -14,6 +14,7 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "resolveJsonModule": true,
+    "jsx": "react-jsx",
     "isolatedModules": true,
     "declaration": true,
     "emitDeclarationOnly": true,
@@ -24,5 +25,5 @@
       "@hayao/*": ["./src/*"]
     }
   },
-  "include": ["src", "examples", "sandboxes", "scripts", "vite.config.ts"]
+  "include": ["src", "examples", "sandboxes", "scripts", "studio", "bin", "vite.config.ts"]
 }
