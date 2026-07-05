@@ -126,6 +126,64 @@ function Knobs({ handle, onDirty }: { handle: StudioHandle; onDirty: () => void 
   return null;
 }
 
+/**
+ * Time travel for pane A: freeze, drag to any recorded frame (exact — the
+ * engine restores a snapshot and re-steps the recorded inputs), resume to
+ * fork from there. The probe inspector shows the sim's own state snapshot.
+ */
+function Timeline({ handle }: { handle: StudioHandle }) {
+  const [tl, setTl] = useState(() => handle.timeline());
+  const [frozen, setFrozen] = useState(() => handle.frozen());
+  const [probe, setProbe] = useState<Record<string, unknown> | null>(null);
+  const [showProbe, setShowProbe] = useState(false);
+
+  useEffect(() => {
+    const t = window.setInterval(() => {
+      setTl(handle.timeline());
+      setFrozen(handle.frozen());
+      if (showProbe) setProbe(handle.world.probe());
+    }, 250);
+    return () => window.clearInterval(t);
+  }, [handle, showProbe]);
+
+  const onScrub = (frame: number) => {
+    handle.scrub(frame);
+    setTl(handle.timeline());
+    setFrozen(true);
+    if (showProbe) setProbe(handle.world.probe());
+  };
+
+  return (
+    <div className="timeline">
+      <button
+        className="hy"
+        aria-label={frozen ? 'resume' : 'freeze'}
+        onClick={() => {
+          handle.setFrozen(!frozen);
+          setFrozen(!frozen);
+        }}
+      >
+        {frozen ? '▶' : '❚❚'}
+      </button>
+      <input
+        type="range"
+        min={tl.min}
+        max={Math.max(tl.max, tl.min + 1)}
+        value={tl.frame}
+        aria-label="timeline"
+        onChange={(e) => onScrub(Number(e.target.value))}
+      />
+      <span className="note frames">
+        {tl.frame}/{tl.max}
+      </span>
+      <button className="hy" onClick={() => setShowProbe(!showProbe)} aria-label="probe">
+        ⌖
+      </button>
+      {showProbe && probe && <pre className="probe">{JSON.stringify(probe, null, 1)}</pre>}
+    </div>
+  );
+}
+
 export function App() {
   const [games, setGames] = useState<GameEntry[]>([]);
   const [state, setState] = useState<ServerState | null>(null);
@@ -220,6 +278,8 @@ export function App() {
           </section>
         )}
       </main>
+
+      {a.handle && <Timeline key={`tl-${slug}-${variantA}-${nonce}`} handle={a.handle} />}
 
       <div className="actions">
         <button className="hy feel" onClick={() => annotate(a.handle)}>

@@ -36,6 +36,11 @@ export interface RunOptions {
   onAdvance?: (world: World, steps: number, actions: readonly string[]) => void;
   /** Shell pause/resume observer (true = paused). */
   onPause?: (paused: boolean) => void;
+  /**
+   * Freeze gate: while it returns true the loop keeps rendering but runs no
+   * steps (no pause overlay — Studio's scrubber holds the sim with this).
+   */
+  isHeld?: () => boolean;
 }
 
 export interface GameHandle {
@@ -153,7 +158,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
     }
     const dt = now - last;
     last = now;
-    if (!capture && !(shell?.isPaused)) {
+    if (!capture && !(shell?.isPaused) && !opts.isHeld?.()) {
       pointer.sample(world.input); // pointer.x/y/down into axes before the step reads them
       const actions = input.currentActions();
       const steps = world.advance(dt, actions);

@@ -139,6 +139,7 @@ export * from './app/browser';
 // ── studio (browser-safe parts; the vite plugin ships via `hayao/studio`) ──
 export * from './studio/session';
 export * from './studio/record';
+export * from './studio/timeline';
 export * from './studio/run';
 
 /** Engine version. */

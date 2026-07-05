@@ -59,6 +59,21 @@ export class SessionRecorder {
     return this.frames.length;
   }
 
+  /** Live view of the recorded input frames (the scrub timeline re-steps these). */
+  get liveInputFrames(): readonly string[][] {
+    return this.frames;
+  }
+
+  /** Live view of the delta-encoded axes log. */
+  get liveAxesLog(): ReadonlyArray<readonly [number, string, number]> {
+    return this.axesLog;
+  }
+
+  /** Live view of mid-play knob changes (scrubbing reapplies them exactly). */
+  get liveKnobEvents(): readonly KnobEvent[] {
+    return this.knobEvents;
+  }
+
   /**
    * Record one sim step: the action set it saw and (optionally) the analog
    * axes. Axes are delta-encoded — an entry lands only when a value changed.
@@ -90,6 +105,23 @@ export class SessionRecorder {
 
   annotate(tag: string, note?: string): void {
     this.annotations.push({ frame: this.frames.length, tag, ...(note !== undefined ? { note } : {}) });
+  }
+
+  /**
+   * A rewind-and-resume forked the timeline: everything after `frame` never
+   * happened in the final run. Drop those frames plus the events stamped in
+   * them, so the artifact stays exactly replayable as what the player kept.
+   */
+  truncate(frame: number): void {
+    if (frame >= this.frames.length) return;
+    this.frames.length = frame;
+    this.axesLog = this.axesLog.filter(([f]) => f < frame);
+    this.lastAxes.clear();
+    for (const [f, name, value] of this.axesLog) if (f < frame) this.lastAxes.set(name, value);
+    this.knobEvents = this.knobEvents.filter((e) => e.frame <= frame);
+    this.screenEvents = this.screenEvents.filter((e) => e.frame <= frame);
+    this.wallClockMarks = this.wallClockMarks.filter((m) => m.frame <= frame);
+    this.annotations = this.annotations.filter((a) => a.frame <= frame);
   }
 
   /** Finalize into the artifact. The recorder can keep recording afterwards (autosave). */

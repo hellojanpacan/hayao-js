@@ -101,6 +101,43 @@ main.panes {
   background: #fff;
 }
 
+.timeline {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 14px;
+  border-top: 1px solid var(--line);
+  background: var(--washi-2);
+  position: relative;
+}
+.timeline input[type='range'] {
+  flex: 1;
+  accent-color: var(--shu);
+  touch-action: none;
+  min-height: 28px;
+}
+.timeline .frames {
+  min-width: 86px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.timeline .probe {
+  position: absolute;
+  right: 10px;
+  bottom: 100%;
+  margin: 0 0 8px;
+  max-height: 46vh;
+  max-width: min(420px, 92vw);
+  overflow: auto;
+  background: var(--washi-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font: 11.5px var(--mono);
+  color: var(--sumi-soft);
+  box-shadow: 0 6px 24px rgba(36, 32, 25, 0.12);
+}
+
 .actions {
   display: flex;
   gap: 8px;

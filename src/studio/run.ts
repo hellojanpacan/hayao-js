@@ -9,6 +9,7 @@ import { resolveTuning, type TuningSpec, type TuningValues, type Variant } from 
 import type { GameDefinition } from '../app/game';
 import { setScreenObserver } from '../ui/overlay';
 import { SessionRecorder } from './record';
+import { SnapshotRing, scrubTo } from './timeline';
 import type { EndReason, PlaytestSession, VariantRef } from './session';
 
 /** The slice of Vite's import.meta.hot the carryover needs (structural, no vite type dep). */
@@ -54,6 +55,18 @@ export interface StudioHandle extends GameHandle {
   title(): string;
   /** Drop a human annotation at the current frame ("felt bad here"). */
   annotate(tag: string, note?: string): void;
+  /** Freeze/unfreeze the sim (rendering continues; no pause overlay). */
+  setFrozen(frozen: boolean): void;
+  frozen(): boolean;
+  /**
+   * Time-travel to a recorded frame (freezes first). Exact: restores the
+   * nearest ring snapshot and re-steps the recorded inputs. Returns the frame
+   * reached, or null if it's off the ring. Resuming after a rewind FORKS the
+   * timeline: the discarded future is truncated from the session.
+   */
+  scrub(frame: number): number | null;
+  /** Scrub bounds + position: min reachable frame, current, recorded max. */
+  timeline(): { min: number; frame: number; max: number };
   /** Flush the session artifact to the dev server now. */
   flush(reason?: EndReason): void;
   /** The in-progress session (for inspection/tests). */
@@ -125,11 +138,36 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
     flushed = true;
   };
 
+  // ── scrub timeline: periodic snapshots + the recorder's own log ─────────────
+  const ring = new SnapshotRing();
+  let isFrozen = false;
+  let scrubbedTo: number | null = null; // set while paused earlier than the recorded tip
+
+  /**
+   * Commit a rewound position as the new present: the discarded future never
+   * happened — truncate it from the recorder and the ring so the session
+   * artifact stays exactly what the player kept.
+   */
+  const forkIfRewound = () => {
+    if (scrubbedTo === null || scrubbedTo >= recorder.frame) {
+      scrubbedTo = null;
+      return;
+    }
+    recorder.truncate(scrubbedTo);
+    ring.truncate(scrubbedTo);
+    recorder.screen('scrub', `forked@${scrubbedTo}`);
+    scrubbedTo = null;
+  };
+
   const handle = runBrowser(def, mount, {
     ...opts,
     world: { seed, tuning: overrides },
+    isHeld: () => isFrozen || (opts.isHeld?.() ?? false),
     onAdvance: (world, steps, actions) => {
-      for (let i = 0; i < steps; i++) recorder.step(actions, world.input.axes);
+      for (let i = 0; i < steps; i++) {
+        recorder.step(actions, world.input.axes);
+        ring.push(recorder.frame, world);
+      }
       opts.onAdvance?.(world, steps, actions);
     },
     onPause: (paused) => {
@@ -172,6 +210,8 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
     data.hayaoSnap = handle.world.snapshot();
     cleanup('hot-swap');
   });
+  // Seed the scrub floor: frame 0 of this run (post-carryover if any).
+  ring.push(0, handle.world);
 
   // Build identity comes from the dev server (git sha) — best-effort, async.
   void fetch('/__studio/state')
@@ -213,6 +253,7 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
       return handle.world;
     },
     setKnob(key, value) {
+      forkIfRewound(); // a knob turned while rewound commits that position first
       values[key] = value;
       const snap = handle.world.snapshot();
       snap.tuning = { ...values };
@@ -226,6 +267,29 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
     activeVariant: () => ({ ...variantRef }),
     title: () => def.title,
     annotate: (tag, note) => recorder.annotate(tag, note),
+    setFrozen(frozen) {
+      if (frozen === isFrozen) return;
+      if (frozen) {
+        isFrozen = true;
+        return;
+      }
+      const wasRewound = scrubbedTo !== null;
+      forkIfRewound();
+      if (wasRewound) {
+        // Knob values may have been rewound past — resync from the live world.
+        const t = handle.world.snapshot().tuning ?? {};
+        for (const key of Object.keys(values)) if (key in t) values[key] = t[key];
+      }
+      isFrozen = false;
+    },
+    frozen: () => isFrozen,
+    scrub(frame) {
+      isFrozen = true;
+      const reached = scrubTo(handle.world, def, ring, recorder.liveInputFrames, recorder.liveAxesLog, recorder.liveKnobEvents, frame);
+      if (reached !== null) scrubbedTo = reached < recorder.frame ? reached : null;
+      return reached;
+    },
+    timeline: () => ({ min: ring.minFrame, frame: scrubbedTo ?? recorder.frame, max: recorder.frame }),
     flush: (reason = 'idle') => flush(reason),
     session: () => recorder.toSession('idle'),
     stop: () => cleanup('navigate'),

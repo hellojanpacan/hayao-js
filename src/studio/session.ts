@@ -19,7 +19,7 @@ export interface VariantRef {
 
 export interface ScreenEvent {
   frame: number;
-  kind: 'pause' | 'resume' | 'restart' | 'overlay-show' | 'overlay-hide' | 'knob' | 'variant' | 'hot-swap';
+  kind: 'pause' | 'resume' | 'restart' | 'overlay-show' | 'overlay-hide' | 'knob' | 'variant' | 'hot-swap' | 'scrub';
   detail?: string;
 }
 
