@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "hayao-studio": {
+      "command": "npx",
+      "args": ["tsx", "bin/hayao-mcp.ts"]
+    }
+  }
+}

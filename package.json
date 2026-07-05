@@ -71,6 +71,7 @@
     "thumbs": "tsx scripts/site-thumbs.ts"
   },
   "devDependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@resvg/resvg-js": "^2.6.2",
     "@types/node": "^22.10.0",
     "esbuild": "^0.28.0",
