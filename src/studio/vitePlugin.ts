@@ -226,6 +226,18 @@ export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
             return;
           }
 
+          // Full session artifact — the play pane's replay mode loads this.
+          if (req.method === 'GET' && url.startsWith('/__studio/session/')) {
+            const id = decodeURIComponent(url.slice('/__studio/session/'.length));
+            if (!SAFE_ID.test(id)) return json(res, 400, { error: 'bad session id' });
+            const file = join(studioDir, 'sessions', `${id}.json`);
+            if (!existsSync(file)) return json(res, 404, { error: 'no such session' });
+            res.statusCode = 200;
+            res.setHeader('content-type', 'application/json');
+            createReadStream(file).pipe(res);
+            return;
+          }
+
           if (req.method === 'GET' && url === '/__studio/state') {
             const knobsPath = join(studioDir, 'knobs.json');
             const knobs = existsSync(knobsPath) ? (JSON.parse(readFileSync(knobsPath, 'utf8')) as unknown) : null;

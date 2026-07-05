@@ -190,6 +190,27 @@ main.panes {
 .report .warn {
   color: var(--shu);
 }
+.report .moment {
+  padding: 5px 10px;
+}
+.moment-link {
+  background: none;
+  border: none;
+  border-bottom: 1px dashed var(--ai);
+  color: var(--ai);
+  font: inherit;
+  cursor: pointer;
+  padding: 0 2px;
+  margin-right: 8px;
+}
+.pane-head .tape {
+  color: var(--shu);
+  font-weight: 700;
+}
+.pane-head .hy {
+  padding: 3px 9px;
+  font-size: 11px;
+}
 
 .timeline {
   display: flex;

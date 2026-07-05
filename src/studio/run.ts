@@ -6,7 +6,7 @@
 
 import { runBrowser, type GameHandle, type RunOptions } from '../app/browser';
 import { resolveTuning, type TuningSpec, type TuningValues, type Variant } from '../app/tuning';
-import type { GameDefinition } from '../app/game';
+import { createWorld, type GameDefinition } from '../app/game';
 import { setScreenObserver } from '../ui/overlay';
 import { SessionRecorder } from './record';
 import { SnapshotRing, scrubTo } from './timeline';
@@ -67,6 +67,12 @@ export interface StudioHandle extends GameHandle {
   scrub(frame: number): number | null;
   /** Scrub bounds + position: min reachable frame, current, recorded max. */
   timeline(): { min: number; frame: number; max: number };
+  /**
+   * 'live' = playing + recording; 'replay' = watching a past session loaded
+   * via ?session=<id> (read-only: scrub/playback over the whole recording,
+   * knobs and annotation disabled, nothing records).
+   */
+  mode(): 'live' | 'replay';
   /** Flush the session artifact to the dev server now. */
   flush(reason?: EndReason): void;
   /** The in-progress session (for inspection/tests). */
@@ -133,13 +139,20 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
     });
   };
   const flush = (reason: EndReason = 'quit', beacon = false) => {
+    if (replay) return; // replay mode records nothing — the artifact already exists
     if (recorder.frame === 0 && flushed) return; // nothing new since the last write
     post(recorder.toSession(reason), beacon);
     flushed = true;
   };
 
+  // ── replay mode ("watch the tape"): ?session=<id> loads a past artifact ─────
+  const replayId = typeof location !== 'undefined' ? new URLSearchParams(location.search).get('session') : null;
+  let replay: { session: PlaytestSession; pos: number } | null = null;
+  let playbackTimer: number | null = null;
+
   // ── scrub timeline: periodic snapshots + the recorder's own log ─────────────
-  const ring = new SnapshotRing();
+  // (`let`: replay mode swaps in a ring whose stride covers the whole tape.)
+  let ring = new SnapshotRing();
   let isFrozen = false;
   let scrubbedTo: number | null = null; // set while paused earlier than the recorded tip
 
@@ -213,6 +226,95 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
   // Seed the scrub floor: frame 0 of this run (post-carryover if any).
   ring.push(0, handle.world);
 
+  /**
+   * Load a past session into the live pane: rebuild its exact starting world,
+   * fast-replay the whole recording once to fill the snapshot ring, then land
+   * scrubbed at `at` (or frame 0). Determinism turns the artifact into footage.
+   */
+  async function enterReplay(id: string, at: number): Promise<void> {
+    const res = await fetch(`/__studio/session/${encodeURIComponent(id)}`);
+    if (!res.ok) return;
+    const artifact = (await res.json()) as PlaytestSession;
+    isFrozen = true;
+    const w = handle.world;
+    // Transplant the artifact's origin into the live world (seed, rng, tuning).
+    const base = createWorld(def, { seed: artifact.seed, tuning: artifact.tuningValues });
+    w.restore(artifact.startSnapshot ? structuredClone(artifact.startSnapshot) : base.snapshot());
+    def.attach?.(w);
+    w.input.axes.clear();
+    const frames = artifact.inputLog.frames;
+    // Adaptive stride so the WHOLE tape stays scrubbable within the ring cap
+    // (a fixed 30 would evict the start of any session longer than ~2 min).
+    const stride = Math.max(30, Math.ceil(frames.length / 220 / 30) * 30);
+    ring = new SnapshotRing(stride);
+    ring.push(0, w);
+    let axisIdx = 0;
+    let knobIdx = 0;
+    for (let i = 0; i < frames.length; i++) {
+      while (knobIdx < artifact.knobEvents.length && artifact.knobEvents[knobIdx].frame === i) {
+        const k = artifact.knobEvents[knobIdx++];
+        const snap = w.snapshot();
+        snap.tuning = { ...snap.tuning, [k.key]: k.value };
+        w.restore(snap);
+        def.attach?.(w);
+      }
+      while (axisIdx < artifact.axesLog.length && artifact.axesLog[axisIdx][0] === i) {
+        const [, name, value] = artifact.axesLog[axisIdx++];
+        w.input.axes.set(name, value);
+      }
+      w.step(frames[i]);
+      ring.push(i + 1, w);
+    }
+    replay = { session: artifact, pos: frames.length };
+    studio.scrub(Number.isFinite(at) ? at : 0);
+  }
+
+  /**
+   * Playback: step recorded frames in real time while "unfrozen" in replay.
+   * Elapsed-time accumulator, not per-tick stepping — browsers throttle timers
+   * in hidden tabs, so each tick steps however many frames wall time owes
+   * (capped, to avoid a giant catch-up after a long throttle).
+   */
+  function startPlayback(): void {
+    if (!replay || playbackTimer !== null) return;
+    const s = replay.session;
+    let last = performance.now();
+    playbackTimer = window.setInterval(() => {
+      if (!replay) return;
+      const nowMs = performance.now();
+      const owed = Math.min(120, Math.floor((nowMs - last) / (1000 / 60)));
+      if (owed <= 0) return;
+      last = nowMs;
+      const w = handle.world;
+      for (let n = 0; n < owed; n++) {
+        const i = replay.pos;
+        if (i >= s.inputLog.frames.length) {
+          stopPlayback();
+          return;
+        }
+        for (const k of s.knobEvents) {
+          if (k.frame === i) {
+            const snap = w.snapshot();
+            snap.tuning = { ...snap.tuning, [k.key]: k.value };
+            w.restore(snap);
+            def.attach?.(w);
+          }
+        }
+        for (const [f, name, value] of s.axesLog) if (f === i) w.input.axes.set(name, value);
+        w.step(s.inputLog.frames[i]);
+        replay.pos = i + 1;
+      }
+    }, 1000 / 60);
+  }
+  function stopPlayback(): void {
+    if (playbackTimer !== null) {
+      window.clearInterval(playbackTimer);
+      playbackTimer = null;
+    }
+  }
+
+  if (replayId) void enterReplay(replayId, Number(new URLSearchParams(location.search).get('at') ?? 'NaN'));
+
   // Build identity comes from the dev server (git sha) — best-effort, async.
   void fetch('/__studio/state')
     .then((r) => (r.ok ? r.json() : null))
@@ -237,6 +339,7 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
 
   /** Flush + release everything this run owns (stop() and HMR dispose share it). */
   const cleanup = (reason: EndReason) => {
+    stopPlayback();
     flush(reason, reason === 'hot-swap');
     document.removeEventListener('visibilitychange', onVisibility);
     window.removeEventListener('blur', onBlur);
@@ -253,6 +356,7 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
       return handle.world;
     },
     setKnob(key, value) {
+      if (replay) return; // the tape is read-only
       forkIfRewound(); // a knob turned while rewound commits that position first
       values[key] = value;
       const snap = handle.world.snapshot();
@@ -266,8 +370,15 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
     variants: () => Object.fromEntries(Object.entries(opts.variants ?? {}).map(([name, v]) => [name, v.label])),
     activeVariant: () => ({ ...variantRef }),
     title: () => def.title,
-    annotate: (tag, note) => recorder.annotate(tag, note),
+    annotate: (tag, note) => {
+      if (!replay) recorder.annotate(tag, note);
+    },
     setFrozen(frozen) {
+      if (replay) {
+        // In replay, "unfrozen" means the tape plays; the sim stays held.
+        frozen ? stopPlayback() : startPlayback();
+        return;
+      }
       if (frozen === isFrozen) return;
       if (frozen) {
         isFrozen = true;
@@ -282,14 +393,25 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
       }
       isFrozen = false;
     },
-    frozen: () => isFrozen,
+    frozen: () => (replay ? playbackTimer === null : isFrozen),
     scrub(frame) {
+      if (replay) {
+        stopPlayback();
+        const s = replay.session;
+        const reached = scrubTo(handle.world, def, ring, s.inputLog.frames, s.axesLog, s.knobEvents, frame);
+        if (reached !== null) replay.pos = reached;
+        return reached;
+      }
       isFrozen = true;
       const reached = scrubTo(handle.world, def, ring, recorder.liveInputFrames, recorder.liveAxesLog, recorder.liveKnobEvents, frame);
       if (reached !== null) scrubbedTo = reached < recorder.frame ? reached : null;
       return reached;
     },
-    timeline: () => ({ min: ring.minFrame, frame: scrubbedTo ?? recorder.frame, max: recorder.frame }),
+    timeline: () =>
+      replay
+        ? { min: ring.minFrame, frame: replay.pos, max: replay.session.inputLog.frames.length }
+        : { min: ring.minFrame, frame: scrubbedTo ?? recorder.frame, max: recorder.frame },
+    mode: () => (replay ? 'replay' : 'live'),
     flush: (reason = 'idle') => flush(reason),
     session: () => recorder.toSession('idle'),
     stop: () => cleanup('navigate'),

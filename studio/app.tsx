@@ -67,13 +67,21 @@ function useFrameHandle(nonce: number): { frameRef: (el: HTMLIFrameElement | nul
   return { frameRef, handle };
 }
 
-function paneUrl(game: GameEntry, seed: number, variant: string): string {
+function paneUrl(game: GameEntry, seed: number, variant: string, replay?: { id: string; at?: number }): string {
   const q = new URLSearchParams({ seed: String(seed) });
+  if (replay) {
+    // Watch a past session: the pane loads the artifact and scrubs to `at`.
+    q.set('session', replay.id);
+    if (replay.at !== undefined) q.set('at', String(replay.at));
+    return `${game.url}?${q}`;
+  }
   // 'wt:<name>' plays the same game page inside an immutable worktree build.
   if (variant.startsWith('wt:')) return `/__studio/variants/${variant.slice(3)}${game.url}?${q}`;
   if (variant) q.set('variant', variant);
   return `${game.url}?${q}`;
 }
+
+const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 
 function VariantOptions({ moduleVariants, worktrees }: { moduleVariants: Record<string, string>; worktrees: ServerState['variants'] }) {
   return (
@@ -213,7 +221,15 @@ function Timeline({ handle }: { handle: StudioHandle }) {
  * report — the same analysis the agent reads via MCP, rendered for humans.
  * Numbers describe; deciding what they mean stays with the director.
  */
-function SessionsDrawer({ sessions, onClose }: { sessions: SessionEntry[]; onClose: () => void }) {
+function SessionsDrawer({
+  sessions,
+  onClose,
+  onWatch,
+}: {
+  sessions: SessionEntry[];
+  onClose: () => void;
+  onWatch: (entry: SessionEntry, at?: number) => void;
+}) {
   const [openId, setOpenId] = useState<string | null>(null);
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(false);
@@ -262,11 +278,18 @@ function SessionsDrawer({ sessions, onClose }: { sessions: SessionEntry[]; onClo
                       <span>{Math.round(report.simSeconds)}s played</span>
                       <span>{report.deaths} deaths</span>
                       <span>{report.hesitations.length} hesitations</span>
+                      <button className="hy moment" onClick={() => onWatch(s)}>
+                        ⏵ watch the tape
+                      </button>
                     </div>
                     {report.quit && (
                       <p>
-                        Stopped at frame {report.quit.frame} ({report.quit.endReason}) — {report.quit.recentDeaths} deaths and{' '}
-                        {report.quit.recentHesitations} hesitations in the final stretch.
+                        Stopped at{' '}
+                        <button className="moment-link" onClick={() => onWatch(s, Math.max(0, report.quit!.frame - 300))}>
+                          frame {report.quit.frame} ⏵
+                        </button>{' '}
+                        ({report.quit.endReason}) — {report.quit.recentDeaths} deaths and {report.quit.recentHesitations} hesitations in the
+                        final stretch.
                       </p>
                     )}
                     {report.deathClusters.length > 0 && (
@@ -284,8 +307,11 @@ function SessionsDrawer({ sessions, onClose }: { sessions: SessionEntry[]; onClo
                         {[...report.hesitations]
                           .sort((a, b) => b.frames - a.frames)
                           .slice(0, 3)
-                          .map((h) => `${(h.frames / 60).toFixed(1)}s @ frame ${h.startFrame}`)
-                          .join(' · ')}
+                          .map((h, idx) => (
+                            <button key={idx} className="moment-link" onClick={() => onWatch(s, h.startFrame)}>
+                              {(h.frames / 60).toFixed(1)}s @ {h.startFrame} ⏵
+                            </button>
+                          ))}
                       </p>
                     )}
                     {report.futileVerbs.length > 0 && (
@@ -298,7 +324,11 @@ function SessionsDrawer({ sessions, onClose }: { sessions: SessionEntry[]; onClo
                     {report.annotations.length > 0 && (
                       <p>
                         Your notes:{' '}
-                        {report.annotations.map((a) => `"${a.note ?? a.tag}" @ ${a.frame}`).join(' · ')}
+                        {report.annotations.map((a, idx) => (
+                          <button key={idx} className="moment-link" onClick={() => onWatch(s, Math.max(0, a.frame - 120))}>
+                            "{a.note ?? a.tag}" @ {a.frame} ⏵
+                          </button>
+                        ))}
                       </p>
                     )}
                     <p className="note">The agent sees this same report — ask it to act on any of these moments.</p>
@@ -324,6 +354,7 @@ export function App() {
   const [dirty, setDirty] = useState(false);
   const [toast, setToast] = useState('');
   const [showSessions, setShowSessions] = useState(false);
+  const [tape, setTape] = useState<{ id: string; at?: number } | null>(null); // pane A watches a past session
   const a = useFrameHandle(nonce);
   const b = useFrameHandle(nonce);
 
@@ -388,15 +419,44 @@ export function App() {
         <span className="build">{state ? `build ${state.buildRef}` : ''}</span>
       </header>
 
-      {showSessions && state && <SessionsDrawer sessions={state.sessions} onClose={() => setShowSessions(false)} />}
+      {showSessions && state && (
+        <SessionsDrawer
+          sessions={state.sessions}
+          onClose={() => setShowSessions(false)}
+          onWatch={(entry, at) => {
+            // Route the tape to the right game page (title → slug convention).
+            const target = games.find((g) => g.slug === slugify(entry.game)) ?? games.find((g) => g.slug === slug);
+            if (target) setSlug(target.slug);
+            setTape({ id: entry.id, ...(at !== undefined ? { at } : {}) });
+            setVariantB(null);
+            setShowSessions(false);
+            setNonce((n) => n + 1);
+          }}
+        />
+      )}
 
       <main className="panes">
         {game && (
           <section className="pane">
             <div className="pane-head">
-              A · {a.handle?.title() ?? slug} · {variantA || 'baseline'} · seed {seed}
+              A · {a.handle?.title() ?? slug} ·{' '}
+              {tape ? (
+                <>
+                  <span className="tape">⏵ tape</span>
+                  <button className="hy" onClick={() => (setTape(null), setNonce((n) => n + 1))}>
+                    back to live
+                  </button>
+                </>
+              ) : (
+                `${variantA || 'baseline'} · seed ${seed}`
+              )}
             </div>
-            <iframe key={`a-${slug}-${seed}-${variantA}-${nonce}`} ref={a.frameRef} src={paneUrl(game, seed, variantA)} title="pane A" />
+            <iframe
+              key={`a-${slug}-${seed}-${variantA}-${nonce}-${tape?.id ?? ''}`}
+              ref={a.frameRef}
+              src={paneUrl(game, seed, variantA, tape ?? undefined)}
+              title="pane A"
+            />
           </section>
         )}
         {game && variantB !== null && (
@@ -427,7 +487,7 @@ export function App() {
         <span className="note">knobs drive pane A · same seed both panes · sessions record automatically</span>
       </div>
 
-      {a.handle && <Knobs key={`${slug}-${variantA}-${nonce}`} handle={a.handle} onDirty={() => setDirty(true)} />}
+      {a.handle && !tape && <Knobs key={`${slug}-${variantA}-${nonce}`} handle={a.handle} onDirty={() => setDirty(true)} />}
       <Leva
         titleBar={{ title: 'tuning', position: window.innerWidth < 720 ? { x: 0, y: 56 } : undefined }}
         collapsed={window.innerWidth < 720}
