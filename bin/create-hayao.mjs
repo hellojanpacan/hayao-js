@@ -37,7 +37,7 @@ const files = {
         verify: 'tsx verify.ts',
         build: 'vite build',
       },
-      dependencies: { hayao: '^0.2' },
+      dependencies: { hayao: '^0.3' },
       devDependencies: {
         '@types/node': '^22.10.0',
         tsx: '^4.19.0',
