@@ -27,6 +27,7 @@ imitation — is what gets learned.
 | `juice-lab` | `EASINGS` + `AnimationPlayer` + `spring` | every easing curve, side by side |
 | `procgen-lab` | `generateCave`, `valueNoise`, `autotileToCommands` | re-roll seed, fill %, smoothing passes |
 | `synth-lab` | `audio` bus + zzfx-style tones | pitch, wave, envelope, play |
+| `webgl-lab` | `WebGL2Renderer` + `WEBGL_EFFECTS` + `BLOOM_PIPELINE` | cycle 8 post-process effects, adjust per-effect param, particle burst, storm stress |
 
 ## The sandbox contract
 

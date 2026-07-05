@@ -1,9 +1,9 @@
 // Canvas2D backend. For scenes with many primitives/particles where SVG's DOM
 // node count would bite. Same display list, immediate-mode painting, DPR-aware.
 
-import { sortCommands, type DrawCommand, type Paint } from './commands';
-import { canvasGradient, shapeBBox } from './paint';
+import type { DrawCommand } from './commands';
 import { clientToDesign, fitViewport, type Renderer, type RendererConfig, type Viewport } from './renderer';
+import { drawToCanvas2D } from './canvas2d-core';
 import type { Vec2 } from '../core/math';
 
 export class Canvas2DRenderer implements Renderer {
@@ -43,128 +43,7 @@ export class Canvas2DRenderer implements Renderer {
   }
 
   draw(commands: DrawCommand[]): void {
-    const ctx = this.ctx;
-    ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
-    ctx.fillStyle = this.background;
-    ctx.fillRect(0, 0, this.width, this.height);
-
-    for (const c of sortCommands(commands)) {
-      ctx.save();
-      const t = c.transform;
-      ctx.transform(t.a, t.b, t.c, t.d, t.e, t.f);
-      ctx.globalAlpha = (c as Paint).opacity ?? 1;
-      const sh = (c as Paint).shadow;
-      if (sh) {
-        ctx.shadowColor = sh.color;
-        ctx.shadowBlur = sh.blur;
-        ctx.shadowOffsetX = sh.dx ?? 0;
-        ctx.shadowOffsetY = sh.dy ?? 0;
-      }
-      this.paint(ctx, c);
-      ctx.restore();
-    }
-  }
-
-  /** Resolve a fill: a gradient (mapped to the shape's bbox) or a solid color. */
-  private fillFor(ctx: CanvasRenderingContext2D, c: DrawCommand): string | CanvasGradient | undefined {
-    const p = c as Paint;
-    if (p.gradient) {
-      const bbox = shapeBBox(c);
-      if (bbox && bbox.w > 0 && bbox.h > 0) return canvasGradient(ctx, p.gradient, bbox);
-      const stops = p.gradient.stops; // path/degenerate box → fall back to last stop
-      return stops.length ? stops[stops.length - 1].color : p.fill;
-    }
-    return p.fill;
-  }
-
-  private stroke(ctx: CanvasRenderingContext2D, c: DrawCommand): void {
-    const fill = this.fillFor(ctx, c);
-    if (fill && fill !== 'none') {
-      ctx.fillStyle = fill;
-      ctx.fill();
-    }
-    if (c.stroke) {
-      ctx.strokeStyle = c.stroke;
-      ctx.lineWidth = c.strokeWidth ?? 1;
-      if (c.round) {
-        ctx.lineJoin = 'round';
-        ctx.lineCap = 'round';
-      }
-      ctx.stroke();
-    }
-  }
-
-  private paint(ctx: CanvasRenderingContext2D, c: DrawCommand): void {
-    switch (c.kind) {
-      case 'rect':
-        ctx.beginPath();
-        if (c.r) this.roundRect(ctx, c.x, c.y, c.w, c.h, c.r);
-        else ctx.rect(c.x, c.y, c.w, c.h);
-        this.stroke(ctx, c);
-        break;
-      case 'circle':
-        ctx.beginPath();
-        ctx.arc(c.cx, c.cy, c.radius, 0, Math.PI * 2);
-        this.stroke(ctx, c);
-        break;
-      case 'poly':
-        ctx.beginPath();
-        for (let i = 0; i < c.points.length; i += 2) {
-          if (i === 0) ctx.moveTo(c.points[i], c.points[i + 1]);
-          else ctx.lineTo(c.points[i], c.points[i + 1]);
-        }
-        if (c.closed) ctx.closePath();
-        this.stroke(ctx, c);
-        break;
-      case 'path':
-        {
-          const p = new Path2D(c.d);
-          const fill = this.fillFor(ctx, c);
-          if (fill && fill !== 'none') {
-            ctx.fillStyle = fill;
-            ctx.fill(p);
-          }
-          if (c.stroke) {
-            ctx.strokeStyle = c.stroke;
-            ctx.lineWidth = c.strokeWidth ?? 1;
-            if (c.round) {
-              ctx.lineJoin = 'round';
-              ctx.lineCap = 'round';
-            }
-            ctx.stroke(p);
-          }
-        }
-        break;
-      case 'text':
-        ctx.font = `${c.weight ?? 400} ${c.size}px ${c.font ?? 'sans-serif'}`;
-        ctx.textAlign = c.align ?? 'left';
-        ctx.textBaseline = 'middle';
-        // Stroke first, fill on top — the outline frames the glyph instead of
-        // eating into it (matches SVG's paint-order="stroke"). Text carries
-        // Paint, so an explicit `stroke` now renders instead of being dropped.
-        if (c.stroke) {
-          ctx.strokeStyle = c.stroke;
-          ctx.lineWidth = c.strokeWidth ?? 1;
-          ctx.lineJoin = 'round';
-          ctx.lineCap = 'round';
-          ctx.strokeText(c.text, c.x, c.y);
-        }
-        ctx.fillStyle = c.fill ?? '#000';
-        ctx.fillText(c.text, c.x, c.y);
-        break;
-      case 'image':
-        break; // images loaded async; omitted in v0.1 canvas backend
-    }
-  }
-
-  private roundRect(ctx: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number): void {
-    const rr = Math.min(r, w / 2, h / 2);
-    ctx.moveTo(x + rr, y);
-    ctx.arcTo(x + w, y, x + w, y + h, rr);
-    ctx.arcTo(x + w, y + h, x, y + h, rr);
-    ctx.arcTo(x, y + h, x, y, rr);
-    ctx.arcTo(x, y, x + w, y, rr);
-    ctx.closePath();
+    drawToCanvas2D(this.ctx, commands, this.width, this.height, this.background, this.dpr);
   }
 
   get element(): HTMLCanvasElement {

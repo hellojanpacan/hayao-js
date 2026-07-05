@@ -62,6 +62,67 @@ i => actions)` fast-forwards an exact step count; `world.advance(realMs)` is the
 *realtime* driver and clamps big deltas to one frame budget (never use it to skip
 ahead in a test).
 
+## Renderers
+
+The engine ships four renderer backends, all consuming the same `DrawCommand[]`
+display list. The sim never reads the renderer — renderer choice is purely a host
+concern and has zero effect on `world.hash()` or determinism.
+
+| Backend | `RunOptions.renderer` | Best for |
+|---|---|---|
+| `SvgRenderer` | `'svg'` (default) | Sparse scenes, DOM inspection, crisp resolution-independence |
+| `Canvas2DRenderer` | `'canvas'` | High entity counts, particles, performance-first |
+| `WebGL2Renderer` | `'webgl'` | Post-processing effects (bloom, pixelate, glitch, palette rotation) |
+| `HeadlessRenderer` | — (Node.js only) | Tests, `npm run verify`, `toSVGString()` |
+
+To select a renderer:
+
+```ts
+import { runBrowser, WebGL2Renderer } from '@hayao';
+
+// Built-in string shorthand:
+runBrowser(def, mount, { renderer: 'webgl' });
+
+// Or pass your own configured instance directly via the DOM:
+const renderer = new WebGL2Renderer({ width, height, background,
+  postProcess: `#version 300 es
+    precision mediump float;
+    in vec2 v_uv;
+    uniform sampler2D u_scene;
+    out vec4 fragColor;
+    void main() {
+      // Vignette
+      vec2 uv = v_uv - 0.5;
+      float d = dot(uv, uv);
+      fragColor = texture(u_scene, v_uv) * (1.0 - d * 1.8);
+    }`,
+});
+```
+
+### WebGL2Renderer post-processing
+
+`WebGL2Renderer` rasterizes the full display list via Canvas2D (pixel-exact
+parity with `Canvas2DRenderer`) then passes the frame through a GLSL fragment
+shader. This gives you any full-screen effect in 5 lines of GLSL, without
+touching the display list or the sim.
+
+The fragment shader interface:
+- `in vec2 v_uv` — 0..1 UV with (0,0) at top-left
+- `uniform sampler2D u_scene` — the rasterized frame
+- `out vec4 fragColor` — output pixel
+
+Change the shader at runtime:
+```ts
+// On game handle:
+(handle.renderer as WebGL2Renderer).setPostProcess(shaderSrc);
+(handle.renderer as WebGL2Renderer).clearPostProcess(); // back to passthrough
+```
+
+**Verifiability**: because the renderer is a pure display-list consumer, the
+`HeadlessRenderer` and `SvgRenderer` see the identical `DrawCommand[]` input
+and remain the reference backends for all verify passes. Post-processing effects
+are cosmetic — they are never part of the game's `world.hash()`.
+
 ## Pointer & continuous input
 
 Keyboard actions are the default and the only input that flows through the
@@ -100,6 +161,146 @@ gamepad in one declaration. Anchor host-drawn UI to the played area with
 can't see. `bootDom(def)` (`verify/dom`, under jsdom/happy-dom) boots the real
 `runBrowser` wiring, fires synthetic touches, and steps so you assert on `probe()`.
 
+
+## Custom input sources (gamepad, MIDI, accelerometer, …)
+
+The engine's input layer is open-ended: anything that implements `InputSource`
+(`sample(input: InputState) + optional dispose()`) can be plugged in alongside
+the built-in `KeyboardSource` and `PointerSource`.
+
+### Wiring a source into the step loop
+
+Pass sources at start-up — or add them after the handle is returned:
+
+```ts
+import { GamepadSource, DEFAULT_GAMEPAD_MAP } from '@hayao';
+
+// Option A: at start-up
+const handle = runBrowser(def, mount, {
+  sources: [new GamepadSource({ keyboard: handle.input })], // ← needs handle first
+});
+
+// Option B: post-creation (recommended for gamepad — wait for 'gamepadconnected')
+const handle = runBrowser(def, mount);
+window.addEventListener('gamepadconnected', () => {
+  const gamepad = new GamepadSource({ keyboard: handle.input });
+  handle.addSource(gamepad);  // sampled every step; addSource returns a cleanup fn
+});
+```
+
+### Axis naming convention
+
+Use a dotted namespace prefixed by the source name. All hayao built-ins follow:
+
+| Axis key          | Source       | Range  | Notes                           |
+|-------------------|--------------|--------|---------------------------------|
+| `pointer.x`       | PointerSource| design | Design-space x (letterbox-safe) |
+| `pointer.y`       | PointerSource| design | Design-space y                  |
+| `pointer.down`    | PointerSource| 0/1    | Primary pointer pressed         |
+| `gamepad.lx`      | GamepadSource| ±1     | Left stick x (after deadzone)   |
+| `gamepad.ly`      | GamepadSource| ±1     | Left stick y                    |
+| `gamepad.rx`      | GamepadSource| ±1     | Right stick x                   |
+| `gamepad.ry`      | GamepadSource| ±1     | Right stick y                   |
+| `gamepad.lt`      | GamepadSource| 0..1   | Left trigger                    |
+| `gamepad.rt`      | GamepadSource| 0..1   | Right trigger                   |
+| `gamepad.dpad.x`  | GamepadSource| −1/0/1 | D-pad horizontal                |
+| `gamepad.dpad.y`  | GamepadSource| −1/0/1 | D-pad vertical (−1 = up)        |
+
+Custom sources: follow the same dotted convention (`mydev.axis1`, `midi.cc7`).
+
+### When to call sample()
+
+The engine calls `sample(world.input)` once per fixed step, **before**
+`world.advance()`. This mirrors `PointerSource.sample()` in the browser driver.
+Never call `sample()` inside `onUpdate` or from sim code — axes are host-side.
+
+### Determinism rules for custom sources
+
+1. **Quantize at the host edge.** Use `snapAxis(v, buckets)` / `quantizeAngle`
+   before writing to `input.axes`. Unquantized floats differ across machines and
+   across frames when the device hasn't moved — quantized values are stable.
+2. **Axes are live by default** (NOT in `world.hash()` or the input log). This
+   is correct for most uses: the sim reads a "current" value, and replay is
+   driven by the recorded action log, not raw hardware.
+3. **For replay-exact analog** (twin-stick aim, analog throttle): pass the
+   quantized axes as the SECOND argument to `world.step(actions, axes)`. They
+   then enter `getState()` → hash and `InputRecorder` (same as pointer axes in
+   Studio sessions). Only do this if you need bit-exact replay of analog values.
+4. **For discrete input** (button press → action): call
+   `keyboard.setHeld(action, on)` — presses flow through `KeyboardSource.currentActions()`
+   into the SAME deterministic string log as keys and are covered by record/replay
+   and lockstep netplay at zero extra cost. This is what `GamepadSource` does for
+   its `buttonMap`. Prefer `setHeld` over `press()` for buttons: `press()` is a
+   one-shot tap (cleared after one step), `setHeld` models the held/released cycle.
+
+### GamepadSource
+
+`GamepadSource` is the reference implementation of `InputSource`. It polls
+`navigator.getGamepads()` per step and provides:
+
+- **Analog sticks + triggers** as quantized axes (see table above).
+- **D-pad + face buttons + start/select** as deterministic actions via a
+  `GamepadMap` (button index → action name). Defaults match `DEFAULT_INPUT_MAP`
+  so a gamepad works with the keyboard action set out of the box.
+- **Deadzone** with circular magnitude clamping (default 0.12, matching typical
+  hardware drift). Output is remapped to fill the full ±1 range post-deadzone.
+- **Configurable quantization** (`stickBuckets`, `triggerBuckets`).
+
+```ts
+import { GamepadSource, DEFAULT_GAMEPAD_MAP } from '@hayao';
+
+const gamepad = new GamepadSource({
+  keyboard: handle.input,                // required for button→action routing
+  index: 0,                              // gamepad slot (default 0)
+  deadzone: 0.15,                        // override default 0.12
+  stickBuckets: 64,                      // coarser for a grid-based game
+  buttonMap: {
+    ...DEFAULT_GAMEPAD_MAP,
+    6: 'dodge',                          // LT → dodge action
+  },
+});
+const removeGamepad = handle.addSource(gamepad);
+// later: removeGamepad() to dispose and stop sampling
+```
+
+Sim code reads analog axes the same way pointer input is read:
+
+```ts
+player.onUpdate = (n, dt, ctx) => {
+  const lx = ctx.input.axis('gamepad.lx'); // −1..1 after deadzone + quantize
+  const ly = ctx.input.axis('gamepad.ly');
+  // Also check the fallback action for keyboard/dpad parity:
+  const dx = ctx.input.isDown('right') ? 1 : ctx.input.isDown('left') ? -1 : lx;
+  n.pos.x += dx * 200 * dt;
+};
+```
+
+### Building your own InputSource
+
+```ts
+import { InputSource, snapAxis, InputState } from '@hayao';
+
+class AccelerometerSource implements InputSource {
+  private x = 0;
+  private y = 0;
+
+  constructor() {
+    window.addEventListener('devicemotion', (e) => {
+      this.x = e.accelerationIncludingGravity?.x ?? 0;
+      this.y = e.accelerationIncludingGravity?.y ?? 0;
+    });
+  }
+
+  sample(input: InputState): void {
+    // Normalize to ±1, quantize for determinism.
+    input.axes.set('accel.x', snapAxis(this.x / 9.8, 64, -1, 1));
+    input.axes.set('accel.y', snapAxis(this.y / 9.8, 64, -1, 1));
+  }
+}
+
+handle.addSource(new AccelerometerSource());
+// Sim: ctx.input.axis('accel.x')
+```
 
 ## Depth & 2.5D (isometric / overlap)
 

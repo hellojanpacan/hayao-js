@@ -28,6 +28,7 @@ export * from './scene/registry';
 // ── input: actions, sampling, record/replay ─────────────────────
 export * from './input/actions';
 export * from './input/source';
+export * from './input/gamepad';
 
 // ── physics: tilemaps, kinematic AABB, character controllers ────
 export * from './physics/tilemap';
@@ -49,6 +50,7 @@ export * from './render/renderer';
 export * from './render/svgString';
 export * from './render/svg';
 export * from './render/canvas';
+export * from './render/webgl';
 export * from './render/headless';
 export * from './render/nineSlice';
 
