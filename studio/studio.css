@@ -101,6 +101,182 @@ main.panes {
   background: #fff;
 }
 
+.drawer {
+  position: fixed;
+  inset: 0;
+  z-index: 1200; /* above leva's floating panel (~1000) */
+  background: rgba(36, 32, 25, 0.35);
+  display: flex;
+  justify-content: flex-end;
+}
+.drawer > div,
+.drawer-inner {
+  background: var(--washi);
+}
+.drawer-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--washi-2);
+}
+.drawer-head b {
+  font-size: 16px;
+}
+.drawer-head .hy {
+  margin-left: auto;
+}
+.drawer .drawer-head,
+.drawer .drawer-body {
+  width: min(520px, 100vw);
+}
+.drawer {
+  flex-direction: column;
+  align-items: flex-end;
+}
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  background: var(--washi);
+  border-left: 1px solid var(--line);
+  padding-bottom: 40px;
+}
+.session-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 10px;
+  width: 100%;
+  text-align: left;
+  padding: 11px 16px;
+  background: none;
+  border: none;
+  border-bottom: 1px solid var(--line);
+  font: inherit;
+  color: var(--sumi);
+  cursor: pointer;
+}
+.session-row .game {
+  font-weight: 600;
+}
+.session-row .when {
+  grid-row: 1 / 3;
+  grid-column: 2;
+  align-self: center;
+}
+.session-row.open {
+  background: var(--washi-2);
+}
+.report {
+  padding: 10px 16px 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--washi-2);
+  font-size: 14.5px;
+}
+.report p {
+  margin: 7px 0;
+  line-height: 1.55;
+}
+.report .stat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  font: 600 13px var(--mono);
+  margin: 6px 0 10px;
+}
+.report .good {
+  color: var(--matsu);
+}
+.report .warn {
+  color: var(--shu);
+}
+.report .moment {
+  padding: 5px 10px;
+}
+.moment-link {
+  background: none;
+  border: none;
+  border-bottom: 1px dashed var(--ai);
+  color: var(--ai);
+  font: inherit;
+  cursor: pointer;
+  padding: 0 2px;
+  margin-right: 8px;
+}
+.phone-card {
+  margin: auto;
+  background: var(--washi);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 22px 26px;
+  display: grid;
+  gap: 12px;
+  justify-items: center;
+  max-width: min(340px, 92vw);
+  text-align: center;
+}
+.phone-card b {
+  font-size: 17px;
+}
+.phone-card img {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+.phone-card code {
+  font: 12.5px var(--mono);
+  color: var(--ai);
+  word-break: break-all;
+}
+label.hy input[type='file'] {
+  display: none;
+}
+
+.pane-head .tape {
+  color: var(--shu);
+  font-weight: 700;
+}
+.pane-head .hy {
+  padding: 3px 9px;
+  font-size: 11px;
+}
+
+.timeline {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 8px 14px;
+  border-top: 1px solid var(--line);
+  background: var(--washi-2);
+  position: relative;
+}
+.timeline input[type='range'] {
+  flex: 1;
+  accent-color: var(--shu);
+  touch-action: none;
+  min-height: 28px;
+}
+.timeline .frames {
+  min-width: 86px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+.timeline .probe {
+  position: absolute;
+  right: 10px;
+  bottom: 100%;
+  margin: 0 0 8px;
+  max-height: 46vh;
+  max-width: min(420px, 92vw);
+  overflow: auto;
+  background: var(--washi-2);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 10px 12px;
+  font: 11.5px var(--mono);
+  color: var(--sumi-soft);
+  box-shadow: 0 6px 24px rgba(36, 32, 25, 0.12);
+}
+
 .actions {
   display: flex;
   gap: 8px;

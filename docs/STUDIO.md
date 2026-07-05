@@ -46,6 +46,28 @@ recorded** — this is a dev-server instrument only.
 `assertSnapshotStable`-grade hash equality is covered in
 `src/studio/session.test.ts`.
 
+## Scrub semantics (time travel in the play pane)
+
+The timeline strip under pane A freezes the sim and drags to any recorded
+frame — exact, not approximate: the engine restores the nearest periodic
+snapshot (`SnapshotRing`, every 30 frames) and re-steps the session's own
+recorded inputs (actions, axes, knob events) to the target. The ⌖ button shows
+the live probe at the scrubbed frame. **Resuming after a rewind FORKS the
+timeline**: the discarded future is truncated from the session (frames, axes,
+knob/screen events, annotations past the fork), so the artifact always replays
+as exactly what the player kept — a `scrub` screen event marks the fork frame.
+
+## Tape mode (watch any past session)
+
+A game page opened with `?session=<id>` (`&at=<frame>` optional) becomes a
+read-only player for that artifact: the exact starting world is rebuilt, the
+whole recording is fast-replayed once to fill an adaptively-strided snapshot
+ring, and the full tape is scrubbable end to end — playback steps recorded
+frames at real time (elapsed-time accumulator, so throttled background timers
+can't slow it). The Studio drawer's report links each moment ("longest pause @
+frame N", your annotations, the quit frame) straight into the tape at that
+frame. Knobs and annotation are disabled; nothing records.
+
 ## Hot-swap semantics (play across code edits)
 
 A game entry that passes `hot: import.meta.hot` to `runStudio` AND contains the
