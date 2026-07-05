@@ -66,7 +66,15 @@ function commandToSVG(c: DrawCommand, defs: string[], idBase: string): string {
       const weight = c.weight ? ` font-weight="${c.weight}"` : '';
       const fill = fillOverride ?? c.fill ?? '#000';
       const filter = filterId ? ` filter="url(#${filterId})"` : '';
-      return `<text x="${n(c.x)}" y="${n(c.y)}" font-size="${n(c.size)}" text-anchor="${anchor}" dominant-baseline="middle"${font}${weight} fill="${fill}"${c.opacity !== undefined && c.opacity !== 1 ? ` opacity="${n(c.opacity)}"` : ''}${filter} ${tf}>${escapeText(c.text)}</text>`;
+      // Text carries Paint, so an explicit `stroke` outlines the glyph.
+      // paint-order="stroke" lays the outline UNDER the fill so a thick stroke
+      // frames the letter instead of eating into it — the crisp readable-on-any-
+      // background look consumers otherwise faked with stacked halo copies.
+      const stroke = c.stroke
+        ? ` stroke="${c.stroke}" stroke-width="${n(c.strokeWidth ?? 1)}" paint-order="stroke"${c.round ? ' stroke-linejoin="round"' : ''}`
+        : '';
+      const opacity = c.opacity !== undefined && c.opacity !== 1 ? ` opacity="${n(c.opacity)}"` : '';
+      return `<text x="${n(c.x)}" y="${n(c.y)}" font-size="${n(c.size)}" text-anchor="${anchor}" dominant-baseline="middle"${font}${weight} fill="${fill}"${stroke}${opacity}${filter} ${tf}>${escapeText(c.text)}</text>`;
     }
     case 'image': {
       const filter = filterId ? ` filter="url(#${filterId})"` : '';

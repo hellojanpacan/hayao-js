@@ -136,10 +136,20 @@ export class Canvas2DRenderer implements Renderer {
         }
         break;
       case 'text':
-        ctx.fillStyle = c.fill ?? '#000';
         ctx.font = `${c.weight ?? 400} ${c.size}px ${c.font ?? 'sans-serif'}`;
         ctx.textAlign = c.align ?? 'left';
         ctx.textBaseline = 'middle';
+        // Stroke first, fill on top — the outline frames the glyph instead of
+        // eating into it (matches SVG's paint-order="stroke"). Text carries
+        // Paint, so an explicit `stroke` now renders instead of being dropped.
+        if (c.stroke) {
+          ctx.strokeStyle = c.stroke;
+          ctx.lineWidth = c.strokeWidth ?? 1;
+          ctx.lineJoin = 'round';
+          ctx.lineCap = 'round';
+          ctx.strokeText(c.text, c.x, c.y);
+        }
+        ctx.fillStyle = c.fill ?? '#000';
         ctx.fillText(c.text, c.x, c.y);
         break;
       case 'image':

@@ -22,8 +22,12 @@ If the session had no real friction, say so and stop — do not invent entries.
 
 ## 2. Log it
 
-Append each finding to `docs/FRICTION.md` (newest first) in its three-line
-format: **Happened / Surfaced as / Fix landed**.
+Append each finding to `docs/FRICTION.md` (newest first) in its format:
+**Happened / Surfaced as / Fix landed / Status**. Always end the entry with a
+dated `**Status (YYYY-MM-DD):**` line — `✅ Resolved` if step 3 landed a fix,
+`🔧 Open` if it's a debt you're leaving, `👁 Watch` if it's an accepted
+tradeoff. That stamp is what lets a later triage skip already-decided entries
+instead of re-deriving them; see the Status legend at the top of FRICTION.md.
 
 ## 3. Land the fix, not just the log
 
