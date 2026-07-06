@@ -48,6 +48,12 @@ Treat them accordingly:
   the last prototype in `examples/`.
 
 ## Before writing game code
+0. **If the game isn't designed yet** — the intent is high-level ("a polished
+   platformer with responsive controls", "an RTS with faction asymmetry and
+   impressive battles") — run the **[Design Codex](design/)** first:
+   intent→anchor→compose→twist→pillars→loop, then hand off here. It's the
+   *generative* front half (concept, reference DNA, composable systems, the
+   creative twist); the steps below are the *proof* half.
 1. Read `docs/FUN.md` (the design playbook: universal laws, your genre's
    cheat sheet, and the before-you-author-content checklist).
 2. Read `docs/CONVENTIONS.md` (structure, house style, definition of done).

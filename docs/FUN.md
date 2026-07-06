@@ -7,6 +7,12 @@ Part 3 checklist *before* writing any level or content data. Corpus notes cite
 the js13k dataset (`js13k/data/registry.csv`, 1,164 games with per-criterion
 judge ranks; `rank_gameplay` used as the fun proxy).
 
+> **Designing from a high-level intent?** FUN.md is the *verification* half — it
+> proves a genre is fair. For the *generative* half — turning "make an RTS with
+> faction asymmetry" into a concrete design (reference-game DNA, composable
+> systems, and the "X but Y" twist) — start in the **[Design Codex](../design/)**,
+> then return here to prove what you designed.
+
 ## Part 1 — Universal laws
 
 1. **Every genre has a mechanical truth, and it is provable.** Find yours
