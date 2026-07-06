@@ -113,10 +113,40 @@ writeFileSync('shots/title.svg', r.toSVGString());   // a real vector screenshot
 ```
 
 Because rendering is SVG, the screenshot is **resolution-independent and text is
-crisp** — no canvas fuzz, no GPU. In the browser, `?capture=1` exposes
-`window.__hayao` (`pump`, `probe`, `hash`, `shot`, `save`, `key`) for scripted
-sessions and aesthetic captures — but you rarely need it, because the DOM is
-already inspectable and the sim already runs in Node.
+crisp** — no canvas fuzz, no GPU. You rarely need a browser at all, because the
+DOM is already inspectable and the sim already runs in Node — but when a tool
+must drive the real browser build, two seams exist:
+
+**`?capture=1` → `window.__hayao`** (`src/verify/capture.ts`). Appending
+`?capture=1` to a game's URL skips the splash and installs a scripted-session
+API on `window`:
+
+| Member | What it does |
+|---|---|
+| `pump(frames, actions?)` | Step exactly `frames` fixed steps with `actions` held (wall-clock loop suspended), then return `probe()` |
+| `probe()` | The game's probe snapshot |
+| `hash()` | `world.hash()` — the determinism hash |
+| `shot()` | Current frame as an SVG string (a vector screenshot) |
+| `save(path)` | POST that SVG to the dev server's `/__shot` endpoint; resolves `true` on success |
+| `key(type, code)` | Dispatch a synthetic `keydown`/`keyup` by key code |
+| `world` | The live `World` — full access when the shorthands aren't enough |
+
+`probe` is whatever the game's `defineGame({ probe })` returns — expose exactly
+the state a scripted session will assert on.
+
+**`handle.tick(dtMs?)`** — the `runBrowser` handle can drive one frame by hand:
+sample the pointer and extra sources, advance by `dtMs` (default one fixed
+step) with the currently-held actions, render. It is the SAME code path the
+wall-clock loop runs, so tool-driven frame stepping is the real loop, not a
+simulation of it. The wall-clock loop keeps running independently — pause the
+shell or hold via `RunOptions.isHeld` to make `tick()` the only driver.
+
+**Hidden tabs and iframes keep ticking.** Browsers throttle rAF to death in
+hidden tabs/iframes; the engine now owns the fallback — when `document.hidden`,
+the loop pumps via `setTimeout(16)` and swaps back to native rAF on
+visibility. Games and harnesses must **NOT** patch the global
+`requestAnimationFrame` anymore: per-game patches double-fire and race the
+engine's scheduler (the 2026-07 triage traced real bugs to exactly that).
 
 For MOTION, use the filmstrip instead of a single frame: it samples a whole
 run into one SVG contact sheet, so pacing, readability under load, and

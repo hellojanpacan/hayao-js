@@ -62,12 +62,21 @@ export class KeyboardSource {
 
   /** The actions currently held down, as a stable sorted array. */
   currentActions(): string[] {
-    const acts = keysToActions(this.map, this.keysDown);
+    // Held entries double as binding codes: PointerSource holds `mouse.right`
+    // etc., so a map binding like `shield: ['mouse.right']` resolves exactly
+    // like a key code. Held names also pass through as actions themselves.
+    const codes = this.held.size === 0 ? this.keysDown : new Set([...this.keysDown, ...this.held]);
+    const acts = keysToActions(this.map, codes);
     if (this.pressed.size === 0 && this.held.size === 0) return acts;
     const merged = new Set(acts);
     for (const a of this.pressed) merged.add(a);
     for (const a of this.held) merged.add(a);
     return [...merged].sort();
+  }
+
+  /** The action names this source's map can produce (for InputState.declareActions). */
+  actionNames(): string[] {
+    return Object.keys(this.map);
   }
 
   /**
@@ -139,13 +148,39 @@ export interface PointerTarget {
   toDesign?(clientX: number, clientY: number): Vec2;
 }
 
+export interface PointerSourceOptions {
+  /**
+   * Allow the browser's context menu on the attached element. Default false —
+   * the menu is suppressed (preventDefault on 'contextmenu') so right-click is
+   * usable as game input.
+   */
+  contextMenu?: boolean;
+  /**
+   * Route pointer buttons into the deterministic action pipeline: while a
+   * button is held, `sample()` calls `keyboard.setHeld('mouse.left' |
+   * 'mouse.right' | 'mouse.middle')` so buttons enter the SAME actionsDown log
+   * as keys — `justPressed('mouse.right')` works, replays stay exact, and an
+   * inputMap can bind them (`shield: ['mouse.right']`). The browser driver
+   * wires this to the GameHandle's KeyboardSource automatically.
+   */
+  keyboard?: KeyboardSource;
+}
+
+/** The pointer-button action names PointerSource can hold (via its keyboard). */
+export const MOUSE_ACTIONS = ['mouse.left', 'mouse.right', 'mouse.middle'] as const;
+
 /**
  * Continuous pointer / touch input — the sibling of KeyboardSource for games
  * driven by *where* the cursor is (slice, aim, drag, point-and-click, placement).
  * It listens on the renderer's canvas, converts every event to DESIGN space via
  * `renderer.toDesign`, and each fixed step writes the sample into InputState's
- * analog axes: `pointer.x`, `pointer.y`, `pointer.down` (1/0). Sim code then
- * reads `world.input.axis('pointer.x')` — no out-of-engine letterbox glue.
+ * analog axes: `pointer.x`, `pointer.y`, `pointer.down` (1/0), plus
+ * `pointer.right` / `pointer.middle` (1/0) for the secondary mouse buttons
+ * (the context menu is suppressed by default so right-click is usable — see
+ * PointerSourceOptions). Sim code then reads `world.input.axis('pointer.x')`
+ * — no out-of-engine letterbox glue. With `keyboard` wired, buttons also enter
+ * the action pipeline as `mouse.left/right/middle` (bindable in an inputMap,
+ * `justPressed`-able, replay-exact).
  *
  * Determinism note: axes are host-sampled live input and are NOT part of the
  * string input log or the world hash. `sample()` QUANTIZES design coords to a
@@ -163,22 +198,40 @@ export class PointerSource {
   private clientX = 0;
   private clientY = 0;
   private isDown = false;
+  private rightDown = false;
+  private middleDown = false;
   private seen = false;
   /** Live touches by pointerId (a pressed finger/button); excludes hover-only mouse. */
   private touches = new Map<number, { clientX: number; clientY: number }>();
   private target: PointerTarget;
   private el: EventTarget | undefined;
+  private keyboard: KeyboardSource | undefined;
   private onMove: (e: PointerEvent) => void;
   private onDown: (e: PointerEvent) => void;
   private onUp: (e: PointerEvent) => void;
+  private onCtx: (e: Event) => void;
 
-  constructor(target: PointerTarget) {
+  constructor(target: PointerTarget, opts: PointerSourceOptions = {}) {
     this.target = target;
     this.el = target.element;
+    this.keyboard = opts.keyboard;
+    // Chorded button changes (right pressed while left held) arrive as
+    // pointermove per the Pointer Events spec, so every handler reads the
+    // `buttons` bitmask (1=left/touch, 2=right, 4=middle) when present.
+    const readButtons = (e: PointerEvent): boolean => {
+      if (typeof e.buttons !== 'number') return false;
+      this.isDown = (e.buttons & 1) !== 0;
+      this.rightDown = (e.buttons & 2) !== 0;
+      this.middleDown = (e.buttons & 4) !== 0;
+      return true;
+    };
     this.onMove = (e) => {
       this.clientX = e.clientX;
       this.clientY = e.clientY;
       this.seen = true;
+      // Hover-only moves carry buttons=0 and must not clear a press tracked
+      // from pointerdown — only chorded changes (some button held) apply.
+      if (typeof e.buttons === 'number' && e.buttons !== 0) readButtons(e);
       const t = this.touches.get(e.pointerId);
       if (t) {
         t.clientX = e.clientX;
@@ -188,19 +241,35 @@ export class PointerSource {
     this.onDown = (e) => {
       this.clientX = e.clientX;
       this.clientY = e.clientY;
-      this.isDown = true;
       this.seen = true;
+      if (!readButtons(e)) {
+        // No bitmask (stub events in tests): fall back to the changed button.
+        if (e.button === 2) this.rightDown = true;
+        else if (e.button === 1) this.middleDown = true;
+        else this.isDown = true;
+      }
       this.touches.set(e.pointerId, { clientX: e.clientX, clientY: e.clientY });
     };
     this.onUp = (e) => {
-      this.isDown = false;
+      if (!readButtons(e)) {
+        this.isDown = false;
+        if (e.button === 2) this.rightDown = false;
+        else if (e.button === 1) this.middleDown = false;
+        else {
+          this.rightDown = false;
+          this.middleDown = false;
+        }
+      }
       this.touches.delete((e as PointerEvent)?.pointerId);
     };
+    // Right-click is game input: suppress the context menu unless opted back in.
+    this.onCtx = (e) => e.preventDefault();
     this.el?.addEventListener('pointermove', this.onMove as EventListener);
     this.el?.addEventListener('pointerdown', this.onDown as EventListener);
     // A finger lifted on the canvas ends its own touch…
     this.el?.addEventListener('pointerup', this.onUp as EventListener);
     this.el?.addEventListener('pointercancel', this.onUp as EventListener);
+    if (!opts.contextMenu) this.el?.addEventListener('contextmenu', this.onCtx);
     // …and release anywhere counts too — lifted off the canvas still ends the press.
     globalThis.addEventListener?.('pointerup', this.onUp as EventListener);
     globalThis.addEventListener?.('pointercancel', this.onUp as EventListener);
@@ -229,7 +298,12 @@ export class PointerSource {
 
   /**
    * Write the current sample into an InputState's axes as pointer.x / pointer.y /
-   * pointer.down. Call once per step (the browser driver does this before advance).
+   * pointer.down, plus pointer.right / pointer.middle (0/1) for the secondary
+   * buttons. Call once per step (the browser driver does this before advance).
+   *
+   * When a keyboard is wired (PointerSourceOptions.keyboard), buttons are ALSO
+   * held as actions `mouse.left` / `mouse.right` / `mouse.middle` so they flow
+   * through the same deterministic actionsDown log as keys.
    */
   sample(input: InputState): void {
     const r = this.read();
@@ -238,13 +312,23 @@ export class PointerSource {
     input.axes.set('pointer.x', q(r.x));
     input.axes.set('pointer.y', q(r.y));
     input.axes.set('pointer.down', r.down ? 1 : 0);
+    input.axes.set('pointer.right', this.rightDown ? 1 : 0);
+    input.axes.set('pointer.middle', this.middleDown ? 1 : 0);
+    if (this.keyboard) {
+      input.declareActions(MOUSE_ACTIONS);
+      this.keyboard.setHeld('mouse.left', this.isDown);
+      this.keyboard.setHeld('mouse.right', this.rightDown);
+      this.keyboard.setHeld('mouse.middle', this.middleDown);
+    }
   }
 
   dispose(): void {
+    if (this.keyboard) for (const a of MOUSE_ACTIONS) this.keyboard.releaseHeld(a);
     this.el?.removeEventListener('pointermove', this.onMove as EventListener);
     this.el?.removeEventListener('pointerdown', this.onDown as EventListener);
     this.el?.removeEventListener('pointerup', this.onUp as EventListener);
     this.el?.removeEventListener('pointercancel', this.onUp as EventListener);
+    this.el?.removeEventListener('contextmenu', this.onCtx);
     globalThis.removeEventListener?.('pointerup', this.onUp as EventListener);
     globalThis.removeEventListener?.('pointercancel', this.onUp as EventListener);
   }

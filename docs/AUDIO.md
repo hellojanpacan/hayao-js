@@ -72,6 +72,60 @@ in the Build-Measure-Learn loop.
 - Audio is a **renderer/observer**, never sim state: it's driven off sim time
   (the beat counter) and never enters `world.hash()`. Playback nodes are cosmetic.
 
+## SoundSpec units (the porting trap)
+
+`SoundSpec` uses **musical units**, not ZzFX's per-sample deltas — the full
+field-by-field reference lives in the `src/audio/synth.ts` docstrings (grep
+`SoundSpec`); the summary that prevents mis-ports:
+
+- Envelope times (`attack`/`decay`/`sustain`/`release`) — **seconds**.
+- `slide` — total **semitones over the whole sound body** (ZzFX slides in
+  semitones/second); `slideAccel` is the quadratic term, also semitones.
+- `pitchJump` — **semitones** (ZzFX's is an absolute Hz addend);
+  `pitchJumpTime` in seconds.
+- `lowpass` / `highpass` — cutoff **Hz** (ZzFX packs both into one signed knob).
+- `repeat` — pitch-envelope repeat period in seconds (ZzFX `repeatTime`): the
+  slide/jump progression resets each period while the amplitude envelope runs
+  on.
+
+## Porting ZzFX sounds: `specFromZzfx()`
+
+Don't convert by hand — `specFromZzfx(params)` takes the positional array you
+copy out of the ZzFX designer (holes and all:
+`specFromZzfx([,,1675,,.06,.24,1,1.82,,,837,.06])`) and returns a `SoundSpec`,
+encoding every unit conversion above. Documented approximations, each warned
+once per parameter name: `randomness` is **dropped** (specs are deterministic
+— same spec, same samples, same hash), `modulation` becomes a vibrato LFO at
+the same rate, shape 3 ("tan") approximates to a hard square. Sound close
+first, exact later.
+
+## External synths: the `audio.ctx` / bus contract
+
+The shared `audio` bus exposes its Web Audio graph so ported synths join
+hayao's context instead of fighting it: `audio.ctx` (the live `AudioContext`),
+`audio.sfxBus` and `audio.musicBus` (the mix `AudioNode`s) — all null until
+`start()` unlocks audio on the first user gesture. The contract: **create
+sources ON `audio.ctx` and connect them to a bus — never `ctx.destination`,
+and never a second `AudioContext`** (a second context needs its own autoplay
+unlock and escapes master volume/mute).
+
+ZzFXM (tracker music) recipe: transcribing a ZzFXM song to a hayao `Song` is a
+porting task, not an engine seam — so bundle zzfxm.js verbatim, render its
+buffer, then play it through hayao's graph:
+
+```ts
+const buf = audio.ctx!.createBuffer(2, samples[0].length, audio.ctx!.sampleRate);
+// …copy zzfxM's rendered channels in…
+const src = audio.ctx!.createBufferSource();
+src.buffer = buf; src.loop = true;
+src.connect(audio.musicBus!);   // volume/mute apply; sfxBus for one-shots
+src.start();
+```
+
+Native loops need no recipe: `audio.playSong(song, { loop: true })` loops the
+musical body (excluding the ring-out tail) and returns a stop handle;
+`audio.startAmbient()` starts the evolving pad on the music bus.
+
 ## Roadmap (honest gaps)
 
 Done and verified: PCM core, SFX synth, theory, composition, linter, analysis,

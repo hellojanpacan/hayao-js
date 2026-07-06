@@ -113,6 +113,35 @@ export class Rng {
   }
 }
 
+// Scratch view for hashNoise: lets us hash the exact float bits (not a lossy
+// truncation), so 0.1 and 0.100001 land on different values. Write-before-read
+// every call, so it carries no state.
+const __noiseBits = new DataView(new ArrayBuffer(8));
+
+/**
+ * Stateless deterministic noise: hash any mix of numbers to a float in [0,1).
+ * Same inputs ALWAYS give the same output and no stream is consumed, so it is
+ * safe to call from `draw()` for per-entity cosmetic variation (jitter, phase
+ * offsets, hue nudges) — `hashNoise(entity.id, ctx.frame)` never touches
+ * `world.rng` and cannot desync a replay. Mixes the full float bits of each
+ * value through a strong integer hash (murmur3-style avalanche).
+ */
+export function hashNoise(...values: number[]): number {
+  let h = 0x9e3779b9 >>> 0;
+  for (const v of values) {
+    __noiseBits.setFloat64(0, v);
+    h = Math.imul(h ^ __noiseBits.getUint32(0), 0x85ebca6b) >>> 0;
+    h = (h ^ (h >>> 13)) >>> 0;
+    h = Math.imul(h ^ __noiseBits.getUint32(4), 0xc2b2ae35) >>> 0;
+    h = (h ^ (h >>> 16)) >>> 0;
+  }
+  // Final avalanche so short inputs still spread across the whole range.
+  h = Math.imul(h ^ (h >>> 16), 0x85ebca6b) >>> 0;
+  h = Math.imul(h ^ (h >>> 13), 0xc2b2ae35) >>> 0;
+  h = (h ^ (h >>> 16)) >>> 0;
+  return h / 4294967296;
+}
+
 /** Deterministic 32-bit FNV-1a hash of a string — handy for stable ids/seeds. */
 export function hashString(str: string): number {
   let h = 2166136261 >>> 0;

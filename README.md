@@ -199,6 +199,16 @@ pathfinding, procgen, synth, juice) for learning one primitive in isolation.
 of the engine and what generalized lives in
 [docs/BUILDLOG.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/BUILDLOG.md).
 
+Since v0.3 (on main, toward 0.4.0): a screen-space HUD layer
+(`node.screenSpace`), pause + time scale (`world.paused`/`timeScale`,
+`node.pauseMode`), deterministic generator coroutines, typed `world.state`
+(`defineGame<TState>`), ellipse/arc/lineDash rendering, a ZzFX porting bridge
+(`specFromZzfx`), pointer-button actions, and a built-in hidden-tab ticker —
+driven by the js13k recreation triage in
+[docs/TRIAGE-2026-07-recreations.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/TRIAGE-2026-07-recreations.md);
+authoring contracts documented in
+[docs/ENGINE.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/ENGINE.md).
+
 ## License
 
 [MIT](LICENSE) © Jan Pacan

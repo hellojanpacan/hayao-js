@@ -23,6 +23,7 @@ export * from './scene/pool';
 export * from './scene/tween';
 export * from './scene/particles';
 export * from './scene/floatingText';
+export * from './scene/verletChain';
 export * from './scene/registry';
 
 // ── input: actions, sampling, record/replay ─────────────────────
@@ -83,6 +84,7 @@ export * from './audio/match';
 export * from './audio/adaptive';
 export * from './audio/quality';
 export * from './audio/genres';
+export * from './audio/zzfx';
 export * from './audio/album';
 
 // ── ui: DOM overlays + shell + settings ─────────────────────────
@@ -110,6 +112,7 @@ export * from './verify/dom';
 
 // ── logic: pure engine primitives (FSM, weighted tables, graph search) ─
 export * from './logic/fsm';
+export * from './logic/coroutine';
 export * from './logic/random';
 export * from './logic/graph';
 export * from './logic/history';
@@ -149,4 +152,4 @@ export * from './studio/timeline';
 export * from './studio/run';
 
 /** Engine version. */
-export const VERSION = '0.3.0';
+export const VERSION = '0.4.0';

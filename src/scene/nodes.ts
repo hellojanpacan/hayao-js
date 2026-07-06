@@ -16,6 +16,10 @@ import { Node, type NodeConfig, type WorldContext } from './node';
  *               middle. Pass `anchor: 'topLeft'` to place `pos` at the top-left
  *               corner instead (the canvas mental model) — no half-size offset.
  *  - `circle` → CENTER-anchored: `pos` is the center.
+ *  - `ellipse`→ CENTER-anchored: `pos` is the center; `rx`/`ry` are the semi-axes.
+ *  - `arc`    → CENTER-anchored: `pos` is the arc's center. Radians, clockwise
+ *               from +x (y-down screen convention), running `start` → `end`.
+ *               `sector: true` closes through the center (a pie slice).
  *  - `glyph`  → CENTER-anchored (align 'center').
  *  - `poly`   → LOCAL coordinates: `points` are relative to `pos` as-is (put your
  *               own 0,0 wherever you like).
@@ -32,6 +36,8 @@ import { Node, type NodeConfig, type WorldContext } from './node';
 export type Shape =
   | { kind: 'rect'; w: number; h: number; r?: number; anchor?: 'center' | 'topLeft' }
   | { kind: 'circle'; radius: number }
+  | { kind: 'ellipse'; rx: number; ry: number }
+  | { kind: 'arc'; radius: number; start: number; end: number; sector?: boolean }
   | { kind: 'poly'; points: number[]; closed?: boolean }
   | { kind: 'path'; d: string }
   | { kind: 'glyph'; char: string; size: number }
@@ -74,6 +80,7 @@ export class Sprite extends Node {
       round: config.round,
       gradient: config.gradient,
       shadow: config.shadow,
+      lineDash: config.lineDash,
     };
   }
 
@@ -88,6 +95,12 @@ export class Sprite extends Node {
       }
       case 'circle':
         out.push({ kind: 'circle', cx: 0, cy: 0, radius: this.shape.radius, ...base });
+        break;
+      case 'ellipse':
+        out.push({ kind: 'ellipse', cx: 0, cy: 0, rx: this.shape.rx, ry: this.shape.ry, ...base });
+        break;
+      case 'arc':
+        out.push({ kind: 'arc', cx: 0, cy: 0, radius: this.shape.radius, start: this.shape.start, end: this.shape.end, sector: this.shape.sector, ...base });
         break;
       case 'poly':
         out.push({ kind: 'poly', points: this.shape.points, closed: this.shape.closed ?? true, ...base });

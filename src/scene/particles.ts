@@ -92,6 +92,50 @@ export class Particles extends Node {
   private drag = 0;
   private shrink = true;
 
+  // ── Continuous emission ─────────────────────────────────────────
+  // A steady stream (torch smoke, thruster exhaust) on top of the one-shot
+  // burst(): a fractional accumulator over sim dt spawns whole particles
+  // through the same private-Rng burst path, so it stays deterministic and
+  // cosmetic by the same construction.
+  private emitRate = 0;
+  private emitAcc = 0;
+  private emitStyle: ParticleStyle | null = null;
+  private emitOrigin: Vec2 = { x: 0, y: 0 };
+
+  /**
+   * Start (or retune) continuous emission at `ratePerSec` particles per second.
+   * `style.at` sets the node-local origin (default 0,0); the rest styles
+   * particles exactly like `burst()`. Omitting `style` keeps the previous
+   * emitter style (falling back to the `burst` preset if none was ever set).
+   *
+   * The signal form `emit(name, payload)` inherited from Node still works —
+   * the overload dispatches on the first argument's type.
+   */
+  override emit(ratePerSec: number, style?: ParticleStyle & { at?: Vec2 }): void;
+  override emit<T>(name: string, payload: T): void;
+  override emit(rateOrName: number | string, styleOrPayload?: unknown): void {
+    if (typeof rateOrName === 'string') {
+      super.emit(rateOrName, styleOrPayload);
+      return;
+    }
+    this.emitRate = rateOrName;
+    this.emitAcc = 0;
+    const style = styleOrPayload as (ParticleStyle & { at?: Vec2 }) | undefined;
+    if (style) {
+      const { at, ...rest } = style;
+      this.emitStyle = rest;
+      this.emitOrigin = at ? { x: at.x, y: at.y } : { x: 0, y: 0 };
+    } else if (!this.emitStyle) {
+      this.emitStyle = PARTICLE_PRESETS.burst();
+    }
+  }
+
+  /** Stop continuous emission. Live particles finish their lives naturally. */
+  stopEmit(): void {
+    this.emitRate = 0;
+    this.emitAcc = 0;
+  }
+
   protected override onProcess(dt: number): void {
     const drag = Math.max(0, 1 - this.drag * dt);
     let write = 0;
@@ -106,6 +150,16 @@ export class Particles extends Node {
       this.pool[write++] = p;
     }
     this.pool.length = write;
+    // Spawn AFTER the update so a particle emitted this tick behaves exactly
+    // like a burst() issued this tick (integrated from the next tick on).
+    if (this.emitRate > 0 && this.emitStyle) {
+      this.emitAcc += this.emitRate * dt;
+      const spawn = Math.floor(this.emitAcc);
+      if (spawn > 0) {
+        this.emitAcc -= spawn;
+        this.burst(spawn, this.emitOrigin, this.emitStyle);
+      }
+    }
   }
 
   protected override draw(out: DrawCommand[], world: Transform): void {
