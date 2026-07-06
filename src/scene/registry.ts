@@ -5,6 +5,9 @@
 import { Node, type SerializedNode } from './node';
 import { Sprite, Text, Camera2D, Timer } from './nodes';
 import { AnimationPlayer } from './tween';
+import { Bone2D } from '../anim/skeleton';
+import { ClipPlayer } from './clipPlayer';
+import { PointLight, LightLayer } from './light';
 
 export type NodeFactory = () => Node;
 
@@ -22,6 +25,13 @@ registerNode('Text', () => new Text({ text: '' }));
 registerNode('Camera2D', () => new Camera2D());
 registerNode('Timer', () => new Timer({ duration: 1 }));
 registerNode('AnimationPlayer', () => new AnimationPlayer());
+// Rig joints round-trip so a serialized skeleton rebuilds; the cosmetic view
+// nodes (ClipPlayer, lights) register too so a prefab embedding one deserializes
+// rather than throwing (their observer-seeded rng stream position isn't saved).
+registerNode('Bone2D', () => new Bone2D());
+registerNode('ClipPlayer', () => new ClipPlayer());
+registerNode('PointLight', () => new PointLight());
+registerNode('LightLayer', () => new LightLayer());
 
 /** Rebuild a live node tree from serialized data. */
 export function deserializeNode(data: SerializedNode): Node {

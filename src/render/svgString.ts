@@ -3,8 +3,9 @@
 // (an AI-first win: judge layout from a file, no browser, no GPU, no fuzz).
 // The DOM SvgRenderer reuses this; tests assert on it directly.
 
-import { sortCommands, type ArcCommand, type DrawCommand, type Paint } from './commands';
+import { sortCommands, type ArcCommand, type DrawCommand, type Paint, type PolyCommand } from './commands';
 import { gradientDef, invalidCommandReason, shadowDef, warnCommandOnce } from './paint';
+import { parseLightRun, splitByLightLayer, type ParsedLightRun } from './lightRun';
 import { TAU, type Transform } from '../core/math';
 import { dcos, dsin } from '../core/dmath';
 
@@ -25,6 +26,8 @@ function paintAttrs(p: Paint, fillOverride?: string, filterId?: string): string 
   }
   if (p.opacity !== undefined && p.opacity !== 1) parts.push(`opacity="${n(p.opacity)}"`);
   if (filterId) parts.push(`filter="url(#${filterId})"`);
+  // Blend mode (lighting run / any multiply|screen command) → CSS mix-blend-mode.
+  if (p.blend) parts.push(`style="mix-blend-mode:${p.blend}"`);
   return parts.join(' ');
 }
 
@@ -116,25 +119,97 @@ function commandToSVG(c: DrawCommand, defs: string[], idBase: string): string {
   }
 }
 
+// Emit a poly's `points` attribute value (flat [x,y,…] → "x,y x,y …").
+function polyPoints(p: PolyCommand): string {
+  const pts: string[] = [];
+  for (let i = 0; i < p.points.length; i += 2) pts.push(`${n(p.points[i])},${n(p.points[i + 1])}`);
+  return pts.join(' ');
+}
+
+/**
+ * The PRIMARY light-run encoding (validated by scripts/lighting-resvg.test.mjs):
+ *   <g style="mix-blend-mode:multiply; isolation:isolate">   ← the light buffer
+ *     <rect …ambient darkness…/>
+ *     <g style="mix-blend-mode:screen" mask="url(#…)">        ← one per light
+ *       <circle fill="url(#…radial…)"/>
+ *     </g>
+ *   </g>
+ * The per-light mask is a white rect (fully lit) with the shadow polys painted
+ * black (fully occluded); a soft penumbra poly is 50% grey (half-darkened). All
+ * def ids are salted by `idPrefix` so several panels share one document safely.
+ */
+function lightRunToSVG(parsed: ParsedLightRun, defs: string[], idPrefix: string, viewW: number, viewH: number): string {
+  const a = parsed.ambient;
+  const ambientRect = `<rect x="${n(a.x)}" y="${n(a.y)}" width="${n(a.w)}" height="${n(a.h)}" transform="${matrix(a.transform)}" fill="${a.fill ?? '#000'}"/>`;
+  const groups: string[] = [];
+  parsed.lights.forEach((light, li) => {
+    const c = light.circle;
+    const gid = `${idPrefix}lg${li}`;
+    if (c.gradient) defs.push(gradientDef(c.gradient, gid));
+    const fill = c.gradient ? `url(#${gid})` : (c.fill ?? '#fff');
+    const circle = `<circle cx="${n(c.cx)}" cy="${n(c.cy)}" r="${n(c.radius)}" transform="${matrix(c.transform)}" fill="${fill}"/>`;
+    // Mask: white = lit everywhere, shadow polys black (or grey for penumbra).
+    const mid = `${idPrefix}lm${li}`;
+    const shadowPolys = light.shadows
+      .map((s) => {
+        const grey = s.opacity !== undefined && s.opacity !== 1 ? Math.round((1 - s.opacity) * 255) : 0;
+        const shade = `#${grey.toString(16).padStart(2, '0').repeat(3)}`;
+        return `<polygon points="${polyPoints(s)}" transform="${matrix(s.transform)}" fill="${shade}"/>`;
+      })
+      .join('');
+    if (light.shadows.length) {
+      defs.push(
+        `<mask id="${mid}"><rect x="0" y="0" width="${n(viewW)}" height="${n(viewH)}" fill="#ffffff"/>${shadowPolys}</mask>`,
+      );
+      groups.push(`<g style="mix-blend-mode:screen" mask="url(#${mid})">${circle}</g>`);
+    } else {
+      groups.push(`<g style="mix-blend-mode:screen">${circle}</g>`);
+    }
+  });
+  return `<g style="mix-blend-mode:multiply; isolation:isolate">${ambientRect}${groups.join('')}</g>`;
+}
+
 /**
  * Inner SVG markup for a display list (no wrapping <svg>). `idPrefix` salts the
- * ids of any gradient/shadow <defs> so several inner markups can share one SVG
- * document (e.g. a filmstrip) without their `url(#…)` references colliding.
+ * ids of any gradient/shadow/mask <defs> so several inner markups can share one
+ * SVG document (e.g. a filmstrip) without their `url(#…)` references colliding.
+ *
+ * A lighting run (commands at `LAYER_LIGHT`) is emitted as the nested-blend group
+ * between the world and HUD passes. An EMPTY or unparseable run falls through the
+ * normal per-command path (honouring each command's `blend` via mix-blend-mode),
+ * so a lit-layer-free frame is byte-identical to before this feature.
  */
-export function commandsToSVGInner(commands: DrawCommand[], idPrefix = 'h'): string {
+export function commandsToSVGInner(commands: DrawCommand[], idPrefix = 'h', viewW = 1280, viewH = 720): string {
   const defs: string[] = [];
-  const body = sortCommands(commands)
-    .map((c, i) => {
-      // Same robustness contract as Canvas2D: skip + warn-once on malformed
-      // geometry instead of emitting broken markup.
-      const bad = invalidCommandReason(c);
-      if (bad) {
-        warnCommandOnce(c.kind, bad, c);
-        return '';
-      }
-      return commandToSVG(c, defs, `${idPrefix}${i}`);
-    })
-    .join('');
+  const sorted = sortCommands(commands);
+  const { below, light, above } = splitByLightLayer(sorted);
+  const parsed = light.length ? parseLightRun(light) : null;
+
+  // When the run parses, emit below + light-group + above; otherwise fall back to
+  // the flat per-command path over the whole (sorted) list — never drop a command.
+  const flatList = parsed ? [...below, ...above] : sorted;
+
+  const render = (list: DrawCommand[], offset: number): string =>
+    list
+      .map((c, i) => {
+        const bad = invalidCommandReason(c);
+        if (bad) {
+          warnCommandOnce(c.kind, bad, c);
+          return '';
+        }
+        return commandToSVG(c, defs, `${idPrefix}${offset + i}`);
+      })
+      .join('');
+
+  let body: string;
+  if (parsed) {
+    body =
+      render(below, 0) +
+      lightRunToSVG(parsed, defs, idPrefix, viewW, viewH) +
+      render(above, below.length);
+  } else {
+    body = render(flatList, 0);
+  }
   return (defs.length ? `<defs>${defs.join('')}</defs>` : '') + body;
 }
 
@@ -148,7 +223,7 @@ export function renderToSVGString(
   return (
     `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${width} ${height}" width="${width}" height="${height}">` +
     `<rect x="0" y="0" width="${width}" height="${height}" fill="${background}"/>` +
-    commandsToSVGInner(commands) +
+    commandsToSVGInner(commands, 'h', width, height) +
     `</svg>`
   );
 }

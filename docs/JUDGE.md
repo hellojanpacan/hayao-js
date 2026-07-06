@@ -60,6 +60,12 @@ Score each 1–5. A game is "shipped" when every axis is ≥ 4 and nothing is a 
 2. **Depth & composition** — is there a foreground / midground / background, or do
    objects float in a void? Does the frame have a focal point and breathing room, or
    is it empty / cramped / evenly-gray? Emptiness is the most common failure.
+   A scene with a real light layer (`LightLayer` + `PointLight`) should read
+   with *depth* — pools carve a focal point out of ambient darkness and shadows
+   ground the geometry, not a flat scrim; the lit-scene feel-gate
+   `lightingIssues` (`npm run feel`) OWNS lit-scene readability, since multiply
+   lowers post-hoc palette contrast (the Kentō AA guarantee holds only
+   PRE-lighting) — so judge lit contrast from the rendered PNG, never the hexes.
 3. **Palette harmony** — do the colors belong to one world (the Kentō woodblock
    set), or clash? Is there a controlled range of value (not all mid-tone)?
 4. **Juice restraint** — is feedback present but not noise? Particles/shake that

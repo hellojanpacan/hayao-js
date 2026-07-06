@@ -180,6 +180,108 @@ feature to lean on.
 - Full-screen weather (rain, snow, drifting motes) is `AmbientField`, not
   hundreds of sprites.
 
+## Lighting
+
+2D lighting is a **deterministic display list**, not a renderer feature. A
+`LightLayer` emits its whole light run as ordinary `DrawCommand`s tagged
+`layer: LAYER_LIGHT` (= `0.5`), so every backend — Canvas2D, WebGL, and the
+headless/SVG the judge sees — receives the identical stream. `sortCommands`
+gives three painter bands (`LAYER_WORLD = 0` → `LAYER_LIGHT = 0.5` →
+`LAYER_HUD = 1`): the light run multiplies over the lit world but never darkens
+the HUD. Compositing is observer-side (`src/render/lightRun.ts` parses the run
+once so both raster and SVG interpret it identically), but *what* to composite
+is fixed data.
+
+The run, in stream order: (1) an ambient darkness base — a full-viewport `rect`,
+`blend: 'multiply'`; (2) per light, a `circle` pool with a radial gradient,
+`blend: 'screen'`; (3) that light's shadow quads — closed `poly`s, ambient fill,
+`blend: 'multiply'`. `Paint.blend` (`'multiply' | 'screen'`, omit for
+source-over) is the Canvas2D/SVG-expressible intersection: canvas maps it to
+`globalCompositeOperation`, SVG to `mix-blend-mode`. The SVG encoding is
+validated under resvg (the judge's rasterizer) by a permanent golden — the
+lighting reads with depth in a headless PNG, not just live.
+
+`LightLayer({ ambient: { color, level }, softShadows, width, height })` holds the
+darkness (`level` lifts it toward white so the scene is never fully black) and
+emits the run from its direct `PointLight` children. `PointLight({ radius, color,
+intensity, falloff, flicker: { amount, speed }, seed })` emits nothing itself
+(its `draw` is empty) — the layer reads its world position and cached
+`litIntensity`. **A `LightLayer` must sit in WORLD space at the tree origin**,
+never under a `screenSpace` subtree (the layer-1 clamp would promote its run out
+of the light band): in `draw(out, world)` the pools/quads compose that received
+camera transform, while the ambient rect is screen-fixed (`IDENTITY`, sized by
+`width`/`height`). Occluders come from the map: `occludersFromTilemap(map)` →
+segments, fed via `layer.setOccluders(segs)`; the layer culls to each light's
+reach (`cullSegments`) and extrudes `shadowQuads` per frame.
+
+```ts
+import { LightLayer, PointLight, occludersFromTilemap, DUSK, KENTO } from '@hayao';
+
+const lights = new LightLayer({ ambient: { color: DUSK.bg, level: 0.16 }, softShadows: true });
+lights.setOccluders(occludersFromTilemap(map));   // shadows off the solid tiles
+lights.addChild(new PointLight({ radius: 260, color: KENTO.gofun, intensity: 1,
+  falloff: 1, flicker: { amount: 0.12, speed: 9 }, seed: 11 }));
+world.root.addChild(lights);                       // world space, at the origin
+```
+
+Both nodes are `cosmetic = true` (out of `hash()`); flicker runs on a private
+observer-seeded `Rng` in `onProcess`. See `sandboxes/light-lab/` for the lit
+tilemap in isolation and `examples/duskveil/` for a shipped relight.
+
+## Animation
+
+Authored animation is a separate, purely-cosmetic layer over the rig. A
+`ClipDef` is **plain, serializable data**: `{ duration, loop, tracks, events? }`.
+Each `TrackDef` targets one `channel` (`'x' | 'y' | 'rotation' | 'scaleX' |
+'scaleY' | 'opacity'`) of one node addressed by a `'/'`-separated path from the
+rig root (matched by `Node.name`, e.g. `'upperArm/forearm'`), with ascending
+`Keyframe`s `{ t, v, ease? }`. `ease` is an `EASINGS` name only. `loop` is
+`'loop' | 'once' | 'pingpong'`. `events` fire on a **fixed half-open `(t0, t1]`**
+window in clip-local time (an event exactly at the new time fires, one at the old
+time does not re-fire; a `loop` wrap emits the tail then the head; `once` never
+re-fires). `sampleClip(def, elapsed)` is the pure reference sampler;
+`clipIssues(def, knownTargets?)` validates the data in the `levelIssues` idiom
+(all problems at once, never throws).
+
+`ClipPlayer` is the cosmetic Node that plays clips onto a rig: `add(name, def)`,
+`play(name, { fade })` (crossfade over `fade` seconds), `stop()`, `rebind()`;
+`event` / `finished` signals; `time` / `current` reads. It prebinds each track to
+its resolved node once (`buildSkeleton` → `resolveTracks` → `applyChannel`) so the
+per-frame apply is allocation-free. **The ordering contract is the tree's DFS
+order — no scheduler:** make the `ClipPlayer` child 0 of the rig, `IkTarget`s
+later siblings, `VerletChain`s deeper, so writes land **clip → IK → verlet** (the
+clip poses the joints, IK overrides the limb it owns, springs trail the result).
+
+Blending is pure pose math: a `Pose` is a flat `"target/channel" → number` bag;
+`mixPose` lerps two, `Blend1D`/`Blend2D` weight source clips by a parameter (all
+sampled at one shared normalized phase — the walk/run foot-lock). `Bone2D` is a
+`Node` + a `length` (the reach IK/skinning/debug need); it is **not** forced
+cosmetic — a rig can be hashed structure, only the *writers* are cosmetic.
+`solveTwoBoneIK` (analytic) and `solveFabrik` (N-bone) are pure and `dmath`-only,
+so the same implementation is safe on either side of the seam; `IkTarget` drives
+a `Bone2D` chain to reach the target node's own world position. `SkeletonDebug`
+overlays bones/pivots as transient commands.
+
+```ts
+import { Bone2D, ClipPlayer, IkTarget, type ClipDef } from '@hayao';
+
+const wave: ClipDef = { duration: 1.2, loop: 'loop',
+  tracks: [{ target: 'upperArm', channel: 'rotation',
+    keys: [{ t: 0, v: -0.9 }, { t: 0.6, v: -1.15, ease: 'sineInOut' }, { t: 1.2, v: -0.9, ease: 'sineInOut' }] }],
+  events: [{ t: 0.3, name: 'wave' }] };
+
+const player = new ClipPlayer({ rig });   // child 0 of the rig
+player.add('idle', idle).add('wave', wave);
+rig.addChild(player);
+player.play('wave', { fade: 0.25 });
+rig.addChild(new IkTarget({ bones: [upperArm, forearm], bendDir: 1 })); // later sibling
+```
+
+**`ClipPlayer` vs `AnimationPlayer`:** reach for `ClipPlayer` to play whole
+authored multi-track rigs against a skeleton; `AnimationPlayer` remains the tool
+for ad-hoc value tweens (fade this one property, pulse that one scale) with no
+rig. See `sandboxes/anim-lab/` for the rig + clips + blend + IK wired idiomatically.
+
 ## Transform semantics (parents, flips, pivots)
 
 - A parent's rotation/scale transforms its CHILDREN (never its siblings) —

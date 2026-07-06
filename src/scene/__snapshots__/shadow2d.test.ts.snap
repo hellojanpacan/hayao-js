@@ -1,0 +1,16 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`shadow2d — shadowQuads > snapshot: a wall to the right of the light casts a rightward shadow quad 1`] = `
+[
+  [
+    70,
+    40,
+    70,
+    60,
+    248.19090885900997,
+    85.45584412271572,
+    248.19090885900997,
+    14.54415587728429,
+  ],
+]
+`;

@@ -24,7 +24,18 @@ export * from './scene/tween';
 export * from './scene/particles';
 export * from './scene/floatingText';
 export * from './scene/verletChain';
+export * from './scene/clipPlayer';
+export * from './scene/ikTarget';
+export * from './scene/skeletonDebug';
+export * from './scene/light';
+export * from './scene/shadow2d';
 export * from './scene/registry';
+
+// ── anim: authored clips, blend spaces, skeletons, IK (cosmetic view) ─
+export * from './anim/clip';
+export * from './anim/blend';
+export * from './anim/ik';
+export * from './anim/skeleton';
 
 // ── input: actions, sampling, record/replay ─────────────────────
 export * from './input/actions';
@@ -47,6 +58,7 @@ export * from './physics/rigidQueries';
 // ── render: display list + backends ─────────────────────────────
 export * from './render/commands';
 export * from './render/paint';
+export * from './render/lightRun';
 export * from './render/renderer';
 export * from './render/svgString';
 export * from './render/svg';
@@ -152,4 +164,4 @@ export * from './studio/timeline';
 export * from './studio/run';
 
 /** Engine version. */
-export const VERSION = '0.4.0';
+export const VERSION = '0.4.1';

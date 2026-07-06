@@ -24,7 +24,10 @@
 
 import type { DrawCommand } from '../render/commands';
 import type { Vec2 } from '../core/math';
+import { applyTransform, invertTransform } from '../core/math';
 import { dhypot, dpow } from '../core/dmath';
+import { parseLightRun, splitByLightLayer } from '../render/lightRun';
+import { sortCommands } from '../render/commands';
 
 const dedupe = (a: string[]): string[] => [...new Set(a)];
 
@@ -226,6 +229,79 @@ export function telegraphIssues(timeline: readonly TelegraphFrame[], minFrames: 
   return dedupe(issues);
 }
 
+// ── 3b. Lit readability ──────────────────────────────────────────────────────
+// A LightLayer multiplies an ambient darkness over the world. Palette AA holds
+// PRE-lighting (that gate is `salienceIssues`); once the frame is lit, the
+// avatar can still vanish into the dark if no pool falls on it. This gate reads
+// the deterministic light run (render/lightRun.ts) straight from the display
+// list and asserts the avatar sits in enough light to stay readable.
+
+export interface LightingOptions {
+  /**
+   * Minimum effective ambient level (0 = pitch black, 1 = fully lit) the avatar
+   * must sit in — either from the ambient base or a pool falling on it (default
+   * 0.35). Below this the avatar reads as a silhouette in shadow.
+   */
+  minLitLevel?: number;
+}
+
+/** Effective luminance of a hex fill scaled by a 0..1 light level. */
+const litLuminance = (fill: string, level: number): number => relLuminance(fill) * level;
+
+/**
+ * Lit-readability gate. Given the rendered display list (which must include the
+ * LightLayer's run) and the avatar's WORLD position + fill, compute the light
+ * level reaching the avatar: the ambient base, lifted toward 1 by any pool whose
+ * radius covers it (scaled by that pool's peak brightness). If the avatar ends up
+ * below `minLitLevel`, it is a silhouette lost in the dark — flagged. When the
+ * frame carries no parseable light run, there is nothing to darken: pass (empty).
+ */
+export function lightingIssues(commands: DrawCommand[], avatarFill: string, avatarWorld: Vec2, opts: LightingOptions = {}): string[] {
+  const minLit = opts.minLitLevel ?? 0.35;
+  const { light } = splitByLightLayer(sortCommands(commands));
+  const parsed = light.length ? parseLightRun(light) : null;
+  if (!parsed) return [];
+
+  // Ambient base level: how bright the darkness rect is (its own luminance in
+  // [0,1] — a near-black ambient is a low level, white is fully lit).
+  let level = relLuminance(parsed.ambient.fill ?? '#000000');
+
+  // Any pool whose disc covers the avatar lifts the level by its peak brightness,
+  // attenuated by distance from the pool center (linear falloff to the radius).
+  for (const l of parsed.lights) {
+    const c = l.circle;
+    // Pool center/radius are in the pool's own transform (the camera view). Map
+    // the avatar's world point into that same space to measure the distance.
+    const p = applyTransform(invertTransform(c.transform), avatarWorld);
+    const d = dhypot(p.x - c.cx, p.y - c.cy);
+    if (d >= c.radius) continue;
+    const peak = poolPeak(c);
+    const reach = 1 - d / c.radius;
+    level = Math.min(1, level + peak * reach);
+  }
+
+  const issues: string[] = [];
+  if (level < minLit) {
+    const lum = litLuminance(avatarFill, level);
+    issues.push(
+      `avatar (${avatarFill}) sits in light level ${level.toFixed(2)} (needs ≥ ${minLit}) — it sinks into the ambient darkness (effective luminance ${lum.toFixed(3)}); add a pool over it or raise ambient level`,
+    );
+  }
+  return issues;
+}
+
+/** Peak brightness of a pool: the lightest gradient stop's luminance (0..1). */
+function poolPeak(c: DrawCommand): number {
+  const g = (c as { gradient?: { stops: { color: string }[] } }).gradient;
+  if (g && g.stops.length) {
+    let max = 0;
+    for (const s of g.stops) max = Math.max(max, relLuminance(s.color));
+    return max;
+  }
+  const fill = (c as { fill?: string }).fill;
+  return fill ? relLuminance(fill) : 1;
+}
+
 // ── 4. Camera lawfulness ─────────────────────────────────────────────────────
 
 export interface CameraOptions {
@@ -298,6 +374,12 @@ export interface FeelSpec {
   feedback?: { contract: FeedbackContract; events: readonly string[] };
   /** True for scrolling games — enables the camera gate (needs sampled positions). */
   scrolls?: boolean;
+  /**
+   * True for games with a LightLayer — enables the lit-readability gate (needs a
+   * rendered frame carrying the light run + the avatar's world position). Uses
+   * `avatarFill` for the color.
+   */
+  lit?: boolean;
 }
 
 /** Runtime inputs the audit/verify computes and hands to the aggregator. */
@@ -312,6 +394,8 @@ export interface FeelContext {
   dt?: number;
   /** Background fallback if the spec omits one. */
   background?: string;
+  /** The avatar's WORLD position in the rendered frame — enables the lit-readability gate. */
+  avatarWorld?: Vec2;
 }
 
 export interface FeelReport {
@@ -337,6 +421,11 @@ export function runFeelGates(spec: FeelSpec, ctx: FeelContext = {}): FeelReport 
   if (spec.avatarFill) {
     if (ctx.commands) sections.push({ gate: 'salience', issues: salienceIssues(ctx.commands, spec.avatarFill, bg) });
     else skipped.push('salience (no rendered frame)');
+  }
+  if (spec.lit) {
+    if (spec.avatarFill && ctx.commands && ctx.avatarWorld) {
+      sections.push({ gate: 'lighting', issues: lightingIssues(ctx.commands, spec.avatarFill, ctx.avatarWorld) });
+    } else skipped.push('lighting (needs avatarFill + rendered frame + avatarWorld)');
   }
   if (spec.scrolls) {
     if (ctx.camSamples && ctx.camSamples.length >= 3) {
