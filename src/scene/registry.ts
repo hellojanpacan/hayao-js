@@ -34,6 +34,10 @@ export function deserializeNode(data: SerializedNode): Node {
   node.scale = { ...data.scale };
   node.z = data.z;
   node.visible = data.visible;
+  if (data.pivot) node.pivot = { ...data.pivot };
+  // Base flags travel in props (only when non-default) — restore before subclass props.
+  if (data.props.pauseMode === 'always' || data.props.pauseMode === 'stopped') node.pauseMode = data.props.pauseMode;
+  if (data.props.screenSpace === true) node.screenSpace = true;
   node.applyProps(data.props);
   for (const child of data.children) node.addChild(deserializeNode(child));
   return node;

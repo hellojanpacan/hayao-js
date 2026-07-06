@@ -23,7 +23,7 @@ export interface SplashConfig {
   minDurationMs?: number;
 }
 
-export interface GameDefinition {
+export interface GameDefinition<TState extends Record<string, unknown> = Record<string, unknown>> {
   title: string;
   width?: number;
   height?: number;
@@ -32,9 +32,9 @@ export interface GameDefinition {
   clock?: ClockConfig;
   inputMap?: InputMap;
   /** Build the initial scene tree for a fresh world. */
-  build(world: World): Node;
+  build(world: World<TState>): Node;
   /** Optional compact probe snapshot for verification (defaults to World.probe). */
-  probe?(world: World): Record<string, unknown>;
+  probe?(world: World<TState>): Record<string, unknown>;
   /**
    * Live-tunable parameters, declared once. Defaults ARE the config; Studio and
    * tests override them via `createWorld(def, { tuning })` and the sim reads
@@ -46,19 +46,25 @@ export interface GameDefinition {
    * from data (closures do not survive a restore). One contract serves every
    * carryover path: Studio knob changes, variant toggles, HMR, and net rollback.
    */
-  attach?(world: World): void;
+  attach?(world: World<TState>): void;
   /**
    * Awaited before the world starts stepping — load fonts, sprite atlases, a
    * SoundFont, anything async. The engine holds a splash on screen until it
    * resolves, so there is no asset pop-in and no ungoverned pre-first-frame window.
    */
-  preload?(world: World): Promise<void>;
+  preload?(world: World<TState>): Promise<void>;
   /** Boot splash config, or `false` to start on the first frame with no cover. */
   splash?: SplashConfig | false;
 }
 
-/** Identity + defaults. Kept as a function so games read `export default defineGame({…})`. */
-export function defineGame(def: GameDefinition): Required<Pick<GameDefinition, 'width' | 'height' | 'seed' | 'inputMap' | 'background'>> & GameDefinition {
+/**
+ * Identity + defaults. Kept as a function so games read `export default defineGame({…})`.
+ * Pass a state shape for a typed world: `defineGame<{ score: number }>({ … })`
+ * types `world.state` in build/probe/attach/preload (default keeps untyped calls as-is).
+ */
+export function defineGame<TState extends Record<string, unknown> = Record<string, unknown>>(
+  def: GameDefinition<TState>,
+): Required<Pick<GameDefinition<TState>, 'width' | 'height' | 'seed' | 'inputMap' | 'background'>> & GameDefinition<TState> {
   return {
     width: 1280,
     height: 720,
@@ -79,9 +85,9 @@ export interface CreateWorldOptions {
  * Build a live, deterministic World from a game definition. No browser needed.
  * `opts` as a bare number is the legacy seed override.
  */
-export function createWorld(def: GameDefinition, opts?: number | CreateWorldOptions): World {
+export function createWorld<TState extends Record<string, unknown> = Record<string, unknown>>(def: GameDefinition<TState>, opts?: number | CreateWorldOptions): World<TState> {
   const o: CreateWorldOptions = typeof opts === 'number' ? { seed: opts } : (opts ?? {});
-  const world = new World({
+  const world = new World<TState>({
     seed: o.seed ?? def.seed ?? 1,
     width: def.width ?? 1280,
     height: def.height ?? 720,
@@ -101,8 +107,8 @@ export function gameInputMap(def: GameDefinition): InputMap {
   return def.inputMap ?? DEFAULT_INPUT_MAP;
 }
 
-export interface HeadlessResult {
-  world: World;
+export interface HeadlessResult<TState extends Record<string, unknown> = Record<string, unknown>> {
+  world: World<TState>;
   hash: string;
   steps: number;
 }
@@ -112,7 +118,7 @@ export interface HeadlessResult {
  * steps) and return the final world + state hash. This is what tests, the CI
  * verifier, and replays call. The browser is never involved.
  */
-export function runHeadless(def: GameDefinition, inputLog?: InputLog): HeadlessResult {
+export function runHeadless<TState extends Record<string, unknown> = Record<string, unknown>>(def: GameDefinition<TState>, inputLog?: InputLog): HeadlessResult<TState> {
   const world = createWorld(def);
   const frames = inputLog?.frames ?? [];
   for (const f of frames) world.step(f);

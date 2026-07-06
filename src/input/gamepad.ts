@@ -5,6 +5,7 @@
 //
 // Mirrors the PointerSource contract: implement sample(input) + dispose().
 
+import { dhypot } from '../core/dmath';
 import { snapAxis, type InputState } from './actions';
 import type { KeyboardSource } from './source';
 
@@ -96,7 +97,7 @@ export class GamepadSource {
 
     // -- Analog sticks (with circular deadzone) --------------------------------
     const applyDeadzone = (x: number, y: number): { x: number; y: number } => {
-      const mag = Math.hypot(x, y);
+      const mag = dhypot(x, y);
       if (mag < this.deadzone) return { x: 0, y: 0 };
       const scale = (mag - this.deadzone) / (1 - this.deadzone);
       const clampedMag = Math.min(scale, 1);

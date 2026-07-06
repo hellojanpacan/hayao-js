@@ -84,6 +84,15 @@ export interface GameHandle {
    *   const removeGamepad = handle.addSource(gamepad);
    */
   addSource(source: InputSource): () => void;
+  /**
+   * Drive one frame by hand: sample the pointer (and extra sources), advance
+   * the world by dtMs with the currently-held actions, and render — exactly
+   * what the real loop does per frame. Default dtMs is one fixed step's ms.
+   * For headless/tool-driven frame-stepping with visuals updating; the wall-
+   * clock loop keeps running independently (pause the shell or use isHeld to
+   * make tick() the only driver).
+   */
+  tick(dtMs?: number): void;
   stop(): void;
   restart(): void;
 }
@@ -124,9 +133,16 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
   setOverlayHost(mount);
 
   const input = new KeyboardSource(def.inputMap ?? {}, document);
-  const pointer = new PointerSource(renderer);
+  // keyboard wired in so mouse buttons enter the same deterministic action log
+  // as keys (mouse.left/right/middle held actions + inputMap bindings).
+  const pointer = new PointerSource(renderer, { keyboard: input });
   const extraSources: InputSource[] = [...(opts.sources ?? [])];
   const capture = isCaptureMode();
+
+  // Arm the unknown-action typo guard: declare what this host can produce.
+  // Re-run on restart — a fresh world gets a fresh InputState.
+  const declareInputs = () => world.input.declareActions(input.actionNames());
+  declareInputs();
 
   // Start audio on first user gesture (autoplay policy).
   const startAudio = () => {
@@ -142,6 +158,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
   const renderFrame = () => renderer.draw(world.render());
   const restart = () => {
     world = createWorld(def, opts.world);
+    declareInputs();
     renderFrame();
   };
 
@@ -164,7 +181,6 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
   const ready = new Promise<void>((r) => (resolveReady = r));
   const bootStart = performance.now();
 
-  let raf = 0;
   let last = performance.now();
   const finishBoot = () => {
     if (!booting) return;
@@ -175,28 +191,84 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
     for (const cb of readyCbs.splice(0)) cb();
   };
 
-  const loop = (now: number) => {
-    if (booting) {
-      if (splash) renderer.draw(splash);
-      raf = requestAnimationFrame(loop);
-      return;
-    }
-    const dt = now - last;
-    last = now;
+  // One real frame: sample sources → advance → render. Shared verbatim by the
+  // wall-clock loop and handle.tick() so tool-driven stepping IS the loop.
+  const perFrame = (dtMs: number) => {
     if (!capture && !(shell?.isPaused) && !opts.isHeld?.()) {
       pointer.sample(world.input); // pointer.x/y/down into axes before the step reads them
       for (const s of extraSources) s.sample(world.input);
       const actions = input.currentActions();
-      const steps = world.advance(dt, actions);
+      const steps = world.advance(dtMs, actions);
       if (steps > 0) {
         input.clearPressed(); // virtual taps held until sampled
         opts.onAdvance?.(world, steps, actions);
       }
     }
     renderFrame();
-    raf = requestAnimationFrame(loop);
   };
-  raf = requestAnimationFrame(loop);
+
+  // ── Frame scheduler: native rAF when visible, setTimeout when hidden ─────
+  // rAF is throttled to death in hidden tabs/iframes, so the engine owns the
+  // fallback (games must NOT patch the global requestAnimationFrame — that
+  // road ends in double-fires and shared-slot races; see the 2026-07 triage).
+  // Gate on document.hidden ONLY — hasFocus() is false for a merely-unfocused
+  // window whose rAF still runs fine, and gating on it stalls the game.
+  // Exactly one callback is pending at a time, and each timeout closes over
+  // its own callback (no shared slot); visibilitychange re-arms the pending
+  // callback onto the other mechanism.
+  let raf = 0;
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  let pendingCb: FrameRequestCallback | null = null;
+  let stopped = false;
+  const HIDDEN_TICK_MS = 16;
+  const clearScheduled = () => {
+    if (raf !== 0) {
+      cancelAnimationFrame(raf);
+      raf = 0;
+    }
+    if (timer !== undefined) {
+      clearTimeout(timer);
+      timer = undefined;
+    }
+  };
+  const schedule = (cb: FrameRequestCallback) => {
+    if (stopped) return;
+    pendingCb = cb;
+    if (document.hidden) {
+      timer = setTimeout(() => {
+        timer = undefined;
+        pendingCb = null;
+        cb(performance.now());
+      }, HIDDEN_TICK_MS);
+    } else {
+      raf = requestAnimationFrame((now) => {
+        raf = 0;
+        pendingCb = null;
+        cb(now);
+      });
+    }
+  };
+  const onVisibility = () => {
+    const cb = pendingCb;
+    if (cb === null) return; // mid-frame or stopped; the next schedule() re-reads hidden
+    clearScheduled();
+    pendingCb = null;
+    schedule(cb);
+  };
+  document.addEventListener('visibilitychange', onVisibility);
+
+  const loop = (now: number) => {
+    if (booting) {
+      if (splash) renderer.draw(splash);
+      schedule(loop);
+      return;
+    }
+    const dt = now - last;
+    last = now;
+    perFrame(dt);
+    schedule(loop);
+  };
+  schedule(loop);
 
   if (booting) {
     const minDur = splashCfg?.minDurationMs ?? 0;
@@ -235,8 +307,14 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
         source.dispose?.();
       };
     },
+    tick(dtMs) {
+      perFrame(dtMs ?? world.clock.stepMs);
+    },
     stop() {
-      cancelAnimationFrame(raf);
+      stopped = true;
+      pendingCb = null;
+      clearScheduled();
+      document.removeEventListener('visibilitychange', onVisibility);
       input.dispose();
       pointer.dispose();
       for (const s of extraSources) s.dispose?.();

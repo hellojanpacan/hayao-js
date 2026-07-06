@@ -31,37 +31,61 @@ export interface Tone {
 }
 
 export class AudioBus {
-  private ctx: AudioContext | null = null;
+  private _ctx: AudioContext | null = null;
   private master: GainNode | null = null;
   private musicGain: GainNode | null = null;
   private sfxGain: GainNode | null = null;
   private vol: Volumes = { ...DEFAULT_VOLUMES };
   private padOn = false;
 
+  /**
+   * The live AudioContext (null until `start()` unlocks audio). External
+   * synths being ported in (bundled ZzFX/ZzFXM, hand-rolled Web Audio) should
+   * create their sources ON this context — never their own — so they inherit
+   * the autoplay unlock the user gesture already paid for.
+   */
+  get ctx(): AudioContext | null {
+    return this._ctx;
+  }
+  /**
+   * The SFX mix bus (null until `start()`). Connect external one-shot sources
+   * here instead of `ctx.destination` so master/sfx volume and mute apply.
+   */
+  get sfxBus(): AudioNode | null {
+    return this.sfxGain;
+  }
+  /**
+   * The music mix bus (null until `start()`). Connect external music sources
+   * (e.g. a ZzFXM-rendered buffer) here so master/music volume and mute apply.
+   */
+  get musicBus(): AudioNode | null {
+    return this.musicGain;
+  }
+
   get available(): boolean {
     return typeof globalThis.AudioContext !== 'undefined' || 'webkitAudioContext' in globalThis;
   }
   get started(): boolean {
-    return !!this.ctx;
+    return !!this._ctx;
   }
 
   /** Must be called from a user gesture (browser autoplay policy). */
   start(): void {
-    if (this.ctx) {
-      void this.ctx.resume();
+    if (this._ctx) {
+      void this._ctx.resume();
       return;
     }
     if (!this.available) return;
     const Ctx =
       globalThis.AudioContext ||
       (globalThis as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    this.ctx = new Ctx();
-    this.master = this.ctx.createGain();
-    this.musicGain = this.ctx.createGain();
-    this.sfxGain = this.ctx.createGain();
+    this._ctx = new Ctx();
+    this.master = this._ctx.createGain();
+    this.musicGain = this._ctx.createGain();
+    this.sfxGain = this._ctx.createGain();
     this.musicGain.connect(this.master);
     this.sfxGain.connect(this.master);
-    this.master.connect(this.ctx.destination);
+    this.master.connect(this._ctx.destination);
     this.applyVolumes();
   }
 
@@ -74,8 +98,8 @@ export class AudioBus {
   }
 
   private applyVolumes(): void {
-    if (!this.ctx || !this.master || !this.musicGain || !this.sfxGain) return;
-    const t = this.ctx.currentTime;
+    if (!this._ctx || !this.master || !this.musicGain || !this.sfxGain) return;
+    const t = this._ctx.currentTime;
     this.master.gain.setTargetAtTime(this.vol.muted ? 0 : this.vol.master, t, 0.04);
     this.musicGain.gain.setTargetAtTime(this.vol.music * 0.5, t, 0.04);
     this.sfxGain.gain.setTargetAtTime(this.vol.sfx, t, 0.04);
@@ -83,19 +107,19 @@ export class AudioBus {
 
   /** Play a single tone (no-op if audio unstarted). */
   tone(spec: Tone): void {
-    if (!this.ctx || !this.sfxGain) return;
+    if (!this._ctx || !this.sfxGain) return;
     const { freq, duration, type = 'sine', gain = 0.2, delay = 0, pan } = spec;
-    const t = this.ctx.currentTime + delay;
-    const osc = this.ctx.createOscillator();
+    const t = this._ctx.currentTime + delay;
+    const osc = this._ctx.createOscillator();
     osc.type = type;
     osc.frequency.value = freq;
-    const g = this.ctx.createGain();
+    const g = this._ctx.createGain();
     g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(gain, t + 0.008);
     g.gain.exponentialRampToValueAtTime(0.0001, t + duration);
     osc.connect(g);
-    if (pan !== undefined && typeof this.ctx.createStereoPanner === 'function') {
-      const p = this.ctx.createStereoPanner();
+    if (pan !== undefined && typeof this._ctx.createStereoPanner === 'function') {
+      const p = this._ctx.createStereoPanner();
       p.pan.value = Math.max(-1, Math.min(1, pan));
       g.connect(p);
       p.connect(this.sfxGain);
@@ -128,24 +152,24 @@ export class AudioBus {
    * No-op without an AudioContext.
    */
   playSpec(spec: SoundSpec, opts: { pan?: number; gain?: number; when?: number } = {}): void {
-    if (!this.ctx || !this.sfxGain) return;
-    const sig = renderSound(spec, { sampleRate: this.ctx.sampleRate });
-    const buf = this.ctx.createBuffer(1, sig.length, this.ctx.sampleRate);
+    if (!this._ctx || !this.sfxGain) return;
+    const sig = renderSound(spec, { sampleRate: this._ctx.sampleRate });
+    const buf = this._ctx.createBuffer(1, sig.length, this._ctx.sampleRate);
     buf.copyToChannel(new Float32Array(sig), 0);
-    const src = this.ctx.createBufferSource();
+    const src = this._ctx.createBufferSource();
     src.buffer = buf;
-    const g = this.ctx.createGain();
+    const g = this._ctx.createGain();
     g.gain.value = opts.gain ?? 1;
     src.connect(g);
-    if (opts.pan !== undefined && typeof this.ctx.createStereoPanner === 'function') {
-      const p = this.ctx.createStereoPanner();
+    if (opts.pan !== undefined && typeof this._ctx.createStereoPanner === 'function') {
+      const p = this._ctx.createStereoPanner();
       p.pan.value = Math.max(-1, Math.min(1, opts.pan));
       g.connect(p);
       p.connect(this.sfxGain);
     } else {
       g.connect(this.sfxGain);
     }
-    src.start(this.ctx.currentTime + (opts.when ?? 0));
+    src.start(this._ctx.currentTime + (opts.when ?? 0));
   }
 
   /**
@@ -154,12 +178,12 @@ export class AudioBus {
    * an AudioContext.
    */
   playSong(song: Song, opts: { loop?: boolean } = {}): () => void {
-    if (!this.ctx || !this.musicGain) return () => {};
-    const mix = renderSong(song, { sampleRate: this.ctx.sampleRate });
-    const buf = this.ctx.createBuffer(2, mix.left.length, this.ctx.sampleRate);
+    if (!this._ctx || !this.musicGain) return () => {};
+    const mix = renderSong(song, { sampleRate: this._ctx.sampleRate });
+    const buf = this._ctx.createBuffer(2, mix.left.length, this._ctx.sampleRate);
     buf.copyToChannel(new Float32Array(mix.left), 0);
     buf.copyToChannel(new Float32Array(mix.right), 1);
-    const src = this.ctx.createBufferSource();
+    const src = this._ctx.createBufferSource();
     src.buffer = buf;
     if (opts.loop) {
       src.loop = true;
@@ -193,26 +217,26 @@ export class AudioBus {
 
   /** Start a soft evolving ambient pad on the music bus. */
   startAmbient(root = 110, voices = [1, 1.5, 2, 2.5]): void {
-    if (!this.ctx || !this.musicGain || this.padOn) return;
+    if (!this._ctx || !this.musicGain || this.padOn) return;
     this.padOn = true;
-    const filter = this.ctx.createBiquadFilter();
+    const filter = this._ctx.createBiquadFilter();
     filter.type = 'lowpass';
     filter.frequency.value = 900;
     filter.connect(this.musicGain);
-    const bus = this.ctx.createGain();
+    const bus = this._ctx.createGain();
     bus.gain.value = 0;
     bus.connect(filter);
     for (const mult of voices) {
-      const osc = this.ctx.createOscillator();
+      const osc = this._ctx.createOscillator();
       osc.type = 'triangle';
       osc.frequency.value = root * mult;
-      const g = this.ctx.createGain();
+      const g = this._ctx.createGain();
       g.gain.value = 0.1 / voices.length;
       osc.connect(g);
       g.connect(bus);
       osc.start();
     }
-    bus.gain.setTargetAtTime(0.9, this.ctx.currentTime, 3);
+    bus.gain.setTargetAtTime(0.9, this._ctx.currentTime, 3);
   }
 }
 

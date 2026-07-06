@@ -43,6 +43,13 @@ export interface SoundSpec {
   pitchJumpTime?: number; // when the jump fires, seconds
   vibrato?: number; // depth, semitones
   vibratoFreq?: number; // Hz
+  /**
+   * Pitch-envelope repeat period, seconds (ZzFX `repeatTime`). Every `repeat`
+   * seconds the slide/slideAccel/pitchJump progression resets to its start
+   * while the amplitude envelope keeps going — the classic ZzFX stutter/trill.
+   * 0 or absent = off (bit-identical to the pre-`repeat` renderer).
+   */
+  repeat?: number;
 
   // ── timbre / character ──
   /** Second detuned oscillator, cents (0 = off). Adds unison warmth/chorus. */
@@ -83,6 +90,7 @@ interface Resolved {
   pitchJumpTime: number;
   vibrato: number;
   vibratoFreq: number;
+  repeat: number;
   detune: number;
   sub: number;
   noise: number;
@@ -116,6 +124,7 @@ function resolve(s: SoundSpec): Resolved {
     pitchJumpTime: s.pitchJumpTime ?? 0,
     vibrato: s.vibrato ?? 0,
     vibratoFreq: s.vibratoFreq ?? 6,
+    repeat: Math.max(0, s.repeat ?? 0),
     detune: s.detune ?? 0,
     sub: Math.max(0, s.sub ?? 0),
     noise: s.noise ?? 0,
@@ -196,10 +205,14 @@ export function renderSound(spec: SoundSpec, opts: { rng?: Rng; sampleRate?: num
     if (r.punch > 0) env *= 1 + r.punch * Math.max(0, 1 - t / Math.max(1e-4, r.attack + r.decay));
     if (r.tremolo > 0) env *= 1 - r.tremolo * 0.5 * (1 - dsin(TAU * r.tremoloFreq * t));
 
-    // instantaneous frequency: base × slide × jump × vibrato, with optional FM
-    const prog = body > 0 ? t / body : 0;
+    // instantaneous frequency: base × slide × jump × vibrato, with optional FM.
+    // `repeat` (ZzFX repeatTime) resets the PITCH-envelope clock every period
+    // while `t` (amplitude, vibrato, tremolo) runs on; when off, pt === t so
+    // the arithmetic below is bit-identical to the pre-`repeat` renderer.
+    const pt = r.repeat > 0 ? t - Math.floor(t / r.repeat) * r.repeat : t;
+    const prog = body > 0 ? pt / body : 0;
     let f = r.freq * semis(r.slide * prog + r.slideAccel * prog * prog);
-    if (r.pitchJump !== 0 && t >= r.pitchJumpTime) f *= semis(r.pitchJump);
+    if (r.pitchJump !== 0 && pt >= r.pitchJumpTime) f *= semis(r.pitchJump);
     if (r.vibrato > 0) f *= semis(r.vibrato * dsin(TAU * r.vibratoFreq * t));
     if (r.fm > 0) f += r.fm * dsin(TAU * r.fmFreq * t);
     // Clamp instantaneous frequency to [0, Nyquist]: deep FM/slide can otherwise

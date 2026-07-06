@@ -2,8 +2,12 @@
 // down?". Input is sampled once per fixed step, so a run is a pure function of its
 // input log — which is what makes replay and scripted playthroughs exact.
 
-/** action name → physical key codes (KeyboardEvent.code strings). */
-export type InputMap = Record<string, string[]>;
+/**
+ * action name → physical bindings (KeyboardEvent.code strings, or pointer
+ * buttons `mouse.left` / `mouse.right` / `mouse.middle`). Readonly on both
+ * levels so `as const` maps type-check without casts.
+ */
+export type InputMap = Readonly<Record<string, readonly string[]>>;
 
 /** Per-frame analog axis values (already quantized). Recorded into the log + hash. */
 export type AxisFrame = Record<string, number>;
@@ -21,6 +25,37 @@ export class InputState {
   readonly axes = new Map<string, number>();
   /** The subset of axes that are part of the deterministic log + hash this frame. */
   private logged = new Map<string, number>();
+  /**
+   * Action names some source has declared it can produce (null until the first
+   * declareActions call). Headless worlds with no sources never declare, so
+   * they never warn — the typo guard only arms once a host wires real input.
+   */
+  private declared: Set<string> | null = null;
+  /** Unknown names already warned about (warn ONCE per name). */
+  private warned = new Set<string>();
+
+  /**
+   * Register action names a source (or input map) can produce. The browser
+   * driver declares the keyboard map's actions and the pointer's `mouse.*`
+   * buttons; custom sources should declare theirs too. Once at least one
+   * declaration has happened, querying an undeclared action name via
+   * `isDown`/`justPressed`/`justReleased` logs a console.warn ONCE per name —
+   * catching `isDown('jmup')` typos that would otherwise fail silently.
+   */
+  declareActions(names: Iterable<string>): void {
+    this.declared ??= new Set();
+    for (const n of names) this.declared.add(n);
+  }
+
+  /** Warn-once guard for querying an action no source has declared. O(1). */
+  private checkDeclared(action: string): void {
+    if (this.declared === null || this.declared.has(action) || this.warned.has(action)) return;
+    this.warned.add(action);
+    console.warn(
+      `hayao: input action "${action}" is not declared by any input source — ` +
+        `declared actions: ${[...this.declared].sort().join(', ') || '(none)'}`
+    );
+  }
 
   /**
    * Engine: set which actions are down this step (from live input or replay).
@@ -31,6 +66,10 @@ export class InputState {
   beginFrame(actionsDown: Iterable<string>, axes?: AxisFrame): void {
     this.prev = new Set(this.down);
     this.down = new Set(actionsDown);
+    // Any action a frame actually delivers is by definition producible — count
+    // it as declared so virtual taps (input.press('fire')) never false-warn.
+    // Typos in QUERIES never appear here, so the guard still catches them.
+    if (this.declared !== null) for (const a of this.down) this.declared.add(a);
     this.logged.clear();
     if (axes) {
       for (const k in axes) {
@@ -41,12 +80,15 @@ export class InputState {
   }
 
   isDown(action: string): boolean {
+    this.checkDeclared(action);
     return this.down.has(action);
   }
   justPressed(action: string): boolean {
+    this.checkDeclared(action);
     return this.down.has(action) && !this.prev.has(action);
   }
   justReleased(action: string): boolean {
+    this.checkDeclared(action);
     return !this.down.has(action) && this.prev.has(action);
   }
   axis(name: string): number {

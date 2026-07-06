@@ -418,8 +418,8 @@ export class WebGL2Renderer implements Renderer {
   /** Empty VAO for gl_VertexID-only draws. */
   private vao: WebGLVertexArrayObject;
 
-  /** Wall-clock start for u_time (cosmetic only). */
-  private startTime = performance.now();
+  /** Frames drawn, driving u_time at a nominal 60 fps (cosmetic, but deterministic). */
+  private framesDrawn = 0;
   /** Global custom uniforms applied to every pass. */
   private uniforms = new Map<string, UniformValue>();
 
@@ -509,7 +509,7 @@ export class WebGL2Renderer implements Renderer {
   draw(commands: DrawCommand[]): void {
     const gl = this.gl;
     const n = this.programs.length;
-    const t = (performance.now() - this.startTime) / 1000;
+    const t = this.framesDrawn++ / 60;
     const w = this.glCanvas.width;
     const h = this.glCanvas.height;
 

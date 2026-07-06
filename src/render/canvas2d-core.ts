@@ -3,7 +3,7 @@
 // Canvas2D as an offscreen rasterizer and uploads the result as a texture.
 
 import { sortCommands, type DrawCommand, type Paint } from './commands';
-import { canvasGradient, shapeBBox } from './paint';
+import { canvasGradient, invalidCommandReason, shapeBBox, warnCommandOnce } from './paint';
 
 type Ctx2D = CanvasRenderingContext2D;
 
@@ -56,6 +56,20 @@ function paintCommand(ctx: Ctx2D, c: DrawCommand): void {
     case 'circle':
       ctx.beginPath();
       ctx.arc(c.cx, c.cy, c.radius, 0, Math.PI * 2);
+      applyStroke(ctx, c);
+      break;
+    case 'ellipse':
+      ctx.beginPath();
+      ctx.ellipse(c.cx, c.cy, c.rx, c.ry, 0, 0, Math.PI * 2);
+      applyStroke(ctx, c);
+      break;
+    case 'arc':
+      // Angles are radians, clockwise from +x (y-down screen convention) —
+      // exactly ctx.arc's default direction. A sector closes through the center.
+      ctx.beginPath();
+      if (c.sector) ctx.moveTo(c.cx, c.cy);
+      ctx.arc(c.cx, c.cy, c.radius, c.start, c.end);
+      if (c.sector) ctx.closePath();
       applyStroke(ctx, c);
       break;
     case 'poly':
@@ -123,18 +137,33 @@ export function drawToCanvas2D(
   ctx.fillRect(0, 0, width, height);
 
   for (const c of sortCommands(commands)) {
-    ctx.save();
-    const t = c.transform;
-    ctx.transform(t.a, t.b, t.c, t.d, t.e, t.f);
-    ctx.globalAlpha = (c as Paint).opacity ?? 1;
-    const sh = (c as Paint).shadow;
-    if (sh) {
-      ctx.shadowColor = sh.color;
-      ctx.shadowBlur = sh.blur;
-      ctx.shadowOffsetX = sh.dx ?? 0;
-      ctx.shadowOffsetY = sh.dy ?? 0;
+    // Malformed geometry (NaN positions, negative radii…) is skipped with a
+    // warn-once instead of poisoning the canvas path state or throwing.
+    const bad = invalidCommandReason(c);
+    if (bad) {
+      warnCommandOnce(c.kind, bad, c);
+      continue;
     }
-    paintCommand(ctx, c);
+    ctx.save();
+    try {
+      const t = c.transform;
+      ctx.transform(t.a, t.b, t.c, t.d, t.e, t.f);
+      ctx.globalAlpha = (c as Paint).opacity ?? 1;
+      const sh = (c as Paint).shadow;
+      if (sh) {
+        ctx.shadowColor = sh.color;
+        ctx.shadowBlur = sh.blur;
+        ctx.shadowOffsetX = sh.dx ?? 0;
+        ctx.shadowOffsetY = sh.dy ?? 0;
+      }
+      const dash = (c as Paint).lineDash;
+      // setLineDash is part of the saved drawing state — restore() resets it.
+      if (dash && dash.length) ctx.setLineDash(dash);
+      paintCommand(ctx, c);
+    } catch (err) {
+      // Per-command isolation: one bad draw must never kill the render loop.
+      warnCommandOnce(c.kind, 'paint threw', err);
+    }
     ctx.restore();
   }
 }

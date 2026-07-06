@@ -56,8 +56,12 @@ The engine, not game code, owns the clock, the rAF loop, focus, audio muting,
 and the DOM shell. Do not re-implement any of that inside a game.
 
 The third `onUpdate`/behavior argument is the **world context** (`input`, `rng`,
-`clock`, `time`) — prefer it over closing over `world` from `build()`, so a node's
-behavior is self-contained and liftable. For headless tests, `world.runSteps(n,
+`clock`, `time`, plus `state`, `events`, `width`/`height`, `paused`,
+`timeScale`, and `camera()`) — prefer it over closing over `world` from
+`build()`, so a node's behavior is self-contained and liftable. Type the state
+with `defineGame<TState>` and keep it in `world.state`/`ctx.state` — never in
+module-level variables, which leak across `restart()` and hide from `hash()`
+(see ENGINE.md §Typed state). For headless tests, `world.runSteps(n,
 i => actions)` fast-forwards an exact step count; `world.advance(realMs)` is the
 *realtime* driver and clamps big deltas to one frame budget (never use it to skip
 ahead in a test).
@@ -144,6 +148,22 @@ discrete move. Keep raw pointer floats out of the sim's canonical state.
 the input log (`InputRecorder`/`frameAxes`), so `assertDeterministic` and netplay
 reproduce them. Snap at the edge with `snapAxis(v, buckets)` / `quantizeAngle(rad,
 buckets)`. Games that never pass axes keep their pinned hashes byte-for-byte.
+
+**Mouse buttons are actions.** The browser driver wires PointerSource to the
+KeyboardSource, so while a button is held the actions `mouse.left` /
+`mouse.right` / `mouse.middle` are down — bindable in an inputMap
+(`shield: ['mouse.right']`), queryable directly
+(`input.justPressed('mouse.left')`), and replay-exact because they enter the
+same deterministic actionsDown log as keys. The raw 0/1 axes `pointer.right`
+/ `pointer.middle` exist alongside `pointer.down` for analog-style reads. The
+browser context menu is suppressed by default so right-click is usable as game
+input (opt back in via `PointerSourceOptions.contextMenu`).
+
+**Action names, not key codes.** `isDown`/`justPressed`/`justReleased` take
+ACTION names from the input map (`'jump'`), never key codes (`'Space'`). Once
+a host has declared its sources, querying an action no source can produce
+logs a console.warn once per name — so `isDown('jmup')` fails loudly instead
+of silently never firing. (`justReleased` exists and mirrors `justPressed`.)
 
 **Sustained virtual input.** `press()` is a one-shot tap (cleared after one step).
 For an on-screen control that models STATE (held joystick, hold-to-fire), use
@@ -388,6 +408,31 @@ which is the point.
 RNG state and clock state are part of `world.hash()`, `world.snapshot()`, and
 saves, so a restored world resumes *identically* — that is what makes replay,
 undo, and time-travel free.
+
+**The dev guard.** Pass `guardDeterminism: true` in the world config and every
+`step()` wraps `Math.random`/`Date.now` so a stray call inside the sim warns
+ONCE with a stack hint (values still flow — nothing breaks mid-frame). It
+never throws, so it is safe to leave on in tests and dev builds. It converts
+"the replay diverged three hours later" into "here is the exact call site, now".
+
+**Cosmetic randomness.** Rule 1 has two escape hatches for pure-view code so
+decoration never perturbs the gameplay stream:
+
+- `world.rng.split(key)` derives an independent child stream — give a cosmetic
+  node its own private `Rng` at construction (Particles and Shaker do this),
+  and its draws stop racing gameplay draws for the same numbers.
+- `hashNoise(...values)` is *stateless* deterministic noise → `[0, 1)`: same
+  inputs, same output, no stream consumed — so it is safe to call from
+  `draw()` for per-entity variation (`hashNoise(i, ctx.frame)` for jitter,
+  phase offsets, hue nudges). Never call `rng.float()` from `draw()`.
+
+**Catch-up steps.** `advance(realMs)` runs as many fixed steps as real time
+demands, clamped at `clock.maxFrameMs` (default 250, with a warn-once when it
+clamps). So the FIRST advance after a stall — tab restored, debugger resumed,
+slow boot — can legitimately run multiple steps at once, and first-frame logic
+that assumes "one advance = one step" (e.g. gravity applied before the floor
+exists) sinks the player. Guard the logic, and in tests never fast-forward
+with a big `advance(ms)` — use `runSteps(n)`, which has no realtime clamp.
 
 ## House style (defaults — swap deliberately, not accidentally)
 

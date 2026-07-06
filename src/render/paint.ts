@@ -95,6 +95,11 @@ export function shapeBBox(c: DrawCommand): BBox | null {
       return { x: c.x, y: c.y, w: c.w, h: c.h };
     case 'circle':
       return { x: c.cx - c.radius, y: c.cy - c.radius, w: c.radius * 2, h: c.radius * 2 };
+    case 'ellipse':
+      return { x: c.cx - c.rx, y: c.cy - c.ry, w: c.rx * 2, h: c.ry * 2 };
+    case 'arc':
+      // The full circle the arc lies on — good enough for gradient mapping.
+      return { x: c.cx - c.radius, y: c.cy - c.radius, w: c.radius * 2, h: c.radius * 2 };
     case 'poly': {
       if (c.points.length < 2) return null;
       let minX = c.points[0];
@@ -112,6 +117,55 @@ export function shapeBBox(c: DrawCommand): BBox | null {
     default:
       return null;
   }
+}
+
+// ── Renderer robustness ────────────────────────────────────────────
+// A malformed DrawCommand (NaN position from a physics blowup, a negative
+// radius from an over-eager tween) must never kill the render loop. Backends
+// call invalidCommandReason() per command and skip+warn instead of throwing
+// (triage: ptg 34). Valid commands cost only a few Number.isFinite calls —
+// no allocation on the hot path.
+
+/** Why a command's geometry is unpaintable, or null when it's fine. */
+export function invalidCommandReason(c: DrawCommand): string | null {
+  switch (c.kind) {
+    case 'rect':
+      if (!Number.isFinite(c.x) || !Number.isFinite(c.y) || !Number.isFinite(c.w) || !Number.isFinite(c.h))
+        return 'non-finite x/y/w/h';
+      return null;
+    case 'circle':
+      if (!Number.isFinite(c.cx) || !Number.isFinite(c.cy)) return 'non-finite center';
+      if (!Number.isFinite(c.radius)) return 'non-finite radius';
+      if (c.radius < 0) return 'negative radius';
+      return null;
+    case 'ellipse':
+      if (!Number.isFinite(c.cx) || !Number.isFinite(c.cy)) return 'non-finite center';
+      if (!Number.isFinite(c.rx) || !Number.isFinite(c.ry)) return 'non-finite rx/ry';
+      if (c.rx < 0 || c.ry < 0) return 'negative rx/ry';
+      return null;
+    case 'arc':
+      if (!Number.isFinite(c.cx) || !Number.isFinite(c.cy)) return 'non-finite center';
+      if (!Number.isFinite(c.radius)) return 'non-finite radius';
+      if (c.radius < 0) return 'negative radius';
+      if (!Number.isFinite(c.start) || !Number.isFinite(c.end)) return 'non-finite start/end';
+      return null;
+    default:
+      return null;
+  }
+}
+
+const warnedCommands = new Set<string>();
+
+/**
+ * console.warn once per (kind + reason) — a bad value animating every frame
+ * logs a single line, not sixty a second. `detail` (the offending command or
+ * error) is passed through so the console shows the actual value.
+ */
+export function warnCommandOnce(kind: string, reason: string, detail?: unknown): void {
+  const key = `${kind}:${reason}`;
+  if (warnedCommands.has(key)) return;
+  warnedCommands.add(key);
+  console.warn(`hayao/render: skipped '${kind}' command — ${reason}`, detail);
 }
 
 /** Build a Canvas gradient mapped from object-bounding-box space into `bbox`. */

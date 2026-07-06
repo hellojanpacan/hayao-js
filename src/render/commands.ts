@@ -55,6 +55,11 @@ export interface Paint {
   gradient?: Gradient;
   /** A soft outer glow / drop shadow applied to the shape. */
   shadow?: Shadow;
+  /**
+   * Dash pattern for strokes, in local px (`[dash, gap, …]` — same as
+   * Canvas2D `setLineDash` / SVG `stroke-dasharray`). Omit for solid lines.
+   */
+  lineDash?: number[];
 }
 
 export type TextAlign = 'left' | 'center' | 'right';
@@ -64,6 +69,13 @@ interface Base extends Paint {
   transform: Transform;
   /** Painter's-order key; ties broken by tree order. Default 0. */
   z: number;
+  /**
+   * Render layer: commands sort by layer FIRST, then z, then tree order.
+   * Layer 0 (default) is the world; layer 1 is the screen-space overlay pass
+   * (HUD, transitions) — set automatically for `Node.screenSpace` subtrees, so
+   * overlays always paint above world content regardless of z values.
+   */
+  layer?: number;
   /**
    * Transient view chrome — a drifting popup, particle, or tween that lives for
    * a moment and is never something the player reads for meaning. Layout lints
@@ -88,6 +100,30 @@ export interface CircleCommand extends Base {
   cx: number;
   cy: number;
   radius: number;
+}
+
+export interface EllipseCommand extends Base {
+  kind: 'ellipse';
+  cx: number;
+  cy: number;
+  rx: number;
+  ry: number;
+}
+
+/**
+ * A circular arc (open stroke) or sector/pie (closed to the center).
+ * Angles are radians, clockwise from +x (screen convention, y-down);
+ * the arc runs from `start` to `end` in the clockwise direction.
+ */
+export interface ArcCommand extends Base {
+  kind: 'arc';
+  cx: number;
+  cy: number;
+  radius: number;
+  start: number;
+  end: number;
+  /** When true, close through the center (a pie slice) so `fill` reads as a sector. */
+  sector?: boolean;
 }
 
 export interface PolyCommand extends Base {
@@ -127,15 +163,17 @@ export interface ImageCommand extends Base {
 export type DrawCommand =
   | RectCommand
   | CircleCommand
+  | EllipseCommand
+  | ArcCommand
   | PolyCommand
   | PathCommand
   | TextCommand
   | ImageCommand;
 
-/** Stable painter's sort: by z, then original index (tree order) as tiebreak. */
+/** Stable painter's sort: by layer, then z, then original index (tree order) as tiebreak. */
 export function sortCommands(cmds: DrawCommand[]): DrawCommand[] {
   return cmds
     .map((c, i) => [c, i] as const)
-    .sort((a, b) => a[0].z - b[0].z || a[1] - b[1])
+    .sort((a, b) => (a[0].layer ?? 0) - (b[0].layer ?? 0) || a[0].z - b[0].z || a[1] - b[1])
     .map(([c]) => c);
 }

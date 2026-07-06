@@ -119,7 +119,19 @@ can reach is provably winnable — all without opening a browser.
 - **Mark pure-view nodes `cosmetic = true`** so transient display never enters
   `world.hash()` — otherwise determinism checks will (correctly) fail.
 - **`justPressed` is a one-frame rising edge** — insert a neutral frame between
-  repeated taps of the same action.
+  repeated taps of the same action. `justReleased` mirrors it.
+- **Query ACTION names, not key codes** — `isDown('jump')`, never
+  `isDown('Space')`. In the browser, an undeclared name warns once in the
+  console instead of silently never firing.
+- **Pointer coordinates are design-space** — `input.axis('pointer.x'/'pointer.y')`
+  already un-letterboxed; mouse buttons are bindable actions
+  (`mouse.left/right/middle`). See CONVENTIONS §Pointer & continuous input.
+- **`splash: false`** in `defineGame` skips the built-in loading splash (e.g.
+  for embeds that paint their own cover).
+- **The browser build is scriptable** — `?capture=1` exposes `window.__hayao`
+  (pump/probe/hash/shot), and `handle.tick()` single-steps the real loop; the
+  loop keeps running in hidden tabs (never patch rAF yourself). See
+  VERIFICATION §Channel 2.
 
 ## Where to go next
 

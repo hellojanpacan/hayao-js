@@ -3,9 +3,10 @@
 // (an AI-first win: judge layout from a file, no browser, no GPU, no fuzz).
 // The DOM SvgRenderer reuses this; tests assert on it directly.
 
-import { sortCommands, type DrawCommand, type Paint } from './commands';
-import { gradientDef, shadowDef } from './paint';
-import type { Transform } from '../core/math';
+import { sortCommands, type ArcCommand, type DrawCommand, type Paint } from './commands';
+import { gradientDef, invalidCommandReason, shadowDef, warnCommandOnce } from './paint';
+import { TAU, type Transform } from '../core/math';
+import { dcos, dsin } from '../core/dmath';
 
 const n = (v: number): string => (Number.isInteger(v) ? String(v) : (Math.round(v * 1000) / 1000).toString());
 
@@ -20,6 +21,7 @@ function paintAttrs(p: Paint, fillOverride?: string, filterId?: string): string 
     parts.push(`stroke="${p.stroke}"`);
     parts.push(`stroke-width="${n(p.strokeWidth ?? 1)}"`);
     if (p.round) parts.push('stroke-linejoin="round" stroke-linecap="round"');
+    if (p.lineDash && p.lineDash.length) parts.push(`stroke-dasharray="${p.lineDash.map(n).join(' ')}"`);
   }
   if (p.opacity !== undefined && p.opacity !== 1) parts.push(`opacity="${n(p.opacity)}"`);
   if (filterId) parts.push(`filter="url(#${filterId})"`);
@@ -28,6 +30,33 @@ function paintAttrs(p: Paint, fillOverride?: string, filterId?: string): string 
 
 function escapeText(s: string): string {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+/**
+ * Path data for an arc/sector. Angles are radians, clockwise from +x in the
+ * y-down screen convention — which is SVG sweep-flag 1. Sweeps over half a
+ * turn set large-arc-flag; a full turn splits into two half-turn A commands
+ * (a single A whose endpoints coincide renders nothing).
+ */
+function arcPathData(c: ArcCommand): string {
+  const r = c.radius;
+  const x0 = c.cx + dcos(c.start) * r;
+  const y0 = c.cy + dsin(c.start) * r;
+  const raw = c.end - c.start;
+  let sweep = ((raw % TAU) + TAU) % TAU;
+  if (sweep === 0 && raw !== 0) sweep = TAU;
+  if (sweep >= TAU - 1e-9) {
+    const xh = c.cx + dcos(c.start + Math.PI) * r;
+    const yh = c.cy + dsin(c.start + Math.PI) * r;
+    return `M ${n(x0)} ${n(y0)} A ${n(r)} ${n(r)} 0 1 1 ${n(xh)} ${n(yh)} A ${n(r)} ${n(r)} 0 1 1 ${n(x0)} ${n(y0)} Z`;
+  }
+  const x1 = c.cx + dcos(c.start + sweep) * r;
+  const y1 = c.cy + dsin(c.start + sweep) * r;
+  const large = sweep > Math.PI ? 1 : 0;
+  const a = `A ${n(r)} ${n(r)} 0 ${large} 1 ${n(x1)} ${n(y1)}`;
+  return c.sector
+    ? `M ${n(c.cx)} ${n(c.cy)} L ${n(x0)} ${n(y0)} ${a} Z`
+    : `M ${n(x0)} ${n(y0)} ${a}`;
 }
 
 // A command may carry a gradient fill and/or a soft shadow. Both become entries
@@ -52,6 +81,10 @@ function commandToSVG(c: DrawCommand, defs: string[], idBase: string): string {
       return `<rect x="${n(c.x)}" y="${n(c.y)}" width="${n(c.w)}" height="${n(c.h)}"${c.r ? ` rx="${n(c.r)}"` : ''} ${tf} ${paint}/>`;
     case 'circle':
       return `<circle cx="${n(c.cx)}" cy="${n(c.cy)}" r="${n(c.radius)}" ${tf} ${paint}/>`;
+    case 'ellipse':
+      return `<ellipse cx="${n(c.cx)}" cy="${n(c.cy)}" rx="${n(c.rx)}" ry="${n(c.ry)}" ${tf} ${paint}/>`;
+    case 'arc':
+      return `<path d="${arcPathData(c)}" ${tf} ${paint}/>`;
     case 'poly': {
       const pts = [];
       for (let i = 0; i < c.points.length; i += 2) pts.push(`${n(c.points[i])},${n(c.points[i + 1])}`);
@@ -91,7 +124,16 @@ function commandToSVG(c: DrawCommand, defs: string[], idBase: string): string {
 export function commandsToSVGInner(commands: DrawCommand[], idPrefix = 'h'): string {
   const defs: string[] = [];
   const body = sortCommands(commands)
-    .map((c, i) => commandToSVG(c, defs, `${idPrefix}${i}`))
+    .map((c, i) => {
+      // Same robustness contract as Canvas2D: skip + warn-once on malformed
+      // geometry instead of emitting broken markup.
+      const bad = invalidCommandReason(c);
+      if (bad) {
+        warnCommandOnce(c.kind, bad, c);
+        return '';
+      }
+      return commandToSVG(c, defs, `${idPrefix}${i}`);
+    })
     .join('');
   return (defs.length ? `<defs>${defs.join('')}</defs>` : '') + body;
 }

@@ -12,7 +12,7 @@ export interface ClockConfig {
 export class Clock {
   readonly stepMs: number;
   readonly dt: number; // fixed delta in seconds, for game logic
-  private maxFrameMs: number;
+  readonly maxFrameMs: number;
   private accumulator = 0;
   private _frame = 0;
   private _simTimeMs = 0;
