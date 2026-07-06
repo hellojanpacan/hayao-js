@@ -6,7 +6,7 @@ tags: [physics, arcade, breakout, peggle, pinball, bounce, aim, swept-collision]
 summary: Trustworthy flight — aim, launch, watch a ball obey clean physics; maximal juice on one trivial input.
 use-when: The design is a launch-and-watch bouncer (Breakout/Peggle/pinball): one aim, deterministic flight, spectacle on impact.
 composes-with: [genre-tower-defense, system-reward-schedules, system-build-diversity, pattern-juice-choreography, pattern-risk-reward, pattern-pacing-and-tension]
-anchors: [anchor-peggle, anchor-tetris]
+anchors: [anchor-peggle, anchor-tetris, anchor-katamari]
 verify-with: docs/FUN.md#19-·-physics-arcade-breakoutpeggle
 ---
 
@@ -102,6 +102,8 @@ consequence the physics authors.
   canonical "big payoff, tiny action" loop.
 - [[anchor-tetris]] — the discipline of one perfectly-tuned verb; borrow its
   restraint, not its board.
+- [[anchor-katamari]] — trustworthy contact physics escalating a single verb into
+  spectacle; steal its exponential payoff curve for multiplier chains.
 
 ## Verify
 

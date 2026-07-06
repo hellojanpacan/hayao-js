@@ -1461,7 +1461,8 @@
       "pattern-pacing-and-tension"
     ],
     "anchors": [
-      "anchor-stardew-valley"
+      "anchor-stardew-valley",
+      "anchor-animal-crossing"
     ],
     "verify-with": "docs/FUN.md#15--farminglife-sim",
     "file": "design/20-genres/farming-sim.md"
@@ -1769,7 +1770,8 @@
     ],
     "anchors": [
       "anchor-peggle",
-      "anchor-tetris"
+      "anchor-tetris",
+      "anchor-katamari"
     ],
     "verify-with": "docs/FUN.md#19-·-physics-arcade-breakoutpeggle",
     "file": "design/20-genres/physics-arcade.md"
