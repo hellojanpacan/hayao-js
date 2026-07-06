@@ -8,9 +8,9 @@ import { join, relative } from 'node:path';
 const ROOT = new URL('..', import.meta.url).pathname;
 const DESIGN = join(ROOT, 'design');
 const SKIP = new Set(['README.md', '_TEMPLATE.md', 'CONTRIBUTING.md', 'INDEX.md']);
-const KIND_ORDER = ['process', 'anchor', 'genre', 'system', 'worldbuilding', 'pattern'];
-const KIND_PREFIX = { process: 'process-', anchor: 'anchor-', genre: 'genre-', system: 'system-', worldbuilding: 'world-', pattern: 'pattern-' };
-const SECTION = { process: '00-process', anchor: '10-anchors', genre: '20-genres', system: '30-systems', worldbuilding: '40-worldbuilding', pattern: '50-patterns' };
+const KIND_ORDER = ['process', 'anchor', 'genre', 'system', 'worldbuilding', 'pattern', 'mechanic', 'antipattern', 'recipe'];
+const KIND_PREFIX = { process: 'process-', anchor: 'anchor-', genre: 'genre-', system: 'system-', worldbuilding: 'world-', pattern: 'pattern-', mechanic: 'mechanic-', antipattern: 'antipattern-', recipe: 'recipe-' };
+const SECTION = { process: '00-process', anchor: '10-anchors', genre: '20-genres', system: '30-systems', worldbuilding: '40-worldbuilding', pattern: '50-patterns', mechanic: '60-mechanics', antipattern: '70-antipatterns', recipe: '80-recipes' };
 
 function walk(dir) {
   const out = [];
@@ -74,7 +74,8 @@ for (const m of modules) {
   const refs = new Set();
   for (const id of m['composes-with'] || []) refs.add(id);
   for (const id of m['anchors'] || []) refs.add(id);
-  for (const mm of (m.body || '').matchAll(/\[\[([a-z0-9-]+)\]\]/g)) refs.add(mm[1]);
+  // match bare [[id]] AND aliased [[id|text]] — validate the id in both forms.
+  for (const mm of (m.body || '').matchAll(/\[\[([a-z0-9-]+)(?:\|[^\]]*)?\]\]/g)) refs.add(mm[1]);
   for (const id of refs) if (!defined.has(id)) errors.push(`${m.file}: dangling link -> [[${id}]]`);
 }
 

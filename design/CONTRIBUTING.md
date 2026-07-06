@@ -39,11 +39,25 @@ library. Read this + [`_TEMPLATE.md`](_TEMPLATE.md) before writing a module.
   *Aesthetic hook* (Kentō palette / JUDGE) · *Traps*.
 - **pattern** → *The principle* · *Why it works* · *Levers* · *Applied across
   genres* (table) · *Overdone when…* · *Verify/feel-gate link*.
+- **mechanic** → *The verb* (what the player does, in one line) · *How it feels /
+  why it's fun* · *Tuning levers* (table, with sane defaults) · *Slots into*
+  (genres + anchors) · *Twist seams* (2–3 "X but Y") · *How it wires to Hayao*
+  (real primitive / sandbox pointer) · *Fails when…* · *Verify*. A mechanic is the
+  atomic **player verb** below a `system-*`; keep it that granular.
+- **antipattern** → *The smell* (name it) · *How it happens* · *The tell* (spot it
+  in your own design) · *The fix* (link the `system-*`/`pattern-*` that cures it) ·
+  *Seen in…* (concrete) · *Verify/guard link*. The mirror of `50-patterns/`:
+  a named failure mode an agent checks its design against before handoff.
+- **recipe** → *The brief* (one-line "X but Y") · *Anchors* · *Genre + systems
+  pulled* (link them) · *The twist applied* · *The 3 pillars* · *Scope & first
+  playable* · *Handoff* (`verify-with` targets). A recipe is a **pre-composed
+  design** — it wires existing modules into a buildable starting point; it links,
+  never restates. Recipes are convention references, NOT clones of `examples/`.
 
-## Every anchor & genre must name a twist seam
+## Every anchor, genre & mechanic must name a twist seam
 
-The whole point is composition + a bend. Anchor and genre modules must include at
-least 2–3 concrete *signature-mechanic seeds* or *twist* ideas in the
+The whole point is composition + a bend. Anchor, genre, and mechanic modules must
+include at least 2–3 concrete *signature-mechanic seeds* or *twist* ideas in the
 [[process-the-twist]] vocabulary (theme / mechanic-swap / structure / perspective
 / constraint / tonal), each phrased as "X but Y". Show the reader where to bend.
 
@@ -52,6 +66,12 @@ least 2–3 concrete *signature-mechanic seeds* or *twist* ideas in the
 ## Master inventory
 
 Filenames are relative to the section dir. IDs are final — link to them freely.
+
+> The generated [`INDEX.md`](INDEX.md) / [`index.json`](index.json) are the
+> **authoritative, always-current** list of every module. The tables below are the
+> authoring seed plus the `mechanic-*` / `antipattern-*` / `recipe-*` kinds; when
+> breadth is added to an existing kind it lands in `INDEX.md` first. Grep
+> `INDEX.md` when in doubt, not this file.
 
 ### 00-process/ — `process-*`
 | id | file | scope |
@@ -174,6 +194,86 @@ Filenames are relative to the section dir. IDs are final — link to them freely
 | pattern-juice-choreography | juice-choreography.md | Feel as choreography; the 2-senses contract (pairs with JUICE.md) |
 | pattern-readability | readability.md | Signposting, salience, affordances (pairs with JUDGE.md) |
 | pattern-pacing-and-tension | pacing-and-tension.md | Peaks & valleys; session rhythm; the tension curve |
+| pattern-meaningful-choice | meaningful-choice.md | Anatomy of a real decision; distinct options, no dominant answer |
+| pattern-fairness-and-trust | fairness-and-trust.md | The player must trust the sim; every loss attributable to a choice |
+| pattern-escalation-and-payoff | escalation-and-payoff.md | Setup → escalation → release; promises made and kept |
+| pattern-surprise-and-delight | surprise-and-delight.md | Secrets, reactivity, moments; the world noticed you back |
+| pattern-opening-hook | opening-hook.md | The first two minutes; hook fast, teach by doing |
+| pattern-restraint-and-negative-space | restraint-and-negative-space.md | Subtraction as design; every element earns its place |
+
+### 60-mechanics/ — `mechanic-*` (also write README.md)
+The atomic player **verb** below a `system-*`. Each names 2–3 twist seams.
+| id | file | scope |
+|---|---|---|
+| mechanic-dash | dash.md | Directional burst; the escape/approach verb |
+| mechanic-double-jump | double-jump.md | Second air impulse; forgiveness as a verb |
+| mechanic-wall-jump | wall-jump.md | Kick off walls; vertical traversal |
+| mechanic-wall-run | wall-run.md | Momentum along a surface; keep feeding it |
+| mechanic-ledge-grab | ledge-grab.md | Catch an edge; recovery mercy |
+| mechanic-climb | climb.md | Stamina-gated free ascent |
+| mechanic-glide | glide.md | Trade fall speed for control |
+| mechanic-swing | swing.md | Pendulum momentum; release timing is the skill |
+| mechanic-grapple | grapple.md | Tethered pull; reach as a verb |
+| mechanic-teleport | teleport.md | Instant relocation; a targeting decision |
+| mechanic-gravity-flip | gravity-flip.md | Invert down; recontextualize every room |
+| mechanic-ground-pound | ground-pound.md | A committed downward strike |
+| mechanic-bounce | bounce.md | Rebound / pogo; aerial chaining |
+| mechanic-parry | parry.md | Tight defensive window; the riposte read |
+| mechanic-deflect | deflect.md | Reflect projectiles back at the sender |
+| mechanic-block | block.md | Absorb hits at a cost; guard break |
+| mechanic-dodge-roll | dodge-roll.md | Evade with i-frames; recovery is the cost |
+| mechanic-charge-attack | charge-attack.md | Hold-to-power; a visible commitment |
+| mechanic-combo-string | combo-string.md | Chain / cancel; the depth verb |
+| mechanic-lock-on | lock-on.md | Bind camera and attacks to one foe |
+| mechanic-throw | throw.md | Pick up and hurl; the world as ammo |
+| mechanic-rewind | rewind.md | Roll time back; failure as a draft |
+| mechanic-time-stop | time-stop.md | Freeze / slow as a spendable resource |
+| mechanic-stack | stack.md | Pile and balance; height as jeopardy |
+| mechanic-merge | merge.md | Fuse like-with-like into the next tier |
+| mechanic-clone | clone.md | Record-replay; solve with your past selves |
+| mechanic-portal | portal.md | Linked openings; momentum through folded space |
+| mechanic-magnet | magnet.md | Attract / repel field over the world |
+| mechanic-grow-shrink | grow-shrink.md | Scale as a key: fit, reach, crush |
+| mechanic-possess | possess.md | Body-swap; which vessel solves which room |
+
+### 70-antipatterns/ — `antipattern-*` (also write README.md)
+The mirror of `50-patterns/`: a failure mode to check a design against pre-handoff.
+| id | file | scope |
+|---|---|---|
+| antipattern-feature-soup | feature-soup.md | Many systems, no spine |
+| antipattern-second-system | second-system.md | Over-built follow-up system |
+| antipattern-false-depth | false-depth.md | Complexity mistaken for depth |
+| antipattern-currency-spaghetti | currency-spaghetti.md | Too many currencies, unclear roles |
+| antipattern-decision-paralysis | decision-paralysis.md | Too many options at once |
+| antipattern-grind-wall | grind-wall.md | Progress gated by repetition, not skill |
+| antipattern-power-creep | power-creep.md | New outclasses old; content decays |
+| antipattern-stat-inflation | stat-inflation.md | Bigger numbers as fake progression |
+| antipattern-boring-optimal | boring-optimal.md | The best strategy is the least fun |
+| antipattern-pay-to-skip | pay-to-skip.md | Friction manufactured to sell the cure |
+| antipattern-difficulty-cliff | difficulty-cliff.md | An unsignalled spike the ramp never taught |
+| antipattern-endless-tutorial | endless-tutorial.md | Teaching that never yields control |
+| antipattern-content-desert | content-desert.md | A big empty world padded with distance |
+| antipattern-fail-loop-tax | fail-loop-tax.md | Losing costs time, not lessons |
+| antipattern-backtracking-tax | backtracking-tax.md | Length padded by re-walking ground |
+| antipattern-fake-choice | fake-choice.md | Options that collapse to one right answer |
+| antipattern-solved-metagame | solved-metagame.md | One dominant build; copy the wiki |
+| antipattern-rng-frustration | rng-frustration.md | Variance that erases skill |
+| antipattern-unreadable-juice | unreadable-juice.md | Feedback so loud it hides state |
+| antipattern-input-lie | input-lie.md | Dropped / delayed inputs break trust |
+| antipattern-guess-the-designer | guess-the-designer.md | Unfair leaps; read the author's mind |
+
+### 80-recipes/ — `recipe-*` (also write README.md)
+A pre-composed design: anchor + genre + systems + a twist, wired and linked.
+| id | file | scope |
+|---|---|---|
+| recipe-cozy-deckbuilder | cozy-deckbuilder.md | Slay the Spire but cozy, no death (tonal) |
+| recipe-one-button-boss-rush | one-button-boss-rush.md | Cuphead but one input (constraint) |
+| recipe-tower-defense-roguelite | tower-defense-roguelite.md | Tower defense but drafted each run (structure) |
+| recipe-detective-deduction-board | detective-deduction-board.md | Obra Dinn but on a solvable grid (structure) |
+| recipe-colony-nemesis | colony-nemesis.md | RimWorld but the raiders remember (mechanic-swap) |
+| recipe-rhythm-platformer | rhythm-platformer.md | Celeste but the beat is sim time (mechanic-swap) |
+| recipe-merge-factory | merge-factory.md | 2048 but you automate the merging (structure) |
+| recipe-swipe-kingdom | swipe-kingdom.md | Reigns but your choices build a city (mechanic-swap) |
 
 ---
 

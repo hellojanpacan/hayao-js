@@ -78,7 +78,9 @@
     "audio": "tsx scripts/audio-render.ts",
     "feel": "tsx scripts/feel.ts",
     "judge": "tsx scripts/judge.ts",
-    "thumbs": "tsx scripts/site-thumbs.ts"
+    "thumbs": "tsx scripts/site-thumbs.ts",
+    "design:index": "node scripts/build-design-index.mjs",
+    "design:spark": "node scripts/compose-design.mjs spark"
   },
   "devDependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",

@@ -170,6 +170,30 @@
     "file": "design/10-anchors/age-of-empires.md"
   },
   {
+    "id": "anchor-animal-crossing",
+    "title": "Animal Crossing",
+    "kind": "anchor",
+    "tags": [
+      "cozy",
+      "real-time",
+      "life-sim",
+      "open-goals",
+      "collection"
+    ],
+    "summary": "A cozy life sim on a real-world clock — no failure, gentle open goals, and a town that rewards showing up.",
+    "use-when": "You want a calm, no-fail loop paced by real time and self-set goals.",
+    "composes-with": [
+      "genre-management-tycoon",
+      "system-collectibles",
+      "world-mood-and-atmosphere"
+    ],
+    "anchors": [
+      "anchor-animal-crossing"
+    ],
+    "verify-with": "docs/FUN.md#15-·-farming-sim",
+    "file": "design/10-anchors/animal-crossing.md"
+  },
+  {
     "id": "anchor-baba-is-you",
     "title": "Baba Is You",
     "kind": "anchor",
@@ -222,6 +246,29 @@
     ],
     "verify-with": "docs/FUN.md#11-·-roguelike-deckbuilder",
     "file": "design/10-anchors/balatro.md"
+  },
+  {
+    "id": "anchor-braid",
+    "title": "Braid",
+    "kind": "anchor",
+    "tags": [
+      "time-puzzle",
+      "puzzle-platformer",
+      "single-idea",
+      "elegance"
+    ],
+    "summary": "A puzzle-platformer where each world twists ONE time rule — mastery is understanding a single idea completely.",
+    "use-when": "You want elegant puzzles that each explore one variation of a core rule.",
+    "composes-with": [
+      "mechanic-rewind",
+      "genre-puzzle-platformer",
+      "pattern-emergence"
+    ],
+    "anchors": [
+      "anchor-braid"
+    ],
+    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "file": "design/10-anchors/braid.md"
   },
   {
     "id": "anchor-celeste",
@@ -277,6 +324,54 @@
     "file": "design/10-anchors/civilization.md"
   },
   {
+    "id": "anchor-cuphead",
+    "title": "Cuphead",
+    "kind": "anchor",
+    "tags": [
+      "boss-rush",
+      "pattern-mastery",
+      "run-and-gun",
+      "telegraphs",
+      "spectacle"
+    ],
+    "summary": "A boss-rush of memorize-and-execute pattern fights — spectacle as telegraph; mastery is learning the dance.",
+    "use-when": "You want set-piece boss fights where reading and executing patterns is the whole game.",
+    "composes-with": [
+      "system-boss-design",
+      "system-telegraphs",
+      "mechanic-dash"
+    ],
+    "anchors": [
+      "anchor-cuphead"
+    ],
+    "verify-with": "docs/FUN.md#7-·-bullet-hell",
+    "file": "design/10-anchors/cuphead.md"
+  },
+  {
+    "id": "anchor-dark-souls",
+    "title": "Dark Souls",
+    "kind": "anchor",
+    "tags": [
+      "soulslike",
+      "deliberate-combat",
+      "risk",
+      "world-as-lock",
+      "stamina"
+    ],
+    "summary": "Deliberate combat + a world that gates itself + the bonfire risk loop — tension from commitment and the fear of losing banked progress.",
+    "use-when": "You want weighty, readable combat where every attack is a commitment and rest is a gamble.",
+    "composes-with": [
+      "genre-soulslike",
+      "mechanic-dodge-roll",
+      "system-save-and-checkpoint"
+    ],
+    "anchors": [
+      "anchor-dark-souls"
+    ],
+    "verify-with": "docs/FUN.md#4-·-action-adventure",
+    "file": "design/10-anchors/dark-souls.md"
+  },
+  {
     "id": "anchor-dead-cells",
     "title": "Dead Cells",
     "kind": "anchor",
@@ -304,6 +399,78 @@
     "file": "design/10-anchors/dead-cells.md"
   },
   {
+    "id": "anchor-disco-elysium",
+    "title": "Disco Elysium",
+    "kind": "anchor",
+    "tags": [
+      "rpg",
+      "dialogue",
+      "skills-as-voices",
+      "narrative",
+      "choice"
+    ],
+    "summary": "An RPG where the stats are voices in your head — the build shapes what you can even perceive and say.",
+    "use-when": "You want character-building expressed through dialogue and perception, not combat.",
+    "composes-with": [
+      "genre-visual-novel",
+      "system-dialogue-and-branching",
+      "world-character-design"
+    ],
+    "anchors": [
+      "anchor-disco-elysium"
+    ],
+    "verify-with": "docs/FUN.md#21-·-narrative-decisions",
+    "file": "design/10-anchors/disco-elysium.md"
+  },
+  {
+    "id": "anchor-dishonored",
+    "title": "Dishonored",
+    "kind": "anchor",
+    "tags": [
+      "immersive-sim",
+      "stealth",
+      "player-expression",
+      "systemic",
+      "powers"
+    ],
+    "summary": "Immersive sim where overlapping systems + a toolkit of powers make every problem solvable many ways — the world is a sandbox of verbs.",
+    "use-when": "You want player expression through systemic interaction, not authored solutions.",
+    "composes-with": [
+      "genre-immersive-sim",
+      "mechanic-possess",
+      "system-emergent-systems"
+    ],
+    "anchors": [
+      "anchor-dishonored"
+    ],
+    "verify-with": "docs/FUN.md#5-·-stealth",
+    "file": "design/10-anchors/dishonored.md"
+  },
+  {
+    "id": "anchor-dota",
+    "title": "Dota 2",
+    "kind": "anchor",
+    "tags": [
+      "moba",
+      "asymmetry",
+      "objectives",
+      "comeback",
+      "teamplay"
+    ],
+    "summary": "Lane-and-objective team strategy with a huge asymmetric hero roster — a snowball economy braced by comeback mechanics.",
+    "use-when": "You want deep team strategy from asymmetric roles around shared objectives.",
+    "composes-with": [
+      "genre-moba",
+      "system-faction-asymmetry",
+      "pattern-feedback-loops"
+    ],
+    "anchors": [
+      "anchor-dota"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/10-anchors/dota.md"
+  },
+  {
     "id": "anchor-factorio",
     "title": "Factorio",
     "kind": "anchor",
@@ -328,6 +495,29 @@
     "anchors": [],
     "verify-with": "docs/FUN.md#14-incrementalidle",
     "file": "design/10-anchors/factorio.md"
+  },
+  {
+    "id": "anchor-frostpunk",
+    "title": "Frostpunk",
+    "kind": "anchor",
+    "tags": [
+      "society-survival",
+      "moral-management",
+      "city-builder",
+      "tension"
+    ],
+    "summary": "A survival city-builder where every efficient choice has a human cost — you manage a society, not just a grid.",
+    "use-when": "You want management with moral weight — survival vs. what you become to survive.",
+    "composes-with": [
+      "genre-management-tycoon",
+      "genre-city-builder",
+      "pattern-risk-reward"
+    ],
+    "anchors": [
+      "anchor-frostpunk"
+    ],
+    "verify-with": "docs/FUN.md#17-·-city-builder",
+    "file": "design/10-anchors/frostpunk.md"
   },
   {
     "id": "anchor-hades",
@@ -409,6 +599,30 @@
     "file": "design/10-anchors/it-takes-two.md"
   },
   {
+    "id": "anchor-katamari",
+    "title": "Katamari Damacy",
+    "kind": "anchor",
+    "tags": [
+      "growth",
+      "absurd",
+      "physics",
+      "single-verb",
+      "joy"
+    ],
+    "summary": "Roll a ball that grows by absorbing the world — one verb, exponential scale, pure escalating delight.",
+    "use-when": "You want a single growth verb whose scale change IS the whole arc.",
+    "composes-with": [
+      "mechanic-grow-shrink",
+      "mechanic-merge",
+      "genre-physics-arcade"
+    ],
+    "anchors": [
+      "anchor-katamari"
+    ],
+    "verify-with": "docs/FUN.md#19-·-physics-arcade",
+    "file": "design/10-anchors/katamari.md"
+  },
+  {
     "id": "anchor-loop-hero",
     "title": "Loop Hero",
     "kind": "anchor",
@@ -434,6 +648,54 @@
     ],
     "verify-with": "docs/FUN.md#11-·-roguelike-deckbuilder",
     "file": "design/10-anchors/loop-hero.md"
+  },
+  {
+    "id": "anchor-minecraft",
+    "title": "Minecraft",
+    "kind": "anchor",
+    "tags": [
+      "sandbox",
+      "survival",
+      "crafting",
+      "self-set-goals",
+      "emergent"
+    ],
+    "summary": "A block world with no goals but yours — mine, craft, build; the player authors the objective and the world remembers it.",
+    "use-when": "You want open-ended creation where players set their own goals in a systemic world.",
+    "composes-with": [
+      "genre-sandbox-survival",
+      "system-crafting",
+      "pattern-emergence"
+    ],
+    "anchors": [
+      "anchor-minecraft"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/10-anchors/minecraft.md"
+  },
+  {
+    "id": "anchor-mini-metro",
+    "title": "Mini Metro",
+    "kind": "anchor",
+    "tags": [
+      "minimalist",
+      "systemic",
+      "elegance",
+      "abstract",
+      "tuning"
+    ],
+    "summary": "A transit puzzle stripped to lines, stations, and rising demand — minimalist systemic elegance; every element earns its place.",
+    "use-when": "You want maximum depth from minimum parts — the discipline of subtraction.",
+    "composes-with": [
+      "genre-abstract-strategy",
+      "pattern-restraint-and-negative-space",
+      "system-difficulty-and-dda"
+    ],
+    "anchors": [
+      "anchor-mini-metro"
+    ],
+    "verify-with": "docs/JUDGE.md",
+    "file": "design/10-anchors/mini-metro.md"
   },
   {
     "id": "anchor-nuclear-throne",
@@ -515,6 +777,29 @@
     "file": "design/10-anchors/overcooked.md"
   },
   {
+    "id": "anchor-papers-please",
+    "title": "Papers, Please",
+    "kind": "anchor",
+    "tags": [
+      "bureaucracy",
+      "moral-vise",
+      "rules-as-play",
+      "narrative-decisions"
+    ],
+    "summary": "A document-checking job that becomes a moral vise — rules vs. mercy vs. feeding your family, one stamp at a time.",
+    "use-when": "You want tension from applying rules under pressure with human stakes.",
+    "composes-with": [
+      "genre-narrative-decisions",
+      "system-quests-and-objectives",
+      "world-narrative-delivery"
+    ],
+    "anchors": [
+      "anchor-papers-please"
+    ],
+    "verify-with": "docs/FUN.md#21-·-narrative-decisions",
+    "file": "design/10-anchors/papers-please.md"
+  },
+  {
     "id": "anchor-peggle",
     "title": "Peggle",
     "kind": "anchor",
@@ -540,6 +825,29 @@
     ],
     "verify-with": "docs/FUN.md#19-·-physics-arcade-breakoutpeggle",
     "file": "design/10-anchors/peggle.md"
+  },
+  {
+    "id": "anchor-portal",
+    "title": "Portal",
+    "kind": "anchor",
+    "tags": [
+      "first-person-puzzle",
+      "single-verb",
+      "teaching",
+      "momentum"
+    ],
+    "summary": "A single spatial verb taught so well it needs no words — every room is a lesson, then a test, then a twist.",
+    "use-when": "You want a puzzle built on ONE deep verb with masterclass wordless teaching.",
+    "composes-with": [
+      "mechanic-portal",
+      "genre-puzzle-platformer",
+      "system-onboarding"
+    ],
+    "anchors": [
+      "anchor-portal"
+    ],
+    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "file": "design/10-anchors/portal.md"
   },
   {
     "id": "anchor-reigns",
@@ -672,6 +980,30 @@
     "file": "design/10-anchors/slay-the-spire.md"
   },
   {
+    "id": "anchor-spelunky",
+    "title": "Spelunky",
+    "kind": "anchor",
+    "tags": [
+      "roguelite",
+      "systemic",
+      "emergent-chaos",
+      "platformer",
+      "fair-death"
+    ],
+    "summary": "A systemic roguelite platformer where consistent rules + interacting hazards generate emergent, always-fair disasters.",
+    "use-when": "You want emergent chaos from a small set of rigid, interacting systems.",
+    "composes-with": [
+      "genre-puzzle-platformer",
+      "pattern-emergence",
+      "system-procgen-design"
+    ],
+    "anchors": [
+      "anchor-spelunky"
+    ],
+    "verify-with": "docs/FUN.md#10-·-traditional-roguelike",
+    "file": "design/10-anchors/spelunky.md"
+  },
+  {
     "id": "anchor-starcraft",
     "title": "StarCraft",
     "kind": "anchor",
@@ -722,6 +1054,54 @@
     "anchors": [],
     "verify-with": "docs/FUN.md#15-farminglife-sim",
     "file": "design/10-anchors/stardew-valley.md"
+  },
+  {
+    "id": "anchor-street-fighter",
+    "title": "Street Fighter",
+    "kind": "anchor",
+    "tags": [
+      "fighting-game",
+      "footsies",
+      "frame-data",
+      "reads",
+      "mastery"
+    ],
+    "summary": "One-on-one duel of spacing, timing, and reads — frame data is the hidden rulebook; footsies are the conversation.",
+    "use-when": "You want a high-ceiling duel where mind-reading and spacing decide it.",
+    "composes-with": [
+      "genre-fighting-game",
+      "mechanic-combo-string",
+      "system-mastery-curve"
+    ],
+    "anchors": [
+      "anchor-street-fighter"
+    ],
+    "verify-with": "docs/FUN.md#4-·-action-adventure",
+    "file": "design/10-anchors/street-fighter.md"
+  },
+  {
+    "id": "anchor-terraria",
+    "title": "Terraria",
+    "kind": "anchor",
+    "tags": [
+      "2d-sandbox",
+      "progression",
+      "exploration",
+      "boss-gated",
+      "crafting"
+    ],
+    "summary": "A 2D sandbox with a spine — free building over a boss-gated progression ladder that pulls you deeper and stronger.",
+    "use-when": "You want sandbox freedom WITH a legible progression to chase.",
+    "composes-with": [
+      "genre-sandbox-survival",
+      "system-progression",
+      "system-boss-design"
+    ],
+    "anchors": [
+      "anchor-terraria"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/10-anchors/terraria.md"
   },
   {
     "id": "anchor-tetris",
@@ -775,6 +1155,57 @@
     ],
     "verify-with": "docs/FUN.md#6-·-twin-stick-horde-survival-vampire-survivors-like",
     "file": "design/10-anchors/vampire-survivors.md"
+  },
+  {
+    "id": "genre-4x",
+    "title": "4X Strategy",
+    "kind": "genre",
+    "tags": [
+      "explore",
+      "expand",
+      "exploit",
+      "exterminate",
+      "snowball"
+    ],
+    "summary": "Explore/expand/exploit/exterminate over a long arc — layered systems and the \"one more turn\" snowball vs. comeback tension.",
+    "use-when": "You want a long strategic campaign of compounding systems and decisions.",
+    "composes-with": [
+      "anchor-civilization",
+      "system-tech-tree",
+      "pattern-feedback-loops",
+      "system-faction-asymmetry"
+    ],
+    "anchors": [
+      "anchor-civilization"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/20-genres/4x.md"
+  },
+  {
+    "id": "genre-abstract-strategy",
+    "title": "Abstract Strategy / Board Game",
+    "kind": "genre",
+    "tags": [
+      "minimalist",
+      "perfect-information",
+      "elegance",
+      "tactics",
+      "depth"
+    ],
+    "summary": "Deep play from few, rigid rules — often perfect-information; the whole game is the interaction of a handful of pieces.",
+    "use-when": "You want maximum depth from minimum parts, board-game clean.",
+    "composes-with": [
+      "anchor-mini-metro",
+      "anchor-into-the-breach",
+      "pattern-restraint-and-negative-space",
+      "genre-tactics"
+    ],
+    "anchors": [
+      "anchor-into-the-breach",
+      "anchor-mini-metro"
+    ],
+    "verify-with": "docs/FUN.md#12-·-tactics",
+    "file": "design/20-genres/abstract-strategy.md"
   },
   {
     "id": "genre-action-adventure",
@@ -983,6 +1414,31 @@
     "file": "design/20-genres/exploration.md"
   },
   {
+    "id": "genre-extraction-shooter",
+    "title": "Extraction Shooter",
+    "kind": "genre",
+    "tags": [
+      "risk-reward",
+      "loot",
+      "tension",
+      "pvpve",
+      "session"
+    ],
+    "summary": "Go in with gear, grab loot, get out alive — the tension is the walk to the exit with everything to lose.",
+    "use-when": "You want high-stakes risk/reward sessions where extracting IS the win.",
+    "composes-with": [
+      "pattern-risk-reward",
+      "system-loot-tables",
+      "system-session-structure",
+      "genre-survival-horror"
+    ],
+    "anchors": [
+      "anchor-spelunky"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/20-genres/extraction-shooter.md"
+  },
+  {
     "id": "genre-farming-sim",
     "title": "Farming / Life Sim",
     "kind": "genre",
@@ -1009,6 +1465,31 @@
     ],
     "verify-with": "docs/FUN.md#15--farminglife-sim",
     "file": "design/20-genres/farming-sim.md"
+  },
+  {
+    "id": "genre-fighting-game",
+    "title": "Fighting Game",
+    "kind": "genre",
+    "tags": [
+      "duel",
+      "footsies",
+      "frame-data",
+      "reads",
+      "mastery"
+    ],
+    "summary": "A one-on-one duel of spacing, timing, and reads — a deep, legible frame system under a mind-game surface.",
+    "use-when": "You want a high-ceiling competitive duel decided by reads and spacing.",
+    "composes-with": [
+      "anchor-street-fighter",
+      "mechanic-combo-string",
+      "system-mastery-curve",
+      "system-counter-systems"
+    ],
+    "anchors": [
+      "anchor-street-fighter"
+    ],
+    "verify-with": "docs/FUN.md#4-·-action-adventure",
+    "file": "design/20-genres/fighting-game.md"
   },
   {
     "id": "genre-grid-puzzle",
@@ -1071,6 +1552,31 @@
     "file": "design/20-genres/horde-survival.md"
   },
   {
+    "id": "genre-immersive-sim",
+    "title": "Immersive Sim",
+    "kind": "genre",
+    "tags": [
+      "systemic",
+      "player-expression",
+      "stealth",
+      "emergent",
+      "tools"
+    ],
+    "summary": "Consistent, interacting systems + a verb toolkit = every problem has many valid solutions the designer never scripted.",
+    "use-when": "You want player expression and emergent solutions over authored paths.",
+    "composes-with": [
+      "anchor-dishonored",
+      "system-emergent-systems",
+      "pattern-emergence",
+      "mechanic-possess"
+    ],
+    "anchors": [
+      "anchor-dishonored"
+    ],
+    "verify-with": "docs/FUN.md#5-·-stealth",
+    "file": "design/20-genres/immersive-sim.md"
+  },
+  {
     "id": "genre-incremental",
     "title": "Incremental / Idle",
     "kind": "genre",
@@ -1098,6 +1604,31 @@
     ],
     "verify-with": "docs/FUN.md#14--incrementalidle",
     "file": "design/20-genres/incremental.md"
+  },
+  {
+    "id": "genre-management-tycoon",
+    "title": "Management / Tycoon",
+    "kind": "genre",
+    "tags": [
+      "systems",
+      "optimization",
+      "economy",
+      "builder",
+      "balance"
+    ],
+    "summary": "Build and balance a living system toward efficiency — the joy is watching a machine you tuned run itself.",
+    "use-when": "You want optimization play over a self-running economy or institution.",
+    "composes-with": [
+      "anchor-frostpunk",
+      "system-economy",
+      "system-resource-loops",
+      "pattern-feedback-loops"
+    ],
+    "anchors": [
+      "anchor-frostpunk"
+    ],
+    "verify-with": "docs/FUN.md#17-·-city-builder",
+    "file": "design/20-genres/management-tycoon.md"
   },
   {
     "id": "genre-match3",
@@ -1157,6 +1688,31 @@
     ],
     "verify-with": "docs/FUN.md#3--metroidvania",
     "file": "design/20-genres/metroidvania.md"
+  },
+  {
+    "id": "genre-moba",
+    "title": "MOBA",
+    "kind": "genre",
+    "tags": [
+      "team",
+      "asymmetry",
+      "objectives",
+      "lanes",
+      "comeback"
+    ],
+    "summary": "Asymmetric heroes contest lanes and objectives — a team snowball economy braced by explicit comeback valves.",
+    "use-when": "You want team strategy from asymmetric roles around shared objectives.",
+    "composes-with": [
+      "anchor-dota",
+      "system-faction-asymmetry",
+      "system-coop-and-competition",
+      "pattern-feedback-loops"
+    ],
+    "anchors": [
+      "anchor-dota"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/20-genres/moba.md"
   },
   {
     "id": "genre-narrative-decisions",
@@ -1246,6 +1802,32 @@
     ],
     "verify-with": "docs/FUN.md#2--precision-platformer-celeste-like",
     "file": "design/20-genres/precision-platformer.md"
+  },
+  {
+    "id": "genre-puzzle-platformer",
+    "title": "Puzzle-Platformer",
+    "kind": "genre",
+    "tags": [
+      "single-verb",
+      "spatial",
+      "teaching",
+      "platformer",
+      "elegance"
+    ],
+    "summary": "Platforming where the challenge is thought, not reflex — one deep verb, taught wordlessly, mined exhaustively.",
+    "use-when": "You want spatial puzzles built on a single expressive movement/manipulation verb.",
+    "composes-with": [
+      "anchor-braid",
+      "anchor-portal",
+      "mechanic-gravity-flip",
+      "system-onboarding"
+    ],
+    "anchors": [
+      "anchor-braid",
+      "anchor-portal"
+    ],
+    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "file": "design/20-genres/puzzle-platformer.md"
   },
   {
     "id": "genre-racing",
@@ -1366,6 +1948,57 @@
     "file": "design/20-genres/rts.md"
   },
   {
+    "id": "genre-sandbox-survival",
+    "title": "Sandbox Survival",
+    "kind": "genre",
+    "tags": [
+      "crafting",
+      "open-goals",
+      "emergent",
+      "build",
+      "day-night"
+    ],
+    "summary": "Gather, craft, build, and endure in a systemic world where the player sets the goal and the night sets the pressure.",
+    "use-when": "You want open-ended creation with survival pressure and self-set goals.",
+    "composes-with": [
+      "anchor-minecraft",
+      "anchor-terraria",
+      "system-crafting",
+      "mechanic-throw"
+    ],
+    "anchors": [
+      "anchor-minecraft",
+      "anchor-terraria"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/20-genres/sandbox-survival.md"
+  },
+  {
+    "id": "genre-soulslike",
+    "title": "Soulslike",
+    "kind": "genre",
+    "tags": [
+      "deliberate-combat",
+      "risk",
+      "stamina",
+      "world-as-lock",
+      "tension"
+    ],
+    "summary": "Weighty, readable combat + a risked-currency loop + a world that gates itself — tension from commitment and banked progress.",
+    "use-when": "You want deliberate combat where every swing commits and rest is a gamble.",
+    "composes-with": [
+      "anchor-dark-souls",
+      "mechanic-dodge-roll",
+      "system-save-and-checkpoint",
+      "system-telegraphs"
+    ],
+    "anchors": [
+      "anchor-dark-souls"
+    ],
+    "verify-with": "docs/FUN.md#4-·-action-adventure",
+    "file": "design/20-genres/soulslike.md"
+  },
+  {
     "id": "genre-stealth",
     "title": "Stealth",
     "kind": "genre",
@@ -1480,6 +2113,56 @@
     "file": "design/20-genres/tower-defense.md"
   },
   {
+    "id": "genre-visual-novel",
+    "title": "Visual Novel / Interactive Fiction",
+    "kind": "genre",
+    "tags": [
+      "narrative",
+      "branching",
+      "choice",
+      "dialogue",
+      "character"
+    ],
+    "summary": "Story is the mechanic — branching text and choices; the design is the shape of the tree and the weight of each fork.",
+    "use-when": "You want a character/story-driven game where choices and prose carry it.",
+    "composes-with": [
+      "anchor-disco-elysium",
+      "system-dialogue-and-branching",
+      "genre-narrative-decisions",
+      "world-character-design"
+    ],
+    "anchors": [
+      "anchor-disco-elysium"
+    ],
+    "verify-with": "docs/FUN.md#21-·-narrative-decisions",
+    "file": "design/20-genres/visual-novel.md"
+  },
+  {
+    "id": "genre-walking-sim",
+    "title": "Walking Sim / Vignette",
+    "kind": "genre",
+    "tags": [
+      "narrative",
+      "exploration",
+      "atmosphere",
+      "environmental-story",
+      "pace"
+    ],
+    "summary": "Story delivered by moving through space — atmosphere and environmental narrative over mechanics; pace is the design.",
+    "use-when": "You want an emotional, story-first experience carried by place and mood.",
+    "composes-with": [
+      "genre-exploration",
+      "world-level-as-story",
+      "world-mood-and-atmosphere",
+      "world-narrative-delivery"
+    ],
+    "anchors": [
+      "anchor-outer-wilds"
+    ],
+    "verify-with": "docs/JUDGE.md",
+    "file": "design/20-genres/walking-sim.md"
+  },
+  {
     "id": "system-accessibility",
     "title": "Accessibility",
     "kind": "system",
@@ -1506,6 +2189,27 @@
     ],
     "verify-with": "docs/JUDGE.md",
     "file": "design/30-systems/accessibility.md"
+  },
+  {
+    "id": "system-achievements-and-leaderboards",
+    "title": "Achievements & Leaderboards",
+    "kind": "system",
+    "tags": [
+      "goals",
+      "competition",
+      "mastery",
+      "optional",
+      "status"
+    ],
+    "summary": "Optional goals and social ranking — extrinsic pull layered over intrinsic play; badges for mastery, boards for status.",
+    "use-when": "You want optional long-tail goals or competitive comparison.",
+    "composes-with": [
+      "system-collectibles",
+      "system-coop-and-competition",
+      "pattern-mastery-and-flow"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/30-systems/achievements-and-leaderboards.md"
   },
   {
     "id": "system-boss-design",
@@ -1565,6 +2269,27 @@
     ],
     "verify-with": "docs/FUN.md#11-roguelike-deckbuilder",
     "file": "design/30-systems/build-diversity.md"
+  },
+  {
+    "id": "system-camera-and-controls",
+    "title": "Camera & Controls",
+    "kind": "system",
+    "tags": [
+      "game-feel",
+      "input",
+      "camera",
+      "responsiveness",
+      "feel"
+    ],
+    "summary": "The felt contract between intent and motion — camera framing, input buffering, and response latency ARE the game feel.",
+    "use-when": "The game feels \"off\" and you need to fix the intent→motion pipeline.",
+    "composes-with": [
+      "system-grace",
+      "mechanic-lock-on",
+      "pattern-fairness-and-trust"
+    ],
+    "verify-with": "docs/JUICE.md",
+    "file": "design/30-systems/camera-and-controls.md"
   },
   {
     "id": "system-collectibles",
@@ -1711,6 +2436,30 @@
     ],
     "verify-with": "docs/FUN.md#1-grid-puzzle-sokoban",
     "file": "design/30-systems/crafting.md"
+  },
+  {
+    "id": "system-dialogue-and-branching",
+    "title": "Dialogue & Branching",
+    "kind": "system",
+    "tags": [
+      "narrative",
+      "choice",
+      "conversation",
+      "state",
+      "trees"
+    ],
+    "summary": "The structure of talking and choosing — trees, gates, and state that remembers, so choices feel weighted, not cosmetic.",
+    "use-when": "You need conversation, choices, or branching narrative with real consequence.",
+    "composes-with": [
+      "genre-visual-novel",
+      "anchor-disco-elysium",
+      "pattern-meaningful-choice"
+    ],
+    "anchors": [
+      "anchor-disco-elysium"
+    ],
+    "verify-with": "docs/FUN.md#21-·-narrative-decisions",
+    "file": "design/30-systems/dialogue-and-branching.md"
   },
   {
     "id": "system-difficulty-and-dda",
@@ -1951,6 +2700,114 @@
     "file": "design/30-systems/grace.md"
   },
   {
+    "id": "system-hazards-and-environment",
+    "title": "Hazards & Environment",
+    "kind": "system",
+    "tags": [
+      "traps",
+      "terrain",
+      "systemic",
+      "threat",
+      "interaction"
+    ],
+    "summary": "The level fights back — traps, terrain, and environmental systems that interact with the player AND the enemies.",
+    "use-when": "You want the space itself to be a threat and a tool, not just a backdrop.",
+    "composes-with": [
+      "system-encounter-design",
+      "pattern-emergence",
+      "mechanic-magnet"
+    ],
+    "anchors": [
+      "anchor-spelunky"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/30-systems/hazards-and-environment.md"
+  },
+  {
+    "id": "system-inventory-and-ui",
+    "title": "Inventory & UI",
+    "kind": "system",
+    "tags": [
+      "ui",
+      "information",
+      "clarity",
+      "items",
+      "management"
+    ],
+    "summary": "How the game shows state and lets you act on it — the interface is a design surface; friction here is friction everywhere.",
+    "use-when": "Managing items/state is becoming a chore, or the HUD is crowding the play.",
+    "composes-with": [
+      "pattern-readability",
+      "antipattern-currency-spaghetti",
+      "antipattern-decision-paralysis"
+    ],
+    "verify-with": "docs/JUICE.md",
+    "file": "design/30-systems/inventory-and-ui.md"
+  },
+  {
+    "id": "system-live-ops-and-seasons",
+    "title": "Live-Ops & Seasons",
+    "kind": "system",
+    "tags": [
+      "live-service",
+      "seasons",
+      "rotation",
+      "retention",
+      "content"
+    ],
+    "summary": "How a game stays alive after launch — seasonal rotation, events, and refresh, without power-creeping the back catalog to death.",
+    "use-when": "You are planning post-launch content cadence and retention.",
+    "composes-with": [
+      "system-reward-schedules",
+      "antipattern-power-creep",
+      "system-achievements-and-leaderboards"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/30-systems/live-ops-and-seasons.md"
+  },
+  {
+    "id": "system-loot-tables",
+    "title": "Loot Tables",
+    "kind": "system",
+    "tags": [
+      "drops",
+      "randomness",
+      "reward",
+      "weighting",
+      "pity"
+    ],
+    "summary": "The math of what drops and how often — weighted tables, rarity tiers, and pity timers that keep variance from feeling cruel.",
+    "use-when": "You need to design drops, rewards, or randomized acquisition.",
+    "composes-with": [
+      "system-reward-schedules",
+      "antipattern-rng-frustration",
+      "system-economy"
+    ],
+    "verify-with": "docs/FUN.md#10-·-traditional-roguelike",
+    "file": "design/30-systems/loot-tables.md"
+  },
+  {
+    "id": "system-map-and-navigation",
+    "title": "Map & Navigation",
+    "kind": "system",
+    "tags": [
+      "wayfinding",
+      "minimap",
+      "fast-travel",
+      "exploration",
+      "space"
+    ],
+    "summary": "How players know where they are and get where they're going — wayfinding, minimaps, fast-travel, and the cost of a return trip.",
+    "use-when": "Players get lost, or backtracking is padding the runtime.",
+    "composes-with": [
+      "genre-metroidvania",
+      "antipattern-backtracking-tax",
+      "world-level-as-story"
+    ],
+    "verify-with": "docs/FUN.md#3-·-metroidvania",
+    "file": "design/30-systems/map-and-navigation.md"
+  },
+  {
     "id": "system-mastery-curve",
     "title": "Mastery Curve — Easy to Learn, Hard to Master",
     "kind": "system",
@@ -2039,6 +2896,27 @@
     "file": "design/30-systems/onboarding.md"
   },
   {
+    "id": "system-prestige-and-newgame-plus",
+    "title": "Prestige & New Game+",
+    "kind": "system",
+    "tags": [
+      "replay",
+      "reset",
+      "meta",
+      "longevity",
+      "ascension"
+    ],
+    "summary": "Structured replay — reset for a persistent edge (prestige) or replay harder with what you kept (NG+); longevity from the loop.",
+    "use-when": "You want replay value and a long tail without authoring endless new content.",
+    "composes-with": [
+      "system-meta-progression",
+      "system-progression",
+      "pattern-mastery-and-flow"
+    ],
+    "verify-with": "docs/FUN.md#14-·-incremental",
+    "file": "design/30-systems/prestige-and-newgame-plus.md"
+  },
+  {
     "id": "system-procgen-design",
     "title": "Procedural Generation Design",
     "kind": "system",
@@ -2097,6 +2975,27 @@
     ],
     "verify-with": "docs/FUN.md#14-incrementalidle",
     "file": "design/30-systems/progression.md"
+  },
+  {
+    "id": "system-quests-and-objectives",
+    "title": "Quests & Objectives",
+    "kind": "system",
+    "tags": [
+      "goals",
+      "structure",
+      "pacing",
+      "guidance",
+      "tasks"
+    ],
+    "summary": "How the game states what to do and why — the objective layer that turns systems into a sequence of pulls.",
+    "use-when": "Players are unsure what to do next, or you need to pace goals across a session.",
+    "composes-with": [
+      "system-onboarding",
+      "system-session-structure",
+      "world-narrative-delivery"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/30-systems/quests-and-objectives.md"
   },
   {
     "id": "system-resource-loops",
@@ -2247,6 +3146,30 @@
     "file": "design/30-systems/skill-trees.md"
   },
   {
+    "id": "system-spawn-directors",
+    "title": "Spawn & AI Directors",
+    "kind": "system",
+    "tags": [
+      "pacing",
+      "ai-director",
+      "spawns",
+      "tension",
+      "dynamic"
+    ],
+    "summary": "The invisible hand that paces threat — spawn budgets and an AI director that shapes tension in real time.",
+    "use-when": "You need to pace encounters dynamically rather than hand-place every threat.",
+    "composes-with": [
+      "system-encounter-design",
+      "system-difficulty-and-dda",
+      "pattern-pacing-and-tension"
+    ],
+    "anchors": [
+      "anchor-rimworld"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/30-systems/spawn-directors.md"
+  },
+  {
     "id": "system-status-effects",
     "title": "Status Effects — damage and change over time",
     "kind": "system",
@@ -2364,6 +3287,30 @@
     "file": "design/30-systems/unit-rosters.md"
   },
   {
+    "id": "system-weather-and-time",
+    "title": "Weather & Time-of-Day",
+    "kind": "system",
+    "tags": [
+      "simulation",
+      "day-night",
+      "weather",
+      "pacing",
+      "systemic"
+    ],
+    "summary": "A living clock and sky that change play — day/night threat, weather that alters systems, time as pacing and pressure.",
+    "use-when": "You want ambient systemic variety or time-driven pressure and mood.",
+    "composes-with": [
+      "system-hazards-and-environment",
+      "world-mood-and-atmosphere",
+      "pattern-pacing-and-tension"
+    ],
+    "anchors": [
+      "anchor-minecraft"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/30-systems/weather-and-time.md"
+  },
+  {
     "id": "world-aesthetic-direction",
     "title": "Aesthetic Direction — briefing the Kentō woodblock look",
     "kind": "worldbuilding",
@@ -2386,6 +3333,27 @@
     ],
     "verify-with": "docs/JUDGE.md",
     "file": "design/40-worldbuilding/aesthetic-direction.md"
+  },
+  {
+    "id": "world-character-design",
+    "title": "Character Design",
+    "kind": "worldbuilding",
+    "tags": [
+      "identity",
+      "readability",
+      "roster",
+      "silhouette",
+      "fiction"
+    ],
+    "summary": "Making characters legible and distinct in fiction — silhouette, role, and voice so a roster reads at a glance.",
+    "use-when": "You have a cast or roster and need each member instantly recognizable and distinct.",
+    "composes-with": [
+      "world-faction-identity",
+      "system-unit-rosters",
+      "world-naming-and-tone"
+    ],
+    "verify-with": "docs/JUDGE.md",
+    "file": "design/40-worldbuilding/character-design.md"
   },
   {
     "id": "world-faction-identity",
@@ -2414,6 +3382,72 @@
     ],
     "verify-with": "docs/JUDGE.md",
     "file": "design/40-worldbuilding/faction-identity.md"
+  },
+  {
+    "id": "world-level-as-story",
+    "title": "Level as Story",
+    "kind": "worldbuilding",
+    "tags": [
+      "environmental-story",
+      "space",
+      "narrative",
+      "place",
+      "worldbuilding"
+    ],
+    "summary": "The space tells the story — layout, ruins, and staging deliver narrative through place, not text.",
+    "use-when": "You want narrative carried by the environment instead of dialogue or cutscenes.",
+    "composes-with": [
+      "world-narrative-delivery",
+      "genre-walking-sim",
+      "pattern-readability"
+    ],
+    "anchors": [
+      "anchor-outer-wilds"
+    ],
+    "verify-with": "docs/JUDGE.md",
+    "file": "design/40-worldbuilding/level-as-story.md"
+  },
+  {
+    "id": "world-mood-and-atmosphere",
+    "title": "Mood & Atmosphere",
+    "kind": "worldbuilding",
+    "tags": [
+      "tone",
+      "feel",
+      "ambience",
+      "emotion",
+      "cohesion"
+    ],
+    "summary": "The emotional weather of a game — how palette, pace, sound, and space combine into a felt tone before a word is read.",
+    "use-when": "You need the game to FEEL a certain way, cohesively, across every surface.",
+    "composes-with": [
+      "world-aesthetic-direction",
+      "world-soundscape",
+      "pattern-juice-choreography"
+    ],
+    "verify-with": "docs/JUDGE.md",
+    "file": "design/40-worldbuilding/mood-and-atmosphere.md"
+  },
+  {
+    "id": "world-motif-and-symbol",
+    "title": "Motif & Symbol",
+    "kind": "worldbuilding",
+    "tags": [
+      "theme",
+      "recurrence",
+      "meaning",
+      "cohesion",
+      "visual-language"
+    ],
+    "summary": "Recurring images and ideas that bind a game into a statement — a visual/thematic language the player learns to read.",
+    "use-when": "You want thematic cohesion — a game that means something, not just does something.",
+    "composes-with": [
+      "world-theme-vectors",
+      "world-aesthetic-direction",
+      "world-tonal-juxtaposition"
+    ],
+    "verify-with": "docs/JUDGE.md",
+    "file": "design/40-worldbuilding/motif-and-symbol.md"
   },
   {
     "id": "world-naming-and-tone",
@@ -2468,6 +3502,27 @@
     "file": "design/40-worldbuilding/narrative-delivery.md"
   },
   {
+    "id": "world-soundscape",
+    "title": "Soundscape & Audio Identity",
+    "kind": "worldbuilding",
+    "tags": [
+      "audio",
+      "sound",
+      "music",
+      "feedback",
+      "mood"
+    ],
+    "summary": "The sonic signature of a game — music, ambience, and SFX as identity and feedback; sound is half of feel.",
+    "use-when": "You want audio to carry mood and reinforce feedback, not just decorate.",
+    "composes-with": [
+      "world-mood-and-atmosphere",
+      "pattern-juice-choreography",
+      "system-camera-and-controls"
+    ],
+    "verify-with": "docs/JUICE.md",
+    "file": "design/40-worldbuilding/soundscape.md"
+  },
+  {
     "id": "world-theme-vectors",
     "title": "Theme Vectors — choosing a setting that recolours the mechanics",
     "kind": "worldbuilding",
@@ -2489,6 +3544,30 @@
     ],
     "verify-with": "none",
     "file": "design/40-worldbuilding/theme-vectors.md"
+  },
+  {
+    "id": "world-tonal-juxtaposition",
+    "title": "Tonal Juxtaposition",
+    "kind": "worldbuilding",
+    "tags": [
+      "tone",
+      "contrast",
+      "twist",
+      "theme",
+      "surprise"
+    ],
+    "summary": "Clashing tones as a design tool — cute-but-dark, cozy-but-doomed; the friction between register and content IS the hook.",
+    "use-when": "You want a distinctive tonal identity via deliberate contrast (a \"but Y\" on tone).",
+    "composes-with": [
+      "process-the-twist",
+      "world-mood-and-atmosphere",
+      "world-motif-and-symbol"
+    ],
+    "anchors": [
+      "anchor-katamari"
+    ],
+    "verify-with": "docs/JUDGE.md",
+    "file": "design/40-worldbuilding/tonal-juxtaposition.md"
   },
   {
     "id": "world-worldbuilding-scaffold",
@@ -2564,6 +3643,48 @@
     ],
     "verify-with": "docs/FUN.md#12-·-turn-based-tactics-into-the-breach-like",
     "file": "design/50-patterns/emergence.md"
+  },
+  {
+    "id": "pattern-escalation-and-payoff",
+    "title": "Escalation & Payoff",
+    "kind": "pattern",
+    "tags": [
+      "pacing",
+      "tension",
+      "release",
+      "climax",
+      "structure"
+    ],
+    "summary": "Setup → escalation → release — the rhythm of building pressure and paying it off; a game is a sequence of promises kept.",
+    "use-when": "You are structuring a level, encounter, or session and it feels flat.",
+    "composes-with": [
+      "pattern-pacing-and-tension",
+      "system-boss-design",
+      "pattern-surprise-and-delight"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/50-patterns/escalation-and-payoff.md"
+  },
+  {
+    "id": "pattern-fairness-and-trust",
+    "title": "Fairness & Trust",
+    "kind": "pattern",
+    "tags": [
+      "fairness",
+      "trust",
+      "readability",
+      "honesty",
+      "feel"
+    ],
+    "summary": "The player must trust the sim — deaths are earned, inputs land, rules are consistent; trust broken once colors everything after.",
+    "use-when": "Anytime randomness, hitboxes, or hidden rules could make a loss feel stolen.",
+    "composes-with": [
+      "system-grace",
+      "antipattern-rng-frustration",
+      "antipattern-input-lie"
+    ],
+    "verify-with": "docs/JUICE.md",
+    "file": "design/50-patterns/fairness-and-trust.md"
   },
   {
     "id": "pattern-feedback-loops",
@@ -2642,6 +3763,48 @@
     "file": "design/50-patterns/mastery-and-flow.md"
   },
   {
+    "id": "pattern-meaningful-choice",
+    "title": "Meaningful Choice",
+    "kind": "pattern",
+    "tags": [
+      "decisions",
+      "depth",
+      "tradeoff",
+      "agency",
+      "balance"
+    ],
+    "summary": "The anatomy of a real decision — distinct options, legible stakes, no dominant answer; choices that inform, not decorate.",
+    "use-when": "You are adding a decision and want to know if it will actually be a decision.",
+    "composes-with": [
+      "pattern-risk-reward",
+      "system-build-diversity",
+      "antipattern-fake-choice"
+    ],
+    "verify-with": "docs/FUN.md",
+    "file": "design/50-patterns/meaningful-choice.md"
+  },
+  {
+    "id": "pattern-opening-hook",
+    "title": "The Opening Hook",
+    "kind": "pattern",
+    "tags": [
+      "onboarding",
+      "first-minutes",
+      "retention",
+      "teaching",
+      "pull"
+    ],
+    "summary": "The first two minutes decide the rest — hook with the fantasy fast, teach by doing, earn the next decision quickly.",
+    "use-when": "You are designing the first thing a player sees and does.",
+    "composes-with": [
+      "system-onboarding",
+      "antipattern-endless-tutorial",
+      "pattern-mastery-and-flow"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/50-patterns/opening-hook.md"
+  },
+  {
     "id": "pattern-pacing-and-tension",
     "title": "Pacing & Tension",
     "kind": "pattern",
@@ -2693,6 +3856,30 @@
     "file": "design/50-patterns/readability.md"
   },
   {
+    "id": "pattern-restraint-and-negative-space",
+    "title": "Restraint & Negative Space",
+    "kind": "pattern",
+    "tags": [
+      "focus",
+      "subtraction",
+      "elegance",
+      "pillars",
+      "minimalism"
+    ],
+    "summary": "Subtraction as design — what you leave out defines the game as much as what you add; every element must earn its place.",
+    "use-when": "Your design is growing and you sense it should be smaller, not bigger.",
+    "composes-with": [
+      "process-pillars",
+      "antipattern-feature-soup",
+      "anchor-mini-metro"
+    ],
+    "anchors": [
+      "anchor-mini-metro"
+    ],
+    "verify-with": "docs/FUN.md",
+    "file": "design/50-patterns/restraint-and-negative-space.md"
+  },
+  {
     "id": "pattern-risk-reward",
     "title": "Risk / Reward",
     "kind": "pattern",
@@ -2716,5 +3903,1280 @@
     ],
     "verify-with": "docs/FUN.md#21-·-narrative-decisions-reigns-like",
     "file": "design/50-patterns/risk-reward.md"
+  },
+  {
+    "id": "pattern-surprise-and-delight",
+    "title": "Surprise & Delight",
+    "kind": "pattern",
+    "tags": [
+      "discovery",
+      "secrets",
+      "reactivity",
+      "joy",
+      "moments"
+    ],
+    "summary": "The unearned gift — secrets, reactivity, and moments the player didn't expect; the game noticed them back.",
+    "use-when": "You want memorable moments and a world that feels alive and generous.",
+    "composes-with": [
+      "pattern-emergence",
+      "system-emergent-systems",
+      "world-narrative-delivery"
+    ],
+    "verify-with": "docs/JUDGE.md",
+    "file": "design/50-patterns/surprise-and-delight.md"
+  },
+  {
+    "id": "mechanic-block",
+    "title": "Block / Guard",
+    "kind": "mechanic",
+    "tags": [
+      "combat",
+      "defense",
+      "stamina",
+      "tempo"
+    ],
+    "summary": "Hold to absorb hits at a cost — the patient answer; guard breaks are the tension.",
+    "use-when": "Combat wants a low-skill-floor defense with a resource ceiling.",
+    "composes-with": [
+      "mechanic-parry",
+      "system-combat-model",
+      "mechanic-charge-attack"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/60-mechanics/block.md"
+  },
+  {
+    "id": "mechanic-bounce",
+    "title": "Bounce / Pogo",
+    "kind": "mechanic",
+    "tags": [
+      "platformer",
+      "momentum",
+      "combat",
+      "chain"
+    ],
+    "summary": "Rebound off surfaces or enemies — turns hazards into trampolines and demands you keep the chain alive.",
+    "use-when": "A platformer wants aerial chaining and enemies-as-terrain.",
+    "composes-with": [
+      "mechanic-ground-pound",
+      "mechanic-double-jump",
+      "pattern-mastery-and-flow"
+    ],
+    "verify-with": "docs/FUN.md#19-·-physics-arcade",
+    "file": "design/60-mechanics/bounce.md"
+  },
+  {
+    "id": "mechanic-charge-attack",
+    "title": "Charge & Release",
+    "kind": "mechanic",
+    "tags": [
+      "combat",
+      "commitment",
+      "timing",
+      "risk"
+    ],
+    "summary": "Hold to build power, release to spend it — a visible commitment the enemy can read too.",
+    "use-when": "You want a risk/reward beat where power costs exposure.",
+    "composes-with": [
+      "mechanic-ground-pound",
+      "pattern-risk-reward",
+      "system-telegraphs"
+    ],
+    "verify-with": "docs/JUICE.md",
+    "file": "design/60-mechanics/charge-attack.md"
+  },
+  {
+    "id": "mechanic-climb",
+    "title": "Climb (stamina)",
+    "kind": "mechanic",
+    "tags": [
+      "traversal",
+      "stamina",
+      "exploration",
+      "risk"
+    ],
+    "summary": "Ascend any surface against a draining stamina bar — freedom rented against a countdown.",
+    "use-when": "Open traversal wants risk budgeting rather than fixed handholds.",
+    "composes-with": [
+      "mechanic-ledge-grab",
+      "system-resource-loops",
+      "pattern-risk-reward"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/60-mechanics/climb.md"
+  },
+  {
+    "id": "mechanic-clone",
+    "title": "Clone / Echo",
+    "kind": "mechanic",
+    "tags": [
+      "puzzle",
+      "record-replay",
+      "coop-solo",
+      "time"
+    ],
+    "summary": "Record a run, then replay it as a helper — solve alongside your past selves.",
+    "use-when": "A puzzle wants self-cooperation or you-need-to-be-two-places design.",
+    "composes-with": [
+      "mechanic-rewind",
+      "pattern-emergence",
+      "genre-grid-puzzle"
+    ],
+    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "file": "design/60-mechanics/clone.md"
+  },
+  {
+    "id": "mechanic-combo-string",
+    "title": "Combo String / Cancels",
+    "kind": "mechanic",
+    "tags": [
+      "combat",
+      "depth",
+      "timing",
+      "mastery"
+    ],
+    "summary": "Chain attacks into cancellable sequences — the depth verb; mastery is knowing what links.",
+    "use-when": "Combat wants a skill ceiling of expressive, learnable sequences.",
+    "composes-with": [
+      "mechanic-lock-on",
+      "system-combat-model",
+      "system-mastery-curve"
+    ],
+    "anchors": [
+      "anchor-street-fighter"
+    ],
+    "verify-with": "docs/FUN.md#4-·-action-adventure",
+    "file": "design/60-mechanics/combo-string.md"
+  },
+  {
+    "id": "mechanic-dash",
+    "title": "Dash",
+    "kind": "mechanic",
+    "tags": [
+      "movement",
+      "burst",
+      "i-frames",
+      "platformer",
+      "combat"
+    ],
+    "summary": "A short burst of directional speed — the escape/approach verb; feel lives in windup, distance, and cooldown.",
+    "use-when": "Movement or combat needs an expressive escape/approach beat with a rechargeable cost.",
+    "composes-with": [
+      "mechanic-dodge-roll",
+      "system-grace",
+      "pattern-mastery-and-flow"
+    ],
+    "verify-with": "docs/JUICE.md",
+    "file": "design/60-mechanics/dash.md"
+  },
+  {
+    "id": "mechanic-deflect",
+    "title": "Deflect / Reflect",
+    "kind": "mechanic",
+    "tags": [
+      "combat",
+      "projectile",
+      "defense",
+      "bullet"
+    ],
+    "summary": "Bat a projectile back at its sender — turns incoming danger into your ammo.",
+    "use-when": "Ranged threat should be answerable with timing, not just dodging.",
+    "composes-with": [
+      "mechanic-parry",
+      "genre-bullet-hell",
+      "system-telegraphs"
+    ],
+    "verify-with": "docs/FUN.md#7-·-bullet-hell",
+    "file": "design/60-mechanics/deflect.md"
+  },
+  {
+    "id": "mechanic-dodge-roll",
+    "title": "Dodge Roll",
+    "kind": "mechanic",
+    "tags": [
+      "combat",
+      "i-frames",
+      "defense",
+      "timing"
+    ],
+    "summary": "A rolling evade with invulnerability frames — the get-out verb whose recovery is the honest cost.",
+    "use-when": "Action combat wants a reactive escape gated by commitment.",
+    "composes-with": [
+      "mechanic-dash",
+      "system-grace",
+      "mechanic-parry"
+    ],
+    "anchors": [
+      "anchor-dark-souls"
+    ],
+    "verify-with": "docs/FUN.md#4-·-action-adventure",
+    "file": "design/60-mechanics/dodge-roll.md"
+  },
+  {
+    "id": "mechanic-double-jump",
+    "title": "Double Jump",
+    "kind": "mechanic",
+    "tags": [
+      "movement",
+      "platformer",
+      "air-control",
+      "traversal"
+    ],
+    "summary": "A second airborne impulse — the forgiveness verb that turns one commitment into two decisions.",
+    "use-when": "A platformer needs air agency and a recovery beat without full flight.",
+    "composes-with": [
+      "mechanic-wall-jump",
+      "mechanic-glide",
+      "system-grace"
+    ],
+    "verify-with": "docs/FUN.md#2-·-precision-platformer",
+    "file": "design/60-mechanics/double-jump.md"
+  },
+  {
+    "id": "mechanic-glide",
+    "title": "Glide / Hover",
+    "kind": "mechanic",
+    "tags": [
+      "movement",
+      "air-control",
+      "traversal",
+      "descent"
+    ],
+    "summary": "Trade fall speed for horizontal control — the soft-landing verb that stretches an arc into a decision.",
+    "use-when": "Descents or gaps need controlled float without full flight.",
+    "composes-with": [
+      "mechanic-double-jump",
+      "mechanic-dash",
+      "pattern-pacing-and-tension"
+    ],
+    "verify-with": "docs/FUN.md#19-·-physics-arcade",
+    "file": "design/60-mechanics/glide.md"
+  },
+  {
+    "id": "mechanic-grapple",
+    "title": "Grapple / Hookshot",
+    "kind": "mechanic",
+    "tags": [
+      "movement",
+      "traversal",
+      "swing",
+      "reach",
+      "tool"
+    ],
+    "summary": "A tethered pull to a point — reach as a verb; anchors turn the map into a network of handholds.",
+    "use-when": "You want expressive long-range traversal or object-pulling that rewards target reads.",
+    "composes-with": [
+      "mechanic-swing",
+      "mechanic-throw",
+      "system-map-and-navigation"
+    ],
+    "verify-with": "docs/JUICE.md",
+    "file": "design/60-mechanics/grapple.md"
+  },
+  {
+    "id": "mechanic-gravity-flip",
+    "title": "Gravity Flip",
+    "kind": "mechanic",
+    "tags": [
+      "movement",
+      "puzzle",
+      "reorient",
+      "platformer"
+    ],
+    "summary": "Reverse or rotate down — the level stays; your relationship to it inverts.",
+    "use-when": "A puzzle-platformer wants a single verb that recontextualizes every room.",
+    "composes-with": [
+      "mechanic-grow-shrink",
+      "genre-puzzle-platformer",
+      "pattern-emergence"
+    ],
+    "verify-with": "docs/FUN.md#2-·-precision-platformer",
+    "file": "design/60-mechanics/gravity-flip.md"
+  },
+  {
+    "id": "mechanic-ground-pound",
+    "title": "Ground Pound / Slam",
+    "kind": "mechanic",
+    "tags": [
+      "combat",
+      "platformer",
+      "impact",
+      "area"
+    ],
+    "summary": "A committed downward strike — the emphatic verb; height buys power, landing buys a shockwave.",
+    "use-when": "You want a high-commitment area attack or a break-through-floor traversal beat.",
+    "composes-with": [
+      "mechanic-charge-attack",
+      "mechanic-bounce",
+      "system-telegraphs"
+    ],
+    "verify-with": "docs/JUICE.md",
+    "file": "design/60-mechanics/ground-pound.md"
+  },
+  {
+    "id": "mechanic-grow-shrink",
+    "title": "Grow / Shrink",
+    "kind": "mechanic",
+    "tags": [
+      "puzzle",
+      "scale",
+      "platformer",
+      "access"
+    ],
+    "summary": "Change size to change what fits, what reaches, and what crushes — scale as a key.",
+    "use-when": "A puzzle-platformer wants one verb that gates access by size.",
+    "composes-with": [
+      "mechanic-gravity-flip",
+      "genre-puzzle-platformer",
+      "pattern-emergence"
+    ],
+    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "file": "design/60-mechanics/grow-shrink.md"
+  },
+  {
+    "id": "mechanic-ledge-grab",
+    "title": "Ledge Grab / Mantle",
+    "kind": "mechanic",
+    "tags": [
+      "movement",
+      "platformer",
+      "recovery",
+      "traversal"
+    ],
+    "summary": "Catch and pull over an edge — the mercy that converts a near-miss into a foothold.",
+    "use-when": "Platforming needs recovery generosity and readable climb points.",
+    "composes-with": [
+      "mechanic-climb",
+      "system-grace",
+      "pattern-anti-frustration"
+    ],
+    "verify-with": "docs/FUN.md#2-·-precision-platformer",
+    "file": "design/60-mechanics/ledge-grab.md"
+  },
+  {
+    "id": "mechanic-lock-on",
+    "title": "Lock-On / Target",
+    "kind": "mechanic",
+    "tags": [
+      "combat",
+      "camera",
+      "targeting",
+      "readability"
+    ],
+    "summary": "Bind camera and attacks to one foe — clarity in a crowd at the cost of tunnel vision.",
+    "use-when": "Melee combat with multiple threats needs legible focus.",
+    "composes-with": [
+      "system-camera-and-controls",
+      "mechanic-combo-string",
+      "system-enemy-ai"
+    ],
+    "anchors": [
+      "anchor-dark-souls"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/60-mechanics/lock-on.md"
+  },
+  {
+    "id": "mechanic-magnet",
+    "title": "Magnet / Attract-Repel",
+    "kind": "mechanic",
+    "tags": [
+      "physics",
+      "pull-push",
+      "puzzle",
+      "combat"
+    ],
+    "summary": "Pull toward or push from a point — action-at-a-distance over metal, foes, and floors.",
+    "use-when": "You want field-based physics puzzles or crowd control.",
+    "composes-with": [
+      "mechanic-throw",
+      "genre-physics-arcade",
+      "system-hazards-and-environment"
+    ],
+    "verify-with": "docs/FUN.md#19-·-physics-arcade",
+    "file": "design/60-mechanics/magnet.md"
+  },
+  {
+    "id": "mechanic-merge",
+    "title": "Merge / Combine",
+    "kind": "mechanic",
+    "tags": [
+      "puzzle",
+      "combine",
+      "number-go-up",
+      "grid"
+    ],
+    "summary": "Fuse like-with-like into the next tier — the compulsive \"combine to ascend\" verb.",
+    "use-when": "You want a simple combinatorial growth loop with escalating payoff.",
+    "composes-with": [
+      "mechanic-stack",
+      "genre-match3",
+      "system-crafting"
+    ],
+    "anchors": [
+      "anchor-katamari"
+    ],
+    "verify-with": "docs/FUN.md#13-·-match-3",
+    "file": "design/60-mechanics/merge.md"
+  },
+  {
+    "id": "mechanic-parry",
+    "title": "Parry / Riposte",
+    "kind": "mechanic",
+    "tags": [
+      "combat",
+      "timing",
+      "defense",
+      "reads"
+    ],
+    "summary": "A tight defensive window that flips offense to you — the read that turns the best attack into an opening.",
+    "use-when": "Deliberate combat wants a high-skill, high-reward defensive answer.",
+    "composes-with": [
+      "mechanic-block",
+      "mechanic-deflect",
+      "system-telegraphs"
+    ],
+    "anchors": [
+      "anchor-into-the-breach"
+    ],
+    "verify-with": "docs/FUN.md#4-·-action-adventure",
+    "file": "design/60-mechanics/parry.md"
+  },
+  {
+    "id": "mechanic-portal",
+    "title": "Portal / Linked Doors",
+    "kind": "mechanic",
+    "tags": [
+      "puzzle",
+      "space",
+      "teleport",
+      "momentum"
+    ],
+    "summary": "Two openings become one — carry momentum and sightlines through folded space.",
+    "use-when": "A spatial puzzle wants folded geometry and momentum tricks.",
+    "composes-with": [
+      "mechanic-teleport",
+      "genre-puzzle-platformer",
+      "pattern-emergence"
+    ],
+    "anchors": [
+      "anchor-portal"
+    ],
+    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "file": "design/60-mechanics/portal.md"
+  },
+  {
+    "id": "mechanic-possess",
+    "title": "Possess / Body-Swap",
+    "kind": "mechanic",
+    "tags": [
+      "control",
+      "puzzle",
+      "stealth",
+      "perspective"
+    ],
+    "summary": "Leave your body to control another — the puzzle is which vessel solves which room.",
+    "use-when": "You want perspective puzzles or \"the right tool is a body\" design.",
+    "composes-with": [
+      "mechanic-teleport",
+      "genre-stealth",
+      "pattern-emergence"
+    ],
+    "anchors": [
+      "anchor-dishonored"
+    ],
+    "verify-with": "docs/FUN.md#5-·-stealth",
+    "file": "design/60-mechanics/possess.md"
+  },
+  {
+    "id": "mechanic-rewind",
+    "title": "Rewind / Undo",
+    "kind": "mechanic",
+    "tags": [
+      "time",
+      "puzzle",
+      "forgiveness",
+      "mechanic"
+    ],
+    "summary": "Roll time backward on demand — failure becomes a draft; the puzzle is what NOT to undo.",
+    "use-when": "A puzzle or precision game wants exploration without punishment, or time as the toy.",
+    "composes-with": [
+      "mechanic-time-stop",
+      "mechanic-clone",
+      "pattern-anti-frustration"
+    ],
+    "anchors": [
+      "anchor-braid"
+    ],
+    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "file": "design/60-mechanics/rewind.md"
+  },
+  {
+    "id": "mechanic-stack",
+    "title": "Stack / Tower",
+    "kind": "mechanic",
+    "tags": [
+      "physics",
+      "puzzle",
+      "balance",
+      "build"
+    ],
+    "summary": "Pile objects into a growing, wobbling structure — height is score and jeopardy at once.",
+    "use-when": "You want a build-and-balance toy where growth is tension.",
+    "composes-with": [
+      "mechanic-throw",
+      "genre-physics-arcade",
+      "pattern-risk-reward"
+    ],
+    "verify-with": "docs/FUN.md#19-·-physics-arcade",
+    "file": "design/60-mechanics/stack.md"
+  },
+  {
+    "id": "mechanic-swing",
+    "title": "Pendulum Swing",
+    "kind": "mechanic",
+    "tags": [
+      "physics",
+      "momentum",
+      "traversal",
+      "rope"
+    ],
+    "summary": "Convert a tether into an arc — momentum-in, momentum-out; the release timing is the skill.",
+    "use-when": "Traversal or combat wants physical, trust-the-physics motion.",
+    "composes-with": [
+      "mechanic-grapple",
+      "pattern-mastery-and-flow",
+      "genre-physics-arcade"
+    ],
+    "verify-with": "docs/FUN.md#19-·-physics-arcade",
+    "file": "design/60-mechanics/swing.md"
+  },
+  {
+    "id": "mechanic-teleport",
+    "title": "Teleport / Blink",
+    "kind": "mechanic",
+    "tags": [
+      "movement",
+      "positioning",
+      "puzzle",
+      "combat"
+    ],
+    "summary": "Instant relocation to a chosen spot — collapses distance into a targeting decision.",
+    "use-when": "You want positional puzzles or combat repositioning without travel time.",
+    "composes-with": [
+      "mechanic-portal",
+      "mechanic-clone",
+      "system-telegraphs"
+    ],
+    "verify-with": "docs/JUICE.md",
+    "file": "design/60-mechanics/teleport.md"
+  },
+  {
+    "id": "mechanic-throw",
+    "title": "Throw / Carry",
+    "kind": "mechanic",
+    "tags": [
+      "physics",
+      "object",
+      "coop",
+      "puzzle"
+    ],
+    "summary": "Pick up and hurl a thing — makes the world into ammo, keys, and shared burdens.",
+    "use-when": "You want object interaction, coop hand-offs, or physics puzzles.",
+    "composes-with": [
+      "mechanic-grapple",
+      "genre-coop-chaos",
+      "pattern-emergence"
+    ],
+    "anchors": [
+      "anchor-overcooked"
+    ],
+    "verify-with": "docs/FUN.md#19-·-physics-arcade",
+    "file": "design/60-mechanics/throw.md"
+  },
+  {
+    "id": "mechanic-time-stop",
+    "title": "Time Stop / Slow",
+    "kind": "mechanic",
+    "tags": [
+      "time",
+      "combat",
+      "puzzle",
+      "control"
+    ],
+    "summary": "Freeze or slow the world while you act — bullet-time as a spendable resource.",
+    "use-when": "You want reaction relief, planning windows, or a power fantasy of control.",
+    "composes-with": [
+      "mechanic-rewind",
+      "system-telegraphs",
+      "pattern-pacing-and-tension"
+    ],
+    "verify-with": "docs/JUICE.md",
+    "file": "design/60-mechanics/time-stop.md"
+  },
+  {
+    "id": "mechanic-wall-jump",
+    "title": "Wall Jump",
+    "kind": "mechanic",
+    "tags": [
+      "movement",
+      "platformer",
+      "vertical",
+      "traversal"
+    ],
+    "summary": "Kick off a wall to climb a shaft — turns geometry into a ladder and demands rhythm.",
+    "use-when": "Vertical traversal needs skill expression against walls, not just floors.",
+    "composes-with": [
+      "mechanic-wall-run",
+      "mechanic-ledge-grab",
+      "system-grace"
+    ],
+    "verify-with": "docs/FUN.md#2-·-precision-platformer",
+    "file": "design/60-mechanics/wall-jump.md"
+  },
+  {
+    "id": "mechanic-wall-run",
+    "title": "Wall Run",
+    "kind": "mechanic",
+    "tags": [
+      "movement",
+      "momentum",
+      "traversal",
+      "parkour"
+    ],
+    "summary": "Sprint along a vertical surface for a beat — momentum you must keep feeding or fall.",
+    "use-when": "Fast traversal wants flow across surfaces, punishing hesitation.",
+    "composes-with": [
+      "mechanic-wall-jump",
+      "mechanic-dash",
+      "pattern-mastery-and-flow"
+    ],
+    "verify-with": "docs/JUICE.md",
+    "file": "design/60-mechanics/wall-run.md"
+  },
+  {
+    "id": "antipattern-backtracking-tax",
+    "title": "Backtracking Tax",
+    "kind": "antipattern",
+    "tags": [
+      "pacing",
+      "navigation",
+      "padding",
+      "friction"
+    ],
+    "summary": "Length padded by re-walking known ground — the map bills you twice for the same content.",
+    "use-when": "Your world sends players back through solved space with nothing new.",
+    "composes-with": [
+      "system-map-and-navigation",
+      "pattern-pacing-and-tension",
+      "genre-metroidvania"
+    ],
+    "verify-with": "docs/FUN.md#3-·-metroidvania",
+    "file": "design/70-antipatterns/backtracking-tax.md"
+  },
+  {
+    "id": "antipattern-boring-optimal",
+    "title": "The Boring Optimal",
+    "kind": "antipattern",
+    "tags": [
+      "incentives",
+      "feel",
+      "tedium",
+      "depth"
+    ],
+    "summary": "The best strategy is the least fun one — the game punishes you for playing it the exciting way.",
+    "use-when": "Your reward structure makes the tedious line the correct line.",
+    "composes-with": [
+      "pattern-risk-reward",
+      "system-economy",
+      "pattern-meaningful-choice"
+    ],
+    "verify-with": "docs/FUN.md",
+    "file": "design/70-antipatterns/boring-optimal.md"
+  },
+  {
+    "id": "antipattern-content-desert",
+    "title": "Content Desert",
+    "kind": "antipattern",
+    "tags": [
+      "open-world",
+      "pacing",
+      "space",
+      "filler"
+    ],
+    "summary": "A big empty world padded with distance — traversal masquerading as content, with nothing to find.",
+    "use-when": "You are scaling up world size and worrying it feels thin.",
+    "composes-with": [
+      "system-map-and-navigation",
+      "pattern-pacing-and-tension",
+      "world-level-as-story"
+    ],
+    "verify-with": "docs/FUN.md#3-·-metroidvania",
+    "file": "design/70-antipatterns/content-desert.md"
+  },
+  {
+    "id": "antipattern-currency-spaghetti",
+    "title": "Currency Spaghetti",
+    "kind": "antipattern",
+    "tags": [
+      "economy",
+      "ui",
+      "clarity",
+      "bloat"
+    ],
+    "summary": "Too many currencies with unclear roles — the wallet becomes a puzzle the player never asked to solve.",
+    "use-when": "You are about to add another resource type or premium currency.",
+    "composes-with": [
+      "system-economy",
+      "system-inventory-and-ui",
+      "antipattern-feature-soup"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/70-antipatterns/currency-spaghetti.md"
+  },
+  {
+    "id": "antipattern-decision-paralysis",
+    "title": "Decision Paralysis",
+    "kind": "antipattern",
+    "tags": [
+      "ui",
+      "onboarding",
+      "clarity",
+      "choice"
+    ],
+    "summary": "Too many options at once — the player freezes instead of choosing, and depth reads as noise.",
+    "use-when": "You are presenting many simultaneous choices, especially early.",
+    "composes-with": [
+      "system-onboarding",
+      "pattern-meaningful-choice",
+      "system-inventory-and-ui"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/70-antipatterns/decision-paralysis.md"
+  },
+  {
+    "id": "antipattern-difficulty-cliff",
+    "title": "Difficulty Cliff",
+    "kind": "antipattern",
+    "tags": [
+      "difficulty",
+      "pacing",
+      "onboarding",
+      "spike"
+    ],
+    "summary": "A sudden wall the ramp never prepared for — the curve becomes a step and players fall off it.",
+    "use-when": "Testers stall hard at one point after smooth progress.",
+    "composes-with": [
+      "system-difficulty-and-dda",
+      "system-onboarding",
+      "pattern-mastery-and-flow"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/70-antipatterns/difficulty-cliff.md"
+  },
+  {
+    "id": "antipattern-endless-tutorial",
+    "title": "The Endless Tutorial",
+    "kind": "antipattern",
+    "tags": [
+      "onboarding",
+      "pacing",
+      "control",
+      "friction"
+    ],
+    "summary": "Teaching that never yields control — the game explains for an hour before it trusts the player to play.",
+    "use-when": "Your opening front-loads instruction instead of letting play teach.",
+    "composes-with": [
+      "system-onboarding",
+      "pattern-opening-hook",
+      "pattern-mastery-and-flow"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/70-antipatterns/endless-tutorial.md"
+  },
+  {
+    "id": "antipattern-fail-loop-tax",
+    "title": "The Fail-Loop Tax",
+    "kind": "antipattern",
+    "tags": [
+      "difficulty",
+      "retry",
+      "respect",
+      "friction"
+    ],
+    "summary": "Losing costs time, not lessons — long walks back and re-watched cutscenes punish failure without teaching.",
+    "use-when": "Death/failure sends players through friction before they can try again.",
+    "composes-with": [
+      "system-save-and-checkpoint",
+      "pattern-anti-frustration",
+      "system-difficulty-and-dda"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/70-antipatterns/fail-loop-tax.md"
+  },
+  {
+    "id": "antipattern-fake-choice",
+    "title": "Fake Choice",
+    "kind": "antipattern",
+    "tags": [
+      "decisions",
+      "balance",
+      "depth",
+      "illusion"
+    ],
+    "summary": "Options that look meaningful but collapse to one right answer — the menu is a costume for a corridor.",
+    "use-when": "You are adding choices; check whether any is actually taken by informed players.",
+    "composes-with": [
+      "pattern-meaningful-choice",
+      "system-build-diversity",
+      "antipattern-solved-metagame"
+    ],
+    "verify-with": "docs/FUN.md",
+    "file": "design/70-antipatterns/fake-choice.md"
+  },
+  {
+    "id": "antipattern-false-depth",
+    "title": "False Depth",
+    "kind": "antipattern",
+    "tags": [
+      "depth",
+      "complexity",
+      "clarity",
+      "mastery"
+    ],
+    "summary": "Complexity mistaken for depth — many rules, few meaningful decisions; the game is complicated, not deep.",
+    "use-when": "Your system has grown many rules; check whether they create decisions.",
+    "composes-with": [
+      "pattern-emergence",
+      "pattern-meaningful-choice",
+      "system-mastery-curve"
+    ],
+    "verify-with": "docs/FUN.md",
+    "file": "design/70-antipatterns/false-depth.md"
+  },
+  {
+    "id": "antipattern-feature-soup",
+    "title": "Feature Soup",
+    "kind": "antipattern",
+    "tags": [
+      "scope",
+      "focus",
+      "pillars",
+      "bloat"
+    ],
+    "summary": "Many systems, no spine — every feature is present, none is load-bearing, the game is about nothing.",
+    "use-when": "Your design keeps adding systems and the pillars no longer predict what belongs.",
+    "composes-with": [
+      "process-pillars",
+      "process-core-loop",
+      "antipattern-second-system"
+    ],
+    "verify-with": "docs/FUN.md",
+    "file": "design/70-antipatterns/feature-soup.md"
+  },
+  {
+    "id": "antipattern-grind-wall",
+    "title": "Grind Wall",
+    "kind": "antipattern",
+    "tags": [
+      "pacing",
+      "progression",
+      "time-gate",
+      "friction"
+    ],
+    "summary": "Progress gated by repetition, not skill or choice — the game stops being played and starts being farmed.",
+    "use-when": "A ramp stalls and the only way through is repeating solved content.",
+    "composes-with": [
+      "system-progression",
+      "pattern-pacing-and-tension",
+      "antipattern-pay-to-skip"
+    ],
+    "verify-with": "docs/FUN.md#14-·-incremental",
+    "file": "design/70-antipatterns/grind-wall.md"
+  },
+  {
+    "id": "antipattern-guess-the-designer",
+    "title": "Guess-the-Designer",
+    "kind": "antipattern",
+    "tags": [
+      "puzzle",
+      "fairness",
+      "readability",
+      "solution"
+    ],
+    "summary": "Puzzles solved by reading the author's mind, not the rules — leaps of logic the game never taught.",
+    "use-when": "A puzzle solution depends on knowledge the game did not provide.",
+    "composes-with": [
+      "pattern-fairness-and-trust",
+      "pattern-readability",
+      "genre-grid-puzzle"
+    ],
+    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "file": "design/70-antipatterns/guess-the-designer.md"
+  },
+  {
+    "id": "antipattern-input-lie",
+    "title": "The Input Lie",
+    "kind": "antipattern",
+    "tags": [
+      "controls",
+      "feel",
+      "latency",
+      "trust"
+    ],
+    "summary": "The game drops or delays inputs — the player did the thing, the game disagreed, and trust dies.",
+    "use-when": "Testers say controls feel \"off\" or \"unfair\" without a clear reason.",
+    "composes-with": [
+      "system-camera-and-controls",
+      "system-grace",
+      "pattern-fairness-and-trust"
+    ],
+    "verify-with": "docs/JUICE.md",
+    "file": "design/70-antipatterns/input-lie.md"
+  },
+  {
+    "id": "antipattern-pay-to-skip",
+    "title": "Pay-to-Skip",
+    "kind": "antipattern",
+    "tags": [
+      "monetization",
+      "ethics",
+      "friction",
+      "dark-pattern"
+    ],
+    "summary": "Design that manufactures friction so it can sell the cure — the game is built worse on purpose.",
+    "use-when": "A monetization idea would profit from making the base game more tedious.",
+    "composes-with": [
+      "system-economy",
+      "system-reward-schedules",
+      "antipattern-grind-wall"
+    ],
+    "verify-with": "docs/FUN.md",
+    "file": "design/70-antipatterns/pay-to-skip.md"
+  },
+  {
+    "id": "antipattern-power-creep",
+    "title": "Power Creep",
+    "kind": "antipattern",
+    "tags": [
+      "balance",
+      "progression",
+      "inflation",
+      "live-ops"
+    ],
+    "summary": "Each new addition outclasses the old — content decays on arrival and the back catalog dies.",
+    "use-when": "You are adding new units/cards/gear over time (live-ops or expansions).",
+    "composes-with": [
+      "system-progression",
+      "system-live-ops-and-seasons",
+      "antipattern-stat-inflation"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/70-antipatterns/power-creep.md"
+  },
+  {
+    "id": "antipattern-rng-frustration",
+    "title": "RNG Frustration",
+    "kind": "antipattern",
+    "tags": [
+      "randomness",
+      "fairness",
+      "variance",
+      "feel"
+    ],
+    "summary": "Variance that erases skill — a good decision loses to a coin flip, and the loss feels stolen, not earned.",
+    "use-when": "Randomness affects outcomes players feel they controlled.",
+    "composes-with": [
+      "system-procgen-design",
+      "pattern-fairness-and-trust",
+      "system-loot-tables"
+    ],
+    "verify-with": "docs/FUN.md#10-·-traditional-roguelike",
+    "file": "design/70-antipatterns/rng-frustration.md"
+  },
+  {
+    "id": "antipattern-second-system",
+    "title": "Second-System Effect",
+    "kind": "antipattern",
+    "tags": [
+      "scope",
+      "ambition",
+      "bloat",
+      "sequel"
+    ],
+    "summary": "Over-building the follow-up system with every idea you cut the first time — ambition without the discipline that made v1 work.",
+    "use-when": "You are designing \"the big version\" of a system that worked when it was small.",
+    "composes-with": [
+      "process-pillars",
+      "antipattern-feature-soup",
+      "pattern-restraint-and-negative-space"
+    ],
+    "verify-with": "docs/FUN.md",
+    "file": "design/70-antipatterns/second-system.md"
+  },
+  {
+    "id": "antipattern-solved-metagame",
+    "title": "Solved Metagame",
+    "kind": "antipattern",
+    "tags": [
+      "balance",
+      "depth",
+      "dominant-strategy",
+      "build"
+    ],
+    "summary": "One build/deck/opener dominates — mastery becomes copying the wiki, and the space collapses.",
+    "use-when": "Playtest data or your own play shows convergence on a single strategy.",
+    "composes-with": [
+      "system-build-diversity",
+      "system-counter-systems",
+      "pattern-meaningful-choice"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/70-antipatterns/solved-metagame.md"
+  },
+  {
+    "id": "antipattern-stat-inflation",
+    "title": "Stat Inflation",
+    "kind": "antipattern",
+    "tags": [
+      "progression",
+      "numbers",
+      "feel",
+      "fake-growth"
+    ],
+    "summary": "Bigger numbers standing in for real progression — +10% forever, with no new decision behind the growth.",
+    "use-when": "Your progression adds magnitude without adding options.",
+    "composes-with": [
+      "system-progression",
+      "system-skill-trees",
+      "antipattern-power-creep"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/70-antipatterns/stat-inflation.md"
+  },
+  {
+    "id": "antipattern-unreadable-juice",
+    "title": "Unreadable Juice",
+    "kind": "antipattern",
+    "tags": [
+      "juice",
+      "readability",
+      "feedback",
+      "clarity"
+    ],
+    "summary": "Feedback so loud it hides state — particles and shake bury the information the player needs to act.",
+    "use-when": "You are adding effects and the screen is getting busy.",
+    "composes-with": [
+      "pattern-readability",
+      "pattern-juice-choreography",
+      "world-mood-and-atmosphere"
+    ],
+    "verify-with": "docs/JUICE.md",
+    "file": "design/70-antipatterns/unreadable-juice.md"
+  },
+  {
+    "id": "recipe-colony-nemesis",
+    "title": "Colony Nemesis",
+    "kind": "recipe",
+    "tags": [
+      "colony-sim",
+      "nemesis",
+      "emergent",
+      "recipe",
+      "rimworld"
+    ],
+    "summary": "RimWorld's story-generator colony with Shadow of Mordor's memory — rivals who remember what you did and come back for it.",
+    "use-when": "You want emergent personal drama in a management sim.",
+    "composes-with": [
+      "anchor-rimworld",
+      "anchor-shadow-of-mordor",
+      "system-emergent-systems",
+      "genre-management-tycoon"
+    ],
+    "anchors": [
+      "anchor-rimworld",
+      "anchor-shadow-of-mordor"
+    ],
+    "verify-with": "docs/VERIFICATION.md",
+    "file": "design/80-recipes/colony-nemesis.md"
+  },
+  {
+    "id": "recipe-cozy-deckbuilder",
+    "title": "Cozy Deckbuilder",
+    "kind": "recipe",
+    "tags": [
+      "deckbuilder",
+      "cozy",
+      "no-fail",
+      "recipe",
+      "composition"
+    ],
+    "summary": "Slay-the-Spire's draft-and-build with the stakes removed — a gentle, no-death deckbuilder about tending, not surviving.",
+    "use-when": "You want deckbuilding depth in a calm, no-fail wrapper.",
+    "composes-with": [
+      "anchor-slay-the-spire",
+      "genre-deckbuilder",
+      "genre-farming-sim",
+      "process-the-twist"
+    ],
+    "anchors": [
+      "anchor-slay-the-spire",
+      "anchor-stardew-valley"
+    ],
+    "verify-with": "docs/FUN.md#11-·-deckbuilder",
+    "file": "design/80-recipes/cozy-deckbuilder.md"
+  },
+  {
+    "id": "recipe-detective-deduction-board",
+    "title": "Detective Deduction Board",
+    "kind": "recipe",
+    "tags": [
+      "deduction",
+      "puzzle",
+      "notebook",
+      "recipe",
+      "obra-dinn"
+    ],
+    "summary": "Obra Dinn's reasoning loop on a grid puzzle — gather clues, fill a deduction board, and the game trusts your logic.",
+    "use-when": "You want a deduction game where the player reasons, not brute-forces.",
+    "composes-with": [
+      "anchor-return-of-the-obra-dinn",
+      "genre-grid-puzzle",
+      "system-quests-and-objectives",
+      "pattern-fairness-and-trust"
+    ],
+    "anchors": [
+      "anchor-return-of-the-obra-dinn"
+    ],
+    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "file": "design/80-recipes/detective-deduction-board.md"
+  },
+  {
+    "id": "recipe-merge-factory",
+    "title": "Merge Factory",
+    "kind": "recipe",
+    "tags": [
+      "merge",
+      "automation",
+      "factory",
+      "recipe",
+      "factorio"
+    ],
+    "summary": "Threes-style merging scaled into a Factorio automation loop — combine to ascend, then automate the combining.",
+    "use-when": "You want a merge toy that grows into a systemic automation game.",
+    "composes-with": [
+      "mechanic-merge",
+      "anchor-factorio",
+      "system-resource-loops",
+      "genre-incremental"
+    ],
+    "anchors": [
+      "anchor-factorio",
+      "anchor-katamari"
+    ],
+    "verify-with": "docs/FUN.md#14-·-incremental",
+    "file": "design/80-recipes/merge-factory.md"
+  },
+  {
+    "id": "recipe-one-button-boss-rush",
+    "title": "One-Button Boss Rush",
+    "kind": "recipe",
+    "tags": [
+      "boss-rush",
+      "one-button",
+      "constraint",
+      "recipe",
+      "accessible"
+    ],
+    "summary": "Cuphead's pattern-mastery bosses reduced to a single input — all depth in timing, none in the controller.",
+    "use-when": "You want maximal challenge/spectacle from minimal input (accessibility or js13k).",
+    "composes-with": [
+      "anchor-cuphead",
+      "system-boss-design",
+      "system-telegraphs",
+      "process-the-twist"
+    ],
+    "anchors": [
+      "anchor-cuphead",
+      "anchor-peggle"
+    ],
+    "verify-with": "docs/FUN.md#7-·-bullet-hell",
+    "file": "design/80-recipes/one-button-boss-rush.md"
+  },
+  {
+    "id": "recipe-rhythm-platformer",
+    "title": "Rhythm Platformer",
+    "kind": "recipe",
+    "tags": [
+      "rhythm",
+      "platformer",
+      "beat-as-time",
+      "recipe",
+      "music"
+    ],
+    "summary": "Precision platforming where the beat IS the simulation clock — jumps land on rhythm, the level plays like a song.",
+    "use-when": "You want movement and music fused so the soundtrack drives the platforming.",
+    "composes-with": [
+      "genre-rhythm",
+      "genre-precision-platformer",
+      "mechanic-double-jump",
+      "world-soundscape"
+    ],
+    "anchors": [
+      "anchor-celeste"
+    ],
+    "verify-with": "docs/FUN.md#18-·-rhythm",
+    "file": "design/80-recipes/rhythm-platformer.md"
+  },
+  {
+    "id": "recipe-swipe-kingdom",
+    "title": "Swipe Kingdom",
+    "kind": "recipe",
+    "tags": [
+      "reigns",
+      "city-builder",
+      "stewardship",
+      "recipe",
+      "meters"
+    ],
+    "summary": "Reigns' swipe-choice stewardship fused with a city-builder — each yes/no card also nudges a settlement you watch grow.",
+    "use-when": "You want lightweight narrative choice with visible systemic consequence.",
+    "composes-with": [
+      "anchor-reigns",
+      "genre-city-builder",
+      "genre-narrative-decisions",
+      "pattern-feedback-loops"
+    ],
+    "anchors": [
+      "anchor-reigns"
+    ],
+    "verify-with": "docs/FUN.md#21-·-narrative-decisions-reigns-like",
+    "file": "design/80-recipes/swipe-kingdom.md"
+  },
+  {
+    "id": "recipe-tower-defense-roguelite",
+    "title": "Tower-Defense Roguelite",
+    "kind": "recipe",
+    "tags": [
+      "tower-defense",
+      "roguelite",
+      "draft",
+      "meta",
+      "recipe"
+    ],
+    "summary": "Tower defense where towers are drafted each run and meta-progression persists — build decisions under roguelike variance.",
+    "use-when": "You want TD replayability via drafted builds and between-run unlocks.",
+    "composes-with": [
+      "genre-tower-defense",
+      "system-meta-progression",
+      "system-build-diversity",
+      "process-the-twist"
+    ],
+    "anchors": [
+      "anchor-slay-the-spire",
+      "anchor-into-the-breach"
+    ],
+    "verify-with": "docs/FUN.md#8-·-tower-defense",
+    "file": "design/80-recipes/tower-defense-roguelite.md"
   }
 ]

@@ -1,7 +1,7 @@
 ---
-id: kind-slug                       # STABLE. namespaced: process-* anchor-* genre-* system-* world-* pattern-*
+id: kind-slug                       # STABLE. namespaced: process-* anchor-* genre-* system-* world-* pattern-* mechanic-* antipattern-* recipe-*
 title: Human Readable Title
-kind: process | anchor | genre | system | worldbuilding | pattern
+kind: process | anchor | genre | system | worldbuilding | pattern | mechanic | antipattern | recipe
 tags: [lowercase, search, keywords] # 4–10; the words an agent would grep for
 summary: One sentence, <140 chars — this is what appears in INDEX.md and index.json.
 use-when: One line — the situation in which an agent should reach for this module.
@@ -57,6 +57,16 @@ spec). In brief:
   (Kentō palette) · Traps.
 - **pattern** → The principle · Why it works · Levers · Applied across genres ·
   Overdone when… · Verify/feel-gate link.
+- **mechanic** → The verb (what the player *does*) · How it feels / why it's fun ·
+  Tuning levers (with sane defaults) · Genres & anchors it slots into · Twist
+  seams · How it wires to Hayao (real primitive / sandbox) · Fails when… · Verify.
+- **antipattern** → The smell (name the failure) · How it happens · The tell (how
+  to spot it in your own design) · The fix (what to do instead — link the
+  `system-*`/`pattern-*` that cures it) · Seen in… (concrete) · Verify/guard link.
+- **recipe** → The brief (one-line "X but Y") · Anchors · Genre + systems pulled
+  (link them) · The twist applied (which vector) · The 3 pillars · Scope & first
+  playable · Handoff (verify-with targets). A recipe COMPOSES existing modules —
+  it links them, it does not restate them.
 
 ## Composes with
 
