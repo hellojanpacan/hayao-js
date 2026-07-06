@@ -650,6 +650,36 @@
     "file": "design/10-anchors/loop-hero.md"
   },
   {
+    "id": "anchor-mario-kart",
+    "title": "Mario Kart",
+    "kind": "anchor",
+    "tags": [
+      "racing",
+      "kart",
+      "drift-boost",
+      "items",
+      "catch-up",
+      "rubber-band",
+      "accessible-depth",
+      "couch-competitive"
+    ],
+    "summary": "Accessible kart racing where a drift-boost is the hidden skill ceiling and position-weighted items keep every racer in contention to the finish.",
+    "use-when": "Designing a competitive or party racer where rivals, spectacle, and a bunched pack matter more than a solo clock.",
+    "composes-with": [
+      "genre-racing",
+      "system-enemy-ai",
+      "system-difficulty-and-dda",
+      "pattern-risk-reward",
+      "system-coop-and-competition",
+      "system-economy"
+    ],
+    "anchors": [
+      "anchor-mario-kart"
+    ],
+    "verify-with": "docs/FUN.md#20-·-top-down-racing",
+    "file": "design/10-anchors/mario-kart.md"
+  },
+  {
     "id": "anchor-minecraft",
     "title": "Minecraft",
     "kind": "anchor",
@@ -1129,6 +1159,35 @@
     ],
     "verify-with": "docs/FUN.md#1-·-grid-puzzle-sokoban",
     "file": "design/10-anchors/tetris.md"
+  },
+  {
+    "id": "anchor-trackmania",
+    "title": "Trackmania",
+    "kind": "anchor",
+    "tags": [
+      "racing",
+      "time-attack",
+      "mastery",
+      "ghost",
+      "restart",
+      "medal-ladder",
+      "racing-line",
+      "track-editor"
+    ],
+    "summary": "Time-attack racing stripped to the clock as sole opponent, instant restart as the practice loop, and a medal ladder that fits one track to every skill.",
+    "use-when": "Designing a racer whose fun is beating the clock on a fixed line, where retry is free and difficulty is a self-paced ladder, not a menu.",
+    "composes-with": [
+      "genre-racing",
+      "system-mastery-curve",
+      "system-difficulty-and-dda",
+      "pattern-mastery-and-flow",
+      "system-progression"
+    ],
+    "anchors": [
+      "anchor-trackmania"
+    ],
+    "verify-with": "docs/FUN.md#20-·-top-down-racing",
+    "file": "design/10-anchors/trackmania.md"
   },
   {
     "id": "anchor-vampire-survivors",
@@ -1855,7 +1914,10 @@
       "pattern-risk-reward",
       "pattern-pacing-and-tension"
     ],
-    "anchors": [],
+    "anchors": [
+      "anchor-trackmania",
+      "anchor-mario-kart"
+    ],
     "verify-with": "docs/FUN.md#20-·-top-down-racing",
     "file": "design/20-genres/racing.md"
   },
