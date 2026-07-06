@@ -6,7 +6,7 @@ tags: [farming, life-sim, calendar, crops, seasons, cozy, solvency, routine]
 summary: Calm calendar-driven life sim where the fun is gentle solvency — plans made on a season that can actually come true.
 use-when: Designing a cozy farming/life sim whose pull is a routine of small plans paying off within an honest calendar.
 composes-with: [system-resource-loops, system-session-structure, system-economy, pattern-pacing-and-tension]
-anchors: [anchor-stardew-valley]
+anchors: [anchor-stardew-valley, anchor-animal-crossing]
 verify-with: docs/FUN.md#15--farminglife-sim
 ---
 
@@ -102,6 +102,8 @@ list that closes itself one satisfying day at a time.
 
 - [[anchor-stardew-valley]] — the calm compulsion loop, open-ended goals, and the
   day/season/year nesting; the definitive DNA for this genre.
+- [[anchor-animal-crossing]] — the zero-fail, real-clock sibling; steal its
+  reward-the-ritual-of-returning loop if you want to drop the season-end pressure.
 
 ## Verify
 
