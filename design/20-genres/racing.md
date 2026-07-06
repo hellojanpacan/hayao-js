@@ -97,14 +97,14 @@ thumbs: the corner you used to blow now flows, and the clock proves it.
 
 ## Anchors
 
-- [[anchor-trackmania]]: the definitive DNA for this genre's soul. The clock as
+- [[anchor-trackmania]] — the definitive DNA for this genre's soul: the clock as
   the only opponent, instant free restart as the practice loop, and a medal ladder
   that fits one track to every skill. Steal it when the fun is a solo line against
   the clock.
-- [[anchor-mario-kart]]: the competitive/arcade pole. The drift-boost skill ceiling
-  on a trivial floor, and position-weighted catch-up that bands the field without
-  erasing an earned lead. Steal it when rivals and spectacle matter more than the
-  clock.
+- [[anchor-mario-kart]] — the competitive/arcade pole: the drift-boost skill
+  ceiling on a trivial floor, and position-weighted catch-up that bands the field
+  without erasing an earned lead. Steal it when rivals and spectacle matter more
+  than the clock.
 
 Still worth borrowing across both: [[anchor-tetris]] for the "one tuned verb,
 endless mastery" discipline, and [[anchor-into-the-breach]] for perfect-information

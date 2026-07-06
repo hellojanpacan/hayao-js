@@ -663,7 +663,7 @@
       "accessible-depth",
       "couch-competitive"
     ],
-    "summary": "Accessible kart racing where a drift-boost is the hidden skill ceiling and position-weighted items keep every racer in contention to the finish.",
+    "summary": "Accessible kart racing — a drift-boost is the hidden skill ceiling, and position-weighted items keep every racer in contention to the last corner.",
     "use-when": "Designing a competitive or party racer where rivals, spectacle, and a bunched pack matter more than a solo clock.",
     "composes-with": [
       "genre-racing",
@@ -1174,7 +1174,7 @@
       "racing-line",
       "track-editor"
     ],
-    "summary": "Time-attack racing stripped to the clock as sole opponent, instant restart as the practice loop, and a medal ladder that fits one track to every skill.",
+    "summary": "Time-attack racing distilled — the clock is the only opponent, restart is instant, and a medal ladder fits one track to every skill.",
     "use-when": "Designing a racer whose fun is beating the clock on a fixed line, where retry is free and difficulty is a self-paced ladder, not a menu.",
     "composes-with": [
       "genre-racing",
