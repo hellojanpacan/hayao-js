@@ -342,6 +342,62 @@ broken by tree order. For any game where sprites overlap (top-down, iso), derive
 - **`diamond` / `regularPoly` shapes** — sugar over `poly` so an iso tile or hex
   reads as intent, not four re-typed corners.
 
+## The animation & lighting seam
+
+Two subsystems landed in 0.4.1 — authored **animation** (clips, blend spaces, IK,
+skeletons) and 2D **lighting** (a light layer, point lights, occluder shadows).
+They look unrelated, but they ride the SAME rule, and it is the one rule that
+keeps them from rotting the sim: **deterministic data lives in the sim; the
+motion and the light are observer-side presentation.**
+
+Concretely, on the LOGICAL side (`world.state`, hashed, rolled back, replayed):
+the pose a game *reasons about* is an `Fsm.current` / `PhaseClock` / committed
+anchors + hitboxes in `world.state`, all advanced through `dmath`. Light state
+that *drives gameplay* (is the torch lit? how alarmed is the sentry?) is a value
+in `world.state` too. On the OBSERVER side: `ClipPlayer`, `IkTarget`,
+`SkeletonDebug`, `LightLayer`, and `PointLight` are all `cosmetic = true` by
+construction — they render state that lives elsewhere and are **excluded from
+`serialize()` / `hash()` / `snapshot()`**. State flows LOGICAL → view, never the
+reverse.
+
+What that forbids, in order of how often it bites:
+
+- **Never read a visual pose back into the sim.** A gameplay anchor — a muzzle,
+  a hand, a foot-plant — is computed on the LOGICAL side with `dmath`, NEVER read
+  from a posed `bone.worldTransform()`. The clip/IK result is one frame of eased,
+  crossfaded, observer-only motion; sampling it into the sim couples the hash to
+  the animation and the replay diverges. **The committed-anchor recipe** is the
+  lead pattern: the sim owns the muzzle point as a `dmath` offset from the
+  logical body (in `world.state`); the ClipPlayer poses the visible gun to *point
+  at* it; a shot spawns from the committed anchor, not from the barrel sprite's
+  world transform. The picture follows the truth; the truth never asks the
+  picture where it landed.
+- **Blend weights, IK reach, and light intensity never gate gameplay.** A
+  `Blend1D` weight, an `IkTarget.reached` flag, a `PointLight.litIntensity` after
+  flicker — these are view outputs. Branch gameplay on the logical parameter that
+  *fed* them (the `world.state` speed, the logical "is the target in range"
+  distance, the `world.state` lit boolean), not on the interpolated result.
+- **Secondary-motion and flicker RNG is observer-seeded — never `world.rng`.**
+  A `PointLight`'s flicker uses a private `Rng` seeded at construction (the
+  Particles precedent), advanced in `onProcess`, never in `draw` (which may run
+  0..n times per step). Same for any spring/wobble jitter on the rig. Pulling
+  those numbers from `world.rng` would race the gameplay stream and desync every
+  replay.
+
+**The proof pattern to copy** is the stripped-rig hash-equality test in
+`src/scene/clipPlayer.test.ts`: build a world whose logic advances every frame
+*with* the full cosmetic rig, build the same world *without* it, and assert
+`withRig.hash() === without.hash()` at every frame (plus `assertSnapshotStable`
+with warmup landing mid-clip and mid-crossfade). If stripping the animation
+changes the hash, a visual write has leaked into the sim — the test names the
+frame. Lighting has the same proof: `examples/duskveil/` was relit with a
+`LightLayer` + two cosmetic `PointLight`s over the existing fight, and its golden
+hash is **unchanged** — the lights are pure view, so the pinned replay survives
+the relight. Both sandboxes wire the seam the idiomatic way end to end
+(`sandboxes/anim-lab/` for the rig, `sandboxes/light-lab/` for the lights):
+canonical knob state is hashed, the whole rig/light apparatus is cosmetic and
+excluded.
+
 ## The human-contact layer
 
 The first real playtest of the campaign found every defect in the one layer

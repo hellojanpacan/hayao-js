@@ -60,6 +60,14 @@ export interface Paint {
    * Canvas2D `setLineDash` / SVG `stroke-dasharray`). Omit for solid lines.
    */
   lineDash?: number[];
+  /**
+   * Blend mode for compositing this command over what is already painted — the
+   * Canvas2D/SVG-expressible intersection: `'multiply'` darkens (ambient base,
+   * shadow quads), `'screen'` brightens (a light pool). Omit for normal
+   * source-over. Consumed by the lighting run (see render/lightRun.ts); Canvas
+   * maps it to `globalCompositeOperation`, SVG to `mix-blend-mode`.
+   */
+  blend?: 'multiply' | 'screen';
 }
 
 export type TextAlign = 'left' | 'center' | 'right';
@@ -169,6 +177,18 @@ export type DrawCommand =
   | PathCommand
   | TextCommand
   | ImageCommand;
+
+/**
+ * Render-layer conventions. Commands sort by layer FIRST (see `sortCommands`),
+ * so these are painter-order bands, not a fixed enum — a game may still use any
+ * fractional layer. `LAYER_LIGHT` sits between world and HUD so the lighting run
+ * multiplies over world content but never darkens the overlay pass.
+ */
+export const LAYER_WORLD = 0;
+/** The lighting run: reserved band above the world, below the HUD. */
+export const LAYER_LIGHT = 0.5;
+/** Screen-space overlay pass (HUD, transitions) — set for `screenSpace` subtrees. */
+export const LAYER_HUD = 1;
 
 /** Stable painter's sort: by layer, then z, then original index (tree order) as tiebreak. */
 export function sortCommands(cmds: DrawCommand[]): DrawCommand[] {

@@ -22,11 +22,18 @@ import {
   Text,
   Camera2D,
   CameraController,
+  Bone2D,
+  ClipPlayer,
+  IkTarget,
+  Blend1D,
+  applyChannel,
   Rng,
   KENTO,
   audio,
   datan2,
   dhypot,
+  dcos,
+  dsin,
   defineGame,
   showScreen,
   hideScreen,
@@ -36,6 +43,7 @@ import {
   mutateColor,
   withAlpha,
   mix,
+  type ClipDef,
   type World,
   type InputMap,
 } from '@hayao';
@@ -54,6 +62,53 @@ export const LW_INPUT_MAP: InputMap = {
 const GRAIN_SEED = 20260704;
 const PATH_SEED = 517;
 const FLORA_SEED = 8821;
+
+// ── Cosmetic animation rig (v0.4.1) ─────────────────────────────────────────
+// The lantern hangs from its handle and SWAYS as the bearer moves — a purely
+// cosmetic ClipPlayer rig driven by the bearer's derived motion (never the
+// reverse). The whole rig lives under the cosmetic `bearer`, and ClipPlayer /
+// IkTarget are hard-cosmetic, so none of it enters world.hash(): the crossing
+// golden is unchanged. Two authored clips, blended by speed:
+//   • rest — a slow breathing sway while standing still.
+//   • carry — a wider, quicker swing while walking.
+// Bone rotations are LOCAL radians; the swing bone hangs DOWN from the handle
+// (rotation 0 = straight down), so a small ± angle rocks the lantern like a
+// pendulum. A single IkTarget keeps the flame buoyantly upright as it rocks.
+const SWING_LEN = 30; // handle loop → lantern body centre
+const FLAME_UPPER = 8; // body → flame stalk
+const FLAME_LOWER = 7; // flame stalk → tip
+
+const restSway: ClipDef = {
+  duration: 2.6,
+  loop: 'loop',
+  tracks: [
+    {
+      target: 'swing',
+      channel: 'rotation',
+      keys: [
+        { t: 0, v: -0.06 },
+        { t: 1.3, v: 0.06, ease: 'sineInOut' },
+        { t: 2.6, v: -0.06, ease: 'sineInOut' },
+      ],
+    },
+  ],
+};
+
+const carrySway: ClipDef = {
+  duration: 0.9,
+  loop: 'loop',
+  tracks: [
+    {
+      target: 'swing',
+      channel: 'rotation',
+      keys: [
+        { t: 0, v: -0.22 },
+        { t: 0.45, v: 0.22, ease: 'sineInOut' },
+        { t: 0.9, v: -0.22, ease: 'sineInOut' },
+      ],
+    },
+  ],
+};
 
 // Decorative shapes all sit at z ≤ 1 (the "background lattice" plane the layout
 // lint treats as exempt) so they never collide with the torii glyph text box.
@@ -84,6 +139,20 @@ class LanternwayView extends Node {
   private camera!: Camera2D;
   private compass!: Node;
 
+  // Cosmetic rig state (derived from px/py; never serialized — pure view).
+  private swing!: Bone2D;
+  private flameUpper!: Bone2D;
+  private flameLower!: Bone2D;
+  private flameIk!: IkTarget;
+  private swayBlend = new Blend1D([
+    { clip: restSway, x: 0 },
+    { clip: carrySway, x: 1 },
+  ]);
+  private swayPhase = 0; // shared normalized phase (foot-lock discipline)
+  private prevPx = START.x;
+  private prevPy = START.y;
+  private speed01 = 0; // smoothed 0..1 locomotion parameter
+
   protected override onReady(): void {
     this.rebuild();
   }
@@ -106,6 +175,10 @@ class LanternwayView extends Node {
     this.bearer.cosmetic = true;
     this.buildLantern(this.bearer);
     this.addChild(this.bearer);
+    this.prevPx = this.px;
+    this.prevPy = this.py;
+    this.speed01 = 0;
+    this.swayPhase = 0;
 
     // ── The camera + its screen-pinned HUD (children ride the camera) ──────
     this.camera = new Camera2D({ name: 'camera', pos: { x: this.px, y: this.py }, current: true });
@@ -241,24 +314,63 @@ class LanternwayView extends Node {
     this.field.addChild(new Sprite({ name: 'goal', pos: { x: GOAL.x, y: GOAL.y + 6 }, z: 6, shape: { kind: 'glyph', char: '⛩', size: 96 }, fill: KENTO.shuDeep }));
   }
 
-  /** A layered paper lantern, built in the bearer's local space (footprint ≈ old). */
+  /**
+   * A layered paper lantern, built in the bearer's local space (footprint ≈ old).
+   * v0.4.1: the body now HANGS from a cosmetic `swing` Bone2D pivoted at the
+   * handle loop, so it rocks like a pendulum; a two-bone flame stalk is held
+   * upright by an IkTarget. A ClipPlayer poses the swing (rest/carry), the
+   * IkTarget overrides the flame — all cosmetic, none of it hashed.
+   */
   private buildLantern(host: Node): void {
-    // Warm halo — concentric soft rings (static; the judge sees no animation).
+    // Warm halo + ground shadow — these DON'T sway (they track the bearer), so
+    // they stay direct children of the host, exactly as before.
     host.addChild(new Sprite({ z: 9, shape: { kind: 'circle', radius: BEARER_R + 22 }, fill: withAlpha(KENTO.ko, 0.1) }));
     host.addChild(new Sprite({ z: 9, shape: { kind: 'circle', radius: BEARER_R + 12 }, fill: withAlpha(KENTO.ko, 0.16) }));
-    // Ground contact shadow.
     host.addChild(new Sprite({ pos: { x: 0, y: BEARER_R + 6 }, z: 9, shape: { kind: 'circle', radius: BEARER_R * 0.7 }, fill: withAlpha(KENTO.sumi, 0.18) }));
+
+    // The rig root: a Bone2D pivoted at the handle loop (y = -28). Its rotation
+    // is the pendulum angle the clip drives; body parts sit BELOW its origin so a
+    // small ± rotation rocks the whole lantern about the handle. Length points to
+    // the body centre (for the debug overlay); the visual offset is +28 in y so
+    // everything lands where it did before at rotation 0.
+    const HANDLE_Y = -28;
+    this.swing = new Bone2D({ name: 'swing', length: SWING_LEN, pos: { x: 0, y: HANDLE_Y }, z: 10 });
+    host.addChild(this.swing);
+    const dy = -HANDLE_Y; // shift body parts down into the bone's local frame
+
+    // Handle loop sits at the bone origin (the pivot).
+    this.swing.addChild(new Sprite({ z: 12, shape: { kind: 'circle', radius: 4 }, fill: 'none', stroke: KENTO.sumi, strokeWidth: 2 }));
     // Lantern body: warm paper cylinder with a lighter core.
-    host.addChild(new Sprite({ z: 10, shape: { kind: 'rect', w: 30, h: 38, r: 12 }, fill: KENTO.ko, stroke: KENTO.sumi, strokeWidth: 3 }));
-    host.addChild(new Sprite({ z: 11, shape: { kind: 'rect', w: 20, h: 30, r: 8 }, fill: mix(KENTO.ko, KENTO.gofun, 0.55), opacity: 0.85 }));
+    this.swing.addChild(new Sprite({ pos: { x: 0, y: dy }, z: 10, shape: { kind: 'rect', w: 30, h: 38, r: 12 }, fill: KENTO.ko, stroke: KENTO.sumi, strokeWidth: 3 }));
+    this.swing.addChild(new Sprite({ pos: { x: 0, y: dy }, z: 11, shape: { kind: 'rect', w: 20, h: 30, r: 8 }, fill: mix(KENTO.ko, KENTO.gofun, 0.55), opacity: 0.85 }));
     // Ribs — thin horizontal bands.
-    for (const yy of [-8, 0, 8]) host.addChild(new Sprite({ pos: { x: 0, y: yy }, z: 12, shape: { kind: 'rect', w: 26, h: 2 }, fill: withAlpha(KENTO.sumiSoft, 0.5) }));
-    // Top & bottom caps and a little handle loop.
-    host.addChild(new Sprite({ pos: { x: 0, y: -22 }, z: 12, shape: { kind: 'rect', w: 22, h: 6, r: 2 }, fill: KENTO.sumi }));
-    host.addChild(new Sprite({ pos: { x: 0, y: 21 }, z: 12, shape: { kind: 'rect', w: 16, h: 5, r: 2 }, fill: KENTO.sumi }));
-    host.addChild(new Sprite({ pos: { x: 0, y: -28 }, z: 12, shape: { kind: 'circle', radius: 4 }, fill: 'none', stroke: KENTO.sumi, strokeWidth: 2 }));
-    // The flame.
-    host.addChild(new Sprite({ z: 13, shape: { kind: 'circle', radius: 5 }, fill: KENTO.gofun }));
+    for (const yy of [-8, 0, 8]) this.swing.addChild(new Sprite({ pos: { x: 0, y: yy + dy }, z: 12, shape: { kind: 'rect', w: 26, h: 2 }, fill: withAlpha(KENTO.sumiSoft, 0.5) }));
+    // Top & bottom caps.
+    this.swing.addChild(new Sprite({ pos: { x: 0, y: -22 + dy }, z: 12, shape: { kind: 'rect', w: 22, h: 6, r: 2 }, fill: KENTO.sumi }));
+    this.swing.addChild(new Sprite({ pos: { x: 0, y: 21 + dy }, z: 12, shape: { kind: 'rect', w: 16, h: 5, r: 2 }, fill: KENTO.sumi }));
+
+    // The flame: a two-bone stalk rising from the body top, kept upright by IK so
+    // it stays buoyant while the body rocks. Bones point along +x at rotation 0;
+    // the IkTarget solves them toward a goal held ABOVE the lantern.
+    this.flameUpper = new Bone2D({ name: 'flameUpper', length: FLAME_UPPER, pos: { x: 0, y: -18 + dy }, z: 13 });
+    this.flameLower = new Bone2D({ name: 'flameLower', length: FLAME_LOWER, pos: { x: FLAME_UPPER, y: 0 }, z: 13 });
+    this.flameLower.addChild(new Sprite({ pos: { x: FLAME_LOWER, y: 0 }, z: 13, shape: { kind: 'circle', radius: 5 }, fill: KENTO.gofun }));
+    this.flameUpper.addChild(this.flameLower);
+    this.swing.addChild(this.flameUpper);
+
+    // ── The writers (cosmetic; DFS order = clip → IK) ────────────────────
+    // The rig root the clips address is the BEARER: a clip track targets 'swing'
+    // (and could target 'swing/flameUpper'…). Parenting the player under `swing`
+    // keeps it a later DFS sibling of the swing's own sprites, and BEFORE the
+    // IkTarget, so the clip poses the swing and IK then overrides the flame.
+    const player = new ClipPlayer({ name: 'player', rig: host });
+    player.add('rest', restSway).add('carry', carrySway);
+    this.swing.addChild(player);
+    player.play('rest');
+    // IkTarget a LATER sibling → overrides the flame stalk after the clip. Its
+    // goal is its own world position; we place it above the lantern each step.
+    this.flameIk = new IkTarget({ name: 'flameIk', bones: [this.flameUpper, this.flameLower], bendDir: 1 });
+    this.swing.addChild(this.flameIk);
   }
 
   /** HUD parented to the camera → fixed on screen. Local (0,0) is screen center. */
@@ -287,6 +399,34 @@ class LanternwayView extends Node {
     this.py = next.y;
     this.bearer.pos.x = this.px;
     this.bearer.pos.y = this.py;
+
+    // ── Drive the cosmetic rig from DERIVED motion (reads px/py, writes view) ──
+    // Speed is the frame-to-frame displacement; smoothed into a 0..1 locomotion
+    // parameter so the sway eases in/out instead of snapping. This never writes
+    // logical state — it's pure presentation over the already-committed position.
+    const vx = this.px - this.prevPx;
+    const vy = this.py - this.prevPy;
+    this.prevPx = this.px;
+    this.prevPy = this.py;
+    const spd = dhypot(vx, vy) / Math.max(dt, 1e-6); // px/s
+    const target = Math.min(1, spd / 300);
+    this.speed01 += (target - this.speed01) * Math.min(1, 8 * dt); // exponential ease
+    // Shared normalized phase for the blend (foot-lock): faster stride when moving.
+    this.swayPhase = (this.swayPhase + dt * (0.9 + this.speed01 * 1.1)) % 1;
+    if (this.swayPhase < 0) this.swayPhase += 1;
+    // Blend rest↔carry by speed and write the pendulum angle onto the swing bone.
+    const pose = this.swayBlend.sample(this.speed01, this.swayPhase);
+    // A gentle lean into the travel direction adds intent to the sway.
+    const lean = Math.max(-0.18, Math.min(0.18, vx * 0.01));
+    applyChannel(this.swing, 'rotation', (pose['swing/rotation'] ?? 0) + lean);
+    // Keep the flame buoyantly upright: hold the IK goal straight above the flame
+    // root in WORLD space by counter-rotating the swing's tilt into its local frame.
+    const rot = this.swing.rotation;
+    const up = 24; // how far above the root the flame reaches
+    this.flameIk.pos = {
+      x: this.flameUpper.pos.x + dsin(rot) * up,
+      y: this.flameUpper.pos.y - dcos(rot) * up,
+    };
 
     // Compass needle tracks the goal from wherever the bearer stands.
     const needle = this.compass.find('needle');
