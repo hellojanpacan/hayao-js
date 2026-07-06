@@ -37,13 +37,19 @@ INTENT ──▶ ANCHOR ──▶ COMPOSE ──▶ TWIST ──▶ SHAPE ──
    systems it needs (progression, economy, combat, factions…). Genres blend;
    satisfy every parent. → [`20-genres/`](20-genres/) · [`30-systems/`](30-systems/)
 4. **TWIST.** Add the creative bend that makes it *not* a clone. Apply a twist
-   vector (theme, mechanic-swap, structure, perspective, constraint). *Unrailed =
-   Overcooked + voxel + roguelite + train.* → [`00-process/the-twist`](00-process/the-twist.md)
-5. **SHAPE.** Derive pillars, the loop stack, the world, and the aesthetic; check
-   every choice against the pillars. → [`00-process/pillars`](00-process/pillars.md) ·
-   [`00-process/core-loop`](00-process/core-loop.md) · [`40-worldbuilding/`](40-worldbuilding/)
-6. **HANDOFF.** Convert the design into the verification contract and hand off to
-   the proof playbook. → [`00-process/refine-and-handoff`](00-process/refine-and-handoff.md)
+   vector (theme, mechanic-swap, structure, perspective, constraint, tonal). The
+   verb is where a twist bites hardest — reach into [`60-mechanics/`](60-mechanics/).
+   *Unrailed = Overcooked + voxel + roguelite + train.* → [`00-process/the-twist`](00-process/the-twist.md)
+5. **SHAPE.** Derive pillars, the loop stack, the world, the verbs, and the
+   aesthetic; check every choice against the pillars. → [`00-process/pillars`](00-process/pillars.md) ·
+   [`00-process/core-loop`](00-process/core-loop.md) · [`60-mechanics/`](60-mechanics/) ·
+   [`40-worldbuilding/`](40-worldbuilding/)
+6. **HANDOFF.** Check the design against [`70-antipatterns/`](70-antipatterns/) for
+   smells, convert it into the verification contract, and hand off to the proof
+   playbook. → [`00-process/refine-and-handoff`](00-process/refine-and-handoff.md)
+
+Stuck on conception? [`80-recipes/`](80-recipes/) shows the whole pipeline already
+run on eight worked "X but Y" designs — read one for the *wiring*, not to reskin it.
 
 Cross-cutting fun/polish concerns (feedback loops, risk-reward, mastery, pacing,
 anti-frustration) apply at every stage → [`50-patterns/`](50-patterns/).
@@ -60,7 +66,14 @@ anti-frustration) apply at every stage → [`50-patterns/`](50-patterns/).
 | [`30-systems/`](30-systems/) | The modular **systems library** — progression, economy, combat, factions, AI, rewards… | Composing the parts a design needs |
 | [`40-worldbuilding/`](40-worldbuilding/) | Theme / lore / faction / aesthetic **kits** | Giving the design a world and a look |
 | [`50-patterns/`](50-patterns/) | Cross-cutting **fun & polish** design patterns | Any stage — these are always on |
+| [`60-mechanics/`](60-mechanics/) | The **verb library** — the atomic things a player *does* (dash, parry, rewind, merge) | Deciding what the hands do; designing from the mechanic |
+| [`70-antipatterns/`](70-antipatterns/) | Named **failure modes** — the mirror of patterns | Checking a design for smells before handoff |
+| [`80-recipes/`](80-recipes/) | **Pre-composed designs** — worked "X but Y" compositions | Seeing the parts already assembled |
 | [`INDEX.md`](INDEX.md) · [`index.json`](index.json) | The searchable index of every module (id · kind · tags · summary) | Looking something up by keyword |
+
+> **Generate a starting point:** `node scripts/compose-design.mjs spark` samples an
+> anchor + genre + verb + systems + a twist vector into a fresh brief to design
+> from. `list` / `show` / `graph` search and walk the library from the terminal.
 
 ## Searching the Codex
 
