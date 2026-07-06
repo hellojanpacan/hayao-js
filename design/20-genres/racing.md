@@ -6,7 +6,7 @@ tags: [racing, driving, top-down, understeer, braking, line, checkpoint, laps]
 summary: The speed/line tradeoff made physical — brake to hold the line or floor it and drift wide; the racing line is the skill.
 use-when: The design is a top-down/arcade racer where cornering is a real physics tradeoff and lap time is the score.
 composes-with: [system-enemy-ai, system-difficulty-and-dda, system-progression, pattern-mastery-and-flow, pattern-risk-reward, pattern-pacing-and-tension]
-anchors: []
+anchors: [anchor-trackmania, anchor-mario-kart]
 verify-with: docs/FUN.md#20-·-top-down-racing
 ---
 
@@ -97,10 +97,19 @@ thumbs: the corner you used to blow now flows, and the clock proves it.
 
 ## Anchors
 
-*(No dedicated anchor module yet.)* Borrow structure from [[anchor-tetris]] for the
-"one tuned verb, endless mastery" discipline, and from [[anchor-into-the-breach]]
-for perfect-information honesty if you telegraph rival intent. Corpus references:
-WitchCup1276 (2023 gameplay #10), DR1V3N WILD (2024 gameplay #3).
+- [[anchor-trackmania]]: the definitive DNA for this genre's soul. The clock as
+  the only opponent, instant free restart as the practice loop, and a medal ladder
+  that fits one track to every skill. Steal it when the fun is a solo line against
+  the clock.
+- [[anchor-mario-kart]]: the competitive/arcade pole. The drift-boost skill ceiling
+  on a trivial floor, and position-weighted catch-up that bands the field without
+  erasing an earned lead. Steal it when rivals and spectacle matter more than the
+  clock.
+
+Still worth borrowing across both: [[anchor-tetris]] for the "one tuned verb,
+endless mastery" discipline, and [[anchor-into-the-breach]] for perfect-information
+honesty if you telegraph rival intent. Corpus references: WitchCup1276 (2023
+gameplay #10), DR1V3N WILD (2024 gameplay #3).
 
 ## Verify
 
