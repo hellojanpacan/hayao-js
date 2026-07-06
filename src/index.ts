@@ -163,5 +163,5 @@ export * from './studio/record';
 export * from './studio/timeline';
 export * from './studio/run';
 
-/** Engine version. */
-export const VERSION = '0.4.1';
+/** Engine version. Must equal package.json — guarded by src/version.test.ts. */
+export const VERSION = '0.4.3';
