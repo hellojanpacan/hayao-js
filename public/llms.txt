@@ -29,7 +29,8 @@ Key invariants when writing hayao games:
 - [Engine internals](https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/docs/ENGINE.md): the simulation kernel in depth
 - [Conventions](https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/docs/CONVENTIONS.md): code and project conventions for examples
 - [Verification](https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/docs/VERIFICATION.md): the proof harness — solvers, bots, golden replays
-- [Game-design playbook](https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/docs/FUN.md): what made the 20-genre campaign's games fun
+- [Game-design playbook](https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/docs/FUN.md): what made the 20-genre campaign's games fun — the verification half (proves a genre is fair)
+- [Design Codex](https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/design/README.md): the generative half — turn a high-level intent ("an RTS with faction asymmetry") into a concrete design. 98 cross-linked modules (anchors · genres · systems · worldbuilding · patterns); anchor to a proven game, compose modular systems, then twist into "X but Y". Browse the [searchable index](https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/design/INDEX.md)
 
 ## Examples
 
