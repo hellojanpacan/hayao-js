@@ -1,0 +1,34 @@
+---
+/**
+ * The Hayao mark — Bootstrap "subtract" glyph filled with four vertical palette
+ * slices. Square (viewBox 16). Size it from the parent with utilities, e.g.
+ * `h-[1cap] w-[1cap]` inside a font-display, items-baseline lockup so it matches
+ * the wordmark's cap-height exactly.
+ */
+interface Props {
+  class?: string;
+  mono?: boolean; // solid navy — for tiny / single-colour contexts
+}
+const { class: className = "", mono = false } = Astro.props;
+const uid = "mk-" + Math.random().toString(36).slice(2, 9);
+const PATH =
+  "M0 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2h2a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-2H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1z";
+const SLICES = ["#337357", "#29335c", "#e59500", "#669bbc"];
+const w = 16 / SLICES.length;
+---
+<svg viewBox="0 0 16 16" class={className} aria-hidden="true">
+  <defs>
+    <clipPath id={uid}><path d={PATH} clip-rule="evenodd" /></clipPath>
+  </defs>
+  <g clip-path={`url(#${uid})`}>
+    {
+      mono ? (
+        <rect x="0" y="0" width="16" height="16" fill="#29335c" />
+      ) : (
+        SLICES.map((c, i) => (
+          <rect x={(i * w).toFixed(3)} y="0" width={(w + 0.02).toFixed(3)} height="16" fill={c} />
+        ))
+      )
+    }
+  </g>
+</svg>

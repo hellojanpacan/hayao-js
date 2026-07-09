@@ -1,0 +1,61 @@
+@import "tailwindcss";
+
+/* ── Self-hosted fonts (locked): Overpass display + Poppins body ── */
+@font-face {
+  font-family: "Overpass";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/overpass-600.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url("/fonts/poppins-300.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/poppins-400.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Poppins";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/fonts/poppins-600.woff2") format("woff2");
+}
+
+/* ── Design tokens → Tailwind utilities (bg-navy, text-ink, font-display…) ── */
+@theme {
+  --color-green: #337357;
+  --color-navy: #29335c;
+  --color-orange: #e59500;
+  --color-blue: #669bbc;
+
+  --color-ink: #29335c;
+  --color-muted: #8b90a6;
+  --color-soft: #5a6072;
+  --color-hair: #e7e8ee;
+  --color-paper: #ffffff;
+
+  --font-display: "Overpass", system-ui, sans-serif;
+  --font-body: "Poppins", system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    font-family: var(--font-body);
+    font-weight: 300;
+    color: var(--color-ink);
+    background: var(--color-paper);
+  }
+}

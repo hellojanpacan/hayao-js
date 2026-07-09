@@ -1,0 +1,225 @@
+---
+import Layout from "../layouts/Layout.astro";
+import TopBar from "../components/TopBar.astro";
+import Footer from "../components/Footer.astro";
+import NpmInstall from "../components/NpmInstall.astro";
+---
+
+<Layout>
+  <TopBar />
+
+  <main>
+    <!-- HERO -->
+    <section class="mx-auto max-w-6xl px-6 pt-24 pb-28 md:pt-32 md:pb-36">
+      <h1
+        class="font-display text-[clamp(2.5rem,6.2vw,4.75rem)] font-semibold leading-[1.04] tracking-[-0.01em] text-ink"
+      >
+        The 2D Game Engine<br />for your AI Agent
+      </h1>
+      <p class="mt-7 max-w-[54ch] font-body text-[1.15rem] font-light leading-relaxed text-soft">
+        You have the game idea — your AI can build it with Hayao. Designed specifically for
+        AI-native gamedev, with a focus on fun &amp; fast prototyping. Fully free &amp; open source.
+      </p>
+      <div class="mt-10 flex flex-wrap items-center gap-4">
+        <a
+          href="/play"
+          class="inline-flex items-center rounded-lg bg-orange px-5 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:bg-green"
+        >
+          Playground
+        </a>
+        <NpmInstall />
+      </div>
+    </section>
+
+    <!-- ── 1 · AI-NATIVE ── -->
+    <section class="border-t border-hair">
+      <div class="mx-auto grid max-w-6xl items-center gap-12 px-6 py-24 md:grid-cols-2 md:gap-16 md:py-28">
+        <div>
+          <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.18em] text-orange">AI-native</p>
+          <h2 class="text-balance font-display text-[clamp(1.85rem,3.4vw,2.6rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-ink">
+            Built for the machine that writes the game
+          </h2>
+          <p class="mt-5 max-w-[48ch] font-body text-[1.05rem] font-light leading-relaxed text-soft">
+            Godot, GameMaker and Unity are made for humans clicking through an editor — GUIs,
+            binary scene files, a bespoke language. An agent can't diff a
+            <code class="rounded bg-[#f2f3f6] px-1 font-mono text-[0.85em] text-ink">.tscn</code>
+            it can't read. Hayao keeps Godot's proven model — nodes, scenes, signals — but makes
+            every part <span class="text-ink">text, typed and greppable</span>. The whole game is
+            code your AI can write, read back, and reason about.
+          </p>
+        </div>
+        <div class="overflow-hidden rounded-2xl border border-hair">
+          <div class="grid grid-cols-2 text-[0.92rem]">
+            <div class="border-r border-hair bg-[#f8f9fb] p-6">
+              <p class="mb-4 font-body text-[0.7rem] uppercase tracking-[0.14em] text-muted">Traditional engine</p>
+              <ul class="space-y-3 font-body font-light text-soft">
+                <li>GUI &amp; binary scenes</li>
+                <li>Runs only inside the app</li>
+                <li>“Looks right?” — open it</li>
+                <li>Opaque to an LLM</li>
+              </ul>
+            </div>
+            <div class="p-6">
+              <p class="mb-4 font-body text-[0.7rem] uppercase tracking-[0.14em] text-green">Hayao</p>
+              <ul class="space-y-3 font-body font-light text-ink">
+                <li>Plain TypeScript, greppable</li>
+                <li>Runs headless in Node</li>
+                <li>Assert on state, prove it</li>
+                <li>Every symbol is text</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 2 · DETERMINISTIC ── -->
+    <section class="border-t border-hair">
+      <div class="mx-auto max-w-6xl px-6 py-24 md:py-28">
+        <div class="grid items-center gap-12 md:grid-cols-2 md:gap-16">
+          <div>
+            <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.18em] text-blue">Deterministic</p>
+            <h2 class="text-balance font-display text-[clamp(1.85rem,3.4vw,2.6rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-ink">
+              The game is a pure function of its inputs
+            </h2>
+            <p class="mt-5 max-w-[48ch] font-body text-[1.05rem] font-light leading-relaxed text-soft">
+              Every frame is <span class="text-ink">state → step(inputs) → state</span>. All
+              randomness flows through one seeded RNG; there is no wall-clock and no hidden state.
+              Same inputs, same result — bit for bit, on any machine. That one guarantee is where
+              the superpowers come from.
+            </p>
+          </div>
+          <div class="overflow-x-auto rounded-2xl border border-hair bg-[#0f1424] p-6">
+            <pre class="font-mono text-[0.85rem] leading-relaxed text-[#d7dcec]"><code><span class="text-[#8ea1c7]">const</span> w = createWorld(game);
+w.step([<span class="text-[#9cc98a]">'right'</span>]);      <span class="text-[#6b769b]">// advance one tick</span>
+w.step([]);             <span class="text-[#6b769b]">// release — next input</span>
+
+w.probe().solved;       <span class="text-[#6b769b]">// assert on STATE, not pixels</span>
+<span class="text-[#8ea1c7]">const</span> h = w.hash();    <span class="text-[#6b769b]">// replay later → same hash, or it's a bug</span></code></pre>
+          </div>
+        </div>
+
+        <div class="mt-16 grid gap-x-10 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+          <div>
+            <div class="mb-2 h-1 w-8 rounded-full bg-green"></div>
+            <h3 class="font-display text-[1.05rem] font-semibold text-ink">Prove it works</h3>
+            <p class="mt-1.5 font-body text-[0.95rem] font-light leading-relaxed text-soft">Run in Node, assert on state. No browser, no pixels, no flakiness.</p>
+          </div>
+          <div>
+            <div class="mb-2 h-1 w-8 rounded-full bg-green"></div>
+            <h3 class="font-display text-[1.05rem] font-semibold text-ink">Prove it's winnable</h3>
+            <p class="mt-1.5 font-body text-[0.95rem] font-light leading-relaxed text-soft">step() is a pure transition, so a solver can search every level to the end.</p>
+          </div>
+          <div>
+            <div class="mb-2 h-1 w-8 rounded-full bg-blue"></div>
+            <h3 class="font-display text-[1.05rem] font-semibold text-ink">Refactor without fear</h3>
+            <p class="mt-1.5 font-body text-[0.95rem] font-light leading-relaxed text-soft">Replay the input log, compare the hash. Identical, or you just found a regression.</p>
+          </div>
+          <div>
+            <div class="mb-2 h-1 w-8 rounded-full bg-blue"></div>
+            <h3 class="font-display text-[1.05rem] font-semibold text-ink">Time-travel &amp; undo</h3>
+            <p class="mt-1.5 font-body text-[0.95rem] font-light leading-relaxed text-soft">snapshot() and restore() any tick. Undo and save-states fall out for free.</p>
+          </div>
+          <div>
+            <div class="mb-2 h-1 w-8 rounded-full bg-orange"></div>
+            <h3 class="font-display text-[1.05rem] font-semibold text-ink">Replays &amp; scrubbing</h3>
+            <p class="mt-1.5 font-body text-[0.95rem] font-light leading-relaxed text-soft">A whole session is just its input log — jump to any moment and re-simulate forward.</p>
+          </div>
+          <div>
+            <div class="mb-2 h-1 w-8 rounded-full bg-orange"></div>
+            <h3 class="font-display text-[1.05rem] font-semibold text-ink">Rollback multiplayer</h3>
+            <p class="mt-1.5 font-body text-[0.95rem] font-light leading-relaxed text-soft">Determinism is exactly what makes lockstep and rollback netcode possible at all.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 3 · SCENE TREE ── -->
+    <section class="border-t border-hair">
+      <div class="mx-auto grid max-w-6xl items-center gap-12 px-6 py-24 md:grid-cols-2 md:gap-16 md:py-28">
+        <div>
+          <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.18em] text-green">Scene tree</p>
+          <h2 class="text-balance font-display text-[clamp(1.85rem,3.4vw,2.6rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-ink">
+            Godot's scene tree, in plain code
+          </h2>
+          <p class="mt-5 max-w-[48ch] font-body text-[1.05rem] font-light leading-relaxed text-soft">
+            Compose your game from nodes — the model Godot got right. Node2D, Sprite, Camera2D,
+            Timer, AnimationPlayer and behaviours: a tree you build in TypeScript, not a binary you
+            edit in a GUI. Rendering is just a projection of that tree, so the simulation never
+            needs a canvas to run.
+          </p>
+        </div>
+        <div class="overflow-x-auto rounded-2xl border border-hair bg-[#f8f9fb] p-6">
+          <pre class="font-mono text-[0.9rem] leading-relaxed text-muted"><code>World
+└─ <span class="text-blue">Node2D</span> <span class="text-ink">player</span>
+   ├─ <span class="text-blue">Sprite</span> <span class="text-ink">body</span>
+   ├─ <span class="text-blue">Camera2D</span> <span class="text-ink">follow</span>
+   ├─ <span class="text-blue">AnimationPlayer</span> <span class="text-ink">run</span>
+   └─ <span class="text-blue">Timer</span> <span class="text-ink">coyote</span></code></pre>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 4 · OPEN SOURCE (navy band) ── -->
+    <section class="bg-navy">
+      <div class="mx-auto max-w-6xl px-6 py-24 text-center md:py-28">
+        <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.18em] text-orange">Free &amp; open source</p>
+        <h2 class="mx-auto max-w-[20ch] text-balance font-display text-[clamp(1.85rem,3.6vw,2.8rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-white">
+          MIT-licensed. Yours to jam with.
+        </h2>
+        <p class="mx-auto mt-6 max-w-[58ch] font-body text-[1.1rem] font-light leading-relaxed text-white/70">
+          No seats, no runtime fees, no strings. <code class="font-mono text-white">npm i hayao</code>{" "}
+          and you're building. Winnability and determinism are proven before your deadline, and the
+          whole engine is text your agent already speaks — perfect for a weekend jam.
+        </p>
+        <div class="mt-9 flex flex-wrap items-center justify-center gap-4">
+          <a
+            href="https://github.com/hellojanpacan/hayao-js"
+            class="inline-flex items-center rounded-lg bg-orange px-5 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:bg-green"
+          >
+            Star on GitHub
+          </a>
+          <NpmInstall tone="light" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ── 5 · ASSETS AS CODE ── -->
+    <section class="border-t border-hair">
+      <div class="mx-auto grid max-w-6xl items-center gap-12 px-6 py-24 md:grid-cols-2 md:gap-16 md:py-28">
+        <div class="order-2 md:order-1 overflow-hidden rounded-2xl border border-hair">
+          <svg viewBox="0 0 360 210" class="w-full" role="img" aria-label="Vector art drawn from code">
+            <rect width="360" height="210" fill="#ffffff"></rect>
+            <circle cx="280" cy="62" r="28" fill="#e59500"></circle>
+            <path d="M0 150 Q90 108 180 140 T360 132 V210 H0 Z" fill="#669bbc"></path>
+            <path d="M0 176 Q110 138 220 170 T360 164 V210 H0 Z" fill="#337357"></path>
+            <rect x="150" y="120" width="14" height="14" rx="3" fill="#29335c"></rect>
+          </svg>
+          <div class="flex items-center gap-3 border-t border-hair px-5 py-3">
+            <span class="flex gap-1.5">
+              <span class="h-2.5 w-2.5 rounded-full bg-green"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-navy"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-orange"></span>
+              <span class="h-2.5 w-2.5 rounded-full bg-blue"></span>
+            </span>
+            <span class="font-mono text-[0.8rem] text-muted">drawn in code → rendered to SVG / Canvas</span>
+          </div>
+        </div>
+        <div class="order-1 md:order-2">
+          <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.18em] text-blue">Assets as code</p>
+          <h2 class="text-balance font-display text-[clamp(1.85rem,3.4vw,2.6rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-ink">
+            Art your agent can actually make
+          </h2>
+          <p class="mt-5 max-w-[48ch] font-body text-[1.05rem] font-light leading-relaxed text-soft">
+            An AI can't paint a PNG — but it can write vectors. Hayao's art is code: palettes,
+            shapes, procedural textures, bitmap fonts and autotiling, all rendered crisp to SVG or
+            Canvas. No binary sprite sheets to source, nothing the agent can't produce. And the look
+            is cosmetic and deterministic — it paints the state, it never changes it.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
