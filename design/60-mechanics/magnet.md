@@ -6,7 +6,7 @@ tags: [physics, pull-push, puzzle, combat]
 summary: Pull toward or push from a point — action-at-a-distance over metal, foes, and floors.
 use-when: You want field-based physics puzzles or crowd control.
 composes-with: [mechanic-throw, genre-physics-arcade, system-hazards-and-environment]
-verify-with: docs/FUN.md#19-·-physics-arcade
+verify-with: design/FUN.md#19-·-physics-arcade
 ---
 
 **What it is.** A **field** the player projects from a point — attract draws magnetic bodies toward it, repel shoves them away. You never touch the object; the force does. It's [[mechanic-throw]] without the hands: action over a distance, on anything the world marks as *magnetic*.
@@ -69,7 +69,7 @@ One authored room yields three challenges depending on which use it demands. Des
 - For the pull/push/impact feel, study the physics lab in `sandboxes/` in isolation before wiring it into a game.
 - If the magnet is a **puzzle** move (grid, provable), keep it a pure `Move` — a field pulse that maps input state to a new cell layout — and split logic from view the way `examples/sokoban/` splits pushable-object rules from rendering. The landing cell is state; the force lines you draw are **cosmetic**.
 - The range ring, polarity glow, force lines, and metal-sheen cue are all **cosmetic** overlays — they read but stay out of `world.hash()`. What's magnetic and where it ends up is state.
-- Prove the *field feel* against docs/FUN.md#19-·-physics-arcade; prove puzzle levels the way a puzzle proves winnability — every solution must have a reachable pull.
+- Prove the *field feel* against design/FUN.md#19-·-physics-arcade; prove puzzle levels the way a puzzle proves winnability — every solution must have a reachable pull.
 
 ## Fails when…
 - **What's magnetic is invisible.** If the player can't tell metal from scenery, every attempt is a probe, not a plan — that's [[antipattern-input-lie]]. One loud material cue, always.

@@ -7,7 +7,7 @@ summary: Clashing tones as a design tool — cute-but-dark, cozy-but-doomed; the
 use-when: You want a distinctive tonal identity via deliberate contrast (a "but Y" on tone).
 composes-with: [process-the-twist, world-mood-and-atmosphere, world-motif-and-symbol]
 anchors: [anchor-katamari]
-verify-with: docs/JUDGE.md
+verify-with: design/JUDGE.md
 ---
 
 **What it is.** Pick a **base tone** (cute, cozy, cheerful), then attach **content** that contradicts it (dark, doomed, brutal). Hold both sincerely — the friction between register and subject is the identity.
@@ -57,7 +57,7 @@ Woodblock is a strong **register** engine — flat inked shapes, warm paper, han
 
 - Let the **palette** stay Kentō-warm (KENTO/MEADOW/DUSK) while the fiction turns cold. Warm ink over lethal stakes is the whole trick.
 - Push the clash into **motif**, not chaos — see [[world-motif-and-symbol]]. A recurring gentle icon that slowly acquires a grim second meaning does more than a tonal whiplash.
-- Keep it **static and deterministic** so the judge can read the contrast from a single frame. The vision judge scores whether the gap is legible in one still — [[world-tonal-juxtaposition]]'s proof is that both tones survive a screenshot. See `docs/JUDGE.md`.
+- Keep it **static and deterministic** so the judge can read the contrast from a single frame. The vision judge scores whether the gap is legible in one still — [[world-tonal-juxtaposition]]'s proof is that both tones survive a screenshot. See `design/JUDGE.md`.
 
 ## Traps
 

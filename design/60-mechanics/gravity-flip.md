@@ -6,7 +6,7 @@ tags: [movement, puzzle, reorient, platformer]
 summary: Reverse or rotate down — the level stays; your relationship to it inverts.
 use-when: A puzzle-platformer wants a single verb that recontextualizes every room.
 composes-with: [mechanic-grow-shrink, genre-puzzle-platformer, pattern-emergence]
-verify-with: docs/FUN.md#2-·-precision-platformer
+verify-with: design/FUN.md#2-·-precision-platformer
 ---
 
 **What it is.** One button changes which way is **down**. The geometry never moves; the player's frame of reference does, so the ceiling becomes a floor and a wall becomes a path.
@@ -59,7 +59,7 @@ A flip is a **layout multiplier**. A single hand-built room yields two (or four)
 - Gravity is a per-body vector on the physics step; a flip negates or rotates it, and the ballistic fall is the solver's job — study the physics lab in `sandboxes/` before you hand-roll integration.
 - If flip is **turn-based / discrete** (grid puzzle), the whole thing is a pure `Puzzle<State, Move>` where a move is `{flip: dir}` and every room is machine-proven solvable — that is the point of the pure-logic spine; `examples/sokoban/` is the logic/view reference.
 - Keep the **up-indicator, ghost preview, and horizon vignette** `cosmetic` — they read but don't touch `world.hash()`.
-- Determinism note: identical fall arcs across replays are non-negotiable for solver proofs; all in-air variance (dust, screen-shake) is cosmetic only. Prove the *feel* against [[pattern-mastery-and-flow]] and the platformer gate in `docs/FUN.md`.
+- Determinism note: identical fall arcs across replays are non-negotiable for solver proofs; all in-air variance (dust, screen-shake) is cosmetic only. Prove the *feel* against [[pattern-mastery-and-flow]] and the platformer gate in `design/FUN.md`.
 
 ## Fails when…
 - **The player can't predict "down."** If flipping feels like a dice roll, you've built [[antipattern-input-lie]]. Telegraph the vector before commit.

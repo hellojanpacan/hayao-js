@@ -7,7 +7,7 @@ summary: The spine every fight sits on — how damage is computed, when it resol
 use-when: You have any fight — melee, ranged, tactical, brawler — and need to decide how a hit is computed and when it lands.
 composes-with: [system-telegraphs, system-status-effects, system-counter-systems, system-grace, system-enemy-ai]
 anchors: [anchor-into-the-breach, anchor-hades, anchor-slay-the-spire]
-verify-with: docs/FUN.md#4-top-down-action-adventure-zelda-like
+verify-with: design/FUN.md#4-top-down-action-adventure-zelda-like
 ---
 
 # Combat Model — the shape of a hit
@@ -68,7 +68,7 @@ Derive TTK/TTD from the fight length you want, not by eyeballing (FUN.md law 3).
 - **Reactive combat is telegraph-gated.** Every threat activation is preceded by a
   tell; prove it with `telegraphIssues(timeline, minFrames)`. See [[system-telegraphs]].
 - **Feel is a contract.** Declare a `FeedbackContract` (in `@hayao`) for `hit`,
-  `land`, `death`; gate hit-stop/shake with `feedbackIssues` (docs/JUICE.md Part 3).
+  `land`, `death`; gate hit-stop/shake with `feedbackIssues` (design/JUICE.md Part 3).
 - **Turn-based reuses the real-time stack** — an input edge is one world step
   (FUN.md §10). Pure state gives clone-and-score bots for free: run the intended
   line vs a null line and assert the gap (FUN.md law 2).
@@ -89,11 +89,11 @@ Derive TTK/TTD from the fight length you want, not by eyeballing (FUN.md law 3).
 ## Verify
 
 - Reactive: kiting-bot telemetry — win time, hp floor, 0 deaths; every threat
-  telegraphed → **[FUN.md §4](../../docs/FUN.md)**, `telegraphIssues`.
+  telegraphed → **[FUN.md §4](../FUN.md)**, `telegraphIssues`.
 - Skill-delta: intended combat beats null (do-nothing / flail) by a margin →
-  **[FUN.md law 2](../../docs/FUN.md)**.
+  **[FUN.md law 2](../FUN.md)**.
 - Feel: `feedbackIssues` for hit/death; hit-stop ≤ 12 frames →
-  **[JUICE.md Part 3](../../docs/JUICE.md)**, **[VERIFICATION Channel 4](../../docs/VERIFICATION.md)**.
+  **[JUICE.md Part 3](../JUICE.md)**, **[VERIFICATION Channel 4](../../docs/VERIFICATION.md)**.
 - Determinism: golden hash of a scripted fight; view-on == view-off hash.
 
 ## Composes with
@@ -108,6 +108,6 @@ Derive TTK/TTD from the fight length you want, not by eyeballing (FUN.md law 3).
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §4, §6, §12 — the mechanical truths per clock.
-- [`docs/JUICE.md`](../../docs/JUICE.md) — hit-stop/shake envelopes; the 2-senses contract.
+- [`design/FUN.md`](../FUN.md) §4, §6, §12 — the mechanical truths per clock.
+- [`design/JUICE.md`](../JUICE.md) — hit-stop/shake envelopes; the 2-senses contract.
 - [`sandboxes/juice-lab`](../../sandboxes/juice-lab) — easing/spring feel for impacts.

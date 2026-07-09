@@ -7,7 +7,7 @@ summary: A one-on-one duel of spacing, timing, and reads — a deep, legible fra
 use-when: You want a high-ceiling competitive duel decided by reads and spacing.
 composes-with: [anchor-street-fighter, mechanic-combo-string, system-mastery-curve, system-counter-systems]
 anchors: [anchor-street-fighter]
-verify-with: docs/FUN.md#4-·-action-adventure
+verify-with: design/FUN.md#4-·-action-adventure
 ---
 
 # Fighting Game
@@ -123,7 +123,7 @@ lost because you were *read*, not out-rolled.
 
 ## Verify
 
-Prove it in **[FUN.md §4 · Action-adventure](../../docs/FUN.md#4-·-action-adventure)**:
+Prove it in **[FUN.md §4 · Action-adventure](../FUN.md#4-·-action-adventure)**:
 same-input/same-frame determinism, each move's startup/active/recovery asserted
 as data, the strike-throw-block interactions proven in isolation, and a
 golden round replaying from an input log to an identical end-state.

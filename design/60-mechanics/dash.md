@@ -6,7 +6,7 @@ tags: [movement, burst, i-frames, platformer, combat]
 summary: A short burst of directional speed — the escape/approach verb; feel lives in windup, distance, and cooldown.
 use-when: Movement or combat needs an expressive escape/approach beat with a rechargeable cost.
 composes-with: [mechanic-dodge-roll, system-grace, pattern-mastery-and-flow]
-verify-with: docs/JUICE.md
+verify-with: design/JUICE.md
 ---
 
 **What it is.** A short, fixed-distance burst of directional speed on a button. It is the comma in a movement sentence — the beat that turns "run, jump" into "run, *dash*, jump."
@@ -58,7 +58,7 @@ The interesting decisions live in the air.
 ## How it wires to Hayao
 - Model the dash as **explicit state**: a direction, a remaining-duration counter, a cooldown timer, a charge count — all part of sim state, ticked at fixed step so replays match. Keep it out of frame-rate.
 - Drive the burst from your fixed-timestep movement integrator, not from real time; the burst is a velocity override for N ticks. Study a single-mechanic movement lab under `sandboxes/` for the isolated version before wiring it into a game.
-- The **snap** (screen-shake, trail, freeze-frame, whoosh) is pure view — tag those nodes `cosmetic` so they never enter `world.hash()`. Design the feel here; prove the readability and the snap in `docs/JUICE.md`.
+- The **snap** (screen-shake, trail, freeze-frame, whoosh) is pure view — tag those nodes `cosmetic` so they never enter `world.hash()`. Design the feel here; prove the readability and the snap in `design/JUICE.md`.
 - I-frames are a *sim* flag (they change hit resolution), so they DO belong in hashed state — don't confuse them with the cosmetic flash that signals them.
 
 ## Fails when…

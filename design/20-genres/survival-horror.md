@@ -7,7 +7,7 @@ summary: Scarcity-driven dread where difficulty lives in resource arithmetic —
 use-when: Designing a survival-horror game whose fear is scarcity you must ration, with light/dark and a fuel economy as the pressure.
 composes-with: [system-economy, system-grace, pattern-pacing-and-tension, system-resource-loops]
 anchors: [anchor-outer-wilds]
-verify-with: docs/FUN.md#16--survival-horror
+verify-with: design/FUN.md#16--survival-horror
 ---
 
 # Survival Horror
@@ -107,7 +107,7 @@ ledger with a monster leaning over it.
 ## Verify
 
 Keeper bot survives to dawn; light-repels and darkness-kills each proven; fuel solvency
-inequality; golden night → **[docs/FUN.md §16 · Survival horror](../../docs/FUN.md#16--survival-horror)**.
+inequality; golden night → **[design/FUN.md §16 · Survival horror](../FUN.md#16--survival-horror)**.
 Author the ledger and the mood-predicate here; prove the inequality there.
 
 ## Composes with
@@ -118,7 +118,7 @@ Author the ledger and the mood-predicate here; prove the inequality there.
 
 ## See also
 
-- [docs/FUN.md §16](../../docs/FUN.md#16--survival-horror) — mechanical truth + verify recipe.
-- [docs/JUICE.md](../../docs/JUICE.md) — feel gates for the light/shadow and wound choreography.
+- [design/FUN.md §16](../FUN.md#16--survival-horror) — mechanical truth + verify recipe.
+- [design/JUICE.md](../JUICE.md) — feel gates for the light/shadow and wound choreography.
 - [`sandboxes/`](../../sandboxes/) — the light/physics lab to prove occlusion and a fuel
   budget before building a night.

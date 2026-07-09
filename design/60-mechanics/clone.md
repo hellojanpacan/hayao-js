@@ -6,7 +6,7 @@ tags: [puzzle, record-replay, coop-solo, time]
 summary: Record a run, then replay it as a helper — solve alongside your past selves.
 use-when: A puzzle wants self-cooperation or you-need-to-be-two-places design.
 composes-with: [mechanic-rewind, pattern-emergence, genre-grid-puzzle]
-verify-with: docs/FUN.md#1-·-grid-puzzle
+verify-with: design/FUN.md#1-·-grid-puzzle
 ---
 
 **What it is.** Record a full run of inputs, then spawn a **ghost** that replays them exactly while you play a fresh pass — cooperating with the recording you just made. One player, many bodies.

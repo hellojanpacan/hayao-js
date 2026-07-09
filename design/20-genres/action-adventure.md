@@ -7,7 +7,7 @@ summary: Readable combat and gated dungeons — enemies that tell you what they'
 use-when: Designing a top-down game of reactive melee combat woven with light puzzle-gating and exploration.
 composes-with: [system-telegraphs, system-combat-model, system-enemy-archetypes, system-encounter-design, system-boss-design, system-grace]
 anchors: [anchor-shadow-of-mordor, anchor-dead-cells]
-verify-with: docs/FUN.md#4--top-down-action-adventure-zelda-like
+verify-with: design/FUN.md#4--top-down-action-adventure-zelda-like
 ---
 
 # Top-down Action-Adventure (Zelda-like)
@@ -109,7 +109,7 @@ particle primitives before citing them.
 
 ## Verify
 
-Prove it with **[FUN.md §4 · Action-adventure](../../docs/FUN.md#4--top-down-action-adventure-zelda-like)** —
+Prove it with **[FUN.md §4 · Action-adventure](../FUN.md#4--top-down-action-adventure-zelda-like)** —
 kiting-bot telemetry (win time, hp floor comfortable, 0 deaths); door gate proven
 both ways; containment every frame; hit-stop buffers inputs through the freeze.
 Design the readable fight here; prove it fair there.
@@ -123,4 +123,4 @@ Design the readable fight here; prove it fair there.
 ## See also
 
 - [`examples/gleamvale`](../../examples/gleamvale) — the top-down combat bot + feel.
-- [`docs/FUN.md §4`](../../docs/FUN.md#4--top-down-action-adventure-zelda-like) — the proof playbook.
+- [`design/FUN.md §4`](../FUN.md#4--top-down-action-adventure-zelda-like) — the proof playbook.

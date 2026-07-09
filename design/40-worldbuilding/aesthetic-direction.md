@@ -6,7 +6,7 @@ tags: [art-direction, palette, kento, woodblock, readability, contrast, look, ju
 summary: Art direction — the Kentō woodblock palette and how to brief a look that passes the readability + JUDGE bars (findable avatar, depth, one-world colour).
 use-when: You need to turn a theme into a concrete visual brief — palette, contrast, depth, silhouette — that survives the vision judge.
 composes-with: [world-theme-vectors, world-faction-identity, world-naming-and-tone]
-verify-with: docs/JUDGE.md
+verify-with: design/JUDGE.md
 ---
 
 # Aesthetic Direction — briefing the Kentō woodblock look
@@ -16,7 +16,7 @@ silhouette language that give a game one coherent look. The house default is
 **Kentō woodblock / Miyazaki-16** — a small set of traditional-Japanese hues,
 AA-gated, that reads as elegant ink-and-washi craft. This module is how you brief
 a look that clears both the [[pattern-readability]] floor and the six-axis vision
-judge (`docs/JUDGE.md`), not just how to pick pretty colours.
+judge (`design/JUDGE.md`), not just how to pick pretty colours.
 
 **Player fantasy / why it's fun.** The look is the *first* thing the player
 believes about the world — before a single mechanic fires. A frame that reads as
@@ -103,7 +103,7 @@ register from [[world-theme-vectors]] pick the corner.
 **Theme:** a keeper walking into the dusk (elegiac, small-scale).
 
 - **Ground:** `DUSK` — a graded night sky, pinned horizon, layered ridges (the
-  depth the JUDGE demands; the updrift lesson in `docs/JUDGE.md`).
+  depth the JUDGE demands; the updrift lesson in `design/JUDGE.md`).
 - **Accents:** *ko* (warm lantern glow, the focal/avatar hue) against *ai*/*fuji*
   night; *shu* reserved for danger only. Five hues, one world.
 - **Light:** each lantern is a `PointLight` pool carving warmth out of the dark —
@@ -118,7 +118,7 @@ register from [[world-theme-vectors]] pick the corner.
 *This whole module is the aesthetic hook.* The one thing to internalise: **Kentō
 gives you harmony and AA for free, but not depth or contrast-under-light** — those
 you compose per scene and *prove from the rendered pixels*, never from the hexes
-(`docs/JUDGE.md` axis 2). Design in the palette; judge in the PNG.
+(`design/JUDGE.md` axis 2). Design in the palette; judge in the PNG.
 
 ## Traps
 
@@ -147,7 +147,7 @@ you compose per scene and *prove from the rendered pixels*, never from the hexes
 
 ## See also
 
-- [`docs/JUDGE.md`](../../docs/JUDGE.md) — the six-axis rubric this module briefs
+- [`design/JUDGE.md`](../JUDGE.md) — the six-axis rubric this module briefs
   to; the `/judge` loop (`.claude/skills/judge/`).
 - `docs/CONVENTIONS.md` "Default palette is Kentō" — the palette, the ink-edge
   rule, DOM chrome, and the `npm run palette` AA gate.

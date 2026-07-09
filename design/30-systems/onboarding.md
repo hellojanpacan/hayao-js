@@ -7,7 +7,7 @@ summary: Tutorialization by doing — teach one verb at a time in a safe space, 
 use-when: A new player must learn the game's verbs and goals without a wall of text or a boring tutorial.
 composes-with: [system-difficulty-and-dda, system-accessibility, pattern-readability, process-core-loop]
 anchors: [anchor-celeste, anchor-into-the-breach]
-verify-with: docs/FUN.md#2-precision-platformer-celeste-like
+verify-with: design/FUN.md#2-precision-platformer-celeste-like
 ---
 
 # Onboarding
@@ -93,7 +93,7 @@ it"* — a rule you deduced from play sticks harder than one you were told.
 
 - **A bot completes the tutorial cleanly:** waypoint/first-level bot beats it
   0-deaths, and per-level times expose the intended gentle ramp
-  ([FUN.md §2](../../docs/FUN.md#2-precision-platformer-celeste-like)).
+  ([FUN.md §2](../FUN.md#2-precision-platformer-celeste-like)).
 - **The taught verb is *required*:** a negative proof — the best maneuver *without*
   the verb fails the room (FUN.md §3 gate pattern).
 - **Readability floor:** the avatar and the goal out-contrast the surroundings
@@ -111,5 +111,5 @@ it"* — a rule you deduced from play sticks harder than one you were told.
 ## See also
 
 - [`docs/STUDIO.md`](../../docs/STUDIO.md) — hesitation/longest-pause data; the real onboarding oracle.
-- [`docs/FUN.md` §2/§3](../../docs/FUN.md) — teach-by-geometry; negative gate proofs.
+- [`design/FUN.md` §2/§3](../FUN.md) — teach-by-geometry; negative gate proofs.
 - [[anchor-celeste]] · [[anchor-into-the-breach]] — teach-by-doing and teach-by-trust.

@@ -7,7 +7,7 @@ summary: DoT, buffs, and debuffs as first-class state — with stacking rules th
 use-when: You want conditions (poison, burn, slow, shield, rage) that persist across turns/seconds and interact with the rest of combat.
 composes-with: [system-combat-model, system-counter-systems, system-build-diversity, system-telegraphs]
 anchors: [anchor-slay-the-spire, anchor-hades]
-verify-with: docs/FUN.md#11-roguelike-deckbuilder
+verify-with: design/FUN.md#11-roguelike-deckbuilder
 ---
 
 # Status Effects — damage and change over time
@@ -91,11 +91,11 @@ and cap it — an uncapped intensity DoT trivializes the game (FUN.md law 3).
 
 ## Verify
 
-- **[FUN.md §11](../../docs/FUN.md)** — draft/build delta (the status build beats the
+- **[FUN.md §11](../FUN.md)** — draft/build delta (the status build beats the
   null build); intent honesty (shown status == resolved damage).
-- **[FUN.md law 3](../../docs/FUN.md)** — the cap inequality asserted against config.
+- **[FUN.md law 3](../FUN.md)** — the cap inequality asserted against config.
 - Determinism: golden hash of a scripted fight with statuses; view-on == view-off.
-- Feel: number pops answer on ≥ 2 senses → **[JUICE.md Part 3](../../docs/JUICE.md)**.
+- Feel: number pops answer on ≥ 2 senses → **[JUICE.md Part 3](../JUICE.md)**.
 
 ## Composes with
 
@@ -106,6 +106,6 @@ and cap it — an uncapped intensity DoT trivializes the game (FUN.md law 3).
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §11 — deckbuilder draft-delta and intent honesty.
-- [`docs/JUICE.md`](../../docs/JUICE.md) Part 1 — `FloatingText` / `FLOAT_PRESETS` for pops.
+- [`design/FUN.md`](../FUN.md) §11 — deckbuilder draft-delta and intent honesty.
+- [`design/JUICE.md`](../JUICE.md) Part 1 — `FloatingText` / `FLOAT_PRESETS` for pops.
 - [[anchor-slay-the-spire]] — the reference for legible, capped, build-defining status.

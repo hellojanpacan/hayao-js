@@ -5,7 +5,7 @@ these six kits give the design a *world* and a *look* — a setting that recolou
 the systems, the minimum viable lore that holds it together, factions that read
 at a glance, names in the house register, an art brief that survives the vision
 judge, and a way to tell the story with almost no text. Design here; **prove the
-look** in [`docs/JUDGE.md`](../../docs/JUDGE.md) and the `npm run palette` /
+look** in [`design/JUDGE.md`](../JUDGE.md) and the `npm run palette` /
 `npm run feel` gates. The house aesthetic is **Kentō woodblock / Miyazaki-16** —
 elegant ink-and-washi craft, AA-verified — a consistent starting point, never a
 cage.
@@ -45,5 +45,5 @@ story. Every arrow ends where the proof playbook begins.
   mechanical partner to `world-faction-identity`.
 - [`50-patterns/readability`](../50-patterns/readability.md) — the salience floor
   every aesthetic brief must clear.
-- [`docs/JUDGE.md`](../../docs/JUDGE.md) · `docs/CONVENTIONS.md` (Kentō palette) —
+- [`design/JUDGE.md`](../JUDGE.md) · `docs/CONVENTIONS.md` (Kentō palette) —
   where the look is proven.

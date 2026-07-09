@@ -7,7 +7,7 @@ summary: Threes-style merging scaled into a Factorio automation loop — combine
 use-when: You want a merge toy that grows into a systemic automation game.
 composes-with: [mechanic-merge, anchor-factorio, system-resource-loops, genre-incremental]
 anchors: [anchor-factorio, anchor-katamari]
-verify-with: docs/FUN.md#14-·-incremental
+verify-with: design/FUN.md#14-·-incremental
 ---
 
 # Merge Factory
@@ -105,7 +105,7 @@ three-beat loop first.
 
 A design isn't done until it names its proofs ([[process-refine-and-handoff]]).
 
-- **Pacing / no-desert ramp** → `docs/FUN.md#14-·-incremental`. Balance-sim a bot
+- **Pacing / no-desert ramp** → `design/FUN.md#14-·-incremental`. Balance-sim a bot
   that plays the factory out; assert monotone production and no bottleneck desert —
   the exact incremental verify the tier curve lives or dies by.
 - **Resource-loop bottlenecks** → [[system-resource-loops]]. The bottleneck *is* the
@@ -126,7 +126,7 @@ A design isn't done until it names its proofs ([[process-refine-and-handoff]]).
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §14 (incremental pacing) — the loop proofs.
+- [`design/FUN.md`](../FUN.md) §14 (incremental pacing) — the loop proofs.
 - **[[recipe-tower-defense-roguelite]]** — a sibling *structure* twist (draft the
   towers) on the recipe shelf; **[[process-composition]]** for the pipeline this
   recipe is a worked instance of.

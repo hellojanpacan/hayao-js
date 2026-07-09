@@ -7,7 +7,7 @@ summary: Swipe-choice narrative — binary decisions nudge four meters you must 
 use-when: The intent is a minimal-input, choice-driven game where the tension is balancing competing meters and every decision is double-edged.
 composes-with: [genre-narrative-decisions, system-reward-schedules, system-difficulty-and-dda, system-collectibles, pattern-risk-reward]
 anchors: []
-verify-with: docs/FUN.md#21-narrative-decisions-reigns-like
+verify-with: design/FUN.md#21-narrative-decisions-reigns-like
 ---
 
 # Reigns
@@ -93,7 +93,7 @@ any fixed policy (FUN.md §21: 19/20 vs always-left's 0/20).
 
 ## See also
 
-- [`docs/FUN.md#21-narrative-decisions-reigns-like`](../../docs/FUN.md) — content
+- [`design/FUN.md#21-narrative-decisions-reigns-like`](../FUN.md) — content
   lint (unique ids, bounded effects, no no-op choices); balanced-policy bot
   survives; always-left loses 0/20; every doom fires its own ending.
 - [[genre-narrative-decisions]] · [[pattern-risk-reward]] · [[system-collectibles]].

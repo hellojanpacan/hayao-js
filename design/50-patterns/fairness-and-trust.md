@@ -6,7 +6,7 @@ tags: [fairness, trust, readability, honesty, feel]
 summary: The player must trust the sim — deaths are earned, inputs land, rules are consistent; trust broken once colors everything after.
 use-when: Anytime randomness, hitboxes, or hidden rules could make a loss feel stolen.
 composes-with: [system-grace, antipattern-rng-frustration, antipattern-input-lie]
-verify-with: docs/JUICE.md
+verify-with: design/JUICE.md
 ---
 
 # Fairness & Trust
@@ -108,7 +108,7 @@ Trust is not one variable — it's the *precondition* the other patterns spend:
 ## Verify / feel-gate link
 
 Fairness is one of the few *taste* qualities with a mechanical proxy — see
-`docs/JUICE.md` for the feel-gate discipline, and prove the sim's half directly:
+`design/JUICE.md` for the feel-gate discipline, and prove the sim's half directly:
 
 - **Determinism is provable.** Same seed + same inputs → same result, byte-for-byte
   ([[system-save-and-checkpoint]]). If a replay diverges, some hidden non-determinism
@@ -146,7 +146,7 @@ difficulty reads as *earned*. The player still dies — but says "again," not "c
 
 ## See also
 
-- [`docs/JUICE.md`](../../docs/JUICE.md) — the feel-gate discipline; fairness is a
+- [`design/JUICE.md`](../JUICE.md) — the feel-gate discipline; fairness is a
   taste quality with a determinism-shaped mechanical floor.
 - [[anchor-into-the-breach]] · [[anchor-spelunky]] — perfect-information fairness and
   fair-seed fairness as whole design philosophies.

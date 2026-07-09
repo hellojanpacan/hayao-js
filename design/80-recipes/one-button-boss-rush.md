@@ -7,7 +7,7 @@ summary: Cuphead's pattern-mastery bosses reduced to a single input — all dept
 use-when: You want maximal challenge/spectacle from minimal input (accessibility or js13k).
 composes-with: [anchor-cuphead, system-boss-design, system-telegraphs, process-the-twist]
 anchors: [anchor-cuphead, anchor-peggle]
-verify-with: docs/FUN.md#7-·-bullet-hell
+verify-with: design/FUN.md#7-·-bullet-hell
 ---
 
 **What it is.** A gauntlet of pattern-mastery bosses — Cuphead's memorize-and-execute fights — collapsed onto a **single button**. Depth lives in *when* you press, never in *what* you press.
@@ -89,7 +89,7 @@ Only after that fight sings: chain 3–5 bosses into the rush, escalate across t
 
 ## Handoff
 
-- **Fun proof:** [[genre-bullet-hell]] pressure and legibility — verify against **docs/FUN.md §7 · Bullet Hell**. Is every death readable? Is the one input always honest?
-- **Feel proof:** telegraph timing and juice choreography — take it to docs/JUICE.md.
-- **Ship gate:** the accessibility promise and the vision-judge look — docs/JUDGE.md.
+- **Fun proof:** [[genre-bullet-hell]] pressure and legibility — verify against **design/FUN.md §7 · Bullet Hell**. Is every death readable? Is the one input always honest?
+- **Feel proof:** telegraph timing and juice choreography — take it to design/JUICE.md.
+- **Ship gate:** the accessibility promise and the vision-judge look — design/JUDGE.md.
 - Refine the brief and hand it off via [[process-refine-and-handoff]].

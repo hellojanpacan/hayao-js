@@ -7,6 +7,10 @@ import { dcos, dsin } from '../core/dmath';
 import { TAU } from '../core/math';
 import type { DrawCommand, Paint, TextAlign } from '../render/commands';
 import { Node, type NodeConfig, type WorldContext } from './node';
+import { fail } from '../core/errors';
+
+/** Every valid `Shape.kind`. Kept in sync with the `Shape` union above. */
+const SHAPE_KINDS = new Set(['rect', 'circle', 'ellipse', 'arc', 'poly', 'path', 'glyph', 'diamond', 'regularPoly']);
 
 // ── Sprite ────────────────────────────────────────────────────────
 /**
@@ -71,6 +75,41 @@ export class Sprite extends Node {
 
   constructor(config: SpriteConfig) {
     super(config);
+    const shape = config.shape as Shape | undefined;
+    // Missing/malformed shape: without this guard the failure surfaces far away,
+    // as "Cannot read properties of undefined (reading 'kind')" inside draw() at
+    // render time — nowhere near the `new Sprite({...})` that caused it (issue #66).
+    if (shape == null || typeof (shape as { kind?: unknown }).kind !== 'string') {
+      fail({
+        problem: 'Sprite was created without a valid `shape`.',
+        field: 'shape',
+        expected: "a Shape, e.g. { kind: 'rect', w, h }, { kind: 'circle', radius }, or { kind: 'glyph', char, size }",
+        received: shape === undefined ? config : shape,
+        hasReceived: true,
+        hint: 'Every Sprite needs a `shape`. If you passed size/width/color at the top level, wrap them: new Sprite({ shape: { kind: \'rect\', w, h }, fill }).',
+        anchor: 'sprite-shape',
+      });
+    }
+    if (!SHAPE_KINDS.has(shape.kind)) {
+      fail({
+        problem: `Sprite got an unknown shape kind '${(shape as { kind: string }).kind}'.`,
+        field: 'shape.kind',
+        expected: `one of: ${[...SHAPE_KINDS].join(', ')}`,
+        received: (shape as { kind: unknown }).kind,
+        hasReceived: true,
+        anchor: 'sprite-shape',
+      });
+    }
+    if (shape.kind === 'rect' && shape.anchor !== undefined && shape.anchor !== 'center' && shape.anchor !== 'topLeft') {
+      fail({
+        problem: `A rect shape got an invalid anchor '${shape.anchor}'.`,
+        field: 'shape.anchor',
+        expected: "'center' (default) or 'topLeft'",
+        received: shape.anchor,
+        hasReceived: true,
+        anchor: 'sprite-shape',
+      });
+    }
     this.shape = config.shape;
     this.paint = {
       fill: config.fill,

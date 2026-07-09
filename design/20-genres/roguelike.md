@@ -7,7 +7,7 @@ summary: Fair discovery through procedural dungeons that always connect and turn
 use-when: You want run-based exploration where each seed is a fresh, fair puzzle and death is the loop.
 composes-with: [system-procgen-design, system-meta-progression, system-session-structure, system-enemy-archetypes, system-save-and-checkpoint]
 anchors: [anchor-nuclear-throne, anchor-dead-cells]
-verify-with: docs/FUN.md#10--traditional-roguelike
+verify-with: design/FUN.md#10--traditional-roguelike
 ---
 
 # Roguelike
@@ -104,7 +104,7 @@ seed always promises.
 ## Verify
 
 Prove it in **[FUN.md §10 · Traditional
-roguelike](../../docs/FUN.md#10--traditional-roguelike)**: seeded
+roguelike](../FUN.md#10--traditional-roguelike)**: seeded
 reproducibility, a connectivity sweep, a full-knowledge bot wins 10/10 random
 seeds, and turn-log replay determinism.
 

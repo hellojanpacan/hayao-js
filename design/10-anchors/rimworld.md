@@ -7,7 +7,7 @@ summary: A colony sim built as a story generator — an AI director paces crises
 use-when: The design wants players to leave with stories, not scores; you need a director that authors drama over a deep sim.
 composes-with: [genre-city-builder, system-emergent-systems, system-difficulty-and-dda, system-enemy-ai, system-resource-loops]
 anchors: []
-verify-with: docs/FUN.md#17-citycolony-builder
+verify-with: design/FUN.md#17-citycolony-builder
 ---
 
 # RimWorld
@@ -95,7 +95,7 @@ the director is the author; the sim is the ink.
 
 ## See also
 
-- [`docs/FUN.md#17-citycolony-builder`](../../docs/FUN.md) — the exposed score;
+- [`design/FUN.md#17-citycolony-builder`](../FUN.md) — the exposed score;
   negative synergies create the only real decisions; scoring-honesty audit.
 - [[system-emergent-systems]] · [[system-difficulty-and-dda]] ·
   [[anchor-shadow-of-mordor]] (the other systemic-memory anchor).

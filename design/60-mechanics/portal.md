@@ -7,7 +7,7 @@ summary: Two openings become one — carry momentum and sightlines through folde
 use-when: A spatial puzzle wants folded geometry and momentum tricks.
 composes-with: [mechanic-teleport, genre-puzzle-platformer, pattern-emergence]
 anchors: [anchor-portal]
-verify-with: docs/FUN.md#1-·-grid-puzzle
+verify-with: design/FUN.md#1-·-grid-puzzle
 ---
 
 **What it is.** Two openings are welded into **one seam**: whatever crosses opening A exits opening B at the same speed, rotated to B's facing. Space folds; the level's true topology is not its layout.

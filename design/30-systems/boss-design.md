@@ -7,7 +7,7 @@ summary: The multi-phase set-piece — a fight that teaches, escalates, and tele
 use-when: You need a climactic fight — a boss, an elite, a chapter finale — that's a spectacle and a skill test, not just a big HP bar.
 composes-with: [system-telegraphs, system-combat-model, system-encounter-design, system-grace, system-enemy-ai]
 anchors: [anchor-hades, anchor-into-the-breach]
-verify-with: docs/FUN.md#7-bullet-hell
+verify-with: design/FUN.md#7-bullet-hell
 ---
 
 # Boss Design — the set-piece fight
@@ -104,13 +104,13 @@ Concretely, on every transition:
 
 ## Verify
 
-- **[FUN.md §7](../../docs/FUN.md)** — dodge bot clears each phase deathless; peak-bullet
+- **[FUN.md §7](../FUN.md)** — dodge bot clears each phase deathless; peak-bullet
   count asserted; mercy clears on death and transition.
-- **[FUN.md §4](../../docs/FUN.md)** — every attack telegraphed (`telegraphIssues`).
-- **[FUN.md law 5](../../docs/FUN.md)** — transition i-frames proven edge-in/edge-out
+- **[FUN.md §4](../FUN.md)** — every attack telegraphed (`telegraphIssues`).
+- **[FUN.md law 5](../FUN.md)** — transition i-frames proven edge-in/edge-out
   (`graceWindowIssues`).
 - Feel: death/boss-hit shake and hit-stop inside envelope (`feedbackIssues`) →
-  **[JUICE.md Part 3](../../docs/JUICE.md)**, **[VERIFICATION Channel 4](../../docs/VERIFICATION.md)**.
+  **[JUICE.md Part 3](../JUICE.md)**, **[VERIFICATION Channel 4](../../docs/VERIFICATION.md)**.
 
 ## Composes with
 
@@ -121,6 +121,6 @@ Concretely, on every transition:
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §7 (mercy + dodge bot), §4 (telegraphs), law 5 (grace).
-- [`docs/JUICE.md`](../../docs/JUICE.md) — spectacle within the feedback envelope.
+- [`design/FUN.md`](../FUN.md) §7 (mercy + dodge bot), §4 (telegraphs), law 5 (grace).
+- [`design/JUICE.md`](../JUICE.md) — spectacle within the feedback envelope.
 - [[anchor-hades]] — bosses as repeatable, learnable set-pieces across runs.

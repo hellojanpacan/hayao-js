@@ -7,7 +7,7 @@ summary: A score-multiplier deckbuilder where poker hands feed a chips×mult eng
 use-when: Designing a game whose payoff is a runaway score-multiplier engine and the juice of numbers detonating past a threshold.
 composes-with: [genre-deckbuilder, system-build-diversity, pattern-feedback-loops, pattern-juice-choreography]
 anchors: [anchor-balatro]
-verify-with: docs/FUN.md#11-·-roguelike-deckbuilder
+verify-with: design/FUN.md#11-·-roguelike-deckbuilder
 ---
 
 # Balatro
@@ -73,7 +73,7 @@ the tutorial are the same animation.
   not just with cards, is where the depth and the "broken build" joy live.
 - **Resolve the score visibly, term by term.** The scoring choreography is the
   reward — the juice *is* the feedback loop. See
-  [[pattern-juice-choreography]] and `docs/JUICE.md`.
+  [[pattern-juice-choreography]] and `design/JUICE.md`.
 - **Escalate the threshold superlinearly** so the engine must keep growing
   (and inherit the deckbuilder verify: win-rate window + draft delta).
 - **Reserve a few genuinely broken synergies.** The peak experience of the
@@ -124,9 +124,9 @@ the tutorial are the same animation.
 
 - [[genre-deckbuilder]] · [[anchor-slay-the-spire]] ·
   [[pattern-feedback-loops]] · [[pattern-juice-choreography]]
-- `docs/FUN.md#11-·-roguelike-deckbuilder` — win-rate window, draft delta,
+- `design/FUN.md#11-·-roguelike-deckbuilder` — win-rate window, draft delta,
   intent honesty.
-- `docs/JUICE.md` — the score-detonation feedback contract (2-senses,
+- `design/JUICE.md` — the score-detonation feedback contract (2-senses,
   escalation).
 - `sandboxes/juice-lab/` — spring/pop/particle choreography for the number
   landing.

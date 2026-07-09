@@ -6,7 +6,7 @@ tags: [movement, air-control, traversal, descent]
 summary: Trade fall speed for horizontal control — the soft-landing verb that stretches an arc into a decision.
 use-when: Descents or gaps need controlled float without full flight.
 composes-with: [mechanic-double-jump, mechanic-dash, pattern-pacing-and-tension]
-verify-with: docs/FUN.md#19-·-physics-arcade
+verify-with: design/FUN.md#19-·-physics-arcade
 ---
 
 # Glide / Hover
@@ -130,4 +130,4 @@ not restated here.
 - [`examples/updrift`](../../examples/updrift/) — the honest air-control platformer
   floor. `sandboxes/physics-lab` · `sandboxes/light-lab` · `sandboxes/camera-lab` —
   the parts.
-- [`docs/FUN.md`](../../docs/FUN.md) §19 — where the arc and its feel get proven.
+- [`design/FUN.md`](../FUN.md) §19 — where the arc and its feel get proven.

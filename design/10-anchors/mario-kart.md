@@ -7,7 +7,7 @@ summary: Accessible kart racing — a drift-boost is the hidden skill ceiling, a
 use-when: Designing a competitive or party racer where rivals, spectacle, and a bunched pack matter more than a solo clock.
 composes-with: [genre-racing, system-enemy-ai, system-difficulty-and-dda, pattern-risk-reward, system-coop-and-competition, system-economy]
 anchors: [anchor-mario-kart]
-verify-with: docs/FUN.md#20-·-top-down-racing
+verify-with: design/FUN.md#20-·-top-down-racing
 ---
 
 # Mario Kart
@@ -127,5 +127,5 @@ rubber-band pitfall).
   [[pattern-risk-reward]]
 - `sandboxes/physics-lab` — the kart and its understeer, in isolation.
 - `sandboxes/pathfinding-demo` — the rival `driveLine()` follower.
-- `docs/FUN.md#20-·-top-down-racing` — the racing verify pattern (rival finishes,
+- `design/FUN.md#20-·-top-down-racing` — the racing verify pattern (rival finishes,
   braking beats flooring, cutting advances nothing).

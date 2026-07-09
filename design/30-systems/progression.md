@@ -7,7 +7,7 @@ summary: Turning play into steadily-earned power; pacing the curve so growth nev
 use-when: The design promises the player gets stronger over time and you need to shape how fast, along which axes, and how it stays fun.
 composes-with: [system-skill-trees, system-economy, system-reward-schedules, system-mastery-curve, system-difficulty-and-dda]
 anchors: [anchor-hades, anchor-vampire-survivors, anchor-dead-cells]
-verify-with: docs/FUN.md#14-incrementalidle
+verify-with: design/FUN.md#14-incrementalidle
 ---
 
 # Progression — XP, Levels, the Power Curve
@@ -114,7 +114,7 @@ build growth (**[[FUN.md §6]]**).
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §6, §14 — the pacing and challenge-gap proofs.
+- [`design/FUN.md`](../FUN.md) §6, §14 — the pacing and challenge-gap proofs.
 - `src/content/generate.ts` · `campaign.ts` — generate-and-ramp content, don't
   hand-author the curve.
 - `examples/lanternfold/` — a 42-level generated, ramp-asserted campaign.

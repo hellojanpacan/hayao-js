@@ -6,7 +6,7 @@ tags: [open-world, pacing, space, filler]
 summary: A big empty world padded with distance — traversal masquerading as content, with nothing to find.
 use-when: You are scaling up world size and worrying it feels thin.
 composes-with: [system-map-and-navigation, pattern-pacing-and-tension, world-level-as-story]
-verify-with: docs/FUN.md#3-·-metroidvania
+verify-with: design/FUN.md#3-·-metroidvania
 ---
 
 **What it is.** You grew the map, not the game. Minutes of empty traversal sit between beats, and the space in between says **nothing** — no reward, no story, no decision. The size number went up; the density went down.
@@ -67,4 +67,4 @@ Density over size. Shrink the map until every screen earns its place, then let t
 Prove density, don't assert it. Treat the pacing map as a first-class artifact and check beats-per-minute before handoff.
 
 - Design pointer: [[pattern-pacing-and-tension]], [[world-level-as-story]], [[process-refine-and-handoff]].
-- Verify with `docs/FUN.md#3-·-metroidvania` — the metroidvania fun-gate is where dead space gets caught: it asks whether the world stays dense as it scales.
+- Verify with `design/FUN.md#3-·-metroidvania` — the metroidvania fun-gate is where dead space gets caught: it asks whether the world stays dense as it scales.

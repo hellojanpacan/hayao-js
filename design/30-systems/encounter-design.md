@@ -7,7 +7,7 @@ summary: Composing archetypes into a fight — pressure and safe pockets, exit l
 use-when: You have enemy roles and need to arrange them into a specific fight that reads, pressures, and resolves fairly.
 composes-with: [system-enemy-archetypes, system-enemy-ai, system-difficulty-and-dda, system-boss-design]
 anchors: [anchor-into-the-breach, anchor-vampire-survivors]
-verify-with: docs/FUN.md#5-stealth
+verify-with: design/FUN.md#5-stealth
 ---
 
 # Encounter Design
@@ -85,11 +85,11 @@ ideal: the player should be able to route the fight, not just survive noise.
 
 - **Both-ways affordance / safe pocket:** the stealth proof pattern — punished
   exposure AND concealment-holds AND a mid-path pocket
-  ([FUN.md §5](../../docs/FUN.md#5-stealth)).
+  ([FUN.md §5](../FUN.md#5-stealth)).
 - **Beatable:** a bot clears the encounter deathless with hp floor ≥ comfortable
-  ([FUN.md §4](../../docs/FUN.md#4-top-down-action-adventure-zelda-like)).
+  ([FUN.md §4](../FUN.md#4-top-down-action-adventure-zelda-like)).
 - **Curve breathes:** assert the pressure *shape* (each wave ≥ ~55% of prior,
-  finale peaks) with `rampIssues`, not monotonicity ([FUN.md §8](../../docs/FUN.md#8-tower-defense)).
+  finale peaks) with `rampIssues`, not monotonicity ([FUN.md §8](../FUN.md#8-tower-defense)).
 - **Exit lanes clear:** reachability lint over the actual room geometry (FUN.md Part 3).
 
 ## Composes with
@@ -102,6 +102,6 @@ ideal: the player should be able to route the fight, not just survive noise.
 
 ## See also
 
-- [`docs/FUN.md` §4/§5/§8](../../docs/FUN.md) — readable combat, plannable danger, breathing waves.
+- [`design/FUN.md` §4/§5/§8](../FUN.md) — readable combat, plannable danger, breathing waves.
 - [`src/content/dsl.ts`](../../src/content/dsl.ts) — director-driven ingress.
 - [[anchor-into-the-breach]] — the perfectly legible, fully telegraphed encounter.

@@ -7,7 +7,7 @@ summary: The enemy alphabet — tank/skirmisher/artillery/swarm/support — a sm
 use-when: You need a legible enemy roster where each foe demands a different answer and pairs interact.
 composes-with: [system-enemy-ai, system-encounter-design, system-unit-rosters, system-counter-systems]
 anchors: [anchor-vampire-survivors, anchor-into-the-breach]
-verify-with: docs/FUN.md#4-top-down-action-adventure-zelda-like
+verify-with: design/FUN.md#4-top-down-action-adventure-zelda-like
 ---
 
 # Enemy Archetypes
@@ -93,12 +93,12 @@ The five roles and what each *demands*:
 
 - **Each role beatable with its answer:** kiting-bot telemetry per archetype —
   0 deaths, hp floor ≥ comfortable
-  ([FUN.md §4](../../docs/FUN.md#4-top-down-action-adventure-zelda-like)).
+  ([FUN.md §4](../FUN.md#4-top-down-action-adventure-zelda-like)).
 - **Composition, not inflation:** assert a *skill delta* — the correct target
   order clears far faster than a naive one (FUN.md law 2). If order doesn't
   matter, the roles don't interact.
 - **Swarm pressure holds:** `peak alive ≥ N` so the horde feel can't silently
-  regress ([FUN.md §6](../../docs/FUN.md#6-twin-stick-horde-survival-vampire-survivors-like)).
+  regress ([FUN.md §6](../FUN.md#6-twin-stick-horde-survival-vampire-survivors-like)).
 - **Readability gate:** telegraph-before-hitbox in [`src/verify/gates.ts`](../../src/verify/gates.ts).
 
 ## Composes with
@@ -111,7 +111,7 @@ The five roles and what each *demands*:
 
 ## See also
 
-- [`docs/FUN.md` §4/§6](../../docs/FUN.md) — readable combat; horde pressure.
+- [`design/FUN.md` §4/§6](../FUN.md) — readable combat; horde pressure.
 - [`src/content/dsl.ts`](../../src/content/dsl.ts) — `WaveDef`/`pollDirector` role spawning.
 - [[anchor-vampire-survivors]] — the swarm archetype as the *whole* game.
 - [[anchor-into-the-breach]] — every enemy role telegraphed as a solvable board.

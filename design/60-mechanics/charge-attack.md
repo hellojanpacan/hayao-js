@@ -6,7 +6,7 @@ tags: [combat, commitment, timing, risk]
 summary: Hold to build power, release to spend it — a visible commitment the enemy can read too.
 use-when: You want a risk/reward beat where power costs exposure.
 composes-with: [mechanic-ground-pound, pattern-risk-reward, system-telegraphs]
-verify-with: docs/JUICE.md
+verify-with: design/JUICE.md
 ---
 
 **What it is.** Hold an input to accumulate power over time; release to spend it in one committed strike. The hold is public — a windup the world can see, so the enemy gets to react before you land.

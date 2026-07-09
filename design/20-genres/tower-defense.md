@@ -7,7 +7,7 @@ summary: Build decisions that matter — near-hard counters, range-ring geometry
 use-when: You want a spatial build-and-defend loop where placement and counter-picks decide the run, not tower count.
 composes-with: [system-counter-systems, system-enemy-archetypes, system-difficulty-and-dda, system-economy, system-encounter-design]
 anchors: [anchor-into-the-breach]
-verify-with: docs/FUN.md#8--tower-defense
+verify-with: design/FUN.md#8--tower-defense
 ---
 
 # Tower Defense
@@ -102,7 +102,7 @@ magazine), or where the path goes (maze-building). See [[process-the-twist]].
 
 ## Verify
 
-Prove it in **[FUN.md §8 · Tower defense](../../docs/FUN.md#8--tower-defense)**:
+Prove it in **[FUN.md §8 · Tower defense](../FUN.md#8--tower-defense)**:
 mixed build survives 10/10, a bigger-budget mono build fails, the bare lane
 falls early, and counter duels resolve from both sides.
 

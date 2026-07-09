@@ -7,7 +7,7 @@ summary: Drafts with teeth — a deck that evolves run-to-run, where the draft d
 use-when: You want a run-based card game where the deck is the strategy and picking cards well is the whole skill.
 composes-with: [system-build-diversity, system-reward-schedules, system-meta-progression, system-procgen-design, system-status-effects, system-telegraphs]
 anchors: [anchor-slay-the-spire, anchor-balatro]
-verify-with: docs/FUN.md#11--roguelike-deckbuilder
+verify-with: design/FUN.md#11--roguelike-deckbuilder
 ---
 
 # Roguelike Deckbuilder
@@ -104,7 +104,7 @@ commitment, synergies compound, and a deck clicking into a combo is the payoff.
 ## Verify
 
 Prove it in **[FUN.md §11 · Roguelike
-deckbuilder](../../docs/FUN.md#11--roguelike-deckbuilder)**: a greedy pilot lands
+deckbuilder](../FUN.md#11--roguelike-deckbuilder)**: a greedy pilot lands
 in the win-rate window, a never-draft pilot falls below it, the intent audit
 matches, and a golden climb hash replays.
 

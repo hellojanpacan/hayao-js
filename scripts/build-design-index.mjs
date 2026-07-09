@@ -7,7 +7,9 @@ import { join, relative } from 'node:path';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const DESIGN = join(ROOT, 'design');
-const SKIP = new Set(['README.md', '_TEMPLATE.md', 'CONTRIBUTING.md', 'INDEX.md']);
+// Top-level prose that lives in design/ but is NOT an indexed Codex module:
+// the two READMEs, the template, the generated index, and the craft playbooks.
+const SKIP = new Set(['README.md', '_TEMPLATE.md', 'CONTRIBUTING.md', 'INDEX.md', 'FUN.md', 'JUICE.md', 'JUDGE.md']);
 const KIND_ORDER = ['process', 'anchor', 'genre', 'system', 'worldbuilding', 'pattern', 'mechanic', 'antipattern', 'recipe'];
 const KIND_PREFIX = { process: 'process-', anchor: 'anchor-', genre: 'genre-', system: 'system-', worldbuilding: 'world-', pattern: 'pattern-', mechanic: 'mechanic-', antipattern: 'antipattern-', recipe: 'recipe-' };
 const SECTION = { process: '00-process', anchor: '10-anchors', genre: '20-genres', system: '30-systems', worldbuilding: '40-worldbuilding', pattern: '50-patterns', mechanic: '60-mechanics', antipattern: '70-antipatterns', recipe: '80-recipes' };

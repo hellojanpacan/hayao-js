@@ -6,7 +6,7 @@ tags: [tone, feel, ambience, emotion, cohesion]
 summary: The emotional weather of a game — how palette, pace, sound, and space combine into a felt tone before a word is read.
 use-when: You need the game to FEEL a certain way, cohesively, across every surface.
 composes-with: [world-aesthetic-direction, world-soundscape, pattern-juice-choreography]
-verify-with: docs/JUDGE.md
+verify-with: design/JUDGE.md
 ---
 
 **What it is.** The **felt tone** a player reads off the screen before any rule, name, or line of text lands — the sum of palette, pace, sound, and empty space. Mood is what the game is *like to be inside of*.
@@ -45,7 +45,7 @@ The load-bearing move is **coherence**: a channel that disagrees reads as a bug,
 5. **Build the soundscape to match, not to decorate.** Choose density and register before any specific cue. Silence is a color — see [[world-soundscape]].
 6. **Carve the negative space.** Camera distance and empty margins set intimacy vs. awe. Restraint is the tool — see [[pattern-restraint-and-negative-space]].
 7. **Bake mood into a system, not a filter.** Pick one rule that *enforces* the tone (see traps). Cozy = remove the fail-state. Dread = starve the player of information.
-8. **Judge from a still frame.** Screenshot one representative moment. If a stranger can't name the emotion in a word, a channel is fighting the brief — via [[docs/JUDGE.md]].
+8. **Judge from a still frame.** Screenshot one representative moment. If a stranger can't name the emotion in a word, a channel is fighting the brief — via [[design/JUDGE.md]].
 
 ## Twist seams
 

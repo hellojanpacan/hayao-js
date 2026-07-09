@@ -6,7 +6,7 @@ tags: [audio, sound, music, feedback, mood]
 summary: The sonic signature of a game — music, ambience, and SFX as identity and feedback; sound is half of feel.
 use-when: You want audio to carry mood and reinforce feedback, not just decorate.
 composes-with: [world-mood-and-atmosphere, pattern-juice-choreography, system-camera-and-controls]
-verify-with: docs/JUICE.md
+verify-with: design/JUICE.md
 ---
 
 **What it is.** The **sonic signature** of a game — music, ambience, and SFX treated as identity and as the second sense in every feedback event. Sound is half of feel; mute a great game and it dies.

@@ -6,7 +6,7 @@ tags: [puzzle, fairness, readability, solution]
 summary: Puzzles solved by reading the author's mind, not the rules — leaps of logic the game never taught.
 use-when: A puzzle solution depends on knowledge the game did not provide.
 composes-with: [pattern-fairness-and-trust, pattern-readability, genre-grid-puzzle]
-verify-with: docs/FUN.md#1-·-grid-puzzle
+verify-with: design/FUN.md#1-·-grid-puzzle
 ---
 
 **What it is.** A puzzle whose answer follows not from what the game **showed** but from what the author happened to be thinking. The player doesn't deduce — they guess your intent, or open a wiki.
@@ -72,4 +72,4 @@ Legit designs that flirt with this line — and stay honest by paying a specific
 
 ## Verify / guard
 
-The board must be **solvable by deduction from what's on it** — prove it the way [[genre-grid-puzzle]] demands. See `docs/FUN.md#1-·-grid-puzzle`: a machine solver proves winnability, but *you* must confirm the winning line uses only taught rules. Reference `examples/sokoban/` for the pure-logic split that keeps the rule set inspectable. A solver that wins via an untaught verb is a red flag, not a green check.
+The board must be **solvable by deduction from what's on it** — prove it the way [[genre-grid-puzzle]] demands. See `design/FUN.md#1-·-grid-puzzle`: a machine solver proves winnability, but *you* must confirm the winning line uses only taught rules. Reference `examples/sokoban/` for the pure-logic split that keeps the rule set inspectable. A solver that wins via an untaught verb is a red flag, not a green check.

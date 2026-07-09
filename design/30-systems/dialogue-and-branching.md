@@ -7,7 +7,7 @@ summary: The structure of talking and choosing — trees, gates, and state that 
 use-when: You need conversation, choices, or branching narrative with real consequence.
 composes-with: [genre-visual-novel, anchor-disco-elysium, pattern-meaningful-choice]
 anchors: [anchor-disco-elysium]
-verify-with: docs/FUN.md#21-·-narrative-decisions
+verify-with: design/FUN.md#21-·-narrative-decisions
 ---
 
 **What it is.** A **graph** of authored lines the player walks by choosing edges, gated by state and stamped back into state. Talking is the verb; branching is where the verb has stakes.
@@ -76,4 +76,4 @@ verify-with: docs/FUN.md#21-·-narrative-decisions
 
 ## Verify
 
-Design is done here; proof lives there. Judge these branches against narrative-decision craft in [docs/FUN.md#21-·-narrative-decisions](docs/FUN.md#21-·-narrative-decisions): does a choice change a probe-able flag, does that flag get referenced downstream, and does every gate have at least one clearing path? A branch that fails the "did the world remember?" test is cosmetic — cut it or give it teeth.
+Design is done here; proof lives there. Judge these branches against narrative-decision craft in [design/FUN.md#21-·-narrative-decisions](design/FUN.md#21-·-narrative-decisions): does a choice change a probe-able flag, does that flag get referenced downstream, and does every gate have at least one clearing path? A branch that fails the "did the world remember?" test is cosmetic — cut it or give it teeth.

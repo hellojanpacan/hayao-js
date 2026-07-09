@@ -7,7 +7,7 @@ summary: A systemic roguelite platformer where consistent rules + interacting ha
 use-when: You want emergent chaos from a small set of rigid, interacting systems.
 composes-with: [genre-puzzle-platformer, pattern-emergence, system-procgen-design]
 anchors: [anchor-spelunky]
-verify-with: docs/FUN.md#10-·-traditional-roguelike
+verify-with: design/FUN.md#10-·-traditional-roguelike
 ---
 
 **What it is.** A procedurally-generated platformer where a handful of rigidly consistent objects — arrow traps, boulders, shopkeepers, bombs, snakes — collide with each other and with you to produce disasters no designer ever scripted. Death is total; the level is fresh every run.
@@ -68,4 +68,4 @@ Nothing structural. The caves, the Mayan skins, the damsel, the Tunnel Man — p
 - [[anchor-into-the-breach]] — perfect-information systemic hazards; fairness taken to full determinism.
 - [[anchor-minecraft]] · [[anchor-terraria]] — the object-grammar scaled to an open world instead of a run.
 - [[anchor-rimworld]] — systemic emergence where the *story* is the output, not the disaster.
-- **Verify** the roguelite loop and fairness bar with `docs/FUN.md#10-·-traditional-roguelike`; the interaction chaos must still read cleanly under [[pattern-readability]].
+- **Verify** the roguelite loop and fairness bar with `design/FUN.md#10-·-traditional-roguelike`; the interaction chaos must still read cleanly under [[pattern-readability]].

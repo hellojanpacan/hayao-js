@@ -7,7 +7,7 @@ summary: Platforming where the challenge is thought, not reflex — one deep ver
 use-when: You want spatial puzzles built on a single expressive movement/manipulation verb.
 composes-with: [anchor-braid, anchor-portal, mechanic-gravity-flip, system-onboarding]
 anchors: [anchor-braid, anchor-portal]
-verify-with: docs/FUN.md#1-·-grid-puzzle
+verify-with: design/FUN.md#1-·-grid-puzzle
 ---
 
 **What it is.** A platformer where the walls are ideas, not gaps. You give the player **one verb** with a deep rule, then spend the whole game asking questions that verb can answer. Movement is a means; the answer is the win.
@@ -74,4 +74,4 @@ Twist the verb, not the platforming. Each is *X but Y* with a vector in parens:
 
 ## Verify
 
-Prove it against `docs/FUN.md#1-·-grid-puzzle` — machine-checked winnability, an authored insight per room, and reset cheap enough that thinking, not retrying, is the loop. Design here; prove there.
+Prove it against `design/FUN.md#1-·-grid-puzzle` — machine-checked winnability, an authored insight per room, and reset cheap enough that thinking, not retrying, is the loop. Design here; prove there.

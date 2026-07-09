@@ -6,7 +6,7 @@ tags: [core-loop, gameplay-loop, verb, feedback, reward, progression, pacing, en
 summary: Design the nested loop stack — moment / encounter / session / meta — and the verb→challenge→feedback→reward→growth cycle inside each layer.
 use-when: You have pillars and need to design the actual moment-to-moment play and how it nests up into a session and a reason to return.
 composes-with: [process-pillars, process-composition, process-refine-and-handoff]
-verify-with: docs/FUN.md#part-2--per-genre-cheat-sheet
+verify-with: design/FUN.md#part-2--per-genre-cheat-sheet
 ---
 
 # The Core Loop Stack
@@ -55,7 +55,7 @@ VERB ──▶ CHALLENGE ──▶ FEEDBACK ──▶ REWARD ──▶ GROWTH �
 - **Challenge** — what resists the verb. A gap, a guard, a wave, a bad hand.
 - **Feedback** — the game answers *legibly and on ≥ 2 senses*. This is a
   JUICE.md concern — design the *event*, prove the feel there (see
-  [docs/JUICE.md](../../docs/JUICE.md) Part 3).
+  [design/JUICE.md](../JUICE.md) Part 3).
 - **Reward** — what the success buys: territory, a pickup, a clear, a card.
 - **Growth** — how the reward changes future turns: more power, more options, a
   new verb. Growth is the hook into the *next layer up*.
@@ -109,7 +109,7 @@ margin) — declared here, proven there.
 | "No reason to come back" | thin/absent meta | add a meta hook sized to the session |
 | "Every run feels the same" | growth doesn't diverge | make rewards branch ([[system-build-diversity]]) |
 | "The core just isn't fun" | the **moment verb** | stop; the verb is wrong — re-prototype it in isolation |
-| "Rewards feel hollow" | feedback, not reward | it's a feel gap → [docs/JUICE.md](../../docs/JUICE.md), not more loot |
+| "Rewards feel hollow" | feedback, not reward | it's a feel gap → [design/JUICE.md](../JUICE.md), not more loot |
 
 The single most common failure is a **weak moment verb** propped up by heavy meta
 — unlocks papering over a core that isn't fun. No amount of meta fixes a bad
@@ -140,7 +140,7 @@ moment. Fix the bottom of the stack first.
 
 ## See also
 
-- [docs/FUN.md](../../docs/FUN.md) Part 2 — each genre's *mechanical truth* is the
+- [design/FUN.md](../FUN.md) Part 2 — each genre's *mechanical truth* is the
   proof that its core loop actually holds; find your genre and its verify pattern.
 - [`sandboxes/`](../../sandboxes/) — the place to prototype a moment verb in
   isolation before you build the stack on top of it.

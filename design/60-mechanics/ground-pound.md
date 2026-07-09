@@ -6,7 +6,7 @@ tags: [combat, platformer, impact, area]
 summary: A committed downward strike — the emphatic verb; height buys power, landing buys a shockwave.
 use-when: You want a high-commitment area attack or a break-through-floor traversal beat.
 composes-with: [mechanic-charge-attack, mechanic-bounce, system-telegraphs]
-verify-with: docs/JUICE.md
+verify-with: design/JUICE.md
 ---
 
 **What it is.** The player halts, snaps downward, and hits the ground hard enough to
@@ -53,7 +53,7 @@ rest is polish.
 ## How it wires to Hayao
 - The airtime-to-impact arc is a downward velocity you clamp on the way down; the landing test is a contact against the floor collider. Read the physics parts in the platformer sandbox lab (`sandboxes/` — the single-mechanic labs, not a whole game) before wiring anything.
 - The shockwave is **pure view** — a radial cosmetic node, not part of the sim state. The *hitbox* that clears the crowd is simulation and must be deterministic (drive any spread/knock through the deterministic RNG, never a wall clock). Keep the ring flagged cosmetic so it stays out of the world hash.
-- Freeze-frame, screen-shake, and dust are all cosmetic-side; choreograph them per [[pattern-juice-choreography]]. Do the impact-feel work against `docs/JUICE.md` — that's where the freeze/shake/particle timing gets proven, not here.
+- Freeze-frame, screen-shake, and dust are all cosmetic-side; choreograph them per [[pattern-juice-choreography]]. Do the impact-feel work against `design/JUICE.md` — that's where the freeze/shake/particle timing gets proven, not here.
 - For the crowd-clear hitbox, model contacts in a fixed iteration order so the same slam resolves the same enemies every run (an invariant, not a nicety).
 
 ## Fails when…

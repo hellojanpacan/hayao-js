@@ -7,7 +7,7 @@ summary: Currencies flowing in through faucets and out through sinks; keeping th
 use-when: The design has resources or currency the player earns and spends, and you need them to stay meaningful instead of trivial or crushing.
 composes-with: [system-resource-loops, system-progression, system-crafting, system-reward-schedules, system-meta-progression]
 anchors: [anchor-factorio, anchor-stardew-valley, anchor-civilization]
-verify-with: docs/FUN.md#14-incrementalidle
+verify-with: design/FUN.md#14-incrementalidle
 ---
 
 # Economy — Faucets, Sinks & the Pacing Window
@@ -110,7 +110,7 @@ arc* — no tier where the next purchase is a desert, none where it's instant
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §14 (incremental pacing) · §15 (farming
+- [`design/FUN.md`](../FUN.md) §14 (incremental pacing) · §15 (farming
   solvency) · §17 (exposed score) — the three economy proofs.
 - `src/content/` + `assertRamp` — pace-as-data; balance-sim the arc, don't vibe it.
 - **[[anchor-factorio]]** (production economy) · **[[anchor-civilization]]**

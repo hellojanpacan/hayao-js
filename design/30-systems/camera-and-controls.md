@@ -6,7 +6,7 @@ tags: [game-feel, input, camera, responsiveness, feel]
 summary: The felt contract between intent and motion — camera framing, input buffering, and response latency ARE the game feel.
 use-when: The game feels "off" and you need to fix the intent→motion pipeline.
 composes-with: [system-grace, mechanic-lock-on, pattern-fairness-and-trust]
-verify-with: docs/JUICE.md
+verify-with: design/JUICE.md
 ---
 
 # Camera & Controls
@@ -122,7 +122,7 @@ here you only decide the numbers and *why*.
 
 ## Verify
 
-- **[JUICE.md](../../docs/JUICE.md)** — the game-feel gates: response latency, camera
+- **[JUICE.md](../JUICE.md)** — the game-feel gates: response latency, camera
   behaviour, and the salience floor (the avatar/threat must stay the most legible thing
   on screen at every zoom).
 - Buffer and coyote windows: proven at the frame edge by [[system-grace]] — accepted

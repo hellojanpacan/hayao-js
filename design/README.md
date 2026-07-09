@@ -1,15 +1,25 @@
 # The Hayao Design Codex
 
-**A generative game-design library for AI agents.** Where [`docs/FUN.md`](../docs/FUN.md),
-[`docs/JUICE.md`](../docs/JUICE.md), and [`docs/JUDGE.md`](../docs/JUDGE.md) prove a
-game *isn't broken*, the Codex is the front half: it turns a high-level intent —
-*"design an RTS with deeply strategic choices, faction asymmetry, and visually
-impressive battles"* — into a concrete, creative, buildable design **before** the
-proof playbook ever runs.
+**`design/` is the single home for game design in this repo** — the whole
+discipline of deciding *what to build* and *making it feel good*, kept separate
+from `docs/`, which is the engineering manual (how the engine works and how you
+prove it correct). It has two halves:
+
+- **The Codex** (the numbered shelves, `00-process/` … `80-recipes/`) — the
+  *generative* front half. It turns a high-level intent — *"design an RTS with
+  deeply strategic choices, faction asymmetry, and visually impressive battles"* —
+  into a concrete, creative, buildable design.
+- **The craft playbooks** — [`FUN.md`](FUN.md) (the design/verification playbook),
+  [`JUICE.md`](JUICE.md) (the game-feel cookbook), and [`JUDGE.md`](JUDGE.md) (the
+  vision judge). Where the Codex decides what a game *is*, these make it *fun,
+  juicy, and beautiful* — and prove it isn't broken.
+
+The Codex runs first and hands off to the playbooks; together they own the design
+half end to end, then hand off to `docs/` for conventions and machine verification.
 
 The engine pre-solves *implementation*. This library pre-solves *conception*: it
 gives you reference DNA to anchor to, modular systems to compose, a twist formula
-to make it yours, and a pipeline that ends where FUN.md begins.
+to make it yours, and a pipeline that ends where [`FUN.md`](FUN.md) begins.
 
 > **You are still the designer.** The Codex is scaffolding, not a slot machine.
 > It exists so you spend your creativity on the *twist* and the *feel*, not on
@@ -58,8 +68,9 @@ anti-frustration) apply at every stage → [`50-patterns/`](50-patterns/).
 
 ## Layout
 
-| Dir | What's in it | Reach for it when |
+| Path | What's in it | Reach for it when |
 |---|---|---|
+| [`FUN.md`](FUN.md) · [`JUICE.md`](JUICE.md) · [`JUDGE.md`](JUDGE.md) | The **craft playbooks** — design/verification, game-feel, the vision judge | Making the composed design fun, juicy, and beautiful — and proving it |
 | [`00-process/`](00-process/) | The pipeline: intent→brief, pillars, loops, **the twist**, composition, handoff | Running a design end-to-end |
 | [`10-anchors/`](10-anchors/) | Reference-game **DNA** — touchstones distilled to load-bearing structure | Naming what a game *is*; importing a solved loop |
 | [`20-genres/`](20-genres/) | Deep **creative** genre templates (pillars, loops, essential systems, seeds, pitfalls) | You know the genre; you need its design skeleton |
@@ -88,12 +99,12 @@ IDs are stable and namespaced by kind: `process-*`, `anchor-*`, `genre-*`,
 `system-*`, `world-*`, `pattern-*`. A link like `[[system-faction-asymmetry]]`
 always resolves to `30-systems/faction-asymmetry.md`.
 
-## The relationship to the proof playbook
+## The Codex and the playbooks
 
-The Codex hands off; it never duplicates. When a module needs to state *how you
-prove the thing is fun/fair*, it **links** the matching entry in
-[`docs/FUN.md`](../docs/FUN.md) (mechanical truth + verify pattern),
-[`docs/JUICE.md`](../docs/JUICE.md) (feel gates), or
-[`docs/VERIFICATION.md`](../docs/VERIFICATION.md) rather than restating it. Design
-here; verify there. A design isn't done until it names its proofs —
+The Codex shelves hand off; they never duplicate. When a module needs to state
+*how you prove the thing is fun/fair*, it **links** the matching entry in
+[`FUN.md`](FUN.md) (mechanical truth + verify pattern), [`JUICE.md`](JUICE.md)
+(feel gates), or [`docs/VERIFICATION.md`](../docs/VERIFICATION.md) rather than
+restating it. Conceive on the shelves; make it feel good in the playbooks; prove
+it in `docs/`. A design isn't done until it names its proofs —
 [`00-process/refine-and-handoff`](00-process/refine-and-handoff.md) is the seam.

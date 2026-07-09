@@ -7,7 +7,7 @@ summary: A puzzle-platformer where each world twists ONE time rule — mastery i
 use-when: You want elegant puzzles that each explore one variation of a core rule.
 composes-with: [mechanic-rewind, genre-puzzle-platformer, pattern-emergence]
 anchors: [anchor-braid]
-verify-with: docs/FUN.md#1-·-grid-puzzle
+verify-with: design/FUN.md#1-·-grid-puzzle
 ---
 
 **What it is.** A puzzle-platformer where each world hands you exactly one twist on time — rewind everywhere, objects immune to rewind, time tied to your horizontal motion, a shadow that replays your last run — and then mines that single idea until you understand it completely.
@@ -72,4 +72,4 @@ verify-with: docs/FUN.md#1-·-grid-puzzle
 - [[anchor-portal]] — same DNA (one spatial rule, taught by construction, mined to exhaustion) in a different verb.
 - [[anchor-outer-wilds]] — one time-loop idea mined for a whole game, knowledge as the only progression.
 - [[process-the-twist]] — how to pick your single rule and its one exception.
-- [[docs/FUN.md]] verify-with above proves the puzzle is winnable; author the rule here, prove the solver there.
+- [[design/FUN.md]] verify-with above proves the puzzle is winnable; author the rule here, prove the solver there.

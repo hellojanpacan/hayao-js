@@ -6,7 +6,7 @@ tags: [puzzle, scale, platformer, access]
 summary: Change size to change what fits, what reaches, and what crushes — scale as a key.
 use-when: A puzzle-platformer wants one verb that gates access by size.
 composes-with: [mechanic-gravity-flip, genre-puzzle-platformer, pattern-emergence]
-verify-with: docs/FUN.md#1-·-grid-puzzle
+verify-with: design/FUN.md#1-·-grid-puzzle
 ---
 
 **What it is.** One verb that changes the player's **size**, and with it what they fit through, what they can reach, and what they crush. Scale is the key; the level is the lock.

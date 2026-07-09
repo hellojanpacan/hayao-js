@@ -6,7 +6,7 @@ tags: [combat, projectile, defense, bullet]
 summary: Bat a projectile back at its sender — turns incoming danger into your ammo.
 use-when: Ranged threat should be answerable with timing, not just dodging.
 composes-with: [mechanic-parry, genre-bullet-hell, system-telegraphs]
-verify-with: docs/FUN.md#7-·-bullet-hell
+verify-with: design/FUN.md#7-·-bullet-hell
 ---
 
 **What it is.** A timed input that flips a projectile's ownership and heading — the shot that was about to hit you now carries *your* damage tag back toward whoever fired it. Deflect is a [[mechanic-parry]] whose payload is a bullet, not a blade.
@@ -67,4 +67,4 @@ State the rule once and telegraph it — an [[antipattern-input-lie]] here (look
 - Systems: [[system-telegraphs]], [[system-counter-systems]], [[system-combat-model]], [[system-boss-design]], [[system-status-effects]].
 - Patterns: [[pattern-risk-reward]], [[pattern-readability]], [[pattern-fairness-and-trust]], [[pattern-mastery-and-flow]].
 - Recipe: [[recipe-one-button-boss-rush]] — deflect is a natural one-button verb.
-- Prove the feel with `docs/FUN.md#7-·-bullet-hell`; judge the ricochet read with `docs/JUDGE.md`.
+- Prove the feel with `design/FUN.md#7-·-bullet-hell`; judge the ricochet read with `design/JUDGE.md`.

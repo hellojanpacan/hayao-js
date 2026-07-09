@@ -124,5 +124,5 @@ hand off to JUICE.md's gates, not get argued here.
 - [`design/README.md`](../README.md) — where this sits in the pipeline (step 1).
 - [CLAUDE.md](../../CLAUDE.md) / [AGENTS.md](../../AGENTS.md) — the inherited
   invariants every brief must list as hard constraints.
-- [docs/FUN.md](../../docs/FUN.md) — the mechanical truths the parsed adjectives
+- [design/FUN.md](../FUN.md) — the mechanical truths the parsed adjectives
   will eventually be proven against. Design here; prove there.

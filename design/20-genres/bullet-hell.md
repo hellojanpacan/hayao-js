@@ -7,7 +7,7 @@ summary: Screen-filling patterns that read as motion, not noise — dodging is t
 use-when: You want a reflex game where the fantasy is threading a wall of bullets that looks impossible but is fair.
 composes-with: [system-telegraphs, system-boss-design, system-difficulty-and-dda, system-grace, genre-horde-survival]
 anchors: [anchor-nuclear-throne]
-verify-with: docs/FUN.md#7--bullet-hell
+verify-with: design/FUN.md#7--bullet-hell
 ---
 
 # Bullet Hell
@@ -105,7 +105,7 @@ or the *hitbox itself* — not just the skin. See [[process-the-twist]].
 
 ## Verify
 
-Prove it in **[FUN.md §7 · Bullet hell](../../docs/FUN.md#7--bullet-hell)**: the
+Prove it in **[FUN.md §7 · Bullet hell](../FUN.md#7--bullet-hell)**: the
 greedy lookahead dodge bot clears deathless, peak-bullet count is asserted, and
 the per-step time budget holds.
 
@@ -119,5 +119,5 @@ the per-step time budget holds.
 
 - [`sandboxes/particle-studio`](../../sandboxes/particle-studio) — emitter and
   pooled-sprite wiring for cheap on-screen bullet mass.
-- [docs/JUICE.md](../../docs/JUICE.md) — graze feedback, hit-stop, screen-clear
+- [design/JUICE.md](../JUICE.md) — graze feedback, hit-stop, screen-clear
   flash as choreography (cosmetic, law 6).

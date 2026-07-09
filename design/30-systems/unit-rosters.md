@@ -7,7 +7,7 @@ summary: A roster of units whose roles are legible and distinct — every unit e
 use-when: You have a set of units/troops/pieces the player commands and need each to have a clear, non-redundant job.
 composes-with: [system-counter-systems, system-faction-asymmetry, system-enemy-archetypes, system-combat-model, system-tech-tree]
 anchors: [anchor-starcraft, anchor-age-of-empires]
-verify-with: docs/FUN.md#9-rts-lite
+verify-with: design/FUN.md#9-rts-lite
 ---
 
 # Unit Rosters — a legible roster
@@ -103,9 +103,9 @@ The test: remove a unit. If no strategy got weaker, it was redundant.
 
 ## Verify
 
-- **[FUN.md §9](../../docs/FUN.md)** — every counter edge wins its NvN duel; commander
+- **[FUN.md §9](../FUN.md)** — every counter edge wins its NvN duel; commander
   bot wins; walled units route around; ms/step at peak.
-- **[FUN.md law 2](../../docs/FUN.md)** — the redundancy lint: removing a unit weakens
+- **[FUN.md law 2](../FUN.md)** — the redundancy lint: removing a unit weakens
   some strategy; a mixed roster beats a mono spam.
 - Determinism: golden hash of a scripted battle across the roster.
 
@@ -118,6 +118,6 @@ The test: remove a unit. If no strategy got weaker, it was redundant.
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §9 — mass under command; duels as the balance test.
+- [`design/FUN.md`](../FUN.md) §9 — mass under command; duels as the balance test.
 - [[anchor-starcraft]], [[anchor-age-of-empires]] — legible rosters with role clarity.
 - [`sandboxes/pathfinding-demo`](../../sandboxes/pathfinding-demo) — the pathing the roster shares.

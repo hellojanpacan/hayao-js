@@ -7,7 +7,7 @@ tune. The [COMPOSE step](../README.md) of the pipeline lives here: pick the genr
 template, then pull the `system-*` modules it needs and wire them together. Every
 module says **what it is · when to use / when NOT · variants · tuning levers ·
 how it wires to Hayao · fails when… · verify** — so you compose the known, then
-bend it, and hand off proofs to [`docs/FUN.md`](../../docs/FUN.md).
+bend it, and hand off proofs to [`design/FUN.md`](../FUN.md).
 
 Each entry links `verify-with` into FUN/JUICE/VERIFICATION rather than restating
 the proof. Cross-link with `[[system-id]]`; follow `composes-with`.

@@ -7,7 +7,7 @@ summary: Immersive sim where overlapping systems + a toolkit of powers make ever
 use-when: You want player expression through systemic interaction, not authored solutions.
 composes-with: [genre-immersive-sim, mechanic-possess, system-emergent-systems]
 anchors: [anchor-dishonored]
-verify-with: docs/FUN.md#5-·-stealth
+verify-with: design/FUN.md#5-·-stealth
 ---
 
 **What it is.** A first-person **immersive sim**: hand-crafted levels, a small toolkit of magical **verbs** (teleport, possess, freeze time, summon), and honest AI + physics that all obey the same rules the player does. The world doesn't script your route — it simulates, and you route through it.
@@ -70,4 +70,4 @@ verify-with: docs/FUN.md#5-·-stealth
 - **Core systems:** [[system-emergent-systems]], [[system-enemy-ai]], [[system-encounter-design]], [[system-build-diversity]].
 - **Watch out for:** [[antipattern-fake-choice]] (routes that only look distinct), [[antipattern-feature-soup]] (gadget sprawl instead of general verbs), [[antipattern-false-depth]] (systems that never actually interact).
 - **Process:** [[process-the-twist]] to spin a seam above, [[process-pillars]] to lock the ≥3-answers contract as a pillar.
-- **Verify:** stealth legibility and the solve-it-many-ways feel are proven against `docs/FUN.md#5-·-stealth`, not asserted here.
+- **Verify:** stealth legibility and the solve-it-many-ways feel are proven against `design/FUN.md#5-·-stealth`, not asserted here.

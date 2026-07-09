@@ -6,7 +6,7 @@ tags: [drops, randomness, reward, weighting, pity]
 summary: The math of what drops and how often — weighted tables, rarity tiers, and pity timers that keep variance from feeling cruel.
 use-when: You need to design drops, rewards, or randomized acquisition.
 composes-with: [system-reward-schedules, antipattern-rng-frustration, system-economy]
-verify-with: docs/FUN.md#10-·-traditional-roguelike
+verify-with: design/FUN.md#10-·-traditional-roguelike
 ---
 
 **What it is.** A table maps a **roll** to a reward. Weight each entry, sort into rarity tiers, and pull from it with a deterministic RNG. The whole design of "what you get and how badly you wanted it" lives in these numbers.
@@ -51,7 +51,7 @@ verify-with: docs/FUN.md#10-·-traditional-roguelike
 - **Every roll goes through `world.rng`.** No `Math.random`, no `Date.now`-seeded noise — determinism is sacred, and a seeded table means a run replays identically and a level's drops are provable. Weighted pick = one rng draw into a prefix-sum over the weights.
 - **Ordered iteration.** Build the weighted list in a stable order before you draw, or two machines disagree on the same seed. Sort keys, don't rely on insertion whim.
 - **Pity is state, not vibes.** The dry-streak counter lives in sim state and is part of `world.hash()` — it saves, loads, and replays with the run ([[system-save-and-checkpoint]]).
-- **Cosmetic is the sparkle, not the roll.** The gold beam, the rarity chime, the item-name flourish are pure view — mark them `cosmetic` so they never touch the hash. The *drop* is logic; the *dazzle* is decoration ([[pattern-juice-choreography]], see docs/JUICE.md).
+- **Cosmetic is the sparkle, not the roll.** The gold beam, the rarity chime, the item-name flourish are pure view — mark them `cosmetic` so they never touch the hash. The *drop* is logic; the *dazzle* is decoration ([[pattern-juice-choreography]], see design/JUICE.md).
 - For a randomness primitive in isolation, read the procgen lab under `sandboxes/`; for the reward-cadence half, pair with [[system-reward-schedules]].
 
 ## Fails when…
@@ -64,4 +64,4 @@ verify-with: docs/FUN.md#10-·-traditional-roguelike
 
 ## Verify
 
-Odds are a claim you can prove. Roll the table thousands of times against a fixed seed and assert empirical frequencies match the authored weights within tolerance; assert the pity counter *always* fires by its threshold; assert no roll can exceed the level-gated ceiling. Feel-check the drought and the spike against the roguelike track in verify-with (docs/FUN.md#10-·-traditional-roguelike). The reward *lands* elsewhere — see docs/JUDGE.md for whether the drop reads as loot at a glance.
+Odds are a claim you can prove. Roll the table thousands of times against a fixed seed and assert empirical frequencies match the authored weights within tolerance; assert the pity counter *always* fires by its threshold; assert no roll can exceed the level-gated ceiling. Feel-check the drought and the spike against the roguelike track in verify-with (design/FUN.md#10-·-traditional-roguelike). The reward *lands* elsewhere — see design/JUDGE.md for whether the drop reads as loot at a glance.

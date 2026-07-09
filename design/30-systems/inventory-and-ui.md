@@ -6,7 +6,7 @@ tags: [ui, information, clarity, items, management]
 summary: How the game shows state and lets you act on it — the interface is a design surface; friction here is friction everywhere.
 use-when: Managing items/state is becoming a chore, or the HUD is crowding the play.
 composes-with: [pattern-readability, antipattern-currency-spaghetti, antipattern-decision-paralysis]
-verify-with: docs/JUICE.md
+verify-with: design/JUICE.md
 ---
 
 **What it is.** The **interface** is where the game reveals its state and takes your input — HUD, inventory, menus, tooltips. Not chrome bolted on after; a design surface you tune like any mechanic. Inventory is the special case everyone gets wrong: a container of items you sort, equip, and discard.
@@ -62,4 +62,4 @@ verify-with: docs/JUICE.md
 
 ## Verify
 
-Interface is a **feel** surface — prove it in [[docs/JUICE.md]]. The bar: can a first-time player find and act on the state they need without a tutorial, and does opening/sorting the inventory cost near-zero friction? Judge the look from a headless render (Invariant 5), assert item/equip state via the sim's probe/hash — never eyeball counts. If the HUD reads as debug scaffolding rather than shipped chrome, run the `judge` skill against docs/JUDGE.md.
+Interface is a **feel** surface — prove it in [[design/JUICE.md]]. The bar: can a first-time player find and act on the state they need without a tutorial, and does opening/sorting the inventory cost near-zero friction? Judge the look from a headless render (Invariant 5), assert item/equip state via the sim's probe/hash — never eyeball counts. If the HUD reads as debug scaffolding rather than shipped chrome, run the `judge` skill against design/JUDGE.md.

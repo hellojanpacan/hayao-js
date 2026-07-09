@@ -6,7 +6,7 @@ tags: [depth, complexity, clarity, mastery]
 summary: Complexity mistaken for depth — many rules, few meaningful decisions; the game is complicated, not deep.
 use-when: Your system has grown many rules; check whether they create decisions.
 composes-with: [pattern-emergence, pattern-meaningful-choice, system-mastery-curve]
-verify-with: docs/FUN.md
+verify-with: design/FUN.md
 ---
 
 **What it is.** A system that is **complicated**, not **deep**: many rules the player must memorize, but only one live decision at any moment. Depth comes from rules *interacting*; false depth stacks rules that never touch.
@@ -71,4 +71,4 @@ Depth is **interacting rules, not more of them**. Before adding, make what you h
 
 ## Verify / guard
 
-Prove decision density, not rule count. Take the interaction-grid and dominant-line checks above into playtest and confirm against **docs/FUN.md** — the front half designs for depth; the verify half asserts the choices are real. If skilled play collapses to one line, you shipped complication.
+Prove decision density, not rule count. Take the interaction-grid and dominant-line checks above into playtest and confirm against **design/FUN.md** — the front half designs for depth; the verify half asserts the choices are real. If skilled play collapses to one line, you shipped complication.

@@ -7,7 +7,7 @@ summary: Couch-coop chaos — escalating shared tasks that force communication u
 use-when: The design is a local/party coop game where players juggle interdependent tasks against a clock and must talk to survive.
 composes-with: [system-coop-and-competition, system-difficulty-and-dda, system-encounter-design, pattern-pacing-and-tension, genre-narrative-decisions]
 anchors: [anchor-overcooked, anchor-it-takes-two]
-verify-with: docs/FUN.md#8-·-tower-defense
+verify-with: design/FUN.md#8-·-tower-defense
 ---
 
 # Coop Chaos
@@ -101,12 +101,12 @@ afterward, together.
 Coop chaos is an **extension**; it has no dedicated FUN.md section, so it *composes
 the verify patterns of its parents*:
 
-- **Wave/pressure pacing** → [FUN.md §8 — Tower defense](../../docs/FUN.md#8-·-tower-defense):
+- **Wave/pressure pacing** → [FUN.md §8 — Tower defense](../FUN.md#8-·-tower-defense):
   gate the order-queue/hazard curve on "each surge breathes, finale peaks," not
   monotonicity. **This is the primary proof.**
-- **Encounter containment** → [FUN.md §4 — Action-adventure](../../docs/FUN.md#4-·-top-down-action-adventure-zelda-like):
+- **Encounter containment** → [FUN.md §4 — Action-adventure](../FUN.md#4-·-top-down-action-adventure-zelda-like):
   keep hand-off lanes / exit rows clear; assert no station softlocks.
-- **Skill-delta** → [FUN.md law 2](../../docs/FUN.md#part-1--universal-laws):
+- **Skill-delta** → [FUN.md law 2](../FUN.md#part-1--universal-laws):
   a coordinated bot script clears; the null-coordination script fails. Determinism
   and cosmetic-view rules apply unchanged (laws 6–7).
 
@@ -119,6 +119,6 @@ the verify patterns of its parents*:
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §8 — the wave-curve pattern to borrow for order
+- [`design/FUN.md`](../FUN.md) §8 — the wave-curve pattern to borrow for order
   surges.
 - [[genre-tower-defense]] — the parent whose pressure-curve verify this genre reuses.

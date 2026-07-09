@@ -7,7 +7,7 @@ summary: Gentle life sim whose pull is a calm compulsion loop — open-ended goa
 use-when: The intent is a low-stress, open-ended progression game where the player sets their own goals and the loop is soothing, not tense.
 composes-with: [genre-farming-sim, system-progression, system-collectibles, system-economy, system-session-structure]
 anchors: []
-verify-with: docs/FUN.md#15-farminglife-sim
+verify-with: design/FUN.md#15-farminglife-sim
 ---
 
 # Stardew Valley
@@ -97,7 +97,7 @@ breaks into frustration.
 
 ## See also
 
-- [`docs/FUN.md#15-farminglife-sim`](../../docs/FUN.md) — season ≥ growDays +
+- [`design/FUN.md#15-farminglife-sim`](../FUN.md) — season ≥ growDays +
   slack; surface nights-left; reinvest-vs-hoard delta; golden year.
 - [[genre-farming-sim]] · [[anchor-rimworld]] (the tense-sim cousin) ·
   [[pattern-anti-frustration]].

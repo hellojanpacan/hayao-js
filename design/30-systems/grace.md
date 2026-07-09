@@ -7,7 +7,7 @@ summary: Coyote time, i-frames, input buffering, mercy clears, and undo as one c
 use-when: Any game where a fair input can feel dropped — a late jump, a hit through a pause, a run lost to a leftover threat. Which is nearly every game.
 composes-with: [pattern-anti-frustration, system-combat-model, system-telegraphs, system-boss-design, system-save-and-checkpoint]
 anchors: [anchor-celeste, anchor-into-the-breach]
-verify-with: docs/FUN.md#part-1--universal-laws
+verify-with: design/FUN.md#part-1--universal-laws
 ---
 
 # Grace — forgiveness as a system
@@ -99,11 +99,11 @@ leniency, and unbounded leniency is its own bug (accepting input *past* the wind
 
 ## Verify
 
-- **[FUN.md law 5](../../docs/FUN.md)** — the whole grace family, each unit-testable;
+- **[FUN.md law 5](../FUN.md)** — the whole grace family, each unit-testable;
   frame-pump edge-in / edge-out.
 - `forgivenessIssues(spec)` and `graceWindowIssues(label, frames, accepts)` →
-  **[JUICE.md Part 3](../../docs/JUICE.md)** (forgiveness gate), **[VERIFICATION Channel 4](../../docs/VERIFICATION.md)**.
-- **[FUN.md law 4](../../docs/FUN.md)** — grace must not make the null strategy survive.
+  **[JUICE.md Part 3](../JUICE.md)** (forgiveness gate), **[VERIFICATION Channel 4](../../docs/VERIFICATION.md)**.
+- **[FUN.md law 4](../FUN.md)** — grace must not make the null strategy survive.
 - Determinism: view-on == view-off hash (the feel of grace is cosmetic).
 
 ## Composes with
@@ -116,9 +116,9 @@ leniency, and unbounded leniency is its own bug (accepting input *past* the wind
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) law 5 (grace as a system), §4 (hit-stop buffering),
+- [`design/FUN.md`](../FUN.md) law 5 (grace as a system), §4 (hit-stop buffering),
   §7 (mercy clears), §1 (undo), §16 (wound-before-death).
-- [`docs/JUICE.md`](../../docs/JUICE.md) Part 3 (forgiveness gate), Part 4 (the tapped-jump gotcha).
+- [`design/JUICE.md`](../JUICE.md) Part 3 (forgiveness gate), Part 4 (the tapped-jump gotcha).
 - [`recipes/platformer-feel.md`](../../recipes/platformer-feel.md) — the canon movement + grace recipe.
 - [`src/verify/gates.ts`](../../src/verify/gates.ts) — `forgivenessIssues`, `graceWindowIssues`, `ForgivenessSpec`.
 - [[anchor-celeste]] — grace (and assist mode) as a design thesis.

@@ -7,7 +7,7 @@ summary: An RPG where the stats are voices in your head — the build shapes wha
 use-when: You want character-building expressed through dialogue and perception, not combat.
 composes-with: [genre-visual-novel, system-dialogue-and-branching, world-character-design]
 anchors: [anchor-disco-elysium]
-verify-with: docs/FUN.md#21-·-narrative-decisions
+verify-with: design/FUN.md#21-·-narrative-decisions
 ---
 
 **What it is.** A detective RPG with no combat: your **stats are named voices** (Logic, Empathy, Inland Empire, Electrochemistry…) that speak up unprompted, argue with each other, and unlock lines you literally cannot see if the skill is too low. You solve a murder by talking — to people, to objects, to your own necktie.
@@ -69,4 +69,4 @@ verify-with: docs/FUN.md#21-·-narrative-decisions
 - [[anchor-return-of-the-obra-dinn]] — deduction-driven, world-as-story; a sibling in "figure out what happened by looking hard."
 - [[recipe-detective-deduction-board]] — a build recipe when the *mystery* is the point and you want the deduction structure prebuilt.
 - [[world-narrative-delivery]] · [[world-character-design]] · [[system-dialogue-and-branching]] — the three docs you'll live in to build this.
-- Prove the choices land in `docs/FUN.md#21-·-narrative-decisions`; a fake branch fools no one → [[antipattern-fake-choice]].
+- Prove the choices land in `design/FUN.md#21-·-narrative-decisions`; a fake branch fools no one → [[antipattern-fake-choice]].

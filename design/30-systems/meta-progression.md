@@ -7,7 +7,7 @@ summary: The campaign under the runs — persistent unlocks that make a lost run
 use-when: The game is run-based and you need each death to advance a longer arc, so failure feels like progress instead of a wiped slate.
 composes-with: [system-progression, system-skill-trees, system-reward-schedules, system-save-and-checkpoint, system-session-structure]
 anchors: [anchor-hades, anchor-dead-cells, anchor-nuclear-throne]
-verify-with: docs/FUN.md#10-traditional-roguelike
+verify-with: design/FUN.md#10-traditional-roguelike
 ---
 
 # Meta-Progression — Persistent Unlocks Between Runs
@@ -107,7 +107,7 @@ instant death) still returns > 0 to the ledger.
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §10, laws 4 & 7 — roguelike baseline, null
+- [`design/FUN.md`](../FUN.md) §10, laws 4 & 7 — roguelike baseline, null
   proof, persistent-state round-trip.
 - **[[anchor-hades]]** · **[[anchor-dead-cells]]** — the two canonical meta shapes
   (narrative-as-meta; options-as-meta).

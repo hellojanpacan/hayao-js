@@ -6,7 +6,7 @@ tags: [movement, platformer, vertical, traversal]
 summary: Kick off a wall to climb a shaft — turns geometry into a ladder and demands rhythm.
 use-when: Vertical traversal needs skill expression against walls, not just floors.
 composes-with: [mechanic-wall-run, mechanic-ledge-grab, system-grace]
-verify-with: docs/FUN.md#2-·-precision-platformer
+verify-with: design/FUN.md#2-·-precision-platformer
 ---
 
 # Wall Jump
@@ -77,4 +77,4 @@ Composes tightly with [[mechanic-wall-run]] (horizontal sibling), [[mechanic-led
 - [[mechanic-wall-run]] · [[mechanic-ledge-grab]] · [[mechanic-double-jump]] · [[mechanic-dash]] · [[mechanic-glide]] — the movement neighbors.
 - [[system-grace]] · [[pattern-readability]] · [[pattern-mastery-and-flow]] — the feel it depends on.
 - [[genre-precision-platformer]] · [[anchor-celeste]] · [[anchor-dead-cells]] — where to study it live.
-- Prove push-off, coyote, and infinite-climb bounds against the precision-platformer targets in `docs/FUN.md#2-·-precision-platformer`.
+- Prove push-off, coyote, and infinite-climb bounds against the precision-platformer targets in `design/FUN.md#2-·-precision-platformer`.

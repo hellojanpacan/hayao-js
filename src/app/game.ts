@@ -4,10 +4,11 @@
 // runner, and every test. That symmetry is the whole point.
 
 import { World } from '../world';
-import type { Node } from '../scene/node';
+import { Node } from '../scene/node';
 import { DEFAULT_INPUT_MAP, type InputLog, type InputMap } from '../input/actions';
 import type { ClockConfig } from '../core/clock';
 import { resolveTuning, type TuningSpec, type TuningValues } from './tuning';
+import { guardError } from '../core/errors';
 
 /**
  * Optional boot splash. Rendered by the engine (so its colors are palette-guaranteed
@@ -94,7 +95,22 @@ export function createWorld<TState extends Record<string, unknown> = Record<stri
     clock: def.clock,
     tuning: resolveTuning(def.tuning, o.tuning),
   });
-  world.setRoot(def.build(world));
+  const root = def.build(world);
+  // build() must return the root scene Node. A missing `return` (or returning
+  // world.state, an array, etc.) otherwise crashes cryptically inside setRoot;
+  // name the field and show what came back instead (issue #66).
+  if (!(root instanceof Node)) {
+    throw guardError({
+      problem: 'build(world) did not return a Node.',
+      field: 'build',
+      expected: 'the root scene Node the game renders (e.g. a Node2D you addChild into)',
+      received: root,
+      hasReceived: true,
+      hint: "Construct the root and RETURN it: build(world) { const root = new Node2D(); root.addChild(/* … */); return root; }. A missing `return` is the usual cause.",
+      anchor: 'build-return',
+    });
+  }
+  world.setRoot(root);
   if (def.probe) {
     // Instance override shadows the prototype method.
     (world as unknown as { probe: () => Record<string, unknown> }).probe = () => def.probe!(world);

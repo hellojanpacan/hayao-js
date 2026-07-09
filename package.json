@@ -51,14 +51,12 @@
     "AGENTS.md",
     "CLAUDE.md",
     "docs/QUICKSTART.md",
+    "docs/ERRORS.md",
     "docs/API.md",
     "docs/VERIFICATION.md",
     "docs/CONVENTIONS.md",
     "docs/EMBED.md",
     "docs/STUDIO.md",
-    "docs/FUN.md",
-    "docs/JUICE.md",
-    "docs/JUDGE.md",
     "docs/ENGINE.md"
   ],
   "engines": {

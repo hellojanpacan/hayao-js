@@ -7,7 +7,7 @@ summary: Nemesis-style memory, relationships, and reputation — systemic story 
 use-when: You want stories the designer didn't script — rivalries, grudges, and reputations that arise from the player's own play.
 composes-with: [system-enemy-ai, system-faction-asymmetry, pattern-emergence, world-narrative-delivery]
 anchors: [anchor-shadow-of-mordor, anchor-rimworld]
-verify-with: docs/FUN.md#7-pure-data-state-pays-compound-interest
+verify-with: design/FUN.md#7-pure-data-state-pays-compound-interest
 ---
 
 # Emergent Systems
@@ -91,7 +91,7 @@ history, not a script that ignores it.
 
 - **Determinism of the story:** golden-hash a scripted multi-run sequence; the
   nemesis/relationship state must replay bit-exactly
-  ([FUN.md law 7](../../docs/FUN.md#part-1--universal-laws)).
+  ([FUN.md law 7](../FUN.md#part-1--universal-laws)).
 - **Save round-trip:** snapshot→restore→hash the memory state — a rivalry survives a
   save intact (CONVENTIONS; [[system-save-and-checkpoint]]).
 - **Consequence delta:** assert a remembered rival is measurably harder / behaves
@@ -109,6 +109,6 @@ history, not a script that ignores it.
 
 ## See also
 
-- [`docs/FUN.md` law 7](../../docs/FUN.md#part-1--universal-laws) — pure-data state as the enabler.
+- [`design/FUN.md` law 7](../FUN.md#part-1--universal-laws) — pure-data state as the enabler.
 - [[anchor-shadow-of-mordor]] — the nemesis system, distilled.
 - [[anchor-rimworld]] — relationships + a director as a story engine.

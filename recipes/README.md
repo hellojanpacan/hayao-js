@@ -32,7 +32,7 @@ does. Geometry-as-data is core; the *feel* laid over it is a recipe.
 2. Copy its pattern into your `examples/<slug>/logic.ts` + `game.ts` — adapt names,
    tune numbers. It is yours now.
 3. Prove it with the gates the recipe names (see `docs/VERIFICATION.md` Channel 4
-   and `docs/JUICE.md`).
+   and `design/JUICE.md`).
 
 Each recipe points at a **living instance** in `examples/` — a real, verified game
 that embodies it. Copy from the instance; read the recipe for *why*.

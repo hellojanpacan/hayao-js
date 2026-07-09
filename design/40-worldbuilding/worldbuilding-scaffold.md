@@ -126,7 +126,7 @@ title/first-screen invitation the JUDGE scores for "invites" (chrome & finish).
 
 ## See also
 
-- [`docs/JUDGE.md`](../../docs/JUDGE.md) — chrome & finish: does the first screen
+- [`design/JUDGE.md`](../JUDGE.md) — chrome & finish: does the first screen
   *invite*? The premise line is your invitation.
 - Example worlds *lanternway*, *rootward*, *tarnholm*, *kintsugi* — each is a
   three-sentence world, not a wiki (reference the *restraint*, not the content).

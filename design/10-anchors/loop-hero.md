@@ -7,7 +7,7 @@ summary: Three genres fused into one loop — you place tiles from a deck around
 use-when: Designing a novel loop by fusing genres, or an indirect-control game where the player shapes the world and watches consequences unfold.
 composes-with: [genre-auto-battler, genre-deckbuilder, system-resource-loops, pattern-risk-reward]
 anchors: [anchor-loop-hero]
-verify-with: docs/FUN.md#11-·-roguelike-deckbuilder
+verify-with: design/FUN.md#11-·-roguelike-deckbuilder
 ---
 
 # Loop Hero
@@ -125,7 +125,7 @@ draft, and the fight are naturally one continuous authored consequence.
 
 - [[genre-auto-battler]] · [[genre-deckbuilder]] · [[process-composition]] ·
   [[pattern-risk-reward]]
-- `docs/FUN.md#11-·-roguelike-deckbuilder` — draft delta + win-rate window
+- `design/FUN.md#11-·-roguelike-deckbuilder` — draft delta + win-rate window
   (the deck parent).
 - `sandboxes/procgen-lab/` — `Rng`/`pickEntry` for weighted tile-hand draws.
 - `sandboxes/pathfinding-demo/` — loop/route traversal reference.

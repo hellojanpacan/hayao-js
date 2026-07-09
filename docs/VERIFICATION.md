@@ -219,7 +219,7 @@ import { forgivenessIssues, graceWindowIssues, feedbackIssues,
 
 The full four-gate suite wired on a real game lives in
 [`examples/updrift/verify.ts`](../examples/updrift/verify.ts); the authoring side is
-[docs/JUICE.md](JUICE.md). Gate on the fundamentals; the *soul* above the floor
+[design/JUICE.md](../design/JUICE.md). Gate on the fundamentals; the *soul* above the floor
 stays authored (a director, not a proof) — but the floor no amateur clears is now
 machine-enforced.
 
@@ -235,7 +235,7 @@ game. Declare only what is honestly true — a false contract is worse than none
 The gates prove the floor mechanically; they can't see that a scene is *empty* or
 *flat*. `npm run judge` renders each game headlessly to PNG (SVG → `@resvg/resvg-js`,
 no browser) so a multimodal model LOOKS at the pixels and scores them against
-[JUDGE.md](JUDGE.md) — then fixes what a human would wince at, staying cosmetic (the
+[JUDGE.md](../design/JUDGE.md) — then fixes what a human would wince at, staying cosmetic (the
 golden hash unchanged). It's the one judge that can't be a pure function, which is
 why an AI-first engine — deterministic sim, headless render — is uniquely built to
 run it in a loop. Drive it with the `/judge` skill.

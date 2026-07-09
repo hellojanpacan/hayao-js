@@ -7,7 +7,7 @@ summary: A puzzle where the rules are physical objects on the board — push the
 use-when: Designing a puzzle whose depth comes from the player editing the ruleset itself, so the mechanic and the content are the same thing.
 composes-with: [genre-grid-puzzle, pattern-emergence, system-onboarding, system-mastery-curve]
 anchors: [anchor-baba-is-you]
-verify-with: docs/FUN.md#1-·-grid-puzzle-sokoban
+verify-with: design/FUN.md#1-·-grid-puzzle-sokoban
 ---
 
 # Baba Is You
@@ -121,7 +121,7 @@ almost no content.
 
 - [[genre-grid-puzzle]] · [[pattern-emergence]] · [[system-onboarding]] ·
   [[system-mastery-curve]]
-- `docs/FUN.md#1-·-grid-puzzle-sokoban` — `Puzzle<State,Move>` solver + replay
+- `design/FUN.md#1-·-grid-puzzle-sokoban` — `Puzzle<State,Move>` solver + replay
   determinism.
 - `examples/sokoban/` — the logic/view-split reference this substrate builds
   on.

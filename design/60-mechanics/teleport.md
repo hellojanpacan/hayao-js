@@ -6,7 +6,7 @@ tags: [movement, positioning, puzzle, combat]
 summary: Instant relocation to a chosen spot — collapses distance into a targeting decision.
 use-when: You want positional puzzles or combat repositioning without travel time.
 composes-with: [mechanic-portal, mechanic-clone, system-telegraphs]
-verify-with: docs/JUICE.md
+verify-with: design/JUICE.md
 ---
 
 **What it is.** Press a button, aim, and **you** are somewhere else — no arc, no travel, no in-between frames the world can react to. Distance becomes a menu of destinations, not a journey.

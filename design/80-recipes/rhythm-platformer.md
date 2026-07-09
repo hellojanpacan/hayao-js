@@ -7,7 +7,7 @@ summary: Precision platforming where the beat IS the simulation clock — jumps 
 use-when: You want movement and music fused so the soundtrack drives the platforming.
 composes-with: [genre-rhythm, genre-precision-platformer, mechanic-double-jump, world-soundscape]
 anchors: [anchor-celeste]
-verify-with: docs/FUN.md#18-·-rhythm
+verify-with: design/FUN.md#18-·-rhythm
 ---
 
 **What it is.** A precision platformer where the **beat** is the tick. You still run, jump, and dash a hand-built room — but every action only resolves on-beat, so a clean clear reads as a performance of the track.
@@ -74,7 +74,7 @@ Explicit non-goals for v1: no scoring ladder, no combo multiplier, no branching 
 
 Design ends here; proof lives in the verify targets.
 
-- **`docs/FUN.md#18-·-rhythm`** — the beat-is-sim-time truth and the three frame-exact window assertions it specifies. Your BPM-to-integer-frames choice and the frozen-between-beats world are *its* invariants to prove.
+- **`design/FUN.md#18-·-rhythm`** — the beat-is-sim-time truth and the three frame-exact window assertions it specifies. Your BPM-to-integer-frames choice and the frozen-between-beats world are *its* invariants to prove.
 - **[[system-grace]]** — the window tolerance, buffer, and coyote frames are one honest budget; the doc is where their generosity gets asserted, not asserted-away.
 - Feel and look land through [[pattern-juice-choreography]] (every effect on the beat) and get judged, not self-scored, per the JUDGE half.
 

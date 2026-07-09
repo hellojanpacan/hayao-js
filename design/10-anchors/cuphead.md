@@ -7,7 +7,7 @@ summary: A boss-rush of memorize-and-execute pattern fights — spectacle as tel
 use-when: You want set-piece boss fights where reading and executing patterns is the whole game.
 composes-with: [system-boss-design, system-telegraphs, mechanic-dash]
 anchors: [anchor-cuphead]
-verify-with: docs/FUN.md#7-·-bullet-hell
+verify-with: design/FUN.md#7-·-bullet-hell
 ---
 
 **What it is.** A run-and-gun stitched almost entirely out of **boss fights** — each a multi-phase set-piece where you memorize an attack sequence and execute it clean. The 1930s rubber-hose cartoon skin is the surface; underneath is a pure pattern-mastery loop.
@@ -73,4 +73,4 @@ verify-with: docs/FUN.md#7-·-bullet-hell
 - [[anchor-dark-souls]] — telegraph-and-punish fights, but slow-retry and stamina-gated.
 - [[anchor-celeste]] — the same "you changed, not the level" mastery loop, in platforming.
 - [[anchor-nuclear-throne]] — run-and-gun chaos without the memorize-a-fixed-song spine.
-- [[system-mastery-curve]] · [[pattern-mastery-and-flow]] · [[docs/FUN.md]] §7 for the bullet-hell verify bar.
+- [[system-mastery-curve]] · [[pattern-mastery-and-flow]] · [[design/FUN.md]] §7 for the bullet-hell verify bar.

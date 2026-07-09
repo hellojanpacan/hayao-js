@@ -7,7 +7,7 @@ summary: Beat-locked timing game where the beat IS sim time and fairness is thre
 use-when: Designing a rhythm/beat game where inputs must land in frame-honest windows and the music is an observer of the beat clock.
 composes-with: [pattern-juice-choreography, system-grace, system-difficulty-and-dda, system-onboarding]
 anchors: [anchor-tetris, anchor-peggle]
-verify-with: docs/FUN.md#18--rhythm
+verify-with: design/FUN.md#18--rhythm
 ---
 
 # Rhythm
@@ -108,7 +108,7 @@ enough to demand mastery, honest enough that a miss is always yours.
 ## Verify
 
 Beat-perfect bot clears; window honest to the frame; foes provably frozen between
-beats; hash-identical replay → **[docs/FUN.md §18 · Rhythm](../../docs/FUN.md#18--rhythm)**.
+beats; hash-identical replay → **[design/FUN.md §18 · Rhythm](../FUN.md#18--rhythm)**.
 Design the beat grid and turn game here; prove the three frame assertions there.
 
 ## Composes with
@@ -119,7 +119,7 @@ Design the beat grid and turn game here; prove the three frame assertions there.
 
 ## See also
 
-- [docs/FUN.md §18](../../docs/FUN.md#18--rhythm) — mechanical truth + verify recipe.
-- [docs/JUICE.md](../../docs/JUICE.md) — feel gates for the on-beat choreography.
+- [design/FUN.md §18](../FUN.md#18--rhythm) — mechanical truth + verify recipe.
+- [design/JUICE.md](../JUICE.md) — feel gates for the on-beat choreography.
 - [`sandboxes/`](../../sandboxes/) — reach for the tweens/timing lab to prove a
   window frame-exactly before charting.

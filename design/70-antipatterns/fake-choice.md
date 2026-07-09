@@ -6,7 +6,7 @@ tags: [decisions, balance, depth, illusion]
 summary: Options that look meaningful but collapse to one right answer — the menu is a costume for a corridor.
 use-when: You are adding choices; check whether any is actually taken by informed players.
 composes-with: [pattern-meaningful-choice, system-build-diversity, antipattern-solved-metagame]
-verify-with: docs/FUN.md
+verify-with: design/FUN.md
 ---
 
 **What it is.** A branch presented as a **decision** that, once understood, has one dominant answer or no answer at all. The player picks, but the pick doesn't change anything that matters.
@@ -71,4 +71,4 @@ The **dominated option**: two doors, one strictly better on every axis. Or the *
 
 ## Verify / guard
 
-Before handoff, run the design against [[docs/FUN.md]]: for each branch, name the axis it wins on and the axis it loses on. If you can't name a losing axis, it's dominant — cut it or re-cost it. Instrument pick rates once playable ([[system-achievements-and-leaderboards]] telemetry, or the studio playtest loop) and treat any >80% branch among informed players as a fake choice to fix, not ship.
+Before handoff, run the design against [[design/FUN.md]]: for each branch, name the axis it wins on and the axis it loses on. If you can't name a losing axis, it's dominant — cut it or re-cost it. Instrument pick rates once playable ([[system-achievements-and-leaderboards]] telemetry, or the studio playtest loop) and treat any >80% branch among informed players as a fake choice to fix, not ship.

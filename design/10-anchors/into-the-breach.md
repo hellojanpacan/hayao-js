@@ -7,7 +7,7 @@ summary: Perfect-information tactics — every enemy move is shown before it hap
 use-when: Designing a turn-based tactics game where fairness comes from total honesty and the fun is manipulating a known future, not guessing an unknown one.
 composes-with: [genre-tactics, system-telegraphs, system-combat-model, system-counter-systems]
 anchors: [anchor-into-the-breach]
-verify-with: docs/FUN.md#12-·-turn-based-tactics-into-the-breach-like
+verify-with: design/FUN.md#12-·-turn-based-tactics-into-the-breach-like
 ---
 
 # Into the Breach
@@ -119,7 +119,7 @@ enough to reason about exhaustively, which is exactly why the puzzle lands.
 ## See also
 
 - [[genre-tactics]] · [[system-telegraphs]] · [[system-counter-systems]]
-- `docs/FUN.md#12-·-turn-based-tactics-into-the-breach-like` — greedy-clear +
+- `design/FUN.md#12-·-turn-based-tactics-into-the-breach-like` — greedy-clear +
   do-nothing-loses + per-mechanic proofs.
 - `sandboxes/pathfinding-demo/` — grid movement / `astar` for reachable-tile
   UI.

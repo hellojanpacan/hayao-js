@@ -7,7 +7,7 @@ summary: Research-gated unlocks at the strategy scale; branch exclusivity and a 
 use-when: The game unlocks strategic capabilities (units, buildings, abilities) over a session and you need the order and exclusivity of those unlocks to matter.
 composes-with: [system-skill-trees, system-resource-loops, system-economy, system-faction-asymmetry, system-progression]
 anchors: [anchor-age-of-empires, anchor-civilization, anchor-factorio]
-verify-with: docs/FUN.md#9-rts-lite
+verify-with: design/FUN.md#9-rts-lite
 ---
 
 # Tech Tree — Research Gating & the Ramp of Options
@@ -107,6 +107,6 @@ or era is a plateau, each unlock a spike. If unlocks don't create *timing decisi
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §9 (RTS strategy-as-test) · §8 (counter duels)
+- [`design/FUN.md`](../FUN.md) §9 (RTS strategy-as-test) · §8 (counter duels)
   — the tech-tree proofs.
 - **[[anchor-age-of-empires]]** (age spikes) · **[[anchor-civilization]]** (deep web).

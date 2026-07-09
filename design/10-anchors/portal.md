@@ -7,7 +7,7 @@ summary: A single spatial verb taught so well it needs no words — every room i
 use-when: You want a puzzle built on ONE deep verb with masterclass wordless teaching.
 composes-with: [mechanic-portal, genre-puzzle-platformer, system-onboarding]
 anchors: [anchor-portal]
-verify-with: docs/FUN.md#1-·-grid-puzzle
+verify-with: design/FUN.md#1-·-grid-puzzle
 ---
 
 **What it is.** A first-person puzzle box built on exactly one verb — link two surfaces so what enters one exits the other — and a curriculum of self-contained rooms that teach that verb without a single instruction screen.

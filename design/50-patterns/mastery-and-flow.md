@@ -6,7 +6,7 @@ tags: [flow, mastery, challenge, skill, difficulty, engagement, learning-curve, 
 summary: Keep challenge riding just above current skill — the flow channel — and prove it with the skill-delta gap.
 use-when: Setting difficulty, ramp, or the depth ceiling; deciding whether skill actually changes outcomes.
 composes-with: [pattern-feedback-loops, pattern-pacing-and-tension, system-mastery-curve, system-difficulty-and-dda]
-verify-with: docs/FUN.md#part-1-—-universal-laws
+verify-with: design/FUN.md#part-1-—-universal-laws
 ---
 
 # Mastery & Flow
@@ -115,7 +115,7 @@ Prove the ceiling with a two-tier skill-delta: an *expert* line meaningfully bea
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) law 2 — the skill-delta, the closest thing to
+- [`design/FUN.md`](../FUN.md) law 2 — the skill-delta, the closest thing to
   a fun proof and the operational test for "is there a flow channel here?".
 - [[system-onboarding]] — where the channel starts; a wall on frame one loses the
   player before flow can begin.

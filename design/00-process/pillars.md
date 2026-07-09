@@ -134,6 +134,6 @@ generic heroes serve nothing and are cut. Pillar-scoring made the call in one li
 
 - [`design/00-process/the-twist.md`](the-twist.md) — where pillars do their most
   important work: choosing the twist.
-- [docs/FUN.md](../../docs/FUN.md) Part 1 — the mechanical truths a testable pillar
+- [design/FUN.md](../FUN.md) Part 1 — the mechanical truths a testable pillar
   clause often points straight at (a pillar clause is frequently a FUN.md law,
   named for *your* game).

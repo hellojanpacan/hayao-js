@@ -7,7 +7,7 @@ summary: A document-checking job that becomes a moral vise — rules vs. mercy v
 use-when: You want tension from applying rules under pressure with human stakes.
 composes-with: [genre-narrative-decisions, system-quests-and-objectives, world-narrative-delivery]
 anchors: [anchor-papers-please]
-verify-with: docs/FUN.md#21-·-narrative-decisions
+verify-with: design/FUN.md#21-·-narrative-decisions
 ---
 
 # Papers, Please
@@ -131,5 +131,5 @@ who actually reads the rulebook survives — prove this in FUN.md §21.
   meters skeleton prebuilt; reskin the swipe as a stamp.
 - [[world-narrative-delivery]] · [[system-quests-and-objectives]] · [[system-economy]]
   — the three docs you'll live in to build this.
-- Prove judgement beats any fixed stamp policy in `docs/FUN.md#21-·-narrative-decisions`;
+- Prove judgement beats any fixed stamp policy in `design/FUN.md#21-·-narrative-decisions`;
   a rulebook you can ignore is [[antipattern-fake-choice]].

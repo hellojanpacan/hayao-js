@@ -118,7 +118,7 @@ function spark() {
   line(`  Pull: ${chosen.map(id => `[[${id}]]`).join(', ')}.`);
   line(`\n  Now run the pipeline:`);
   line(`  process-intent-to-brief → process-pillars → process-core-loop → process-the-twist → process-refine-and-handoff.`);
-  line(`  Then check it against 70-antipatterns/ before you hand off to docs/FUN.md.`);
+  line(`  Then check it against 70-antipatterns/ before you hand off to design/FUN.md.`);
 }
 
 function notFound(id) {

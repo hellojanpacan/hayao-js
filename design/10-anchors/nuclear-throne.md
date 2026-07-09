@@ -7,7 +7,7 @@ summary: Twin-stick arcade roguelite built for the tight loop — fast lethal ru
 use-when: Designing a fast, lethal, execution-first run-based shooter where the core minute is so tight that "just one more run" carries the whole game.
 composes-with: [genre-horde-survival, genre-roguelike, system-build-diversity, system-mastery-curve]
 anchors: [anchor-nuclear-throne]
-verify-with: docs/FUN.md#6-·-twin-stick-horde-survival-vampire-survivors-like
+verify-with: design/FUN.md#6-·-twin-stick-horde-survival-vampire-survivors-like
 ---
 
 # Nuclear Throne
@@ -123,7 +123,7 @@ test you can pass.
 
 - [[genre-horde-survival]] · [[anchor-vampire-survivors]] ·
   [[system-combat-model]] · [[system-mastery-curve]]
-- `docs/FUN.md#6-·-twin-stick-horde-survival-vampire-survivors-like` —
+- `design/FUN.md#6-·-twin-stick-horde-survival-vampire-survivors-like` —
   orbit/dodge-bot + peak-alive verify.
 - `sandboxes/juice-lab/` — hit-impact, muzzle, screenshake choreography.
 - `sandboxes/particle-studio/` — pooled cosmetic effects (deletable per law

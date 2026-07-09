@@ -7,7 +7,7 @@ summary: Combining inputs into outputs by recipe; combinatorial depth as content
 use-when: The design lets players combine materials/items into new ones and you need the recipe space to be deep, legible, and worth exploring.
 composes-with: [system-resource-loops, system-economy, system-build-diversity, system-collectibles, system-tech-tree]
 anchors: [anchor-factorio, anchor-stardew-valley]
-verify-with: docs/FUN.md#1-grid-puzzle-sokoban
+verify-with: design/FUN.md#1-grid-puzzle-sokoban
 ---
 
 # Crafting — Recipes & Combinatorial Depth
@@ -108,7 +108,7 @@ but they need a fallback so the player is never *stuck* (a hint, a partial revea
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §1 (solver over pure state) · §10
+- [`design/FUN.md`](../FUN.md) §1 (solver over pure state) · §10
   (connectivity) — recipe reachability rides both.
 - `src/content/generate.ts` — generate & prove a recipe/level space instead of
   hand-authoring it.

@@ -126,7 +126,7 @@ its art direction and its AA guarantee (`npm run palette`) close to free.
 
 ## See also
 
-- [`docs/JUDGE.md`](../../docs/JUDGE.md) — palette harmony (axis 3): does the
+- [`design/JUDGE.md`](../JUDGE.md) — palette harmony (axis 3): does the
   world's colour belong to *one* set?
 - `docs/CONVENTIONS.md` "Default palette is Kentō" — the house register and the
   AA gate.

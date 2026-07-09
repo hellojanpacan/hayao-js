@@ -6,7 +6,7 @@ tags: [physics, puzzle, balance, build]
 summary: Pile objects into a growing, wobbling structure — height is score and jeopardy at once.
 use-when: You want a build-and-balance toy where growth is tension.
 composes-with: [mechanic-throw, genre-physics-arcade, pattern-risk-reward]
-verify-with: docs/FUN.md#19-·-physics-arcade
+verify-with: design/FUN.md#19-·-physics-arcade
 ---
 
 **What it is.** The player adds pieces to a vertical structure that must not fall. Each new piece raises the **score** and lowers the **margin** — the tower that earns you points is the tower that kills you.
@@ -54,7 +54,7 @@ Anchors worth studying: [[anchor-tetris]] (packing pressure, line-clear as contr
 - For the **snap / grid** framing, model the stack as a pure `Puzzle<State, Move>` (footprint occupancy + a stability predicate) so every layout is machine-checkable and levels are provably clearable — the `examples/sokoban/` split is the reference for logic-vs-view.
 - The wobble, dust, and creak are **cosmetic**: sway animation, particle puffs, and shake read as pure-view and must stay out of the sim hash. See [[pattern-juice-choreography]].
 - Score, current height, and collapse are **logic** state that lives in the hash; the lean *animation* is not. Keep the boundary clean or replays desync.
-- Verification lives in `docs/FUN.md#19-·-physics-arcade` — prove the collapse is fair and the wobble reads before you tune the greed curve.
+- Verification lives in `design/FUN.md#19-·-physics-arcade` — prove the collapse is fair and the wobble reads before you tune the greed curve.
 
 ### Fails when…
 - **The collapse feels random, not earned.** If the player can't see *why* it fell, jeopardy becomes noise — the [[antipattern-rng-frustration]] and [[antipattern-input-lie]] trap. Telegraph the lean; let the eye predict the fall.

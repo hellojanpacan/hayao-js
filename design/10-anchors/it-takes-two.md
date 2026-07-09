@@ -7,7 +7,7 @@ summary: Asymmetric two-player coop as a parade of set-pieces — a fresh interl
 use-when: The design is a curated (non-random) two-player coop where each level introduces a new paired mechanic and players are mechanically interdependent.
 composes-with: [genre-coop-chaos, system-coop-and-competition, system-onboarding, system-mastery-curve, system-encounter-design]
 anchors: []
-verify-with: docs/FUN.md#3-metroidvania
+verify-with: design/FUN.md#3-metroidvania
 ---
 
 # It Takes Two
@@ -97,7 +97,7 @@ curated, authored sequence, the opposite of a procedural or endless loop.
 
 ## See also
 
-- [`docs/FUN.md#3-metroidvania`](../../docs/FUN.md) — ability-gated progression and
+- [`design/FUN.md#3-metroidvania`](../FUN.md) — ability-gated progression and
   negative gate proofs; the closest verify pattern for "new ability opens the
   path" design (here two abilities gate together).
 - [[genre-coop-chaos]] · [[anchor-overcooked]] (the party/chaos wing) ·

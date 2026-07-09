@@ -14,10 +14,10 @@ INTENT ──▶ ANCHOR ──▶ COMPOSE ──▶ TWIST ──▶ SHAPE ──
 decision filter. **The twist** picks the creative bend and **composition** sources
 and blends the parts, scored against the pillars. **Core-loop** shapes the play
 into a nested stack. **Refine-and-handoff** converts the whole thing into a
-verification contract and passes it to the proof playbook — the seam where the
-Codex ends and [docs/FUN.md](../../docs/FUN.md), [docs/JUICE.md](../../docs/JUICE.md),
-and [docs/JUDGE.md](../../docs/JUDGE.md) begin. The Codex never duplicates the
-proof docs; it *routes* to them.
+verification contract and passes it to the craft playbooks — the seam where the
+Codex shelves end and [FUN.md](../FUN.md), [JUICE.md](../JUICE.md),
+and [JUDGE.md](../JUDGE.md) begin (all three live alongside the shelves here in
+`design/`). The Codex never duplicates the playbooks; it *routes* to them.
 
 ## The six modules
 

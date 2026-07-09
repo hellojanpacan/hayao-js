@@ -7,7 +7,7 @@ summary: Subtraction as design — what you leave out defines the game as much a
 use-when: Your design is growing and you sense it should be smaller, not bigger.
 composes-with: [process-pillars, antipattern-feature-soup, anchor-mini-metro]
 anchors: [anchor-mini-metro]
-verify-with: docs/FUN.md
+verify-with: design/FUN.md
 ---
 
 **What it is.** Depth from few, well-chosen elements. You cut everything the [[process-pillars|pillars]] don't require, then tune what remains until it sings. The **absence** carries meaning: the empty rooms, the mechanic you didn't ship, the second button you refused.
@@ -87,4 +87,4 @@ Related failure modes restraint prevents: [[antipattern-false-depth]] (many shal
 - [ ] Is your depth coming from *interactions* between few elements, not the *count* of elements? ([[pattern-emergence]])
 - [ ] Did you keep exactly one thing that surprises? ([[pattern-surprise-and-delight]])
 
-**Prove the restraint held.** A focused design is *felt*, and feel is verified downstream — check `docs/FUN.md` for the fun-loop gates. If the game reads as elegant on paper but plays as thin, the cut went too deep; if it reads as busy, it didn't go deep enough.
+**Prove the restraint held.** A focused design is *felt*, and feel is verified downstream — check `design/FUN.md` for the fun-loop gates. If the game reads as elegant on paper but plays as thin, the cut went too deep; if it reads as busy, it didn't go deep enough.

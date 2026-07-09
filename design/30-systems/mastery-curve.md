@@ -7,7 +7,7 @@ summary: Learnable depth as a mechanism — a low skill floor and a high skill c
 use-when: The lasting appeal is the player getting BETTER, not the character; you need to engineer a shallow entry and a tall ceiling.
 composes-with: [system-progression, system-difficulty-and-dda, system-onboarding, system-build-diversity, system-grace]
 anchors: [anchor-tetris, anchor-celeste, anchor-balatro]
-verify-with: docs/FUN.md#2-skill-delta-proofs
+verify-with: design/FUN.md#2-skill-delta-proofs
 ---
 
 # Mastery Curve — Easy to Learn, Hard to Master
@@ -110,7 +110,7 @@ player sits between boredom and panic. That's a whole pattern —
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) law 2 — the skill-delta proof, the closest
+- [`design/FUN.md`](../FUN.md) law 2 — the skill-delta proof, the closest
   thing to a fun proof, and the direct measure of a mastery ceiling.
 - **[[anchor-tetris]]** (pure ceiling) · **[[anchor-celeste]]** (decoupled floor/
   ceiling via assist) · **[[anchor-balatro]]** (optimization depth).

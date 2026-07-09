@@ -6,7 +6,7 @@ tags: [emergence, second-order, systemic, interaction, depth, combinatorics, rul
 summary: Depth from few pieces — design rules that interact, not content that stacks, so the game generates situations you never authored.
 use-when: You want combinatorial depth without infinite content; deciding between more rules or more interactions between rules.
 composes-with: [pattern-feedback-loops, pattern-risk-reward, system-emergent-systems, system-build-diversity]
-verify-with: docs/FUN.md#12-·-turn-based-tactics-into-the-breach-like
+verify-with: design/FUN.md#12-·-turn-based-tactics-into-the-breach-like
 ---
 
 # Emergence
@@ -115,7 +115,7 @@ N² space; run a greedy clone-bot to surface the degenerate combo before a playe
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §12 & law 7 — perfect-information honesty and
+- [`design/FUN.md`](../FUN.md) §12 & law 7 — perfect-information honesty and
   pure-state bots, the proofs that keep emergence *fair* and *explorable*.
 - [[anchor-baba-is-you]] · [[anchor-into-the-breach]] — the two clearest "the
   mechanic IS the content" anchors.

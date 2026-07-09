@@ -7,7 +7,7 @@ summary: The nesting of play — run / campaign / level / world — and how sess
 use-when: You need to decide how long a sitting is, what a "run" contains, and how sessions nest into a longer arc.
 composes-with: [system-procgen-design, system-meta-progression, system-save-and-checkpoint, pattern-pacing-and-tension]
 anchors: [anchor-hades, anchor-slay-the-spire]
-verify-with: docs/FUN.md#14-incrementalidle
+verify-with: design/FUN.md#14-incrementalidle
 ---
 
 # Session Structure
@@ -87,12 +87,12 @@ The two big shape decisions:
   feels like theft — grant meta or knowledge ([[anchor-hades]]).
 - **No hook.** A run that finishes and dead-ends stops the "one more" loop.
 - **Deserts in the meta.** Long stretches with no unlock or new goal
-  ([FUN.md §14](../../docs/FUN.md#14-incrementalidle) unlock-desert lint).
+  ([FUN.md §14](../FUN.md#14-incrementalidle) unlock-desert lint).
 
 ## Verify
 
 - **The whole arc paces:** balance-sim the run/campaign; assert pacing windows and
-  **no unlock deserts** across the arc ([FUN.md §14](../../docs/FUN.md#14-incrementalidle)).
+  **no unlock deserts** across the arc ([FUN.md §14](../FUN.md#14-incrementalidle)).
 - **A run is reproducible:** golden-hash a full scripted run; snapshot→restore→hash
   round-trips (FUN.md law 7; [`docs/STUDIO.md`](../../docs/STUDIO.md)).
 - **Every level in the campaign is winnable:** solver proof per level via the

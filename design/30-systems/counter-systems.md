@@ -7,7 +7,7 @@ summary: Rock-paper-scissors with teeth — NEAR-HARD counters that stay decisiv
 use-when: You have unit types, weapons, or tools that should beat each other, and you need the matchups to actually matter.
 composes-with: [system-unit-rosters, system-faction-asymmetry, system-build-diversity, system-combat-model, system-status-effects]
 anchors: [anchor-starcraft, anchor-age-of-empires]
-verify-with: docs/FUN.md#8-tower-defense
+verify-with: design/FUN.md#8-tower-defense
 ---
 
 # Counter Systems — the duel matrix
@@ -93,11 +93,11 @@ by the build screen."
 
 ## Verify
 
-- **[FUN.md §8](../../docs/FUN.md)** — mixed build survives 10/10; mono build (bigger
+- **[FUN.md §8](../FUN.md)** — mixed build survives 10/10; mono build (bigger
   budget) fails; bare lane falls early; counter duels from both sides.
-- **[FUN.md §9](../../docs/FUN.md)** — every counter edge wins its NvN duel; the
+- **[FUN.md §9](../FUN.md)** — every counter edge wins its NvN duel; the
   intended composition beats attack-move.
-- **[FUN.md law 2](../../docs/FUN.md)** — the countering strategy beats the null (mono)
+- **[FUN.md law 2](../FUN.md)** — the countering strategy beats the null (mono)
   strategy by a margin.
 - Determinism: golden hash of a scripted duel set.
 
@@ -110,6 +110,6 @@ by the build screen."
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §8, §9 — the duel-from-both-sides proofs.
+- [`design/FUN.md`](../FUN.md) §8, §9 — the duel-from-both-sides proofs.
 - [[anchor-starcraft]] — three rosters, near-hard counters, one balance.
 - [`sandboxes/pathfinding-demo`](../../sandboxes/pathfinding-demo) — `astarGrid`/`floodFill` for mass counters.

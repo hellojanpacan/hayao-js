@@ -49,7 +49,7 @@ Juice without restraint is noise. The envelopes that read as *professional*:
 
 ## Part 3 — Make the feel checkable (Channel 4 gates)
 
-Declare the feel, then prove it. See [VERIFICATION.md](VERIFICATION.md) Channel 4
+Declare the feel, then prove it. See [VERIFICATION.md](../docs/VERIFICATION.md) Channel 4
 for the full list; the shape:
 
 ```ts

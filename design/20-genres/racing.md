@@ -7,7 +7,7 @@ summary: The speed/line tradeoff made physical — brake to hold the line or flo
 use-when: The design is a top-down/arcade racer where cornering is a real physics tradeoff and lap time is the score.
 composes-with: [system-enemy-ai, system-difficulty-and-dda, system-progression, pattern-mastery-and-flow, pattern-risk-reward, pattern-pacing-and-tension]
 anchors: [anchor-trackmania, anchor-mario-kart]
-verify-with: docs/FUN.md#20-·-top-down-racing
+verify-with: design/FUN.md#20-·-top-down-racing
 ---
 
 # Racing
@@ -113,7 +113,7 @@ gameplay #10), DR1V3N WILD (2024 gameplay #3).
 
 ## Verify
 
-Prove it against [FUN.md §20 — Top-down racing](../../docs/FUN.md#20-·-top-down-racing):
+Prove it against [FUN.md §20 — Top-down racing](../FUN.md#20-·-top-down-racing):
 the `driveLine()` bot finishes laps; braking beats flooring (skill delta); cutting
 advances nothing; off-track speed cap holds; golden grand prix. See
 [`sandboxes/physics-lab`](../../sandboxes/physics-lab) for the vehicle-physics
@@ -130,6 +130,6 @@ the racing-line follower.
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) law 3 — derive the turn-radius inequality
+- [`design/FUN.md`](../FUN.md) law 3 — derive the turn-radius inequality
   before you lay a single corner.
 - [`sandboxes/physics-lab`](../../sandboxes/physics-lab) — the car, in isolation.

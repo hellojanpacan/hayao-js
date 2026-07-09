@@ -7,7 +7,7 @@ summary: Weighty, readable combat + a risked-currency loop + a world that gates 
 use-when: You want deliberate combat where every swing commits and rest is a gamble.
 composes-with: [anchor-dark-souls, mechanic-dodge-roll, system-save-and-checkpoint, system-telegraphs]
 anchors: [anchor-dark-souls]
-verify-with: docs/FUN.md#4-·-action-adventure
+verify-with: design/FUN.md#4-·-action-adventure
 ---
 
 **What it is.** Deliberate melee combat where every action **commits** to an animation, paired with a currency you drop on death and must recover, laid over a world that unlocks itself through shortcuts. Reading the enemy is the game.
@@ -70,4 +70,4 @@ verify-with: docs/FUN.md#4-·-action-adventure
 - [[anchor-dark-souls]] — the canonical text. Every pillar above is a distillation of it. For the coop seam, cross-reference [[anchor-it-takes-two]]; for boss-rush purity, [[anchor-cuphead]].
 
 ## Verify
-Prove the committed-combat and risk-loop feel against `docs/FUN.md#4-·-action-adventure`. Keep rendered chrome out of the sim hash per the view/logic split; judge looks headlessly per [[process-refine-and-handoff]].
+Prove the committed-combat and risk-loop feel against `design/FUN.md#4-·-action-adventure`. Keep rendered chrome out of the sim hash per the view/logic split; judge looks headlessly per [[process-refine-and-handoff]].

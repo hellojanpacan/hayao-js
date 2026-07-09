@@ -7,7 +7,7 @@ summary: The rising tide vs your rising build — minimal input, auto-attacks, a
 use-when: Designing a survive-the-timer game where the skill is positioning and build-drafting against an escalating horde.
 composes-with: [system-build-diversity, system-meta-progression, system-reward-schedules, system-difficulty-and-dda, system-procgen-design, system-session-structure]
 anchors: [anchor-vampire-survivors, anchor-nuclear-throne]
-verify-with: docs/FUN.md#6--twin-stick-horde-survival-vampire-survivors-like
+verify-with: design/FUN.md#6--twin-stick-horde-survival-vampire-survivors-like
 ---
 
 # Twin-stick Horde Survival (Vampire Survivors-like)
@@ -111,7 +111,7 @@ the orbit-bot survival proof and `peak alive` assertion pattern. Grep
 
 ## Verify
 
-Prove it with **[FUN.md §6 · Horde survival](../../docs/FUN.md#6--twin-stick-horde-survival-vampire-survivors-like)** —
+Prove it with **[FUN.md §6 · Horde survival](../FUN.md#6--twin-stick-horde-survival-vampire-survivors-like)** —
 orbit-bot survives with an hp floor; `peak alive ≥ N` asserted so the horde can't
 regress; the superlinear spawn ramp checked against build DPS; sim ms/step budget
 under load. Design the tide-vs-build here; prove the race there.
@@ -125,4 +125,4 @@ under load. Design the tide-vs-build here; prove the race there.
 ## See also
 
 - [`examples/emberwake`](../../examples/emberwake) — the reference horde sim + pooled view.
-- [`docs/FUN.md §6`](../../docs/FUN.md#6--twin-stick-horde-survival-vampire-survivors-like) — the proof playbook.
+- [`design/FUN.md §6`](../FUN.md#6--twin-stick-horde-survival-vampire-survivors-like) — the proof playbook.

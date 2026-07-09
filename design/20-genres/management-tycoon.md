@@ -7,7 +7,7 @@ summary: Build and balance a living system toward efficiency — the joy is watc
 use-when: You want optimization play over a self-running economy or institution.
 composes-with: [anchor-frostpunk, system-economy, system-resource-loops, pattern-feedback-loops]
 anchors: [anchor-frostpunk]
-verify-with: docs/FUN.md#17-·-city-builder
+verify-with: design/FUN.md#17-·-city-builder
 ---
 
 **What it is.** You author a system — a factory, a park, a colony, a household — then tune its **inputs, throughput, and demand** until it runs without you. The verbs are *place, connect, price, staff, cut*. Play is diagnosis and adjustment, not reflexes.
@@ -68,4 +68,4 @@ The loop is **observe → hypothesize → adjust → watch it settle**. Keep the
 Neighbors worth studying: [[genre-city-builder]], [[genre-incremental]] (the demand curve without the map), [[genre-4x]] (management at civilizational scale).
 
 ## Verify
-Prove the loop against `docs/FUN.md#17-·-city-builder` — is the bottleneck findable, does the demand curve keep the target moving, does a tuned system visibly run itself? Judge looks via [[process-refine-and-handoff]].
+Prove the loop against `design/FUN.md#17-·-city-builder` — is the bottleneck findable, does the demand curve keep the target moving, does a tuned system visibly run itself? Judge looks via [[process-refine-and-handoff]].

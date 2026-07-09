@@ -7,7 +7,7 @@ summary: Story is the mechanic — branching text and choices; the design is the
 use-when: You want a character/story-driven game where choices and prose carry it.
 composes-with: [anchor-disco-elysium, system-dialogue-and-branching, genre-narrative-decisions, world-character-design]
 anchors: [anchor-disco-elysium]
-verify-with: docs/FUN.md#21-·-narrative-decisions
+verify-with: design/FUN.md#21-·-narrative-decisions
 ---
 
 **What it is.** A game where the interface is a page and the verbs are *read* and *choose*. Prose, characters, and a branching tree are the entire system; the mechanic is which fork you take and what the story remembers.
@@ -74,4 +74,4 @@ Pick one and let it reshape the tree — don't bolt it on. See [[process-the-twi
 
 ## Verify
 
-Prove the forks are real and the story pulls per **docs/FUN.md#21-·-narrative-decisions** — assert that distinct choices reach distinct, remembered states, not a silent reconvergence. Keep the tree a pure, inspectable data structure so branch coverage is machine-checkable.
+Prove the forks are real and the story pulls per **design/FUN.md#21-·-narrative-decisions** — assert that distinct choices reach distinct, remembered states, not a silent reconvergence. Keep the tree a pure, inspectable data structure so branch coverage is machine-checkable.

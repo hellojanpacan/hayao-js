@@ -7,7 +7,7 @@ summary: Impossible stewardship — every choice double-edged, meters balanced b
 use-when: The design is a choice-driven game where balancing competing meters via double-edged decisions IS the gameplay (Reigns-like).
 composes-with: [system-economy, system-emergent-systems, pattern-risk-reward, pattern-feedback-loops, pattern-pacing-and-tension]
 anchors: [anchor-reigns]
-verify-with: docs/FUN.md#21-·-narrative-decisions-reigns-like
+verify-with: design/FUN.md#21-·-narrative-decisions-reigns-like
 ---
 
 # Narrative Decisions
@@ -102,7 +102,7 @@ plate-spin tips another.
 
 ## Verify
 
-Prove it against [FUN.md §21 — Narrative decisions](../../docs/FUN.md#21-·-narrative-decisions-reigns-like):
+Prove it against [FUN.md §21 — Narrative decisions](../FUN.md#21-·-narrative-decisions-reigns-like):
 balanced-policy bot survives; always-left loses 0/20; content lint (unique ids,
 |Δ| ≤ 20, settable flags, no no-ops); every doom fires its own ending; arcs
 terminate both ways. Chrome/menus via `showScreen()`; the card view is `cosmetic`.
@@ -118,5 +118,5 @@ terminate both ways. Chrome/menus via `showScreen()`; the card view is `cosmetic
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §21 — the content-lint recipe in full.
+- [`design/FUN.md`](../FUN.md) §21 — the content-lint recipe in full.
 - [[world-narrative-delivery]] — techniques for telling story with little text.

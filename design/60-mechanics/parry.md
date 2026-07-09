@@ -7,7 +7,7 @@ summary: A tight defensive window that flips offense to you — the read that tu
 use-when: Deliberate combat wants a high-skill, high-reward defensive answer.
 composes-with: [mechanic-block, mechanic-deflect, system-telegraphs]
 anchors: [anchor-into-the-breach]
-verify-with: docs/FUN.md#4-·-action-adventure
+verify-with: design/FUN.md#4-·-action-adventure
 ---
 
 **What it is.** A brief defensive window you open on a button, timed to the instant an attack lands. Hit it and the exchange flips: the attacker is staggered and you get a free, oversized **riposte**. Miss it and you eat the hit — often worse than if you'd never tried.
@@ -56,7 +56,7 @@ Decide which one you're building and tune the **whiff cost** and **window** as a
 ## How it wires to Hayao
 - Model the window as **explicit sim state**: a small integer counter of remaining active frames, opened on the input tick and decremented each fixed step. Hit resolution checks "is a parry window active at the moment of impact?" — pure, ordered, deterministic. It belongs in hashed state.
 - Tie the window to the enemy's attack timeline, which is *also* sim state — the tell, the active frame, the recovery. The parry is fair because both clocks advance on the same fixed timestep and a replay reproduces the exact overlap. Study an isolated timing/telegraph lab under `sandboxes/` before wiring a full encounter.
-- The **clang, the flash, the hitstop, the slow-mo** on success are pure view — tag those nodes `cosmetic` so they stay out of `world.hash()`. Design the feel here; prove the readability of the tell and the punch of the riposte in `docs/JUICE.md`, and prove the encounter is winnable-by-read in `docs/FUN.md`.
+- The **clang, the flash, the hitstop, the slow-mo** on success are pure view — tag those nodes `cosmetic` so they stay out of `world.hash()`. Design the feel here; prove the readability of the tell and the punch of the riposte in `design/JUICE.md`, and prove the encounter is winnable-by-read in `design/FUN.md`.
 - If parries build **posture** toward an execution, that meter is sim state too; the *bar you draw* is cosmetic, the number it reflects is not.
 
 ## Fails when…

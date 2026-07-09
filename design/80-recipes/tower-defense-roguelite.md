@@ -7,7 +7,7 @@ summary: Tower defense where towers are drafted each run and meta-progression pe
 use-when: You want TD replayability via drafted builds and between-run unlocks.
 composes-with: [genre-tower-defense, system-meta-progression, system-build-diversity, process-the-twist]
 anchors: [anchor-slay-the-spire, anchor-into-the-breach]
-verify-with: docs/FUN.md#8-·-tower-defense
+verify-with: design/FUN.md#8-·-tower-defense
 ---
 
 # Tower-Defense Roguelite
@@ -102,7 +102,7 @@ logic/view split.
 
 - **Fun proof:** the tower-defense mechanical-truth gates — biting counters,
   range-ring readability, a wave curve that ramps-then-breathes-then-peaks — at
-  **docs/FUN.md §8 · Tower Defense** (`verify-with` above). The draft doesn't
+  **design/FUN.md §8 · Tower Defense** (`verify-with` above). The draft doesn't
   change what "fun TD" means; it changes how the roster is chosen.
 - **Winnability + connectivity:** every seed must be *provably clearable with the
   hand it deals* — no dead draft, no impossible wave. If lanes are seeded, prove
@@ -121,6 +121,6 @@ logic/view split.
 
 ## See also
 
-- **docs/FUN.md#8-·-tower-defense** — the mechanical-truth gates to build against.
+- **design/FUN.md#8-·-tower-defense** — the mechanical-truth gates to build against.
 - **`examples/sokoban/`** — the pure-logic / cosmetic-view split to model the run module on.
 - [[process-the-twist]] · [[process-composition]] — how this brief was assembled.

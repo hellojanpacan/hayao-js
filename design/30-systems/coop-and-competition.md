@@ -7,7 +7,7 @@ summary: Co-op and PvP hooks — asymmetric co-op, interdependence, and rivalry 
 use-when: The design has more than one player and you need to shape how they cooperate, compete, or depend on each other.
 composes-with: [system-faction-asymmetry, system-encounter-design, genre-coop-chaos, pattern-emergence]
 anchors: [anchor-overcooked, anchor-it-takes-two]
-verify-with: docs/FUN.md#part-1--universal-laws
+verify-with: design/FUN.md#part-1--universal-laws
 ---
 
 # Co-op & Competition
@@ -94,7 +94,7 @@ predictable system in the room — a *person* — at the center.
 
 - **Determinism across streams:** golden-hash a scripted two-player session; the
   shared sim replays bit-exactly regardless of which player acted when
-  ([FUN.md law 7](../../docs/FUN.md#part-1--universal-laws)).
+  ([FUN.md law 7](../FUN.md#part-1--universal-laws)).
 - **Every role viable (asymmetric):** assert each role's contribution clears a
   floor — the faction-viability check applied per player
   ([[system-faction-asymmetry]]; FUN.md law 2 skill-delta shape).
@@ -114,5 +114,5 @@ predictable system in the room — a *person* — at the center.
 ## See also
 
 - [`docs/STUDIO.md`](../../docs/STUDIO.md) — deterministic sessions + the rollback-with-carryover contract.
-- [`docs/FUN.md` law 7](../../docs/FUN.md#part-1--universal-laws) — pure state makes multiplayer replayable.
+- [`design/FUN.md` law 7](../FUN.md#part-1--universal-laws) — pure state makes multiplayer replayable.
 - [[anchor-overcooked]] · [[anchor-it-takes-two]] — forced communication and asymmetric interdependence.

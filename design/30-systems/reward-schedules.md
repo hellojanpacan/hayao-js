@@ -7,7 +7,7 @@ summary: How often and how surprisingly the game pays out; variable-ratio's grip
 use-when: The design hands out loot, drops, or chests and you need the payout rhythm to feel exciting without tipping into manipulation.
 composes-with: [system-economy, system-collectibles, system-meta-progression, system-progression, system-procgen-design]
 anchors: [anchor-vampire-survivors, anchor-hades, anchor-peggle]
-verify-with: docs/FUN.md#19-physics-arcade-breakoutpeggle
+verify-with: design/FUN.md#19-physics-arcade-breakoutpeggle
 ---
 
 # Reward Schedules — Drops, Chests & Ethical Compulsion
@@ -118,7 +118,7 @@ to *reward* engagement, never to *punish* disengagement.
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §11 (intent-honesty audit) · law 6 (resolve-
+- [`design/FUN.md`](../FUN.md) §11 (intent-honesty audit) · law 6 (resolve-
   then-choreograph) · law 4 (null baseline).
-- [`docs/JUICE.md`](../../docs/JUICE.md) — the anticipation→reveal feel gates.
+- [`design/JUICE.md`](../JUICE.md) — the anticipation→reveal feel gates.
 - **[[anchor-peggle]]** — maximal juice on a trivial, uncertain input.

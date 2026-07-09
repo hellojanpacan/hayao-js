@@ -10,7 +10,7 @@ from the mechanic, not from the corpus.**
 
 Each module says **the verb · how it feels · tuning levers (with defaults) · what
 it slots into · twist seams · how it wires to Hayao · fails when…** — so you pick
-a verb, tune it, bend it, and prove the *feel* over in [`docs/JUICE.md`](../../docs/JUICE.md).
+a verb, tune it, bend it, and prove the *feel* over in [`design/JUICE.md`](../JUICE.md).
 Every mechanic names 2–3 "X but Y" seams: the verb is where a twist bites hardest.
 
 Cross-link with `[[mechanic-id]]`; follow `composes-with`.
@@ -63,7 +63,7 @@ Cross-link with `[[mechanic-id]]`; follow `composes-with`.
 ## Prove the feel, don't restate it
 
 A mechanic is only as good as its feel, and feel is *proven*, not asserted.
-Design the verb here; tune and gate it in [`docs/JUICE.md`](../../docs/JUICE.md)
+Design the verb here; tune and gate it in [`design/JUICE.md`](../JUICE.md)
 (the 2-senses contract) and [`src/verify/gates.ts`](../../src/verify/gates.ts)
 (the Channel-4 feel-proof gates). For a single verb in isolation — physics,
 tweens, particles, camera — read the matching [`sandboxes/`](../../sandboxes/)

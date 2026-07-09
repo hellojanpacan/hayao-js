@@ -7,7 +7,7 @@ summary: Placement-optimization builder where the exposed live score under the c
 use-when: Designing a city/colony builder where the fun is placing tiles for adjacency payoff, guided by a live score and real tradeoffs.
 composes-with: [system-economy, system-resource-loops, pattern-feedback-loops, system-procgen-design]
 anchors: [anchor-factorio, anchor-rimworld]
-verify-with: docs/FUN.md#17--citycolony-builder
+verify-with: design/FUN.md#17--citycolony-builder
 ---
 
 # City / Colony Builder
@@ -108,7 +108,7 @@ quantified, and yours.
 ## Verify
 
 N-island queue-always-fits sweep; greedy ≈ 2× random skill delta; scoring-honesty
-audit; golden → **[docs/FUN.md §17 · City/colony builder](../../docs/FUN.md#17--citycolony-builder)**.
+audit; golden → **[design/FUN.md §17 · City/colony builder](../FUN.md#17--citycolony-builder)**.
 Design the synergy space and the exposed score here; prove the delta and the audit there.
 
 ## Composes with
@@ -119,6 +119,6 @@ Design the synergy space and the exposed score here; prove the delta and the aud
 
 ## See also
 
-- [docs/FUN.md §17](../../docs/FUN.md#17--citycolony-builder) — mechanical truth + verify recipe.
+- [design/FUN.md §17](../FUN.md#17--citycolony-builder) — mechanical truth + verify recipe.
 - [`sandboxes/`](../../sandboxes/) — the procgen/economy lab to prototype a scorer and a
   queue-fits sweep before authoring buildings.

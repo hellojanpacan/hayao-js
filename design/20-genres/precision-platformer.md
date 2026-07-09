@@ -7,7 +7,7 @@ summary: Trust in inputs — a movement envelope so honest that every death is t
 use-when: Designing a tight single-screen platformer where mastery of one movement verb is the whole game.
 composes-with: [system-grace, system-onboarding, system-difficulty-and-dda, system-save-and-checkpoint, system-collectibles]
 anchors: [anchor-celeste]
-verify-with: docs/FUN.md#2--precision-platformer-celeste-like
+verify-with: design/FUN.md#2--precision-platformer-celeste-like
 ---
 
 # Precision Platformer (Celeste-like)
@@ -58,7 +58,7 @@ lesson you accept.
   `jumpDistance` / `dashJumpDistance` from the actual config *first*; a gap that's
   one pixel past the dash isn't hard, it's broken. Leave human slack — a
   frame-perfect gap is a bug. See [`recipes/platformer-feel.md`](../../recipes/platformer-feel.md)
-  for the movement-envelope recipe and [FUN.md law 3](../../docs/FUN.md#part-1--universal-laws).
+  for the movement-envelope recipe and [FUN.md law 3](../FUN.md#part-1--universal-laws).
 - **One idea per room, then combine.** Room introduces "dash *up*," next room
   "dash up into a wall-slide," boss room chains four ideas at speed.
 - **Difficulty = execution length between checkpoints, not gap tightness.** A
@@ -109,7 +109,7 @@ the reactive waypoint bot pattern that proves every room 0-deaths.
 
 ## Verify
 
-Prove it with **[FUN.md §2 · Precision platformer](../../docs/FUN.md#2--precision-platformer-celeste-like)** —
+Prove it with **[FUN.md §2 · Precision platformer](../FUN.md#2--precision-platformer-celeste-like)** —
 waypoint bot beats every room 0-deaths; movement-envelope inequalities asserted
 against config; grace windows tested edge-in/edge-out. Design the feel here; prove
 the trust there.
@@ -124,4 +124,4 @@ the trust there.
 
 - [`recipes/platformer-feel.md`](../../recipes/platformer-feel.md) — the movement-feel recipe.
 - [`examples/updrift`](../../examples/updrift) — the golden feel reference.
-- [`docs/FUN.md §2`](../../docs/FUN.md#2--precision-platformer-celeste-like) — the proof playbook.
+- [`design/FUN.md §2`](../FUN.md#2--precision-platformer-celeste-like) — the proof playbook.

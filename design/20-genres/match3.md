@@ -7,7 +7,7 @@ summary: Swap-adjacent tile matcher where the fun is the cascade you triggered �
 use-when: Designing a tile-swap/board-clear game where a single legal move should bloom into a satisfying, deterministic chain.
 composes-with: [system-reward-schedules, system-difficulty-and-dda, pattern-juice-choreography, pattern-feedback-loops]
 anchors: [anchor-peggle, anchor-balatro]
-verify-with: docs/FUN.md#13--match-3
+verify-with: design/FUN.md#13--match-3
 ---
 
 # Match-3
@@ -103,7 +103,7 @@ shower of pops. Fun is the **cascade you triggered**, not the cascade you watche
 ## Verify
 
 Board fairness sweep, score-accounting invariant, greedy-matcher hit-rate, golden
-session → **[docs/FUN.md §13 · Match-3](../../docs/FUN.md#13--match-3)**. Design the
+session → **[design/FUN.md §13 · Match-3](../FUN.md#13--match-3)**. Design the
 cascade here; prove fairness and the score invariant there.
 
 ## Composes with
@@ -114,7 +114,7 @@ cascade here; prove fairness and the score invariant there.
 
 ## See also
 
-- [docs/FUN.md §13](../../docs/FUN.md#13--match-3) — mechanical truth + verify recipe.
-- [docs/JUICE.md](../../docs/JUICE.md) — feel gates for the cascade choreography.
+- [design/FUN.md §13](../FUN.md#13--match-3) — mechanical truth + verify recipe.
+- [design/JUICE.md](../JUICE.md) — feel gates for the cascade choreography.
 - [`sandboxes/`](../../sandboxes/) — reach for the particles/tweens lab to wire the
   pop-and-fall feel in isolation before building a whole board.

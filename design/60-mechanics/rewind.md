@@ -7,7 +7,7 @@ summary: Roll time backward on demand — failure becomes a draft; the puzzle is
 use-when: A puzzle or precision game wants exploration without punishment, or time as the toy.
 composes-with: [mechanic-time-stop, mechanic-clone, pattern-anti-frustration]
 anchors: [anchor-braid]
-verify-with: docs/FUN.md#1-·-grid-puzzle
+verify-with: design/FUN.md#1-·-grid-puzzle
 ---
 
 **What it is.** A button that runs the world backward — either a full **scrub** to any past state, or a discrete **step-back** that pops the last move off a stack. Failure stops being terminal; it becomes a draft you revise.

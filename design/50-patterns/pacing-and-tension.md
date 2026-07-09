@@ -6,7 +6,7 @@ tags: [pacing, tension, rhythm, peaks, valleys, breather, session, curve, escala
 summary: Tension is a curve, not a constant — alternate peaks and breathers so the finale reads as a peak, not another wave.
 use-when: Shaping a session/level/wave/run; deciding difficulty and intensity over time, not just at one moment.
 composes-with: [pattern-feedback-loops, pattern-mastery-and-flow, pattern-risk-reward, system-session-structure]
-verify-with: docs/FUN.md#8-·-tower-defense
+verify-with: design/FUN.md#8-·-tower-defense
 ---
 
 # Pacing & Tension
@@ -113,7 +113,7 @@ the finale peaks — a *breathing* curve, not a straight climb, and not monotoni
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §8 (wave curves breathe) & §14 (no deserts) —
+- [`design/FUN.md`](../FUN.md) §8 (wave curves breathe) & §14 (no deserts) —
   the two places pacing becomes an assertion.
 - [[anchor-hades]] — room-shop-room-boss rhythm as a whole-game pacing spine.
 - [[system-encounter-design]] — a single encounter has its own micro-curve (pressure

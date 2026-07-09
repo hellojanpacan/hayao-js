@@ -7,7 +7,7 @@ summary: Number-goes-up economy where the design IS the pacing curve — first-b
 use-when: Designing a clicker/idle/prestige game whose fun is a smooth ramp of unlocks with no dead stretches waiting for a wall.
 composes-with: [system-economy, system-progression, pattern-feedback-loops, system-reward-schedules]
 anchors: [anchor-balatro, anchor-factorio]
-verify-with: docs/FUN.md#14--incrementalidle
+verify-with: design/FUN.md#14--incrementalidle
 ---
 
 # Incremental / Idle
@@ -104,7 +104,7 @@ next tier is visible, and a reset makes the whole climb feel faster. Fun is the
 ## Verify
 
 Balance-sim the arc; assert pacing windows, monotone production, no unlock deserts,
-no click-softlock → **[docs/FUN.md §14 · Incremental/idle](../../docs/FUN.md#14--incrementalidle)**.
+no click-softlock → **[design/FUN.md §14 · Incremental/idle](../FUN.md#14--incrementalidle)**.
 Author the curve here; prove its windows there.
 
 ## Composes with
@@ -115,6 +115,6 @@ Author the curve here; prove its windows there.
 
 ## See also
 
-- [docs/FUN.md §14](../../docs/FUN.md#14--incrementalidle) — mechanical truth + verify recipe.
+- [design/FUN.md §14](../FUN.md#14--incrementalidle) — mechanical truth + verify recipe.
 - [`sandboxes/`](../../sandboxes/) — the procgen/economy lab to prototype a payback
   curve headless before wiring UI.

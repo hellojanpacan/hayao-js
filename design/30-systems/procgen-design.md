@@ -7,7 +7,7 @@ summary: Runs, seeds, and variance as content — controlled randomness that alw
 use-when: A design needs replayable, generated content (levels, dungeons, decks) instead of hand-authored maps.
 composes-with: [system-session-structure, system-encounter-design, system-save-and-checkpoint, genre-roguelike]
 anchors: [anchor-dead-cells, anchor-slay-the-spire]
-verify-with: docs/FUN.md#10-traditional-roguelike
+verify-with: design/FUN.md#10-traditional-roguelike
 ---
 
 # Procedural Generation Design
@@ -94,7 +94,7 @@ under fairness** — every layout is new, but every layout is winnable (FUN.md �
 ## Verify
 
 - **Connectivity sweep first:** stairs + all loot reachable across ~50 seeds
-  ([FUN.md §10](../../docs/FUN.md#10-traditional-roguelike)).
+  ([FUN.md §10](../FUN.md#10-traditional-roguelike)).
 - **Winnability, not experience:** a full-knowledge bot wins 10/10 random seeds —
   that proves *a line exists*, the right claim for procgen (FUN.md §10).
 - **Seeded reproducibility:** the same seed yields the same layout + a hash-identical
@@ -114,5 +114,5 @@ under fairness** — every layout is new, but every layout is winnable (FUN.md �
 
 - [`src/content/generate.ts`](../../src/content/generate.ts) — solver-backed level generation.
 - [`sandboxes/procgen-lab`](../../sandboxes/procgen-lab/) — the generation primitives alone.
-- [`docs/FUN.md` §10](../../docs/FUN.md#10-traditional-roguelike) — connectivity-first fairness.
+- [`design/FUN.md` §10](../FUN.md#10-traditional-roguelike) — connectivity-first fairness.
 - [[anchor-dead-cells]] · [[anchor-slay-the-spire]] — procgen as the shape of a run.

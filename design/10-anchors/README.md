@@ -34,7 +34,7 @@ their DNA here. Each module gives you four levers:
 Anchors feed the deep creative templates in [`20-genres/`](../20-genres/) and
 the modular parts in [`30-systems/`](../30-systems/) — each module's
 **Composes into** section names exactly which. Verification is never here:
-each anchor links the matching `docs/FUN.md` genre section for the proof
+each anchor links the matching `design/FUN.md` genre section for the proof
 pattern.
 
 ## The 24 anchors
@@ -95,5 +95,5 @@ pattern.
   formula the twist seams speak.
 - [`../20-genres/`](../20-genres/) · [`../30-systems/`](../30-systems/) —
   where anchor DNA composes into templates and parts.
-- [`../../docs/FUN.md`](../../docs/FUN.md) — each anchor's verify pattern, by
+- [`FUN.md`](../FUN.md) — each anchor's verify pattern, by
   genre.

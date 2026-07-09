@@ -6,7 +6,7 @@ tags: [randomness, fairness, variance, feel]
 summary: Variance that erases skill — a good decision loses to a coin flip, and the loss feels stolen, not earned.
 use-when: Randomness affects outcomes players feel they controlled.
 composes-with: [system-procgen-design, pattern-fairness-and-trust, system-loot-tables]
-verify-with: docs/FUN.md#10-·-traditional-roguelike
+verify-with: design/FUN.md#10-·-traditional-roguelike
 ---
 
 **What it is.** Randomness sits on the **output** of a decision instead of its input, so a correct play loses to a die roll. The player did the math, made the read, executed — and the result was overwritten by a number they never saw coming.
@@ -68,4 +68,4 @@ verify-with: docs/FUN.md#10-·-traditional-roguelike
 
 ## Verify / guard
 
-Design here, prove there. Assert that skill dominates variance before handoff: simulate skilled vs. unskilled agents over many seeded runs and confirm their win rates separate — if they don't, the swing is too wide. Confirm pity floors actually trigger and that every advertised probability is visible pre-commit. The frontmatter's `verify-with` (docs/FUN.md, traditional roguelike) is the fun bar; run the fairness checks in [[pattern-fairness-and-trust]] and the schedule guards in [[system-reward-schedules]] alongside it.
+Design here, prove there. Assert that skill dominates variance before handoff: simulate skilled vs. unskilled agents over many seeded runs and confirm their win rates separate — if they don't, the swing is too wide. Confirm pity floors actually trigger and that every advertised probability is visible pre-commit. The frontmatter's `verify-with` (design/FUN.md, traditional roguelike) is the fun bar; run the fairness checks in [[pattern-fairness-and-trust]] and the schedule guards in [[system-reward-schedules]] alongside it.

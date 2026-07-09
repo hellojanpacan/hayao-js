@@ -7,7 +7,7 @@ summary: One-stick horde survival where you only move — weapons fire themselve
 use-when: Designing a low-input game whose fun is watching a snowballing build outrun a superlinear threat curve.
 composes-with: [genre-horde-survival, system-build-diversity, system-reward-schedules, system-progression]
 anchors: [anchor-vampire-survivors]
-verify-with: docs/FUN.md#6-·-twin-stick-horde-survival-vampire-survivors-like
+verify-with: design/FUN.md#6-·-twin-stick-horde-survival-vampire-survivors-like
 ---
 
 # Vampire Survivors
@@ -115,8 +115,8 @@ low-stakes, one-of-three) matters more than any single weapon's numbers.
 
 - [[genre-horde-survival]] · [[system-build-diversity]] ·
   [[system-reward-schedules]]
-- `docs/FUN.md#6-·-twin-stick-horde-survival-vampire-survivors-like` —
+- `design/FUN.md#6-·-twin-stick-horde-survival-vampire-survivors-like` —
   orbit-bot + peak-alive verify.
 - `sandboxes/particle-studio/` — pooled, cosmetic swarm rendering (deletable
   per law 6).
-- `docs/JUICE.md` — the level-up / crit / clear feedback choreography.
+- `design/JUICE.md` — the level-up / crit / clear feedback choreography.
