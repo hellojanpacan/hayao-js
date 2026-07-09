@@ -5,7 +5,7 @@ library. Read this + [`_TEMPLATE.md`](_TEMPLATE.md) before writing a module.
 
 ## The contract (non-negotiable)
 
-1. **Voice** = [`docs/FUN.md`](../docs/FUN.md): terse, imperative, second-person,
+1. **Voice** = [`design/FUN.md`](../design/FUN.md): terse, imperative, second-person,
    proof-aware. No throat-clearing. Bold the load-bearing noun, not sentences.
 2. **Length** 120–260 lines. Tables and tight bullets over paragraphs.
 3. **Frontmatter** exactly per `_TEMPLATE.md`. `id`, `title`, `kind`, `tags`,

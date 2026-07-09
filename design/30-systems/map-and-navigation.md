@@ -6,7 +6,7 @@ tags: [wayfinding, minimap, fast-travel, exploration, space]
 summary: How players know where they are and get where they're going — wayfinding, minimaps, fast-travel, and the cost of a return trip.
 use-when: Players get lost, or backtracking is padding the runtime.
 composes-with: [genre-metroidvania, antipattern-backtracking-tax, world-level-as-story]
-verify-with: docs/FUN.md#3-·-metroidvania
+verify-with: design/FUN.md#3-·-metroidvania
 ---
 
 # Map & Navigation
@@ -134,7 +134,7 @@ route, is the payoff for having learned it.
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §3 (metroidvania reachability) — the navigation proof.
+- [`design/FUN.md`](../FUN.md) §3 (metroidvania reachability) — the navigation proof.
 - **[[anchor-dark-souls]]** (interlocking shortcuts, no minimap) ·
   **[[anchor-outer-wilds]]** (landmark-only wayfinding) ·
   **[[anchor-age-of-empires]]** (fog-of-war scouting).

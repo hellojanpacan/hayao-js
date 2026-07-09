@@ -7,7 +7,7 @@ summary: Readable, beatable enemy minds — aggro/threat, steering, and pathing 
 use-when: A design needs enemies that move and decide, and you want them to feel intelligent without being unfair or opaque.
 composes-with: [system-enemy-archetypes, system-encounter-design, system-telegraphs, system-difficulty-and-dda]
 anchors: [anchor-nuclear-throne, anchor-shadow-of-mordor]
-verify-with: docs/FUN.md#4-top-down-action-adventure-zelda-like
+verify-with: design/FUN.md#4-top-down-action-adventure-zelda-like
 ---
 
 # Enemy AI
@@ -94,9 +94,9 @@ positioning" is a provable claim.
 
 - **Beatable by positioning:** the kiting-bot telemetry pattern — win time, hp
   floor ≥ comfortable, **0 deaths** — is the proof an enemy roster is fair
-  ([FUN.md §4](../../docs/FUN.md#4-top-down-action-adventure-zelda-like)).
+  ([FUN.md §4](../FUN.md#4-top-down-action-adventure-zelda-like)).
 - **Reachability first:** `connectedComponents` / flow-field over the actual
-  geometry before spawning chasers ([FUN.md §9](../../docs/FUN.md#9-rts-lite)).
+  geometry before spawning chasers ([FUN.md §9](../FUN.md#9-rts-lite)).
 - **Feel floor:** every attack telegraphs before its hitbox goes live — the
   readability gate in [`src/verify/gates.ts`](../../src/verify/gates.ts) checks it.
 - **Determinism:** golden-hash a scripted encounter; targeting and steering must
@@ -115,7 +115,7 @@ positioning" is a provable claim.
 
 ## See also
 
-- [`docs/FUN.md` §4/§7/§9](../../docs/FUN.md) — kiting, dodge-bot fairness, flow fields.
+- [`design/FUN.md` §4/§7/§9](../FUN.md) — kiting, dodge-bot fairness, flow fields.
 - [`sandboxes/pathfinding-demo`](../../sandboxes/pathfinding-demo/) — the pathing primitive alone.
 - [[anchor-nuclear-throne]] — tight-loop enemies whose danger is *count + read*, never cheating.
 - [[anchor-shadow-of-mordor]] — where a readable mind grows a *history* ([[system-emergent-systems]]).

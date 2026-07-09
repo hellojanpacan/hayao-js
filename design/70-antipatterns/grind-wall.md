@@ -6,7 +6,7 @@ tags: [pacing, progression, time-gate, friction]
 summary: Progress gated by repetition, not skill or choice — the game stops being played and starts being farmed.
 use-when: A ramp stalls and the only way through is repeating solved content.
 composes-with: [system-progression, pattern-pacing-and-tension, antipattern-pay-to-skip]
-verify-with: docs/FUN.md#14-·-incremental
+verify-with: design/FUN.md#14-·-incremental
 ---
 
 **What it is.** A **wall** where the next beat needs N repetitions of a loop the player already solved. Time is the toll; mastery buys nothing. The loop went quiet a while ago — the game just kept charging for it.
@@ -69,7 +69,7 @@ Load-bearing moves:
 
 Treat this as a **handoff gate**, not a vibe. Before you ship a ramp:
 
-- Prove the loop still *earns* its repetitions against **docs/FUN.md#14-·-incremental** — the incremental lens is exactly the "is this progress or padding?" test.
+- Prove the loop still *earns* its repetitions against **design/FUN.md#14-·-incremental** — the incremental lens is exactly the "is this progress or padding?" test.
 - Model the ramp as a curve of **new decisions per hour**, not XP per hour; if that curve flatlines, the flat region is the wall.
 - Cross-check pacing intent against [[pattern-pacing-and-tension]] and the brief's [[process-pillars]] — a wall is often a pillar the content couldn't afford.
 - Related failure modes to check in the same pass: [[antipattern-content-desert]] (nothing new to gate on), [[antipattern-boring-optimal]] (the fastest strategy is the dullest repetition), [[antipattern-fail-loop-tax]] (repetition forced by death, not by design).

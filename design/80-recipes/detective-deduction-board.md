@@ -7,7 +7,7 @@ summary: Obra Dinn's reasoning loop on a grid puzzle — gather clues, fill a de
 use-when: You want a deduction game where the player reasons, not brute-forces.
 composes-with: [anchor-return-of-the-obra-dinn, genre-grid-puzzle, system-quests-and-objectives, pattern-fairness-and-trust]
 anchors: [anchor-return-of-the-obra-dinn]
-verify-with: docs/FUN.md#1-·-grid-puzzle
+verify-with: design/FUN.md#1-·-grid-puzzle
 ---
 
 # Detective Deduction Board
@@ -71,7 +71,7 @@ Stretch, only after the core is green: a second case that reuses the engine, a s
 
 A design isn't done until it names its proofs. See [[process-refine-and-handoff]].
 
-- **Solver proof** → **docs/FUN.md#1-·-grid-puzzle**. The case must be provably solvable *and* uniquely so; the grid-puzzle gate is exactly this check. This is pillar 2, mechanized.
+- **Solver proof** → **design/FUN.md#1-·-grid-puzzle**. The case must be provably solvable *and* uniquely so; the grid-puzzle gate is exactly this check. This is pillar 2, mechanized.
 - **Fairness / trust** → verify no cell is guess-only; every deduction is forced. The failure mode to assert *against* is [[antipattern-guess-the-designer]] — if a tester's correct answer came from luck, the case fails.
 - **Onboarding** → confirm the first deduction can only resolve one way, so the player learns the clue grammar before the hard case ([[system-onboarding]]).
 
@@ -85,7 +85,7 @@ A design isn't done until it names its proofs. See [[process-refine-and-handoff]
 
 ## See also
 
-- **docs/FUN.md §1 · Grid Puzzle** — the solver-proof gate this recipe hands off to.
+- **design/FUN.md §1 · Grid Puzzle** — the solver-proof gate this recipe hands off to.
 - [[antipattern-guess-the-designer]] · [[antipattern-false-depth]] — the two failure modes a deduction board most often collapses into.
 - `examples/sokoban/` — the reference for the pure-logic / view split you'll mirror: rules in a pure module, the board rendered from it.
 - [[process-composition]] · [[process-the-twist]] — how this recipe was assembled, so you can assemble your own.

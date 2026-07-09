@@ -6,7 +6,7 @@ tags: [controls, feel, latency, trust]
 summary: The game drops or delays inputs — the player did the thing, the game disagreed, and trust dies.
 use-when: Testers say controls feel "off" or "unfair" without a clear reason.
 composes-with: [system-camera-and-controls, system-grace, pattern-fairness-and-trust]
-verify-with: docs/JUICE.md
+verify-with: design/JUICE.md
 ---
 
 **What it is.** The player pressed the button, the game did not honor it — swallowed, delayed, or resolved against the player's own eyes. The action was correct; the machine disagreed.
@@ -79,4 +79,4 @@ The whole family is anti-frustration design: remove the *undeserved* loss withou
 
 ## Verify / guard
 
-Feel is proven, not asserted — see [[docs/JUICE.md]] for the input-honesty and grace-window gates, and reference the `updrift` golden platformer as the honest-controls floor. Guard rule: any death or miss must be reconstructable as *fair* from the replay alone. If a human says "unfair" and the replay agrees with them, the lie is in your input layer — fix it before handoff, per [[process-refine-and-handoff]].
+Feel is proven, not asserted — see [[design/JUICE.md]] for the input-honesty and grace-window gates, and reference the `updrift` golden platformer as the honest-controls floor. Guard rule: any death or miss must be reconstructable as *fair* from the replay alone. If a human says "unfair" and the replay agrees with them, the lie is in your input layer — fix it before handoff, per [[process-refine-and-handoff]].

@@ -7,7 +7,7 @@ summary: The solvable knot — a grid of pieces where the obvious move is a trap
 use-when: Designing a turn-based, perfect-information puzzle whose fun is out-thinking a hand-authored or generated board.
 composes-with: [system-onboarding, system-difficulty-and-dda, system-procgen-design, system-save-and-checkpoint, system-mastery-curve]
 anchors: [anchor-baba-is-you, anchor-into-the-breach]
-verify-with: docs/FUN.md#1--grid-puzzle-sokoban
+verify-with: design/FUN.md#1--grid-puzzle-sokoban
 ---
 
 # Grid Puzzle (Sokoban-like)
@@ -109,7 +109,7 @@ the content.
 
 ## Verify
 
-Prove it with **[FUN.md §1 · Grid puzzle](../../docs/FUN.md#1--grid-puzzle-sokoban)** —
+Prove it with **[FUN.md §1 · Grid puzzle](../FUN.md#1--grid-puzzle-sokoban)** —
 solver over `Puzzle<State,Move>` for every level; replay determinism; undo/restart
 as grace. Design the knot here; prove it solvable there.
 
@@ -122,5 +122,5 @@ as grace. Design the knot here; prove it solvable there.
 ## See also
 
 - [`examples/sokoban`](../../examples/sokoban) — the reference logic/view split.
-- [`docs/FUN.md §1`](../../docs/FUN.md#1--grid-puzzle-sokoban) — the proof playbook.
+- [`design/FUN.md §1`](../FUN.md#1--grid-puzzle-sokoban) — the proof playbook.
 - [[process-the-twist]] — bend the rule; the rule is the game.

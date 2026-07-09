@@ -7,7 +7,7 @@ summary: Discovery as the reward — knowledge is the only progression; curiosit
 use-when: The design gates progress on player knowledge/deduction rather than stats or items (Outer Wilds / Obra Dinn-like).
 composes-with: [system-emergent-systems, system-onboarding, pattern-emergence, genre-narrative-decisions, genre-metroidvania]
 anchors: [anchor-outer-wilds, anchor-return-of-the-obra-dinn]
-verify-with: docs/FUN.md#10-·-traditional-roguelike
+verify-with: design/FUN.md#10-·-traditional-roguelike
 ---
 
 # Exploration
@@ -104,14 +104,14 @@ paying attention.
 Exploration is an **extension**; with no dedicated FUN.md section it *composes its
 parents' verify patterns*:
 
-- **Reachability/connectivity of required knowledge** → [FUN.md §10 — Roguelike](../../docs/FUN.md#10-·-traditional-roguelike):
+- **Reachability/connectivity of required knowledge** → [FUN.md §10 — Roguelike](../FUN.md#10-·-traditional-roguelike):
   assert every required clue/gate is reachable across seeds/orders BEFORE tuning
   difficulty. Full-knowledge bots prove a *line exists*, not player experience —
   exactly the right claim here. **This is the primary proof.**
-- **Content honesty/lint** → [FUN.md §21 — Narrative decisions](../../docs/FUN.md#21-·-narrative-decisions-reigns-like):
+- **Content honesty/lint** → [FUN.md §21 — Narrative decisions](../FUN.md#21-·-narrative-decisions-reigns-like):
   clues are data — lint for unique ids, every gate's needs-flag settable, no
   dangling/contradictory clues, no unreachable content.
-- **Perfect-information honesty** → [FUN.md §12 — Tactics](../../docs/FUN.md#12-·-turn-based-tactics):
+- **Perfect-information honesty** → [FUN.md §12 — Tactics](../FUN.md#12-·-turn-based-tactics):
   what's shown resolves exactly as shown; deduction demands it.
 - Determinism + pure-data state (laws 6–7) make the clue web replayable and
   clone-and-score deducible.
@@ -126,6 +126,6 @@ parents' verify patterns*:
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §10 — the connectivity sweep, repurposed for
+- [`design/FUN.md`](../FUN.md) §10 — the connectivity sweep, repurposed for
   knowledge reachability.
 - [[genre-narrative-decisions]] — shares the content-lint discipline for clue data.

@@ -95,7 +95,7 @@ feedbackIssues(FEEDBACK, ['jump','land','dash','death']).length === 0;
 | camera | `cameraIssues(camSamples)` + `lookAheadIssues(cam, target)` | the follow never snaps/jerks and leads the motion |
 
 See [`examples/updrift/verify.ts`](../examples/updrift/verify.ts) for all four wired
-end-to-end, and [docs/JUICE.md](../docs/JUICE.md) for the full cookbook.
+end-to-end, and [design/JUICE.md](../design/JUICE.md) for the full cookbook.
 
 ## Pitfalls this recipe already paid for
 

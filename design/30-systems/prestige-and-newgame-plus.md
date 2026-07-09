@@ -6,7 +6,7 @@ tags: [replay, reset, meta, longevity, ascension]
 summary: Structured replay — reset for a persistent edge (prestige) or replay harder with what you kept (NG+); longevity from the loop.
 use-when: You want replay value and a long tail without authoring endless new content.
 composes-with: [system-meta-progression, system-progression, pattern-mastery-and-flow]
-verify-with: docs/FUN.md#14-·-incremental
+verify-with: design/FUN.md#14-·-incremental
 ---
 
 **What it is.** Structured replay. **Prestige** wipes your run for a permanent multiplier that makes the next climb faster; **NG+** restarts the whole game harder with your build and gear carried over. Same content, re-authored decisions.
@@ -71,4 +71,4 @@ Two ways to break the "same content, again" tautology:
 
 ## Verify
 
-Prove it's genuine longevity, not a treadmill: does each reset open a *new decision* and stay winnable? Assert on run/meta state via the loop's probe; judge escalation against [docs/FUN.md#14-·-incremental](docs/FUN.md#14-·-incremental).
+Prove it's genuine longevity, not a treadmill: does each reset open a *new decision* and stay winnable? Assert on run/meta state via the loop's probe; judge escalation against [design/FUN.md#14-·-incremental](design/FUN.md#14-·-incremental).

@@ -7,7 +7,7 @@ summary: Deep play from few, rigid rules — often perfect-information; the whol
 use-when: You want maximum depth from minimum parts, board-game clean.
 composes-with: [anchor-mini-metro, anchor-into-the-breach, pattern-restraint-and-negative-space, genre-tactics]
 anchors: [anchor-into-the-breach, anchor-mini-metro]
-verify-with: docs/FUN.md#12-·-tactics
+verify-with: design/FUN.md#12-·-tactics
 ---
 
 **What it is.** A game whose entire depth lives in the interaction of a few rigid rules over a small readable state — Go, Chess, Hex, Onitama. No content treadmill, no hidden numbers: **the rules are the game**, and mastery is finding the tree they hide.
@@ -73,4 +73,4 @@ Neighbors: [[genre-tactics]] (same tactical core, more content and theme), [[gen
 
 ## Verify
 
-Prove the tactics land against `docs/FUN.md#12-·-tactics` — depth that resists optimization, a readable consequence for every move, escalating pressure. The rules module is pure and deterministic, so an AI rollout is your first anti-solve check: if a shallow search finds a dominant line, the design is broken before the art. See [[pattern-fairness-and-trust]].
+Prove the tactics land against `design/FUN.md#12-·-tactics` — depth that resists optimization, a readable consequence for every move, escalating pressure. The rules module is pure and deterministic, so an AI rollout is your first anti-solve check: if a shallow search finds a dominant line, the design is broken before the art. See [[pattern-fairness-and-trust]].

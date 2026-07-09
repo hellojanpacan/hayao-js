@@ -7,7 +7,7 @@ summary: Slay-the-Spire's draft-and-build with the stakes removed — a gentle, 
 use-when: You want deckbuilding depth in a calm, no-fail wrapper.
 composes-with: [anchor-slay-the-spire, genre-deckbuilder, genre-farming-sim, process-the-twist]
 anchors: [anchor-slay-the-spire, anchor-stardew-valley]
-verify-with: docs/FUN.md#11-·-deckbuilder
+verify-with: design/FUN.md#11-·-deckbuilder
 ---
 
 # Cozy Deckbuilder
@@ -117,7 +117,7 @@ wants a second run with a different draft. That's the loop working
 
 Prove it where the mechanics get judged, don't re-argue it here:
 
-- **[docs/FUN.md#11-·-deckbuilder](../../docs/FUN.md)** — the deckbuilder fun-gate:
+- **[design/FUN.md#11-·-deckbuilder](../FUN.md)** — the deckbuilder fun-gate:
   is the draft delta real, is every hand a decision, does the deck become a build?
   A cozy deck still has to pass this — *calm is not an excuse for a flat draft.*
 - **The no-fail loop** — verify the reward cadence never dries and the floor is
@@ -136,5 +136,5 @@ Prove it where the mechanics get judged, don't re-argue it here:
 
 - `examples/sokoban/` — the reference for the pure-logic / view split; a cozy
   deckbuilder's card rules want the same clean seam.
-- `docs/FUN.md` §11 (deckbuilder) and the no-fail loop notes — the fun-gate this
+- `design/FUN.md` §11 (deckbuilder) and the no-fail loop notes — the fun-gate this
   recipe hands off to.

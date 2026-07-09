@@ -7,7 +7,7 @@ summary: Mass under command — hundreds of wall-aware units, three asymmetric-b
 use-when: You want a game of commanding armies where economy, tech, faction identity, and positioning decide impressive battles.
 composes-with: [system-faction-asymmetry, system-unit-rosters, system-economy, system-enemy-ai, system-tech-tree, system-counter-systems, system-difficulty-and-dda]
 anchors: [anchor-starcraft, anchor-age-of-empires]
-verify-with: docs/FUN.md#9--rts-lite
+verify-with: design/FUN.md#9--rts-lite
 ---
 
 # Real-Time Strategy
@@ -147,7 +147,7 @@ The reason to watch: two armies colliding must look *impressive* and stay
 
 ## Verify
 
-Prove it in **[FUN.md §9 · RTS-lite](../../docs/FUN.md#9--rts-lite)**: every
+Prove it in **[FUN.md §9 · RTS-lite](../FUN.md#9--rts-lite)**: every
 counter edge wins its NvN duel, the commander/intended-line bot beats
 attack-move, a walled-off unit routes around, and ms/step holds at peak unit
 count.
@@ -165,5 +165,5 @@ count.
   mass pathing; the load-bearing tech for hundreds of wall-aware units.
 - [`sandboxes/particle-studio`](../../sandboxes/particle-studio) — pooled sprites
   and effects for cheap, legible battle spectacle (cosmetic, law 6).
-- [docs/JUICE.md](../../docs/JUICE.md) — impact feel for the payoff shot without
+- [design/JUICE.md](../JUICE.md) — impact feel for the payoff shot without
   touching the sim.

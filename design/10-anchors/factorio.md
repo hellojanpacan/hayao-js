@@ -7,7 +7,7 @@ summary: Automation/logistics sim where the factory itself is the toy — you bu
 use-when: The intent is a systems/optimization game about building processes rather than acting them out; the player designs, the machine executes.
 composes-with: [genre-incremental, system-resource-loops, system-crafting, system-tech-tree, system-emergent-systems]
 anchors: []
-verify-with: docs/FUN.md#14-incrementalidle
+verify-with: design/FUN.md#14-incrementalidle
 ---
 
 # Factorio
@@ -93,7 +93,7 @@ place rules, and the outcomes **emerge** ([[pattern-emergence]]).
 
 ## See also
 
-- [`docs/FUN.md#14-incrementalidle`](../../docs/FUN.md) — payback ratios flat
+- [`design/FUN.md#14-incrementalidle`](../FUN.md) — payback ratios flat
   across tiers; UI intent is an action; no unlock deserts; balance-sim the arc.
 - [`sandboxes/procgen-lab`](../../sandboxes/procgen-lab) — resource-field
   generation for map variety.

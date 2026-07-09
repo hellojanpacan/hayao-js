@@ -6,7 +6,7 @@ tags: [decisions, depth, tradeoff, agency, balance]
 summary: The anatomy of a real decision — distinct options, legible stakes, no dominant answer; choices that inform, not decorate.
 use-when: You are adding a decision and want to know if it will actually be a decision.
 composes-with: [pattern-risk-reward, system-build-diversity, antipattern-fake-choice]
-verify-with: docs/FUN.md
+verify-with: design/FUN.md
 ---
 
 **What it is.** A choice is real when the **options** differ on an axis the player values, the **stakes** are legible before committing, and no option **dominates** the rest. Everything else is a menu with one right answer wearing a costume.
@@ -83,4 +83,4 @@ More forks is not more depth. It's the fast road to [[antipattern-decision-paral
 
 ## Cross-links
 
-Sits atop [[pattern-risk-reward]] (one axis of distinction) and feeds [[system-build-diversity]] (choices that accumulate into identity). Its shadow is [[antipattern-fake-choice]]; its overload is [[antipattern-decision-paralysis]]; its decay is [[antipattern-solved-metagame]]. Legibility leans on [[system-telegraphs]] and [[pattern-readability]]; stakes lean on [[system-economy]]. Prove the fun of a fork against `docs/FUN.md` — a choice is real only if removing it makes the game measurably poorer.
+Sits atop [[pattern-risk-reward]] (one axis of distinction) and feeds [[system-build-diversity]] (choices that accumulate into identity). Its shadow is [[antipattern-fake-choice]]; its overload is [[antipattern-decision-paralysis]]; its decay is [[antipattern-solved-metagame]]. Legibility leans on [[system-telegraphs]] and [[pattern-readability]]; stakes lean on [[system-economy]]. Prove the fun of a fork against `design/FUN.md` — a choice is real only if removing it makes the game measurably poorer.

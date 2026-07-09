@@ -6,7 +6,7 @@ tags: [physics, momentum, traversal, rope]
 summary: Convert a tether into an arc — momentum-in, momentum-out; the release timing is the skill.
 use-when: Traversal or combat wants physical, trust-the-physics motion.
 composes-with: [mechanic-grapple, pattern-mastery-and-flow, genre-physics-arcade]
-verify-with: docs/FUN.md#19-·-physics-arcade
+verify-with: design/FUN.md#19-·-physics-arcade
 ---
 
 **What it is.** A tether pins the player to an anchor; gravity turns the leash into a **pendulum**. Fire the rope, ride the arc, and release at the apex to launch. The swing is passive — the skill is *when you let go*.
@@ -36,7 +36,7 @@ verify-with: docs/FUN.md#19-·-physics-arcade
 Start with a **fixed-length rope and full velocity carry** — that alone is a complete, teachable toy. Add reeling only once the base arc reads clean.
 
 ## Why determinism is non-negotiable
-The swing is a *contract*: the player commits to an arc on faith that the same input yields the same arc every time. If the physics wobble frame-to-frame, the release timing skill evaporates and the mechanic feels like a slot machine — see [[antipattern-input-lie]] and [[pattern-fairness-and-trust]]. Run the integrator on a **fixed timestep** off a deterministic clock (never wall-time), and let the player build muscle memory against a stable arc. Speedruns, ghost replays, and level proofs all depend on this. The verification bar lives in this module's `verify-with` target (docs/FUN.md#19-·-physics-arcade); design *to* it, don't restate it.
+The swing is a *contract*: the player commits to an arc on faith that the same input yields the same arc every time. If the physics wobble frame-to-frame, the release timing skill evaporates and the mechanic feels like a slot machine — see [[antipattern-input-lie]] and [[pattern-fairness-and-trust]]. Run the integrator on a **fixed timestep** off a deterministic clock (never wall-time), and let the player build muscle memory against a stable arc. Speedruns, ghost replays, and level proofs all depend on this. The verification bar lives in this module's `verify-with` target (design/FUN.md#19-·-physics-arcade); design *to* it, don't restate it.
 
 ## Slots into
 - **Genres:** [[genre-physics-arcade]] (native home), [[genre-metroidvania]] (grapple-swing as a gated traversal verb), [[genre-precision-platformer]] (swing as a high-skill movement option), [[genre-action-adventure]] (Spider-Man-style city traversal), [[genre-racing]] (rope as a cornering tool).

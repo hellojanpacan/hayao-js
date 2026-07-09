@@ -7,7 +7,7 @@ summary: Prep-then-watch — spend an economy on units, position and synergise t
 use-when: The design is a prep-phase-then-auto-combat game (autochess-like): economy + positioning + synergy across rounds.
 composes-with: [system-economy, system-build-diversity, system-unit-rosters, system-counter-systems, system-reward-schedules]
 anchors: [anchor-loop-hero]
-verify-with: docs/FUN.md#12-·-turn-based-tactics
+verify-with: design/FUN.md#12-·-turn-based-tactics
 ---
 
 # Auto-Battler
@@ -98,12 +98,12 @@ you set up but can no longer touch.
 Auto-battler is an **extension**; with no dedicated FUN.md section it *composes its
 parents' verify patterns*:
 
-- **Auto-resolved combat honesty** → [FUN.md §12 — Tactics](../../docs/FUN.md#12-·-turn-based-tactics):
+- **Auto-resolved combat honesty** → [FUN.md §12 — Tactics](../FUN.md#12-·-turn-based-tactics):
   the fight is a pure sim returning choreography; 1-ply/clone-and-score comp bots are
   real baselines; golden end-state per board. **This is the primary proof.**
-- **Draft/economy balance** → [FUN.md §11 — Deckbuilder](../../docs/FUN.md#11-·-roguelike-deckbuilder):
+- **Draft/economy balance** → [FUN.md §11 — Deckbuilder](../FUN.md#11-·-roguelike-deckbuilder):
   win-rate *window* over comps; a "never-synergise" pilot loses well below it.
-- **Pacing solvency** → [FUN.md §14 — Incremental](../../docs/FUN.md#14-·-incrementalidle):
+- **Pacing solvency** → [FUN.md §14 — Incremental](../FUN.md#14-·-incrementalidle):
   assert flat-ish payback curves across economy tiers; no power desert.
 - Determinism and cosmetic-view (laws 6–7) apply unchanged — the watch phase is the
   clearest case of "sim resolves, view replays."
@@ -116,6 +116,6 @@ parents' verify patterns*:
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §11–12 — the deckbuilder window + tactics
+- [`design/FUN.md`](../FUN.md) §11–12 — the deckbuilder window + tactics
   clone-and-score bots this genre borrows wholesale.
 - [[anchor-loop-hero]] — the three-genre composition reference.

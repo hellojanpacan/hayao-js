@@ -6,7 +6,7 @@ tags: [monetization, ethics, friction, dark-pattern]
 summary: Design that manufactures friction so it can sell the cure — the game is built worse on purpose.
 use-when: A monetization idea would profit from making the base game more tedious.
 composes-with: [system-economy, system-reward-schedules, antipattern-grind-wall]
-verify-with: docs/FUN.md
+verify-with: design/FUN.md
 ---
 
 **What it is.** You inflate a cost — time, taps, waiting, backtracking — and then sell the antidote. The friction is not a design consequence; it is the **inventory**. The game is deliberately built worse so a purchase can make it briefly good.
@@ -78,5 +78,5 @@ Counter-examples that sell content honestly: [[anchor-stardew-valley]] (no store
 ## Verify / guard
 
 - **Design gate:** run the "remove the store" thought-experiment above and note the result in the brief ([[process-intent-to-brief]]). If the loop *needs* the store to be fun, the loop is not done — return to [[process-core-loop]].
-- **Feel gate:** [[docs/FUN.md]] — a loop that only pays off after a purchase fails the intrinsic-motivation check. Pay-to-skip is a *fun-debt* the store is quietly servicing; the proof surface catches the debt even when the pitch hides it.
+- **Feel gate:** [[design/FUN.md]] — a loop that only pays off after a purchase fails the intrinsic-motivation check. Pay-to-skip is a *fun-debt* the store is quietly servicing; the proof surface catches the debt even when the pitch hides it.
 - **Sibling checks:** [[antipattern-grind-wall]] (the friction), [[antipattern-fail-loop-tax]] (the death toll), [[antipattern-currency-spaghetti]] (the obfuscation that hides the price).

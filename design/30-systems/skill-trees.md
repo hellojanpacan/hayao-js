@@ -7,7 +7,7 @@ summary: Branching unlock graphs that turn flat power into a build; meaningful e
 use-when: Progression should let the player CHOOSE a shape — a build, a specialization — not just accumulate the same power everyone gets.
 composes-with: [system-progression, system-build-diversity, system-tech-tree, system-economy, system-collectibles]
 anchors: [anchor-dead-cells, anchor-slay-the-spire]
-verify-with: docs/FUN.md#2-skill-delta-proofs
+verify-with: design/FUN.md#2-skill-delta-proofs
 ---
 
 # Skill Trees — Branching Unlocks & Builds
@@ -106,6 +106,6 @@ generous respec unless *permanent commitment* is an explicit pillar.
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §11, law 2 — build deltas and win-rate windows.
+- [`design/FUN.md`](../FUN.md) §11, law 2 — build deltas and win-rate windows.
 - `examples/slay-the-spire`-style drafting (**[[anchor-slay-the-spire]]**) — the
   deck IS the tree, built one card at a time.

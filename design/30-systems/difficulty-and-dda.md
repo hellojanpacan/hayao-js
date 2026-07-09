@@ -7,7 +7,7 @@ summary: Difficulty curves that breathe — spikes and breathers, an AI director
 use-when: You need to shape challenge over a session, react to a player's skill, or offer honest difficulty options.
 composes-with: [system-encounter-design, system-onboarding, system-accessibility, pattern-pacing-and-tension]
 anchors: [anchor-rimworld, anchor-celeste]
-verify-with: docs/FUN.md#8-tower-defense
+verify-with: design/FUN.md#8-tower-defense
 ---
 
 # Difficulty & Dynamic Difficulty
@@ -90,9 +90,9 @@ the fantasy exist (Celeste): the game meets you, it doesn't gate-keep you.
 ## Verify
 
 - **Curve breathes:** `assertRamp`/`rampIssues` on the difficulty series — each
-  wave ≥ ~55% of prior, finale peaks ([FUN.md §8](../../docs/FUN.md#8-tower-defense)).
+  wave ≥ ~55% of prior, finale peaks ([FUN.md §8](../FUN.md#8-tower-defense)).
 - **Win-rate window, not a point:** a competent bot should land *inside* a band
-  (e.g. 11–19 of 20) — both edges break CI ([FUN.md §11](../../docs/FUN.md#11-roguelike-deckbuilder)).
+  (e.g. 11–19 of 20) — both edges break CI ([FUN.md §11](../FUN.md#11-roguelike-deckbuilder)).
 - **Null loses at every tier:** the do-nothing/undefended run fails on easy too
   (FUN.md law 4).
 - **Determinism under DDA:** golden-hash a scripted run at each setting; tuning
@@ -108,7 +108,7 @@ the fantasy exist (Celeste): the game meets you, it doesn't gate-keep you.
 
 ## See also
 
-- [`docs/FUN.md` §6/§8/§11](../../docs/FUN.md) — superlinear pressure, breathing waves, win-rate windows.
+- [`design/FUN.md` §6/§8/§11](../FUN.md) — superlinear pressure, breathing waves, win-rate windows.
 - [`src/content/dsl.ts`](../../src/content/dsl.ts) — the director primitive.
 - [[anchor-rimworld]] — the AI storyteller as difficulty *and* narrative.
 - [[anchor-celeste]] — assist mode as the humane difficulty floor.

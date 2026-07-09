@@ -547,7 +547,7 @@ A game is done when ALL of the following hold. This is a checklist, not a vibe.
    `world.hash()` at every checkpoint.
 5. **The vision judge run and its high findings fixed** — `npm run judge <slug>`
    renders the game to PNG; actually LOOK at it and score against
-   [JUDGE.md](JUDGE.md) (readability, depth, palette, juice, motion, chrome). Fix
+   [JUDGE.md](../design/JUDGE.md) (readability, depth, palette, juice, motion, chrome). Fix
    every high-severity finding with cosmetic changes (the golden hash must stay
    unchanged). "Passes the gates" is not "looks shipped"; this closes that gap.
 6. **A complete loop exists** — start → play → win/lose → restart, keyboard-only,

@@ -51,10 +51,13 @@ Treat them accordingly:
 0. **If the game isn't designed yet** — the intent is high-level ("a polished
    platformer with responsive controls", "an RTS with faction asymmetry and
    impressive battles") — run the **[Design Codex](design/)** first:
-   intent→anchor→compose→twist→pillars→loop, then hand off here. It's the
-   *generative* front half (concept, reference DNA, composable systems, the
-   creative twist); the steps below are the *proof* half.
-1. Read `docs/FUN.md` (the design playbook: universal laws, your genre's
+   intent→anchor→compose→twist→pillars→loop, then hand off to the craft
+   playbooks. All game design lives in **`design/`** — the *generative* Codex
+   shelves (concept, reference DNA, composable systems, the creative twist) and
+   the craft playbooks (`design/FUN.md`, `design/JUICE.md`, `design/JUDGE.md`)
+   that make it fun, juicy, and beautiful. `docs/` is the engineering manual;
+   the steps below are the *proof* half.
+1. Read `design/FUN.md` (the design playbook: universal laws, your genre's
    cheat sheet, and the before-you-author-content checklist).
 2. Read `docs/CONVENTIONS.md` (structure, house style, definition of done).
 3. Read `docs/VERIFICATION.md` (how you will test what you build).

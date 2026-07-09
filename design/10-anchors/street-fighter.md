@@ -7,7 +7,7 @@ summary: One-on-one duel of spacing, timing, and reads — frame data is the hid
 use-when: You want a high-ceiling duel where mind-reading and spacing decide it.
 composes-with: [genre-fighting-game, mechanic-combo-string, system-mastery-curve]
 anchors: [anchor-street-fighter]
-verify-with: docs/FUN.md#4-·-action-adventure
+verify-with: design/FUN.md#4-·-action-adventure
 ---
 
 **What it is.** Two fighters, one lane, a clock. Every attack has a startup, an active window, and a recovery tail — who acts next is decided by that math. Win the space, win the read, land the punish.

@@ -80,7 +80,7 @@ card for the game to the root `index.html` hub (copy an existing
    part of `npm run verify`) runs the four feel gates — the professional floor
    (docs/VERIFICATION.md §Channel 4). Declare only what is honestly true.
 6. **Run the vision judge** — `npm run judge <slug>`, then VIEW the PNGs and score
-   against docs/JUDGE.md; fix every high-severity finding (cosmetic only — the
+   against design/JUDGE.md; fix every high-severity finding (cosmetic only — the
    golden hash must stay unchanged). Use `/judge` to drive the loop. This is where
    "passes the gates" becomes "looks shipped."
 7. Complete loop: start → play → win/lose → restart, keyboard-only.

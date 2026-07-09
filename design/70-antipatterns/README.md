@@ -12,8 +12,8 @@ Each module says **the smell · how it happens · the tell (spot it in your own
 design) · the fix (linked) · seen in… · a guard link**. These name *conception*
 failures — the design was wrong before a line was written. The *implementation*
 failures (it crashes, it desyncs, it's unreadable) live in
-[`docs/FUN.md`](../../docs/FUN.md) / [`docs/JUICE.md`](../../docs/JUICE.md) /
-[`docs/JUDGE.md`](../../docs/JUDGE.md). Design-smell here; break-check there.
+[`design/FUN.md`](../FUN.md) / [`design/JUICE.md`](../JUICE.md) /
+[`design/JUDGE.md`](../JUDGE.md). Design-smell here; break-check there.
 
 Cross-link with `[[antipattern-id]]`; follow `composes-with`.
 

@@ -6,7 +6,7 @@ tags: [platformer, momentum, combat, chain]
 summary: Rebound off surfaces or enemies — turns hazards into trampolines and demands you keep the chain alive.
 use-when: A platformer wants aerial chaining and enemies-as-terrain.
 composes-with: [mechanic-ground-pound, mechanic-double-jump, pattern-mastery-and-flow]
-verify-with: docs/FUN.md#19-·-physics-arcade
+verify-with: design/FUN.md#19-·-physics-arcade
 ---
 
 **What it is.** A downward or lateral hit that **rebounds** you off the thing you struck — a spring, a spike, an enemy's head. Land on it, launch off it, never touch ground.

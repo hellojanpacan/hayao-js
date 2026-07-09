@@ -7,7 +7,7 @@ summary: The roguelike deckbuilder — every card is a draft-of-3-or-skip, every
 use-when: Designing a run where the player's growing toolkit (a deck) IS the strategy, refined choice by choice against escalating threats.
 composes-with: [genre-deckbuilder, system-build-diversity, system-procgen-design, system-reward-schedules]
 anchors: [anchor-slay-the-spire]
-verify-with: docs/FUN.md#11-·-roguelike-deckbuilder
+verify-with: design/FUN.md#11-·-roguelike-deckbuilder
 ---
 
 # Slay the Spire
@@ -119,7 +119,7 @@ this fight will do.
 
 - [[genre-deckbuilder]] · [[anchor-balatro]] · [[anchor-loop-hero]] ·
   [[system-telegraphs]]
-- `docs/FUN.md#11-·-roguelike-deckbuilder` — win-rate window + draft-delta +
+- `design/FUN.md#11-·-roguelike-deckbuilder` — win-rate window + draft-delta +
   intent audit.
 - `examples/lanternfold/` — generated, all-channels reference (drafted content
   pipeline).

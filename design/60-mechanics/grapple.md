@@ -6,7 +6,7 @@ tags: [movement, traversal, swing, reach, tool]
 summary: A tethered pull to a point — reach as a verb; anchors turn the map into a network of handholds.
 use-when: You want expressive long-range traversal or object-pulling that rewards target reads.
 composes-with: [mechanic-swing, mechanic-throw, system-map-and-navigation]
-verify-with: docs/JUICE.md
+verify-with: design/JUICE.md
 ---
 
 **What it is.** A **tether** fired at a point; on contact it reels — pulling the player to the anchor, or the anchor to the player. Reach becomes a button, and every valid anchor is a handhold on the map's mesh.
@@ -54,7 +54,7 @@ A grapple is only as good as your ability to **read the anchor**. Un-telegraphed
 - Grapple is deterministic vector work: anchor set, a validity/range query, and a reel that interpolates position over fixed ticks. Route any aim-assist tie-break through a **deterministic RNG** or ordered iteration so a replay hashes identically — never argless timing.
 - Study the swing/tether feel in the **`sandboxes/physics-lab`** (rope constraint, release velocity) and read the logic/view split in **`examples/sokoban`** if you build the pull-the-world variant as a grid puzzle — the pull is a pure `Move`, the arc is cosmetic.
 - Keep the reticle, rope, and reach-bloom **cosmetic** — they must stay out of the world hash. The *pull result* is state; the *rope you draw* is not.
-- Prove the *feel* against docs/JUICE.md; prove *anchor reachability* the way a puzzle proves winnability — every gated room must have a reachable anchor path.
+- Prove the *feel* against design/JUICE.md; prove *anchor reachability* the way a puzzle proves winnability — every gated room must have a reachable anchor path.
 
 ### Fails when…
 - **Anchors aren't legible.** Invisible or ambiguous grab points make every fire a coin-flip — [[antipattern-guess-the-designer]].

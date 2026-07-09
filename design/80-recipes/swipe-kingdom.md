@@ -7,7 +7,7 @@ summary: Reigns' swipe-choice stewardship fused with a city-builder — each yes
 use-when: You want lightweight narrative choice with visible systemic consequence.
 composes-with: [anchor-reigns, genre-city-builder, genre-narrative-decisions, pattern-feedback-loops]
 anchors: [anchor-reigns]
-verify-with: docs/FUN.md#21-·-narrative-decisions-reigns-like
+verify-with: design/FUN.md#21-·-narrative-decisions-reigns-like
 ---
 
 # Swipe Kingdom
@@ -121,7 +121,7 @@ from meter to building before adding a single card.
 
 A design isn't done until it names its proofs.
 
-- **Choice quality** → **docs/FUN.md §21 · Narrative Decisions** (the `verify-with`
+- **Choice quality** → **design/FUN.md §21 · Narrative Decisions** (the `verify-with`
   target): every card a real fork, no dominant swipe, deck can't be solved on
   turn one. Guard against [[antipattern-fake-choice]] and [[antipattern-decision-paralysis]].
 - **Systemic read** → [[genre-city-builder]]'s exposed-score discipline: a
@@ -139,6 +139,6 @@ A design isn't done until it names its proofs.
 
 ## See also
 
-- **docs/FUN.md §21 · Narrative Decisions** — the choice-quality bar and proof.
+- **design/FUN.md §21 · Narrative Decisions** — the choice-quality bar and proof.
 - [[process-the-twist]] — the mechanic-swap vector this recipe rides.
 - [[process-composition]] — how anchor + genre + system + twist assemble into a brief.

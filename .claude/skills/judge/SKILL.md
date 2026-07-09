@@ -1,6 +1,6 @@
 ---
 name: judge
-description: Run the vision judge on a game — render it headlessly to PNG, LOOK at it, score it against docs/JUDGE.md, and apply cosmetic fixes until it looks shipped, not debug. Use after a game's mechanics are green, to raise its looks.
+description: Run the vision judge on a game — render it headlessly to PNG, LOOK at it, score it against design/JUDGE.md, and apply cosmetic fixes until it looks shipped, not debug. Use after a game's mechanics are green, to raise its looks.
 ---
 
 # /judge — close the vision-judge loop
@@ -9,7 +9,7 @@ The feel gates prove the mechanical floor; this closes the last mile the gates
 can't see: **does it actually look good?** You will render the game, LOOK at the
 pixels, and fix what a human would wince at — staying strictly cosmetic.
 
-Read `docs/JUDGE.md` first (the rubric + the rules). Then run this loop.
+Read `design/JUDGE.md` first (the rubric + the rules). Then run this loop.
 
 ## 1. Render
 
@@ -38,7 +38,7 @@ Apply every **high**-severity finding (a 1–2 on any axis). The hard rule:
 - All view nodes are `cosmetic`, so **the golden replay hash must be unchanged**
   after your pass. If it changed, you edited the sim — revert and redo.
 - Prefer the house woodblock palette (`KENTO`) and the juice kit (see
-  `docs/JUICE.md`): parallax/pinned backdrops for depth, `AmbientField` for
+  `design/JUICE.md`): parallax/pinned backdrops for depth, `AmbientField` for
   atmosphere, `Particles`/`Shaker` for punctuation, `gradient()` for skies.
 
 Common high-severity fixes: an empty background → a graded/pinned backdrop with a

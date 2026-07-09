@@ -7,7 +7,7 @@ summary: Chain attacks into cancellable sequences — the depth verb; mastery is
 use-when: Combat wants a skill ceiling of expressive, learnable sequences.
 composes-with: [mechanic-lock-on, system-combat-model, system-mastery-curve]
 anchors: [anchor-street-fighter]
-verify-with: docs/FUN.md#4-·-action-adventure
+verify-with: design/FUN.md#4-·-action-adventure
 ---
 
 **What it is.** A **string** is a sequence of attacks where the recovery of one is cut short — *cancelled* — into the startup of the next, so hits chain faster than they could stand alone. Depth lives in which moves cancel into which.
@@ -52,7 +52,7 @@ Press attacks in an order and rhythm; the system reads the current move's state 
 - **Buffer the input, don't poll the frame.** Store the last input with its tick stamp; on entering a cancel window, consume a buffered input if it's within the buffer horizon. This is what makes the floor forgiving without loosening the ceiling.
 - **Combo state is sim state.** The active string, hit count, and scaling multiplier belong in the hashable world state, not the view. Hit-sparks, screen-shake, and freeze-frames are `cosmetic` view — read [[pattern-juice-choreography]] for the split.
 - **Prove the routes.** Model the cancel graph as data and assert its properties (no infinite loop, every route terminates, scaling floors out). Study the parts in isolation before wiring the whole — the `sandboxes/` labs are the reference for a single mechanic; `examples/sokoban/` for the pure-logic/view split.
-- Feel, timing tolerance, and cancel-window generosity are verified against `docs/FUN.md` — design the routes here, prove the feel there.
+- Feel, timing tolerance, and cancel-window generosity are verified against `design/FUN.md` — design the routes here, prove the feel there.
 
 ## Fails when…
 - **The floor is a cliff.** Nothing works until you hit frame-perfect links → [[antipattern-difficulty-cliff]]. Mash must always *do something*.

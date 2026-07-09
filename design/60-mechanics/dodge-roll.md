@@ -7,7 +7,7 @@ summary: A rolling evade with invulnerability frames — the get-out verb whose 
 use-when: Action combat wants a reactive escape gated by commitment.
 composes-with: [mechanic-dash, system-grace, mechanic-parry]
 anchors: [anchor-dark-souls]
-verify-with: docs/FUN.md#4-·-action-adventure
+verify-with: design/FUN.md#4-·-action-adventure
 ---
 
 **What it is.** A short, committed lunge along the ground that grants **invulnerability frames** through the incoming hit, then locks you in a **recovery** you can't cancel. The i-frame window is the reward; the recovery is the price.

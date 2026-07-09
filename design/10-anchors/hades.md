@@ -7,7 +7,7 @@ summary: Action roguelite where dying is the delivery mechanism for story and po
 use-when: Designing a run-based game where you want death to advance the fiction and the meta-loop to carry players through failure.
 composes-with: [genre-roguelike, system-meta-progression, system-build-diversity, system-emergent-systems]
 anchors: [anchor-hades]
-verify-with: docs/FUN.md#10-·-traditional-roguelike
+verify-with: design/FUN.md#10-·-traditional-roguelike
 ---
 
 # Hades
@@ -122,6 +122,6 @@ tree.
 
 - [[genre-roguelike]] · [[system-meta-progression]] ·
   [[system-build-diversity]] · [[world-narrative-delivery]]
-- `docs/FUN.md#10-·-traditional-roguelike` — connectivity + winnability
+- `design/FUN.md#10-·-traditional-roguelike` — connectivity + winnability
   verify.
 - `sandboxes/procgen-lab/` — seeded run generation with `Rng` / `pickEntry`.

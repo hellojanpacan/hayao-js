@@ -6,7 +6,7 @@ tags: [risk, reward, push-your-luck, tradeoff, double-edged, gambling, tension, 
 summary: A choice with teeth — every reward priced in real risk, every option double-edged, so decisions cost something.
 use-when: You're designing a decision, upgrade, or resource spend and it feels like a no-brainer (strictly-better = no choice).
 composes-with: [pattern-feedback-loops, pattern-pacing-and-tension, system-reward-schedules, system-build-diversity]
-verify-with: docs/FUN.md#21-·-narrative-decisions-reigns-like
+verify-with: design/FUN.md#21-·-narrative-decisions-reigns-like
 ---
 
 # Risk / Reward
@@ -112,7 +112,7 @@ of it — the cost was real (FUN.md §11).
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §21 (Reigns) & §11 (deckbuilder blockability) —
+- [`design/FUN.md`](../FUN.md) §21 (Reigns) & §11 (deckbuilder blockability) —
   the two proofs that risk has teeth *and* is fair.
 - [[anchor-reigns]] · [[anchor-balatro]] — the double-edged-choice and
   push-your-luck fantasies as whole games.

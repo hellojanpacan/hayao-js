@@ -1,7 +1,7 @@
 # FUN.md — the game-design playbook
 
 Distilled from the 20-genre Build-Measure-Learn campaign
-([BUILDLOG.md](BUILDLOG.md)). This is a **prompt, not an archive**: when
+([BUILDLOG.md](../docs/BUILDLOG.md)). This is a **prompt, not an archive**: when
 authoring a new game, obey Part 1, look up your genre in Part 2, and run the
 Part 3 checklist *before* writing any level or content data. Corpus notes cite
 the js13k dataset (`js13k/data/registry.csv`, 1,164 games with per-criterion
@@ -10,7 +10,7 @@ judge ranks; `rank_gameplay` used as the fun proxy).
 > **Designing from a high-level intent?** FUN.md is the *verification* half — it
 > proves a genre is fair. For the *generative* half — turning "make an RTS with
 > faction asymmetry" into a concrete design (reference-game DNA, composable
-> systems, and the "X but Y" twist) — start in the **[Design Codex](../design/)**,
+> systems, and the "X but Y" twist) — start in the **[Design Codex](README.md)**,
 > then return here to prove what you designed.
 
 ## Part 1 — Universal laws

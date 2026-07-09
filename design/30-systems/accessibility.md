@@ -7,7 +7,7 @@ summary: Assist modes, input remap, and colour/contrast that clear a readability
 use-when: You want the game playable by more people — different hands, eyes, and skill levels — without a separate "easy" ghetto.
 composes-with: [system-difficulty-and-dda, pattern-readability, world-aesthetic-direction, system-onboarding]
 anchors: [anchor-celeste]
-verify-with: docs/JUDGE.md
+verify-with: design/JUDGE.md
 ---
 
 # Accessibility
@@ -89,7 +89,7 @@ game reachable. The pull is dignity: the game meets the player where they are.
 - **Contrast gate:** `contrastRatio(avatar, field)` and text-vs-bg pass a threshold
   (build on the AA-gated Kentō palette, `npm run palette`).
 - **Readability floor:** avatar out-contrasts surroundings, threats telegraph —
-  [`src/verify/gates.ts`](../../src/verify/gates.ts) + [JUDGE.md](../../docs/JUDGE.md)
+  [`src/verify/gates.ts`](../../src/verify/gates.ts) + [JUDGE.md](../JUDGE.md)
   (the headless SVG look).
 - **Assist stays deterministic:** golden-hash a run per assist setting; tuning is
   in `world.hash()` (STUDIO knob semantics).
@@ -105,6 +105,6 @@ game reachable. The pull is dignity: the game meets the player where they are.
 
 ## See also
 
-- [`docs/JUDGE.md`](../../docs/JUDGE.md) — the readability/look bar, judged headlessly.
+- [`design/JUDGE.md`](../JUDGE.md) — the readability/look bar, judged headlessly.
 - [`src/verify/gates.ts`](../../src/verify/gates.ts) — the readability feel gate.
 - [[anchor-celeste]] — assist mode as the field's humane benchmark.

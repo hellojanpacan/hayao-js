@@ -6,7 +6,7 @@ tags: [theme, recurrence, meaning, cohesion, visual-language]
 summary: Recurring images and ideas that bind a game into a statement — a visual/thematic language the player learns to read.
 use-when: You want thematic cohesion — a game that means something, not just does something.
 composes-with: [world-theme-vectors, world-aesthetic-direction, world-tonal-juxtaposition]
-verify-with: docs/JUDGE.md
+verify-with: design/JUDGE.md
 ---
 
 **What it is.** A **motif** is a concrete image or idea you repeat until it accrues meaning; a **symbol** is a motif the player has learned to read. One recurring thing — a mask, a door, a color, a number — threaded through art, systems, and names until the game stops being a pile of mechanics and starts being a statement.
@@ -51,7 +51,7 @@ The motif must be **legible before it's meaningful** — the player registers th
 
 ## Aesthetic hook
 
-The Kentō woodblock palette makes motifs *cheap to recur* — a constrained hue set means one accent color can carry a symbol across every screen without a bespoke asset. Register the motif as a **shape** and a **color**, not a texture; woodblock silhouette reads instantly and stays deterministic and cosmetic. A recurring symbol that survives being a flat two-tone stamp is a strong symbol. JUDGE looks for exactly this from a headless SVG: does the frame *rhyme* with itself? See [[world-aesthetic-direction]] and prove cohesion via docs/JUDGE.md.
+The Kentō woodblock palette makes motifs *cheap to recur* — a constrained hue set means one accent color can carry a symbol across every screen without a bespoke asset. Register the motif as a **shape** and a **color**, not a texture; woodblock silhouette reads instantly and stays deterministic and cosmetic. A recurring symbol that survives being a flat two-tone stamp is a strong symbol. JUDGE looks for exactly this from a headless SVG: does the frame *rhyme* with itself? See [[world-aesthetic-direction]] and prove cohesion via design/JUDGE.md.
 
 ## Traps
 

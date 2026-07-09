@@ -7,7 +7,7 @@ summary: The gold standard of RTS faction asymmetry — three rosters that share
 use-when: The design needs deeply different sides that still play fair; you're building faction identity, not palette-swaps.
 composes-with: [genre-rts, system-faction-asymmetry, system-unit-rosters, system-counter-systems, system-mastery-curve]
 anchors: []
-verify-with: docs/FUN.md#9-rts-lite
+verify-with: design/FUN.md#9-rts-lite
 ---
 
 # StarCraft
@@ -91,7 +91,7 @@ strategies, because each matchup has its own logic. See
 
 ## See also
 
-- [`docs/FUN.md#9-rts-lite`](../../docs/FUN.md) — "strategy is the balance test";
+- [`design/FUN.md#9-rts-lite`](../FUN.md) — "strategy is the balance test";
   every counter edge must win its NvN duel; flow-field mass pathing.
 - [`sandboxes/pathfinding-demo`](../../sandboxes/pathfinding-demo) — wall-aware
   mass movement the roster rides on.

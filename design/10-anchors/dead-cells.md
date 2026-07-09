@@ -7,7 +7,7 @@ summary: Metroidvania fused with roguelite — runs are impermanent, but permane
 use-when: Designing a run-based action game that still wants a growing, permanent sense of world and mastery across deaths.
 composes-with: [genre-metroidvania, genre-roguelike, system-meta-progression, system-combat-model]
 anchors: [anchor-dead-cells]
-verify-with: docs/FUN.md#3-·-metroidvania
+verify-with: design/FUN.md#3-·-metroidvania
 ---
 
 # Dead Cells
@@ -118,7 +118,7 @@ loss-heavy.
 
 - [[genre-metroidvania]] · [[genre-roguelike]] · [[system-meta-progression]] ·
   [[system-combat-model]]
-- `docs/FUN.md#3-·-metroidvania` — negative gate proofs (ungated maneuver must
+- `design/FUN.md#3-·-metroidvania` — negative gate proofs (ungated maneuver must
   fail).
 - `examples/kintsugi/` — the metroidvania reference: gate-and-branch world
   graph.

@@ -7,7 +7,7 @@ summary: Many strategies that all win — weapons, loadouts, and synergies tuned
 use-when: The player assembles a strategy from parts (weapons, cards, relics, skills) and you need more than one path to be worth taking.
 composes-with: [system-status-effects, system-counter-systems, system-skill-trees, system-reward-schedules, system-meta-progression]
 anchors: [anchor-slay-the-spire, anchor-vampire-survivors, anchor-hades]
-verify-with: docs/FUN.md#11-roguelike-deckbuilder
+verify-with: design/FUN.md#11-roguelike-deckbuilder
 ---
 
 # Build Diversity — many viable strategies
@@ -98,10 +98,10 @@ similar rate**. Four levers keep it that way:
 
 ## Verify
 
-- **[FUN.md §11](../../docs/FUN.md)** — greedy pilot per build in the win window;
+- **[FUN.md §11](../FUN.md)** — greedy pilot per build in the win window;
   never-draft/null build below it; the draft delta.
-- **[FUN.md law 2](../../docs/FUN.md)** — each viable build beats the null build by a margin.
-- **[FUN.md §6](../../docs/FUN.md)** — builds keep pace with a superlinear ramp (for
+- **[FUN.md law 2](../FUN.md)** — each viable build beats the null build by a margin.
+- **[FUN.md §6](../FUN.md)** — builds keep pace with a superlinear ramp (for
   horde/survivor builds).
 - Determinism: golden hash of a scripted run per build.
 
@@ -115,6 +115,6 @@ similar rate**. Four levers keep it that way:
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §11 (draft-delta), §6 (build-vs-tide), law 2 (skill delta).
+- [`design/FUN.md`](../FUN.md) §11 (draft-delta), §6 (build-vs-tide), law 2 (skill delta).
 - [[anchor-slay-the-spire]], [[anchor-balatro]] — synergy engines that stay diverse.
 - [[pattern-emergence]] — diversity comes from interacting parts, not longer lists.

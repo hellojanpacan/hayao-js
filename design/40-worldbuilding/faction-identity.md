@@ -7,7 +7,7 @@ summary: Making factions feel distinct in FICTION — silhouette, values, colour
 use-when: Your design has two or more sides/factions and you need them to read as different worlds at a glance, not palette-swaps.
 composes-with: [world-aesthetic-direction, world-naming-and-tone, world-theme-vectors]
 anchors: [anchor-starcraft, anchor-shadow-of-mordor]
-verify-with: docs/JUDGE.md
+verify-with: design/JUDGE.md
 ---
 
 # Faction Identity — making sides feel distinct in fiction
@@ -98,7 +98,7 @@ disciplined and cool, persimmon *kaki* and rust *ko* as desperate and warm, pine
 *matsu* as living, vermilion *shu* as aggressive. Because all eight belong to one
 harmonised set (`npm run palette`, AA-gated), factions can be *distinct* without
 *clashing* — the whole frame stays one world, which is exactly the JUDGE's
-palette-harmony bar (`docs/JUDGE.md` axis 3). Keep silhouette contrast doing the
+palette-harmony bar (`design/JUDGE.md` axis 3). Keep silhouette contrast doing the
 heavy lifting so the sides read even where their pooled sprites share a lit
 scene — contrast lives in the *edge and shape*, not only the fill
 (`docs/CONVENTIONS.md`). Pair with [[world-aesthetic-direction]] to brief the
@@ -129,7 +129,7 @@ look and [[pattern-readability]] to keep both sides salient in a crowd.
 
 ## See also
 
-- [`docs/JUDGE.md`](../../docs/JUDGE.md) — readability & palette-harmony axes:
+- [`design/JUDGE.md`](../JUDGE.md) — readability & palette-harmony axes:
   can you find and name each side instantly, in one world's colours?
 - [[anchor-starcraft]] — three rosters, one balance, three unmistakable
   silhouettes. [[anchor-shadow-of-mordor]] — factions of *individuals* whose

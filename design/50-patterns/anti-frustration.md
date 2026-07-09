@@ -6,7 +6,7 @@ tags: [forgiveness, grace, anti-frustration, respect, retry, mercy, difficulty, 
 summary: Punish mistakes without punishing the player — grace, instant retry, undo, and respecting time keep hard fair.
 use-when: A game is hard or long and you must separate "difficult" from "tedious/unfair"; anywhere a failure costs the player time.
 composes-with: [pattern-mastery-and-flow, pattern-juice-choreography, system-grace, system-save-and-checkpoint]
-verify-with: docs/FUN.md#part-1-—-universal-laws
+verify-with: design/FUN.md#part-1-—-universal-laws
 ---
 
 # Anti-Frustration
@@ -114,8 +114,8 @@ frame, FUN.md law 5) and round-trip snapshot→restore→hash so retry never dri
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) law 5 — grace is a system, not polish; the same
+- [`design/FUN.md`](../FUN.md) law 5 — grace is a system, not polish; the same
   shape at every timescale, each unit-testable.
-- [`docs/JUICE.md`](../../docs/JUICE.md) Part 3 — `forgivenessIssues`, the feel gate
+- [`design/JUICE.md`](../JUICE.md) Part 3 — `forgivenessIssues`, the feel gate
   that fails a build with unspecced grace.
 - [[anchor-celeste]] — assist-mode humaneness as a whole-game thesis.

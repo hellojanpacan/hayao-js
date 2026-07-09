@@ -7,7 +7,7 @@ summary: Precision platformer where brutal difficulty and total forgiveness coex
 use-when: Designing a movement-first game where deaths must feel fair and the difficulty needs a humane floor.
 composes-with: [genre-precision-platformer, system-grace, system-mastery-curve, system-accessibility]
 anchors: [anchor-celeste]
-verify-with: docs/FUN.md#2-·-precision-platformer-celeste-like
+verify-with: design/FUN.md#2-·-precision-platformer-celeste-like
 ---
 
 # Celeste
@@ -131,6 +131,6 @@ dial, not a wall.
 - [[genre-precision-platformer]] · [[system-grace]] · [[system-accessibility]]
 - `examples/updrift/` — the golden platformer reference; grace canon wired
   end-to-end.
-- `docs/FUN.md#2-·-precision-platformer-celeste-like` — the movement-trust
+- `design/FUN.md#2-·-precision-platformer-celeste-like` — the movement-trust
   verify pattern.
-- `docs/JUICE.md` — feel gates for landing, dash, and death choreography.
+- `design/JUICE.md` — feel gates for landing, dash, and death choreography.

@@ -7,7 +7,7 @@ summary: A cozy life sim on a real-world clock — no failure, gentle open goals
 use-when: You want a calm, no-fail loop paced by real time and self-set goals.
 composes-with: [genre-management-tycoon, system-collectibles, world-mood-and-atmosphere]
 anchors: [anchor-animal-crossing]
-verify-with: docs/FUN.md#15-·-farming-sim
+verify-with: design/FUN.md#15-·-farming-sim
 ---
 
 **What it is.** A cozy life sim where a small town runs on the real-world clock. There is no lose condition — you pay off a debt at your own pace, fish, decorate, and chat with animal neighbors who react to how often you visit.

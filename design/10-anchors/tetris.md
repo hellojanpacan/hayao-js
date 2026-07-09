@@ -7,7 +7,7 @@ summary: The perfectly-tuned single verb — place falling tetrominoes to clear 
 use-when: Designing for pure, endless mastery on one tight mechanic where the score curve and the skill ceiling ARE the game.
 composes-with: [genre-grid-puzzle, system-mastery-curve, system-difficulty-and-dda, pattern-mastery-and-flow]
 anchors: [anchor-tetris]
-verify-with: docs/FUN.md#1-·-grid-puzzle-sokoban
+verify-with: design/FUN.md#1-·-grid-puzzle-sokoban
 ---
 
 # Tetris
@@ -117,6 +117,6 @@ world-record holder using the identical rule.
 
 - [[genre-grid-puzzle]] · [[system-mastery-curve]] ·
   [[pattern-mastery-and-flow]] · [[system-grace]]
-- `docs/FUN.md#1-·-grid-puzzle-sokoban` — determinism + replay for grid
+- `design/FUN.md#1-·-grid-puzzle-sokoban` — determinism + replay for grid
   pieces.
-- `docs/JUICE.md` — line-clear feedback (the pop that sells a good drop).
+- `design/JUICE.md` — line-clear feedback (the pop that sells a good drop).

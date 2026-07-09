@@ -7,7 +7,7 @@ summary: Knowledge is the only progression — no upgrades gate the world, only 
 use-when: The intent is an exploration game where the player's real growth is understanding, and the world is gated by knowledge rather than items or stats.
 composes-with: [genre-exploration, system-progression, system-session-structure, system-onboarding, pattern-readability]
 anchors: []
-verify-with: docs/FUN.md#3-metroidvania
+verify-with: design/FUN.md#3-metroidvania
 ---
 
 # Outer Wilds
@@ -99,7 +99,7 @@ the reward, and it can never regress.
 
 ## See also
 
-- [`docs/FUN.md#3-metroidvania`](../../docs/FUN.md) — the locked-door promise and
+- [`design/FUN.md#3-metroidvania`](../FUN.md) — the locked-door promise and
   *negative gate proofs*; the closest verify neighbour — here the "gate" is
   knowledge, so prove the intended clue-path exists and the un-hinted path doesn't
   trivially bypass it.

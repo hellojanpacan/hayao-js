@@ -7,7 +7,7 @@ summary: Roll a ball that grows by absorbing the world — one verb, exponential
 use-when: You want a single growth verb whose scale change IS the whole arc.
 composes-with: [mechanic-grow-shrink, mechanic-merge, genre-physics-arcade]
 anchors: [anchor-katamari]
-verify-with: docs/FUN.md#19-·-physics-arcade
+verify-with: design/FUN.md#19-·-physics-arcade
 ---
 
 **What it is.** You push a sticky ball. Anything smaller than the ball sticks and adds to it. It grows, so the threshold rises, so bigger things stick — until a katamari that started eating thumbtacks is eating cows, then houses, then clouds. One verb, run against a clock.

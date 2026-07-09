@@ -7,7 +7,7 @@ summary: A transit puzzle stripped to lines, stations, and rising demand — min
 use-when: You want maximum depth from minimum parts — the discipline of subtraction.
 composes-with: [genre-abstract-strategy, pattern-restraint-and-negative-space, system-difficulty-and-dda]
 anchors: [anchor-mini-metro]
-verify-with: docs/JUDGE.md
+verify-with: design/JUDGE.md
 ---
 
 **What it is.** Draw subway lines between geometric stations to move commuters before any station overflows. Three or four systems — routing, throughput, rising demand — and nothing else.
@@ -38,7 +38,7 @@ The compressed essence, in one breath: **few systems, total legibility, monotone
 
 ## What to steal
 
-- **The legibility bar.** Before adding any element, ask: does it read without a tooltip, from a still frame? If not, cut it or re-encode it as shape/color/motion. This is your [[pattern-readability]] gate — proof lives in [[docs/JUDGE.md]].
+- **The legibility bar.** Before adding any element, ask: does it read without a tooltip, from a still frame? If not, cut it or re-encode it as shape/color/motion. This is your [[pattern-readability]] gate — proof lives in [[design/JUDGE.md]].
 - **The subtraction pass.** Ship the smallest system set that still produces emergence. Count your systems; if two do the same job, merge them. Guard against [[antipattern-second-system]].
 - **The single rising curve.** One monotone load ramp beats hand-tuned levels for a systemic game. Tie failure to a visible, always-approaching threshold. See [[system-difficulty-and-dda]] and avoid [[antipattern-difficulty-cliff]].
 - **The scarce-asset economy.** Drip resources against demand so every allocation is a trade. See [[system-economy]] and [[pattern-risk-reward]].

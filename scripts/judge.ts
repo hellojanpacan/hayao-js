@@ -1,6 +1,6 @@
 // The vision judge — capture stage. Renders each game HEADLESSLY to PNG so a
 // multimodal model (the agent, in the loop) can SEE it and critique it against the
-// rubric in docs/JUDGE.md. This closes the last mile the feel gates cannot: the
+// rubric in design/JUDGE.md. This closes the last mile the feel gates cannot: the
 // gates prove the floor mechanically; the judge asks "does it actually look good?"
 //
 // The engine renders to SVG; @resvg/resvg-js rasterizes that to PNG with zero
@@ -122,7 +122,7 @@ async function main(): Promise<void> {
     '# Judge brief',
     '',
     'Rendered PNGs are ready. Now VIEW each one and score it against the rubric in',
-    '`docs/JUDGE.md`. For every game, write findings as `{ file, severity, fix }`,',
+    '`design/JUDGE.md`. For every game, write findings as `{ file, severity, fix }`,',
     'apply the high-severity fixes, then re-run `npm run judge <slug>` to converge.',
     '',
     ...all.filter((c) => c.pngs.length).flatMap((c) => [`## ${c.slug}`, ...c.pngs.map((p) => `- ${rel(p)}`), '']),
@@ -132,7 +132,7 @@ async function main(): Promise<void> {
   mkdirSync(dirname(briefPath), { recursive: true });
   writeFileSync(briefPath, brief);
   console.log(`\n${totalPngs} PNG(s) across ${all.length} game(s); ${skipped.length} skipped. Wrote ${rel(briefPath)}.`);
-  console.log('Next: view the PNGs and score against docs/JUDGE.md.');
+  console.log('Next: view the PNGs and score against design/JUDGE.md.');
 }
 
 main().catch((e) => {

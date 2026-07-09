@@ -7,7 +7,7 @@ summary: Leave your body to control another — the puzzle is which vessel solve
 use-when: You want perspective puzzles or "the right tool is a body" design.
 composes-with: [mechanic-teleport, genre-stealth, pattern-emergence]
 anchors: [anchor-dishonored]
-verify-with: docs/FUN.md#5-·-stealth
+verify-with: design/FUN.md#5-·-stealth
 ---
 
 **What it is.** Detach your controlling **self** from your body and pilot another actor — an enemy, an animal, a machine. The room is a lock; the right body is the key.

@@ -7,7 +7,7 @@ summary: Fuse like-with-like into the next tier — the compulsive "combine to a
 use-when: You want a simple combinatorial growth loop with escalating payoff.
 composes-with: [mechanic-stack, genre-match3, system-crafting]
 anchors: [anchor-katamari]
-verify-with: docs/FUN.md#13-·-match-3
+verify-with: design/FUN.md#13-·-match-3
 ---
 
 **What it is.** Two tokens of the same **tier** collide and become one token of the next tier up. The board is finite; every merge frees a cell, every non-merge fills one. 2048 in a sentence.
@@ -38,7 +38,7 @@ Small board + forced spawn = pressure cooker. Big board + player-placed spawn = 
 
 ## Slots into
 - [[genre-grid-puzzle]] — the native home (2048, Threes).
-- [[genre-match3]] — merge is match-3's greedier sibling; see its own [[docs/FUN.md#13-·-match-3]] proof.
+- [[genre-match3]] — merge is match-3's greedier sibling; see its own [[design/FUN.md#13-·-match-3]] proof.
 - [[genre-incremental]] — merge boards are a clean [[system-resource-loops]] engine; the tier IS the number-go-up. See [[recipe-merge-factory]].
 - [[genre-city-builder]] / [[genre-management-tycoon]] — merge-2 mobile builders (Gram Games' *Merge Dragons*) stack a soft economy on top; watch for [[system-economy]] and [[antipattern-pay-to-skip]].
 - Anchors: [[anchor-katamari]] (fuse-by-absorption — same "small-becomes-large" dopamine at physical scale), [[anchor-tetris]] (the finite-board-fills sibling; merge is Tetris where lines clear by likeness, not rows).

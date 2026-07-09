@@ -6,7 +6,7 @@ tags: [identity, readability, roster, silhouette, fiction]
 summary: Making characters legible and distinct in fiction — silhouette, role, and voice so a roster reads at a glance.
 use-when: You have a cast or roster and need each member instantly recognizable and distinct.
 composes-with: [world-faction-identity, system-unit-rosters, world-naming-and-tone]
-verify-with: docs/JUDGE.md
+verify-with: design/JUDGE.md
 ---
 
 **What it is.** The fiction half of a cast: giving each character a **silhouette**, a **role you can read**, and a **one-trait voice** so the whole roster separates at a glance. [[system-unit-rosters]] handles what they *do*; this handles who they *are*.
@@ -57,7 +57,7 @@ The woodblock palette *rewards* this discipline. Flat fills and a limited hue se
 - **Static and deterministic.** Character variation is authored, not random — no per-frame jitter deciding who's who. Keep view-only flourishes cosmetic so identity lives in the stable, hashed state, not the paint.
 - **Motion as identity.** A gait or idle authored as a small tween reads before the sprite resolves. The `sandboxes/anim-lab` is where a single such motion lives in isolation — study one there before you animate a cast.
 
-The proof is visual: the vision judge in docs/JUDGE.md looks at a headless render and asks whether the roster separates. If it can't tell two characters apart, neither can the player.
+The proof is visual: the vision judge in design/JUDGE.md looks at a headless render and asks whether the roster separates. If it can't tell two characters apart, neither can the player.
 
 ## Traps
 

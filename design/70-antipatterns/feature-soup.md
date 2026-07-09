@@ -6,7 +6,7 @@ tags: [scope, focus, pillars, bloat]
 summary: Many systems, no spine — every feature is present, none is load-bearing, the game is about nothing.
 use-when: Your design keeps adding systems and the pillars no longer predict what belongs.
 composes-with: [process-pillars, process-core-loop, antipattern-second-system]
-verify-with: docs/FUN.md
+verify-with: design/FUN.md
 ---
 
 **What it is.** A design where **every system is present and none is load-bearing**. Crafting, dialogue, base-building, combat, a skill tree, a day/night cycle — each real, each shallow, none feeding the others. The game does ten things and is *about* nothing.
@@ -67,4 +67,4 @@ Positive counter-references — many systems, one spine: [[anchor-hades]] (every
 
 ## Verify / guard
 - Pillars-as-filter and the loop hierarchy are enforced in [[process-pillars]] and [[process-core-loop]] — run both before handoff at [[process-refine-and-handoff]].
-- Whether the surviving loop is actually *fun* on its own — no soup to hide behind — is the FUN question. Prove it there: `docs/FUN.md`.
+- Whether the surviving loop is actually *fun* on its own — no soup to hide behind — is the FUN question. Prove it there: `design/FUN.md`.

@@ -6,7 +6,7 @@ tags: [juice, readability, feedback, clarity]
 summary: Feedback so loud it hides state — particles and shake bury the information the player needs to act.
 use-when: You are adding effects and the screen is getting busy.
 composes-with: [pattern-readability, pattern-juice-choreography, world-mood-and-atmosphere]
-verify-with: docs/JUICE.md
+verify-with: design/JUICE.md
 ---
 
 **What it is.** Polish that costs clarity. The screen is so loud with **effects** — shake, bloom, particle storms, flash — that the player can't read the one thing they need to act on: the hit, the telegraph, the resource, the enemy about to strike.
@@ -62,4 +62,4 @@ For the accessibility floor — colorblind-safe channels, reduced-motion and scr
 - [[system-telegraphs]] and [[pattern-readability]] — the systems this antipattern is the negative image of.
 
 ## Verify / guard
-This is a **design-time checklist** you run before handoff, not a metric. Screenshot the busiest moment and ask: player, threat, objective — all three readable? Then hand to the verification half. For the JUICE budget, hierarchy discipline, and the readability gates that catch this after build, see `docs/JUICE.md` (and `docs/JUDGE.md` for the headless look-test). The design job is to make sure there's a legible read *for* those gates to protect.
+This is a **design-time checklist** you run before handoff, not a metric. Screenshot the busiest moment and ask: player, threat, objective — all three readable? Then hand to the verification half. For the JUICE budget, hierarchy discipline, and the readability gates that catch this after build, see `design/JUICE.md` (and `design/JUDGE.md` for the headless look-test). The design job is to make sure there's a legible read *for* those gates to protect.

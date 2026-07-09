@@ -6,7 +6,7 @@ tags: [movement, platformer, recovery, traversal]
 summary: Catch and pull over an edge — the mercy that converts a near-miss into a foothold.
 use-when: Platforming needs recovery generosity and readable climb points.
 composes-with: [mechanic-climb, system-grace, pattern-anti-frustration]
-verify-with: docs/FUN.md#2-·-precision-platformer
+verify-with: design/FUN.md#2-·-precision-platformer
 ---
 
 **What it is.** When a jump falls short but clips an edge, the player **snaps** into a hang, then pulls up. A recovery layer bolted onto the jump — a second chance the layout never had to promise.
@@ -63,4 +63,4 @@ Grab is a **state machine** on the player: `airborne → hanging → mantling �
 - [[mechanic-grapple]] · [[mechanic-swing]] · reach-the-edge verbs that often *feed into* a mantle.
 - [[system-grace]] · [[pattern-anti-frustration]] · the design principles the grab window exists to serve.
 - [[system-difficulty-and-dda]] · why snap radius is your cheapest difficulty knob.
-- [[genre-precision-platformer]] · [[anchor-celeste]] · the canonical proving ground; verify feel via `docs/FUN.md#2-·-precision-platformer`.
+- [[genre-precision-platformer]] · [[anchor-celeste]] · the canonical proving ground; verify feel via `design/FUN.md#2-·-precision-platformer`.

@@ -7,7 +7,7 @@ summary: Optional goals that pull without shoving — sets to complete, cosmetic
 use-when: You want optional content that rewards thoroughness and gives self-directed players a goal, without gating the main game behind it.
 composes-with: [system-reward-schedules, system-meta-progression, system-economy, system-mastery-curve, system-collectibles]
 anchors: [anchor-stardew-valley, anchor-dead-cells, anchor-vampire-survivors]
-verify-with: docs/FUN.md#15-farminglife-sim
+verify-with: design/FUN.md#15-farminglife-sim
 ---
 
 # Collectibles — Sets, Completion & Optional Pull
@@ -102,7 +102,7 @@ never the only path to core power.
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §10 (reachability) · §15 (surfaced number) —
+- [`design/FUN.md`](../FUN.md) §10 (reachability) · §15 (surfaced number) —
   the collectible proofs.
 - **[[anchor-stardew-valley]]** (museum/bundles) · **[[anchor-vampire-survivors]]**
   (character unlock roster).

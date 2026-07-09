@@ -7,7 +7,7 @@ summary: The gather→convert→spend cycle that structures effort; bottlenecks 
 use-when: The game asks the player to turn raw inputs into refined outputs into results, and you need the chain to breathe rather than stall or trivialize.
 composes-with: [system-economy, system-crafting, system-tech-tree, system-progression]
 anchors: [anchor-factorio, anchor-stardew-valley]
-verify-with: docs/FUN.md#14-incrementalidle
+verify-with: design/FUN.md#14-incrementalidle
 ---
 
 # Resource Loops — Gather → Convert → Spend
@@ -106,7 +106,7 @@ economy's pacing window (**[[FUN.md §14]]**).
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §14 (pacing) · §15 (farming solvency + reinvest
+- [`design/FUN.md`](../FUN.md) §14 (pacing) · §15 (farming solvency + reinvest
   delta) — the loop proofs.
 - **[[anchor-factorio]]** (the loop as the toy) · **[[anchor-stardew-valley]]**
   (gentle linear chains).

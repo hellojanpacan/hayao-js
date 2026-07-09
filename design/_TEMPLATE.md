@@ -7,7 +7,7 @@ summary: One sentence, <140 chars — this is what appears in INDEX.md and index
 use-when: One line — the situation in which an agent should reach for this module.
 composes-with: [other-id, other-id] # sibling modules that pair with this one (use real ids)
 anchors: [anchor-id, anchor-id]     # reference games this draws on (omit for process/pattern if N/A)
-verify-with: docs/FUN.md#... | docs/JUICE.md#... | docs/VERIFICATION.md#... | none
+verify-with: design/FUN.md#... | design/JUICE.md#... | docs/VERIFICATION.md#... | none
 ---
 
 # {Title}
@@ -15,7 +15,7 @@ verify-with: docs/FUN.md#... | docs/JUICE.md#... | docs/VERIFICATION.md#... | no
 <!--
 AUTHORING CONTRACT — delete these comments in real files.
 
-VOICE: the house voice of docs/FUN.md — terse, imperative, second-person,
+VOICE: the house voice of design/FUN.md — terse, imperative, second-person,
 proof-aware. Every claim earns its place. No filler, no "in the world of game
 design…" throat-clearing. Bold the load-bearing noun of a sentence, not whole
 sentences.

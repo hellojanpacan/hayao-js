@@ -54,15 +54,15 @@ owns that. You name *what* and *where*; it owns *how*.
 
 | Design claim (from…) | Becomes the assertion… | Channel / doc |
 |---|---|---|
-| Pillar 1's testable clause | a probe/skill-delta the clause maps to | [FUN.md](../../docs/FUN.md) law 2, Ch. 1a |
+| Pillar 1's testable clause | a probe/skill-delta the clause maps to | [FUN.md](../FUN.md) law 2, Ch. 1a |
 | "The intended strategy beats null play" | `smartScore > nullScore * K` | FUN.md law 2 |
 | A derived envelope (jump gap, season length, fuel budget) | a stated inequality asserted vs. config | FUN.md law 3, Ch. 3 |
 | Each parent genre in the blend | that genre's FUN.md §N verify pattern | FUN.md Part 2 (union — all parents) |
 | Puzzle/turn-based rules | every level solver-provable | [VERIFICATION.md](../../docs/VERIFICATION.md) Ch. 1b |
 | "Same seed → same game" | golden hash + snapshot round-trip | Ch. 1c/1d |
-| Every feel/juice claim ("responsive", "impactful") | a `FeedbackContract` + feel gate | [JUICE.md](../../docs/JUICE.md), Ch. 4 |
+| Every feel/juice claim ("responsive", "impactful") | a `FeedbackContract` + feel gate | [JUICE.md](../JUICE.md), Ch. 4 |
 | Pacing ("breathers", "peak finale") | a feel probe over the timeline | Ch. 3 |
-| "Reads at a glance" / the look | the headless SVG judged on palette/legibility | [JUDGE.md](../../docs/JUDGE.md), Ch. 2/5 |
+| "Reads at a glance" / the look | the headless SVG judged on palette/legibility | [JUDGE.md](../JUDGE.md), Ch. 2/5 |
 
 The contract is done when **every pillar traces to at least one row** and **no
 parent genre's verify pattern is missing**.
@@ -90,9 +90,9 @@ Where each concern goes, and the doc that owns it from here:
 
 | Concern | Handed to | Owns |
 |---|---|---|
-| Mechanical truth, skill-delta, inequalities, solver, determinism | **[FUN.md](../../docs/FUN.md)** + [VERIFICATION.md](../../docs/VERIFICATION.md) Ch. 1/3 | Is it correct and beatable? |
-| Feel, feedback contract, shake/hit-stop envelopes | **[JUICE.md](../../docs/JUICE.md)** + Ch. 4 | Does it feel professional? |
-| Looks — palette, layout, legibility | **[JUDGE.md](../../docs/JUDGE.md)** + Ch. 2/5 | Does it look shipped, not debug? |
+| Mechanical truth, skill-delta, inequalities, solver, determinism | **[FUN.md](../FUN.md)** + [VERIFICATION.md](../../docs/VERIFICATION.md) Ch. 1/3 | Is it correct and beatable? |
+| Feel, feedback contract, shake/hit-stop envelopes | **[JUICE.md](../JUICE.md)** + Ch. 4 | Does it feel professional? |
+| Looks — palette, layout, legibility | **[JUDGE.md](../JUDGE.md)** + Ch. 2/5 | Does it look shipped, not debug? |
 | State/view split, `@hayao` imports, cosmetic rule, determinism hygiene | **[CONVENTIONS.md](../../docs/CONVENTIONS.md)** | Is it built the Hayao way? |
 
 After handoff, the build runs `npm run check`, `npm test`, `npm run verify`, and
@@ -149,8 +149,8 @@ tower × coverage) has its own proof. **Designed enough to build.**
 
 - [docs/VERIFICATION.md](../../docs/VERIFICATION.md) — the five channels this
   contract routes into; the *how* behind every row above.
-- [docs/FUN.md](../../docs/FUN.md) law 1 — *the verify suite IS the design doc*;
+- [design/FUN.md](../FUN.md) law 1 — *the verify suite IS the design doc*;
   this step is where you write its assertions first.
-- [docs/JUICE.md](../../docs/JUICE.md) · [docs/JUDGE.md](../../docs/JUDGE.md) ·
+- [design/JUICE.md](../JUICE.md) · [design/JUDGE.md](../JUDGE.md) ·
   [docs/CONVENTIONS.md](../../docs/CONVENTIONS.md) — the docs that own the design
   from here.

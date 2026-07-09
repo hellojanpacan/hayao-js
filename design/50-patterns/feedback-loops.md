@@ -6,7 +6,7 @@ tags: [feedback, snowball, comeback, runaway, balance, positive-loop, negative-l
 summary: Positive loops snowball, negative loops correct — design which one dominates so leads stay tense, not decided.
 use-when: A lead is being built (economy, kills, board control) and you must decide whether it should compound or self-limit.
 composes-with: [pattern-risk-reward, pattern-pacing-and-tension, system-economy, system-difficulty-and-dda]
-verify-with: docs/FUN.md#part-1-—-universal-laws
+verify-with: design/FUN.md#part-1-—-universal-laws
 ---
 
 # Feedback Loops
@@ -113,7 +113,7 @@ the leader's margin stops compounding and the trailer keeps a non-zero win-rate.
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) laws 2 & 7 — skill-delta and pure-state bots,
+- [`design/FUN.md`](../FUN.md) laws 2 & 7 — skill-delta and pure-state bots,
   the tools that turn "does it snowball?" into an assertion.
 - [[anchor-civilization]] — the "one more turn" snowball-vs-comeback layering, done
   as a whole game.

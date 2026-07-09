@@ -7,7 +7,7 @@ summary: Story delivered by moving through space — atmosphere and environmenta
 use-when: You want an emotional, story-first experience carried by place and mood.
 composes-with: [genre-exploration, world-level-as-story, world-mood-and-atmosphere, world-narrative-delivery]
 anchors: [anchor-outer-wilds]
-verify-with: docs/JUDGE.md
+verify-with: design/JUDGE.md
 ---
 
 **What it is.** A game where the primary verb is *move through place*, and the story lives in the environment — objects, light, sound, and layout — not in a combat model or a fail state. The **space** is the script.
@@ -82,4 +82,4 @@ verify-with: docs/JUDGE.md
 
 ## Verify
 
-Judge this genre by eye, not by score. Render a headless still of each key vignette and ask: does the frame read its beat, does the mood land, does the space pull the eye onward? Score looks and legibility against `docs/JUDGE.md`.
+Judge this genre by eye, not by score. Render a headless still of each key vignette and ask: does the frame read its beat, does the mood land, does the space pull the eye onward? Score looks and legibility against `design/JUDGE.md`.

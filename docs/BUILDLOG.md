@@ -1526,7 +1526,7 @@ i-frames, FSM enemies) — reused from the proven kit. Four guardians (one multi
 phase FSM escalating by HP, sealing its arena until slain). A per-biome adaptive
 `MusicDirector` (key/mode/mood + threat layers) built on the audio bus so it
 no-ops headlessly. Story beats (prologue, area cards, ability & guardian lines).
-A fog-of-war map from the same graph. A looks pass against `docs/JUDGE.md` —
+A fog-of-war map from the same graph. A looks pass against `design/JUDGE.md` —
 biome-specific midground (grove trees / cistern dripstone / ember forge-chimneys /
 sky clouds / heart roots) + ambient motes to kill the empty-void look.
 

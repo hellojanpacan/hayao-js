@@ -4,7 +4,7 @@
 // depth, an ambient snow field, burst particles, screen shake, a marching-squares
 // terrain silhouette, floating text, and procedural SFX — all cosmetic, all out
 // of world.hash(). The canonical sim is one PlatformerState in world.state; every
-// pixel here is a replaceable view over it. See docs/JUICE.md for the cookbook.
+// pixel here is a replaceable view over it. See design/JUICE.md for the cookbook.
 
 import {
   Node,

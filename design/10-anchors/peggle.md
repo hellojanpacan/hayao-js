@@ -7,7 +7,7 @@ summary: Aim, drop a ball, watch physics scatter it through pegs — trivial inp
 use-when: Designing a low-skill-floor game that feels ecstatic through reward scheduling and disproportionate feedback on a single simple action.
 composes-with: [genre-physics-arcade, system-reward-schedules, pattern-juice-choreography, pattern-risk-reward]
 anchors: [anchor-peggle]
-verify-with: docs/FUN.md#19-·-physics-arcade-breakoutpeggle
+verify-with: design/FUN.md#19-·-physics-arcade-breakoutpeggle
 ---
 
 # Peggle
@@ -71,7 +71,7 @@ possible on a foundation the player never doubts.
   See [[system-reward-schedules]].
 - **Celebrate disproportionately.** Slow-mo + zoom + audio sting on the win
   moment. Feedback should *exceed* the action — that's the Peggle signature.
-  [[pattern-juice-choreography]] / `docs/JUICE.md`.
+  [[pattern-juice-choreography]] / `design/JUICE.md`.
 - **Make honest physics the foundation.** Swept collision (no tunneling),
   energy conservation — the surprise only delights if the ball is *trusted*.
   Wire via [[genre-physics-arcade]].
@@ -127,7 +127,7 @@ possible on a foundation the player never doubts.
 
 - [[genre-physics-arcade]] · [[system-reward-schedules]] ·
   [[pattern-juice-choreography]]
-- `docs/FUN.md#19-·-physics-arcade-breakoutpeggle` — swept collision, energy
+- `design/FUN.md#19-·-physics-arcade-breakoutpeggle` — swept collision, energy
   invariant, aim-search verify.
 - `sandboxes/physics-lab/` — swept-collision / no-tunnel reference.
-- `sandboxes/juice-lab/` · `docs/JUICE.md` — the celebration choreography.
+- `sandboxes/juice-lab/` · `design/JUICE.md` — the celebration choreography.

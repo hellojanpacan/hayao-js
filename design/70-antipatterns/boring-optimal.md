@@ -6,7 +6,7 @@ tags: [incentives, feel, tedium, depth]
 summary: The best strategy is the least fun one — the game punishes you for playing it the exciting way.
 use-when: Your reward structure makes the tedious line the correct line.
 composes-with: [pattern-risk-reward, system-economy, pattern-meaningful-choice]
-verify-with: docs/FUN.md
+verify-with: design/FUN.md
 ---
 
 **What it is.** The **dominant strategy** is the dull one: grind, turtle, kite, wait. Skilled play and exciting play diverge, and the numbers side with tedium.
@@ -65,4 +65,4 @@ Design principle: **asymmetric payout.** The boring line should cap low; the exc
 
 ## Verify / guard
 
-This is a **FUN** failure — the mechanic works but the incentive misfires. Prove the fun line pays: model or playtest the optimal strategy and confirm it's the one you want played. See `docs/FUN.md` for the incentive-audit gate, and cross-check with [[pattern-mastery-and-flow]] — if mastery converges on tedium, the payout curve is inverted. Related smells to rule out together: [[antipattern-fake-choice]], [[antipattern-solved-metagame]], [[antipattern-grind-wall]].
+This is a **FUN** failure — the mechanic works but the incentive misfires. Prove the fun line pays: model or playtest the optimal strategy and confirm it's the one you want played. See `design/FUN.md` for the incentive-audit gate, and cross-check with [[pattern-mastery-and-flow]] — if mastery converges on tedium, the payout curve is inverted. Related smells to rule out together: [[antipattern-fake-choice]], [[antipattern-solved-metagame]], [[antipattern-grind-wall]].

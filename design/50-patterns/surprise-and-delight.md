@@ -6,7 +6,7 @@ tags: [discovery, secrets, reactivity, joy, moments]
 summary: The unearned gift — secrets, reactivity, and moments the player didn't expect; the game noticed them back.
 use-when: You want memorable moments and a world that feels alive and generous.
 composes-with: [pattern-emergence, system-emergent-systems, world-narrative-delivery]
-verify-with: docs/JUDGE.md
+verify-with: design/JUDGE.md
 ---
 
 # Surprise & Delight
@@ -99,7 +99,7 @@ Bend the pattern with the [[process-the-twist]] vocabulary:
 ## Verify / feel-gate link
 
 Surprise & delight is a **look-and-moment** quality, not a state-machine one — its
-home gate is [`docs/JUDGE.md`](../../docs/JUDGE.md), the vision judge that scores
+home gate is [`design/JUDGE.md`](../JUDGE.md), the vision judge that scores
 whether a beat reads as *authored* and *alive* from a headless render, not from the
 hash. Two guardrails keep it honest:
 
@@ -125,7 +125,7 @@ hash. Two guardrails keep it honest:
 
 ## See also
 
-- [`docs/JUDGE.md`](../../docs/JUDGE.md) — the vision judge; delight is a *look*,
+- [`design/JUDGE.md`](../JUDGE.md) — the vision judge; delight is a *look*,
   scored from the render.
 - [[anchor-outer-wilds]] · [[anchor-katamari]] · [[anchor-disco-elysium]] — the
   discovery-as-knowledge, absurd-scale, and dead-skill-speaks fantasies as whole games.

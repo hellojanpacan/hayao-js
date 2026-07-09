@@ -92,7 +92,7 @@ a focal point) is also the frame that *narrates* — a snuffed lantern reads as
 loss only if the scene has the depth and contrast to show it. Because text is a
 DOM overlay and the palette carries the mood, you can tell a whole story in ink,
 washi, and one *ko* glow going out. Keep embedded text set in the serif the JUDGE
-renders true (`docs/JUDGE.md`), and let restraint here reinforce the house voice
+renders true (`design/JUDGE.md`), and let restraint here reinforce the house voice
 ([[world-naming-and-tone]]): the systems and the light say it; the words just
 confirm it.
 
@@ -122,7 +122,7 @@ confirm it.
 
 ## See also
 
-- [`docs/JUDGE.md`](../../docs/JUDGE.md) — depth & composition: a frame with real
+- [`design/JUDGE.md`](../JUDGE.md) — depth & composition: a frame with real
   layers is also a frame that can *tell* something.
 - [[anchor-shadow-of-mordor]] (systemic memory as narrative),
   [[anchor-outer-wilds]] (knowledge as the only progression),

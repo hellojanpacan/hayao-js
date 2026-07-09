@@ -6,7 +6,7 @@ tags: [juice, feel, feedback, choreography, particles, shake, cosmetic, two-sens
 summary: The sim resolves instantly and returns a choreography script; the view replays it — every event answers on ≥2 senses.
 use-when: Wiring feedback (impact, pickup, death) or deciding what belongs in the sim vs the view.
 composes-with: [pattern-readability, pattern-anti-frustration, pattern-pacing-and-tension, system-combat-model]
-verify-with: docs/JUICE.md#part-3-—-make-the-feel-checkable-channel-4-gates
+verify-with: design/JUICE.md#part-3-—-make-the-feel-checkable-channel-4-gates
 ---
 
 # Juice as Choreography
@@ -117,8 +117,8 @@ the *event* not read-back state. Delete the whole view and the sim hash is ident
 
 ## See also
 
-- [`docs/JUICE.md`](../../docs/JUICE.md) — the full cookbook; **the** reference for
+- [`design/JUICE.md`](../JUICE.md) — the full cookbook; **the** reference for
   this pattern. Copy from [`examples/updrift`](../../examples/updrift).
-- [`docs/FUN.md`](../../docs/FUN.md) law 6 — the cosmetic-view rule that makes juice
+- [`design/FUN.md`](../FUN.md) law 6 — the cosmetic-view rule that makes juice
   free.
 - [`sandboxes/juice-lab`](../../sandboxes/juice-lab) — the juice primitives in isolation.

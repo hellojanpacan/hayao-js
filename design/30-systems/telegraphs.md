@@ -7,7 +7,7 @@ summary: The wind-up that makes a threat readable — every hitbox announces its
 use-when: Any threat can hurt the player in real time or resolve on a turn; you need the danger to be reactable, not a surprise.
 composes-with: [system-combat-model, system-boss-design, system-enemy-ai, system-grace, pattern-readability]
 anchors: [anchor-into-the-breach, anchor-shadow-of-mordor]
-verify-with: docs/FUN.md#4-top-down-action-adventure-zelda-like
+verify-with: design/FUN.md#4-top-down-action-adventure-zelda-like
 ---
 
 # Telegraphs — readable threat
@@ -85,9 +85,9 @@ reaction floor + the frames the dodge costs. Don't vibe it — compute it.
 
 ## Verify
 
-- **[FUN.md §4](../../docs/FUN.md)** — ~0.45s flash makes reactive play possible;
+- **[FUN.md §4](../FUN.md)** — ~0.45s flash makes reactive play possible;
   kiting-bot telemetry with an hp floor.
-- **[FUN.md §12](../../docs/FUN.md)** — telegraphs as directions; intent honesty
+- **[FUN.md §12](../FUN.md)** — telegraphs as directions; intent honesty
   (resolve each telegraph, compare to the shown number/arrow).
 - `telegraphIssues(timeline, minFrames)` → **[VERIFICATION Channel 4](../../docs/VERIFICATION.md)**.
 - Salience: `salienceIssues` proves the tell out-contrasts scenery (JUICE Part 2/3).
@@ -101,6 +101,6 @@ reaction floor + the frames the dodge costs. Don't vibe it — compute it.
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §4 (flash window), §7 (pattern coherence), §12 (directions).
-- [`docs/JUICE.md`](../../docs/JUICE.md) — salience gate; the avatar/threat contrast floor.
+- [`design/FUN.md`](../FUN.md) §4 (flash window), §7 (pattern coherence), §12 (directions).
+- [`design/JUICE.md`](../JUICE.md) — salience gate; the avatar/threat contrast floor.
 - [`src/verify/gates.ts`](../../src/verify/gates.ts) — `telegraphIssues`, `TelegraphFrame`.

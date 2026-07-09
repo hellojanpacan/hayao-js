@@ -7,7 +7,7 @@ summary: The 4X "one more turn" engine — many shallow-per-turn systems layered
 use-when: The intent is a layered turn-based strategy game where compounding decisions and multiple win paths drive "just one more turn."
 composes-with: [genre-rts, system-tech-tree, system-economy, pattern-feedback-loops, system-session-structure]
 anchors: []
-verify-with: docs/FUN.md#9-rts-lite
+verify-with: design/FUN.md#9-rts-lite
 ---
 
 # Civilization
@@ -95,7 +95,7 @@ a lead is real but not sealed.
 
 ## See also
 
-- [`docs/FUN.md#9-rts-lite`](../../docs/FUN.md) — strategy is the balance test; the
+- [`design/FUN.md#9-rts-lite`](../FUN.md) — strategy is the balance test; the
   intended line must beat the null line; pure-state turns clone for AI scoring.
 - [[system-tech-tree]] · [[anchor-age-of-empires]] (real-time cousin) ·
   [[pattern-feedback-loops]].

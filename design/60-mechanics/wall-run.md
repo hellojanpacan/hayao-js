@@ -6,7 +6,7 @@ tags: [movement, momentum, traversal, parkour]
 summary: Sprint along a vertical surface for a beat — momentum you must keep feeding or fall.
 use-when: Fast traversal wants flow across surfaces, punishing hesitation.
 composes-with: [mechanic-wall-jump, mechanic-dash, pattern-mastery-and-flow]
-verify-with: docs/JUICE.md
+verify-with: design/JUICE.md
 ---
 
 # Wall Run
@@ -104,7 +104,7 @@ for how a movement toolset builds a ceiling.
   the collision + integrator seam; keep all of it deterministic (no wall-clock, no
   `Math.random`) so the run replays frame-identical.
 - **Grace + feel** live as framed windows (entry coyote, exit buffer) — spec them in
-  frames and gate them; the recipe is in `docs/JUICE.md`, not here.
+  frames and gate them; the recipe is in `design/JUICE.md`, not here.
 - **The look** — dust off the shoe, a lean into the wall, a speed-scaled trail — is
   cosmetic. Study [`sandboxes/juice-lab`](../../sandboxes/juice-lab) for the trail /
   squash vocabulary and [`sandboxes/camera-lab`](../../sandboxes/camera-lab) for the
@@ -135,5 +135,5 @@ for how a movement toolset builds a ceiling.
 - [[pattern-mastery-and-flow]] — why "keep moving" reads as flow, and how the budget
   keeps challenge riding the skill line.
 - [[system-mastery-curve]] — a movement kit as a skill ceiling; the run is one rung.
-- [`docs/JUICE.md`](../../docs/JUICE.md) — grace windows, trail/camera feel, and the
+- [`design/JUICE.md`](../JUICE.md) — grace windows, trail/camera feel, and the
   feel-gates that prove the run *feels* right, not just runs right.

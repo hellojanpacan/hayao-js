@@ -10,9 +10,9 @@ each design choice against the ones it touches.
 
 They are written as **laws with teeth**: each ties to a proof or a feel-gate rather
 than a vibe. Where the pattern becomes checkable, the module *routes* to it — the
-skill-delta ([`docs/FUN.md`](../../docs/FUN.md) law 2) for flow and feedback runaway,
-the Channel-4 feel gates ([`docs/JUICE.md`](../../docs/JUICE.md)) for juice and
-forgiveness, the vision judge ([`docs/JUDGE.md`](../../docs/JUDGE.md)) for
+skill-delta ([`design/FUN.md`](../FUN.md) law 2) for flow and feedback runaway,
+the Channel-4 feel gates ([`design/JUICE.md`](../JUICE.md)) for juice and
+forgiveness, the vision judge ([`design/JUDGE.md`](../JUDGE.md)) for
 readability — never restating the recipe. Design the pattern here; prove it there.
 
 Several pattern modules pair 1:1 with a concrete `[[system-*]]`: **anti-frustration**

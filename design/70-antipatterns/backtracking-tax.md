@@ -6,7 +6,7 @@ tags: [pacing, navigation, padding, friction]
 summary: Length padded by re-walking known ground — the map bills you twice for the same content.
 use-when: Your world sends players back through solved space with nothing new.
 composes-with: [system-map-and-navigation, pattern-pacing-and-tension, genre-metroidvania]
-verify-with: docs/FUN.md#3-·-metroidvania
+verify-with: design/FUN.md#3-·-metroidvania
 ---
 
 **What it is.** Playtime inflated by **return trips** — trudging back through rooms you already solved, past enemies you already beat, to reach a door you couldn't open the first time. The map charges you a second toll for content you already bought.
@@ -77,4 +77,4 @@ The dividing line: **Dark Souls** and **Metroid** re-earn the ground; a padded f
 
 ## Verify / guard
 
-This is a **pacing** failure — audit it where you audit flow. The metroidvania feel-gate in [docs/FUN.md#3-·-metroidvania](docs/FUN.md#3-·-metroidvania) is the checkpoint: if a critical path crosses the same node past the threshold with no new state, the gate should flag it. Design the mesh first; let [[pattern-pacing-and-tension]] and [[system-map-and-navigation]] carry the proof.
+This is a **pacing** failure — audit it where you audit flow. The metroidvania feel-gate in [design/FUN.md#3-·-metroidvania](design/FUN.md#3-·-metroidvania) is the checkpoint: if a critical path crosses the same node past the threshold with no new state, the gate should flag it. Design the mesh first; let [[pattern-pacing-and-tension]] and [[system-map-and-navigation]] carry the proof.

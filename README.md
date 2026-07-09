@@ -154,7 +154,15 @@ reasoning in [docs/ENGINE.md](https://github.com/hellojanpacan/hayao-js/blob/mai
 
 ## Documentation
 
+**Designing the game** — [`design/`](https://github.com/hellojanpacan/hayao-js/tree/main/design) is the single home for game design:
+
+- [design/ — the Design Codex](https://github.com/hellojanpacan/hayao-js/tree/main/design) — the *generative* library: anchors (reference-game DNA) · genres · systems · mechanics · worldbuilding · patterns · antipatterns · recipes. Turns a high-level intent into a concrete, buildable design.
+- [design/FUN.md](https://github.com/hellojanpacan/hayao-js/blob/main/design/FUN.md) · [design/JUICE.md](https://github.com/hellojanpacan/hayao-js/blob/main/design/JUICE.md) · [design/JUDGE.md](https://github.com/hellojanpacan/hayao-js/blob/main/design/JUDGE.md) — the *craft* playbooks: the design/verification playbook, the game-feel cookbook, and the vision judge.
+
+**Building & proving it** — `docs/` is the engineering manual:
+
 - [docs/QUICKSTART.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/QUICKSTART.md) — **using `hayao` from npm**: install (it's ESM-only), define a game, and prove it correct headlessly — a complete runnable example.
+- [docs/ERRORS.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/ERRORS.md) — the common newcomer mistakes and what each `[hayao]` guard message means (missing `shape`, non-finite coords, `build` not returning a Node, unset `world.state`, non-ESM).
 - [docs/API.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/API.md) — the full, greppable public surface (every export + signature). Ships in the package.
 - [docs/ARCHITECTURE.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/ARCHITECTURE.md) — the authoritative design and the determinism contract.
 - [docs/CONVENTIONS.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/CONVENTIONS.md) — how games are structured, house style, definition of done.
@@ -177,36 +185,32 @@ regenerated with `npm run thumbs`.
 
 ## Status
 
-**v0.3 — Hayao Studio: the human/AI playtest loop ships with the engine.**
-The v0.2 campaign covered the most popular 2D indie genres (platformer,
-metroidvania, Zelda-like, stealth, horde survival, bullet hell, tower defense,
-RTS, roguelike, deckbuilder, tactics, match-3, idle, farming, horror, city
-builder, rhythm, physics arcade, racing, narrative — plus the original Sokoban),
-and grew from there: js13k-benchmark reproductions (Seamfold, Gravewell), a
-deterministic rigid-body physics wave (Rookspire demolition, Brasswick pinball),
-a netplay showcase (Fernclash — lockstep + rollback across tabs), a 2-player
-co-op survival (Kinfall), and the flagship metroidvania (Kintsugi). 30+ example
-games now live under `examples/`, each shipping a `verify.ts` suite that
-machine-proves its truth: solver-proven puzzles, bot-beaten levels, duel-proven
-counter systems, win-rate-tuned balance, fairness gates for procgen, frame-exact
-timing windows, bit-for-bit peer agreement, golden replay hashes.
+**Hayao Studio — the human/AI playtest loop — ships with the engine.** The engine
+covers the most popular 2D indie genres end to end (platformer, metroidvania,
+Zelda-like, stealth, horde survival, bullet hell, tower defense, RTS, roguelike,
+deckbuilder, tactics, match-3, idle, farming, horror, city builder, rhythm,
+physics arcade, racing, narrative — plus the original Sokoban), and grows from
+there: js13k-benchmark reproductions (Seamfold, Gravewell), a deterministic
+rigid-body physics wave (Rookspire demolition, Brasswick pinball), a netplay
+showcase (Fernclash — lockstep + rollback across tabs), a 2-player co-op survival
+(Kinfall), and the flagship metroidvania (Kintsugi). Every example under
+`examples/` ships a `verify.ts` suite that machine-proves its truth: solver-proven
+puzzles, bot-beaten levels, duel-proven counter systems, win-rate-tuned balance,
+fairness gates for procgen, frame-exact timing windows, bit-for-bit peer
+agreement, golden replay hashes.
 
-v0.3 adds the one channel a machine can't close on its own — **fun** — as a
-first-class, replayable instrument (Hayao Studio, above), plus a de-anchoring
-`sandboxes/` shelf: single-mechanic labs (physics, particles, camera,
-pathfinding, procgen, synth, juice) for learning one primitive in isolation.
-740+ tests; `npm run verify` runs the whole portfolio. What each genre demanded
-of the engine and what generalized lives in
-[docs/BUILDLOG.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/BUILDLOG.md).
-
-Since v0.3 (on main, toward 0.4.0): a screen-space HUD layer
-(`node.screenSpace`), pause + time scale (`world.paused`/`timeScale`,
-`node.pauseMode`), deterministic generator coroutines, typed `world.state`
-(`defineGame<TState>`), ellipse/arc/lineDash rendering, a ZzFX porting bridge
-(`specFromZzfx`), pointer-button actions, and a built-in hidden-tab ticker —
-driven by the js13k recreation triage in
-[docs/TRIAGE-2026-07-recreations.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/TRIAGE-2026-07-recreations.md);
-authoring contracts documented in
+The one channel a machine can't close on its own — **fun** — is a first-class,
+replayable instrument (Hayao Studio, above). Alongside it, a de-anchoring
+`sandboxes/` shelf collects single-mechanic labs (physics, particles, camera,
+pathfinding, procgen, synth, juice) for learning one primitive in isolation, and
+the engine surface keeps widening: a screen-space HUD layer (`node.screenSpace`),
+pause + time scale (`world.paused`/`timeScale`, `node.pauseMode`), deterministic
+generator coroutines, typed `world.state` (`defineGame<TState>`), 2.5D projection
++ touch input, ellipse/arc/lineDash rendering, a ZzFX porting bridge
+(`specFromZzfx`), 2D lighting, and authored animation. `npm run verify` runs the
+whole portfolio. What each genre demanded of the engine and what generalized lives
+in [docs/BUILDLOG.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/BUILDLOG.md);
+the engine-authoring contracts are in
 [docs/ENGINE.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/ENGINE.md).
 
 ## License

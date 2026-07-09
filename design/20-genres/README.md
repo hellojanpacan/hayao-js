@@ -1,7 +1,7 @@
 # 20-genres/ — the creative genre templates
 
 Each module here is the **design** counterpart to a section of
-[`docs/FUN.md`](../../docs/FUN.md). FUN.md answers *"how do I PROVE this genre is
+[`design/FUN.md`](../FUN.md). FUN.md answers *"how do I PROVE this genre is
 fair?"* — solvers, bot runs, pacing windows, both-ways affordance proofs. These
 modules answer the front-half question FUN.md can't: *"how do I DESIGN a great
 one?"* — the pillars, the loop stack, the systems it needs, the twist seams, and
@@ -57,6 +57,6 @@ Pillars (exactly 3) · The loop stack (moment/encounter/session/meta) · Essenti
 systems (a table linking `[[system-*]]` ids + why each) · Content & difficulty
 model · Signature-mechanic seeds (3–5 "X but Y" bends) · Common pitfalls · Anchors
 · Verify (link the FUN.md section) · See also. Keep it 120–260 lines, tables over
-prose, the [`docs/FUN.md`](../../docs/FUN.md) voice. Never invent a Hayao API —
+prose, the [`design/FUN.md`](../FUN.md) voice. Never invent a Hayao API —
 point at a [`sandboxes/`](../../sandboxes/) lab or [`examples/`](../../examples/)
 slug that already wires it.

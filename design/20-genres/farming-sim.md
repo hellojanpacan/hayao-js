@@ -7,7 +7,7 @@ summary: Calm calendar-driven life sim where the fun is gentle solvency — plan
 use-when: Designing a cozy farming/life sim whose pull is a routine of small plans paying off within an honest calendar.
 composes-with: [system-resource-loops, system-session-structure, system-economy, pattern-pacing-and-tension]
 anchors: [anchor-stardew-valley, anchor-animal-crossing]
-verify-with: docs/FUN.md#15--farminglife-sim
+verify-with: design/FUN.md#15--farminglife-sim
 ---
 
 # Farming / Life Sim
@@ -108,7 +108,7 @@ list that closes itself one satisfying day at a time.
 ## Verify
 
 Diligent bot wins by day N; no-water-no-growth; wither honesty; reinvest-vs-hoard
-delta; golden year → **[docs/FUN.md §15 · Farming/life sim](../../docs/FUN.md#15--farminglife-sim)**.
+delta; golden year → **[design/FUN.md §15 · Farming/life sim](../FUN.md#15--farminglife-sim)**.
 Design the calendar and loop here; prove the inequality there.
 
 ## Composes with
@@ -119,6 +119,6 @@ Design the calendar and loop here; prove the inequality there.
 
 ## See also
 
-- [docs/FUN.md §15](../../docs/FUN.md#15--farminglife-sim) — mechanical truth + verify recipe.
+- [design/FUN.md §15](../FUN.md#15--farminglife-sim) — mechanical truth + verify recipe.
 - [`sandboxes/`](../../sandboxes/) — the economy/procgen lab to headless-sim a season's
   solvency before authoring a crop table.

@@ -6,7 +6,7 @@ tags: [scope, ambition, bloat, sequel]
 summary: Over-building the follow-up system with every idea you cut the first time — ambition without the discipline that made v1 work.
 use-when: You are designing "the big version" of a system that worked when it was small.
 composes-with: [process-pillars, antipattern-feature-soup, pattern-restraint-and-negative-space]
-verify-with: docs/FUN.md
+verify-with: design/FUN.md
 ---
 
 **What it is.** The redesign that swallows every idea you cut from the first version. v1 shipped lean because you *couldn't* fit more; v2 is where the backlog goes to be vindicated — and it drowns.
@@ -60,4 +60,4 @@ If the honest answer to "what does this version say **no** to?" is *nothing*, yo
 
 ## Verify / guard
 
-This is a **fun problem before it's a content problem** — an unnamed core loop fails the first gate in [[docs/FUN.md]]. Before handoff via [[process-refine-and-handoff]], run the tell table above and confirm the sequel can state, in one sentence, what it is *and* what it dropped. If it can only add, it isn't a deeper system — it's a longer list.
+This is a **fun problem before it's a content problem** — an unnamed core loop fails the first gate in [[design/FUN.md]]. Before handoff via [[process-refine-and-handoff]], run the tell table above and confirm the sequel can state, in one sentence, what it is *and* what it dropped. If it can only add, it isn't a deeper system — it's a longer list.

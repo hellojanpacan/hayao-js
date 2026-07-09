@@ -7,7 +7,7 @@ summary: Time-attack racing distilled — the clock is the only opponent, restar
 use-when: Designing a racer whose fun is beating the clock on a fixed line, where retry is free and difficulty is a self-paced ladder, not a menu.
 composes-with: [genre-racing, system-mastery-curve, system-difficulty-and-dda, pattern-mastery-and-flow, system-progression]
 anchors: [anchor-trackmania]
-verify-with: docs/FUN.md#20-·-top-down-racing
+verify-with: design/FUN.md#20-·-top-down-racing
 ---
 
 # Trackmania
@@ -123,5 +123,5 @@ line by contrast, with no tutorial text.
   [[pattern-mastery-and-flow]]
 - `sandboxes/physics-lab` — the car and its understeer, in isolation.
 - `sandboxes/pathfinding-demo` — the racing-line follower for a ghost or rival.
-- `docs/FUN.md#20-·-top-down-racing` — the racing verify pattern (line finishes
+- `design/FUN.md#20-·-top-down-racing` — the racing verify pattern (line finishes
   laps, cutting advances nothing, golden grand prix).

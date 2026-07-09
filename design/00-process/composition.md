@@ -6,7 +6,7 @@ tags: [composition, genre-blend, systems, assembly, coherence, parent-genres, ch
 summary: Assemble a design from anchor + genre template + the systems it implies; blend genres by satisfying every parent's verify pattern.
 use-when: You have a brief and pillars and need to assemble the actual design — which genre template, which systems, and how a genre blend holds together.
 composes-with: [process-intent-to-brief, process-pillars, process-the-twist, process-refine-and-handoff]
-verify-with: docs/FUN.md#part-2--per-genre-cheat-sheet
+verify-with: design/FUN.md#part-2--per-genre-cheat-sheet
 ---
 
 # Composition — Assembling the Design
@@ -140,7 +140,7 @@ ring is the UI*. X = tower defense × deckbuilder blend.
 
 ## See also
 
-- [docs/FUN.md](../../docs/FUN.md) Part 2 + closing note — the per-genre verify
+- [design/FUN.md](../FUN.md) Part 2 + closing note — the per-genre verify
   patterns and the blend law you must satisfy for every parent.
 - [`20-genres/`](../20-genres/) · [`30-systems/`](../30-systems/) — the parts bin
   you assemble from.

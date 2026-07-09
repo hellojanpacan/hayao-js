@@ -7,7 +7,7 @@ summary: Couch-coop chaos where the design *forces* communication — a shared t
 use-when: The intent is a local/coop party game whose fun is frantic coordination; you need interdependence enforced by layout, not politeness.
 composes-with: [genre-coop-chaos, system-coop-and-competition, system-encounter-design, system-difficulty-and-dda, pattern-pacing-and-tension]
 anchors: []
-verify-with: docs/FUN.md#8-tower-defense
+verify-with: design/FUN.md#8-tower-defense
 ---
 
 # Overcooked
@@ -94,7 +94,7 @@ pressure, and each level **escalates** the layout — a rising difficulty of
 
 ## See also
 
-- [`docs/FUN.md#8-tower-defense`](../../docs/FUN.md) — coverage/space as difficulty;
+- [`design/FUN.md#8-tower-defense`](../FUN.md) — coverage/space as difficulty;
   wave curves that breathe (the escalation shape) — closest verify neighbour for a
   space-and-clock game.
 - [`sandboxes/pathfinding-demo`](../../sandboxes/pathfinding-demo) — grid movement

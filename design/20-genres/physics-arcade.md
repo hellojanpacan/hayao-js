@@ -7,7 +7,7 @@ summary: Trustworthy flight — aim, launch, watch a ball obey clean physics; ma
 use-when: The design is a launch-and-watch bouncer (Breakout/Peggle/pinball): one aim, deterministic flight, spectacle on impact.
 composes-with: [genre-tower-defense, system-reward-schedules, system-build-diversity, pattern-juice-choreography, pattern-risk-reward, pattern-pacing-and-tension]
 anchors: [anchor-peggle, anchor-tetris, anchor-katamari]
-verify-with: docs/FUN.md#19-·-physics-arcade-breakoutpeggle
+verify-with: design/FUN.md#19-·-physics-arcade-breakoutpeggle
 ---
 
 # Physics Arcade
@@ -107,7 +107,7 @@ consequence the physics authors.
 
 ## Verify
 
-Prove it against [FUN.md §19 — Physics arcade](../../docs/FUN.md#19-·-physics-arcade-breakoutpeggle):
+Prove it against [FUN.md §19 — Physics arcade](../FUN.md#19-·-physics-arcade-breakoutpeggle):
 swept-collision no-tunnel proof (24k px/s + 1px-graze-misses), energy invariant,
 aim-search bot clears within the ball budget, golden run. See
 [`sandboxes/physics-lab`](../../sandboxes/physics-lab) for the collision primitive
@@ -122,5 +122,5 @@ in isolation.
 
 ## See also
 
-- [`docs/JUICE.md`](../../docs/JUICE.md) — the feel gates for impact choreography.
+- [`design/JUICE.md`](../JUICE.md) — the feel gates for impact choreography.
 - [`sandboxes/physics-lab`](../../sandboxes/physics-lab) · [`sandboxes/juice-lab`](../../sandboxes/juice-lab) — the parts, wired.

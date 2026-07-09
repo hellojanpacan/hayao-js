@@ -7,7 +7,7 @@ summary: Plannable danger — vision cones and noise you can read, so the tensio
 use-when: Designing a game where the fun is reading enemy perception and routing through it, not out-shooting it.
 composes-with: [system-enemy-ai, system-telegraphs, system-encounter-design, system-save-and-checkpoint, system-onboarding, system-difficulty-and-dda]
 anchors: [anchor-shadow-of-mordor]
-verify-with: docs/FUN.md#5--stealth
+verify-with: design/FUN.md#5--stealth
 ---
 
 # Stealth
@@ -108,7 +108,7 @@ for the raycast/FOV and audio primitives.
 
 ## Verify
 
-Prove it with **[FUN.md §5 · Stealth](../../docs/FUN.md#5--stealth)** —
+Prove it with **[FUN.md §5 · Stealth](../FUN.md#5--stealth)** —
 heist bot 0-alarm run + a punished-exposure assertion + a concealment-holds
 assertion, balanced on cone-shadow duration with a midpoint pocket per long
 traversal. Design the plannable danger here; prove both affordances there.
@@ -122,4 +122,4 @@ traversal. Design the plannable danger here; prove both affordances there.
 ## See also
 
 - [`examples/veilstep`](../../examples/veilstep) — the reference stealth sim + proofs.
-- [`docs/FUN.md §5`](../../docs/FUN.md#5--stealth) — the proof playbook.
+- [`design/FUN.md §5`](../FUN.md#5--stealth) — the proof playbook.

@@ -7,7 +7,7 @@ summary: Deduction as the core loop — the game gives you evidence and *trusts 
 use-when: The intent is a logic/mystery game where the played verb is *inferring* facts from evidence, and the design must be provably solvable without guessing.
 composes-with: [genre-exploration, system-onboarding, system-progression, pattern-readability, pattern-mastery-and-flow]
 anchors: []
-verify-with: docs/FUN.md#1-grid-puzzle-sokoban
+verify-with: design/FUN.md#1-grid-puzzle-sokoban
 ---
 
 # Return of the Obra Dinn
@@ -101,7 +101,7 @@ over *permutation*.
 
 ## See also
 
-- [`docs/FUN.md#1-grid-puzzle-sokoban`](../../docs/FUN.md) — solver-provable
+- [`design/FUN.md#1-grid-puzzle-sokoban`](../FUN.md) — solver-provable
   solutions; unwinnable = unshippable. A deduction game inherits this obligation:
   prove every fate is derivable by logic.
 - [[genre-exploration]] · [[anchor-outer-wilds]] (the knowledge-progression

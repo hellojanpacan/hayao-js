@@ -20,7 +20,7 @@
       "process-the-twist",
       "process-refine-and-handoff"
     ],
-    "verify-with": "docs/FUN.md#part-2--per-genre-cheat-sheet",
+    "verify-with": "design/FUN.md#part-2--per-genre-cheat-sheet",
     "file": "design/00-process/composition.md"
   },
   {
@@ -44,7 +44,7 @@
       "process-composition",
       "process-refine-and-handoff"
     ],
-    "verify-with": "docs/FUN.md#part-2--per-genre-cheat-sheet",
+    "verify-with": "design/FUN.md#part-2--per-genre-cheat-sheet",
     "file": "design/00-process/core-loop.md"
   },
   {
@@ -166,7 +166,7 @@
       "system-unit-rosters"
     ],
     "anchors": [],
-    "verify-with": "docs/FUN.md#9-rts-lite",
+    "verify-with": "design/FUN.md#9-rts-lite",
     "file": "design/10-anchors/age-of-empires.md"
   },
   {
@@ -190,7 +190,7 @@
     "anchors": [
       "anchor-animal-crossing"
     ],
-    "verify-with": "docs/FUN.md#15-·-farming-sim",
+    "verify-with": "design/FUN.md#15-·-farming-sim",
     "file": "design/10-anchors/animal-crossing.md"
   },
   {
@@ -217,7 +217,7 @@
     "anchors": [
       "anchor-baba-is-you"
     ],
-    "verify-with": "docs/FUN.md#1-·-grid-puzzle-sokoban",
+    "verify-with": "design/FUN.md#1-·-grid-puzzle-sokoban",
     "file": "design/10-anchors/baba-is-you.md"
   },
   {
@@ -244,7 +244,7 @@
     "anchors": [
       "anchor-balatro"
     ],
-    "verify-with": "docs/FUN.md#11-·-roguelike-deckbuilder",
+    "verify-with": "design/FUN.md#11-·-roguelike-deckbuilder",
     "file": "design/10-anchors/balatro.md"
   },
   {
@@ -267,7 +267,7 @@
     "anchors": [
       "anchor-braid"
     ],
-    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "verify-with": "design/FUN.md#1-·-grid-puzzle",
     "file": "design/10-anchors/braid.md"
   },
   {
@@ -294,7 +294,7 @@
     "anchors": [
       "anchor-celeste"
     ],
-    "verify-with": "docs/FUN.md#2-·-precision-platformer-celeste-like",
+    "verify-with": "design/FUN.md#2-·-precision-platformer-celeste-like",
     "file": "design/10-anchors/celeste.md"
   },
   {
@@ -320,7 +320,7 @@
       "system-session-structure"
     ],
     "anchors": [],
-    "verify-with": "docs/FUN.md#9-rts-lite",
+    "verify-with": "design/FUN.md#9-rts-lite",
     "file": "design/10-anchors/civilization.md"
   },
   {
@@ -344,7 +344,7 @@
     "anchors": [
       "anchor-cuphead"
     ],
-    "verify-with": "docs/FUN.md#7-·-bullet-hell",
+    "verify-with": "design/FUN.md#7-·-bullet-hell",
     "file": "design/10-anchors/cuphead.md"
   },
   {
@@ -368,7 +368,7 @@
     "anchors": [
       "anchor-dark-souls"
     ],
-    "verify-with": "docs/FUN.md#4-·-action-adventure",
+    "verify-with": "design/FUN.md#4-·-action-adventure",
     "file": "design/10-anchors/dark-souls.md"
   },
   {
@@ -395,7 +395,7 @@
     "anchors": [
       "anchor-dead-cells"
     ],
-    "verify-with": "docs/FUN.md#3-·-metroidvania",
+    "verify-with": "design/FUN.md#3-·-metroidvania",
     "file": "design/10-anchors/dead-cells.md"
   },
   {
@@ -419,7 +419,7 @@
     "anchors": [
       "anchor-disco-elysium"
     ],
-    "verify-with": "docs/FUN.md#21-·-narrative-decisions",
+    "verify-with": "design/FUN.md#21-·-narrative-decisions",
     "file": "design/10-anchors/disco-elysium.md"
   },
   {
@@ -443,7 +443,7 @@
     "anchors": [
       "anchor-dishonored"
     ],
-    "verify-with": "docs/FUN.md#5-·-stealth",
+    "verify-with": "design/FUN.md#5-·-stealth",
     "file": "design/10-anchors/dishonored.md"
   },
   {
@@ -493,7 +493,7 @@
       "system-emergent-systems"
     ],
     "anchors": [],
-    "verify-with": "docs/FUN.md#14-incrementalidle",
+    "verify-with": "design/FUN.md#14-incrementalidle",
     "file": "design/10-anchors/factorio.md"
   },
   {
@@ -516,7 +516,7 @@
     "anchors": [
       "anchor-frostpunk"
     ],
-    "verify-with": "docs/FUN.md#17-·-city-builder",
+    "verify-with": "design/FUN.md#17-·-city-builder",
     "file": "design/10-anchors/frostpunk.md"
   },
   {
@@ -543,7 +543,7 @@
     "anchors": [
       "anchor-hades"
     ],
-    "verify-with": "docs/FUN.md#10-·-traditional-roguelike",
+    "verify-with": "design/FUN.md#10-·-traditional-roguelike",
     "file": "design/10-anchors/hades.md"
   },
   {
@@ -570,7 +570,7 @@
     "anchors": [
       "anchor-into-the-breach"
     ],
-    "verify-with": "docs/FUN.md#12-·-turn-based-tactics-into-the-breach-like",
+    "verify-with": "design/FUN.md#12-·-turn-based-tactics-into-the-breach-like",
     "file": "design/10-anchors/into-the-breach.md"
   },
   {
@@ -595,7 +595,7 @@
       "system-encounter-design"
     ],
     "anchors": [],
-    "verify-with": "docs/FUN.md#3-metroidvania",
+    "verify-with": "design/FUN.md#3-metroidvania",
     "file": "design/10-anchors/it-takes-two.md"
   },
   {
@@ -619,7 +619,7 @@
     "anchors": [
       "anchor-katamari"
     ],
-    "verify-with": "docs/FUN.md#19-·-physics-arcade",
+    "verify-with": "design/FUN.md#19-·-physics-arcade",
     "file": "design/10-anchors/katamari.md"
   },
   {
@@ -646,7 +646,7 @@
     "anchors": [
       "anchor-loop-hero"
     ],
-    "verify-with": "docs/FUN.md#11-·-roguelike-deckbuilder",
+    "verify-with": "design/FUN.md#11-·-roguelike-deckbuilder",
     "file": "design/10-anchors/loop-hero.md"
   },
   {
@@ -676,7 +676,7 @@
     "anchors": [
       "anchor-mario-kart"
     ],
-    "verify-with": "docs/FUN.md#20-·-top-down-racing",
+    "verify-with": "design/FUN.md#20-·-top-down-racing",
     "file": "design/10-anchors/mario-kart.md"
   },
   {
@@ -724,7 +724,7 @@
     "anchors": [
       "anchor-mini-metro"
     ],
-    "verify-with": "docs/JUDGE.md",
+    "verify-with": "design/JUDGE.md",
     "file": "design/10-anchors/mini-metro.md"
   },
   {
@@ -751,7 +751,7 @@
     "anchors": [
       "anchor-nuclear-throne"
     ],
-    "verify-with": "docs/FUN.md#6-·-twin-stick-horde-survival-vampire-survivors-like",
+    "verify-with": "design/FUN.md#6-·-twin-stick-horde-survival-vampire-survivors-like",
     "file": "design/10-anchors/nuclear-throne.md"
   },
   {
@@ -777,7 +777,7 @@
       "pattern-readability"
     ],
     "anchors": [],
-    "verify-with": "docs/FUN.md#3-metroidvania",
+    "verify-with": "design/FUN.md#3-metroidvania",
     "file": "design/10-anchors/outer-wilds.md"
   },
   {
@@ -803,7 +803,7 @@
       "pattern-pacing-and-tension"
     ],
     "anchors": [],
-    "verify-with": "docs/FUN.md#8-tower-defense",
+    "verify-with": "design/FUN.md#8-tower-defense",
     "file": "design/10-anchors/overcooked.md"
   },
   {
@@ -826,7 +826,7 @@
     "anchors": [
       "anchor-papers-please"
     ],
-    "verify-with": "docs/FUN.md#21-·-narrative-decisions",
+    "verify-with": "design/FUN.md#21-·-narrative-decisions",
     "file": "design/10-anchors/papers-please.md"
   },
   {
@@ -853,7 +853,7 @@
     "anchors": [
       "anchor-peggle"
     ],
-    "verify-with": "docs/FUN.md#19-·-physics-arcade-breakoutpeggle",
+    "verify-with": "design/FUN.md#19-·-physics-arcade-breakoutpeggle",
     "file": "design/10-anchors/peggle.md"
   },
   {
@@ -876,7 +876,7 @@
     "anchors": [
       "anchor-portal"
     ],
-    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "verify-with": "design/FUN.md#1-·-grid-puzzle",
     "file": "design/10-anchors/portal.md"
   },
   {
@@ -902,7 +902,7 @@
       "pattern-risk-reward"
     ],
     "anchors": [],
-    "verify-with": "docs/FUN.md#21-narrative-decisions-reigns-like",
+    "verify-with": "design/FUN.md#21-narrative-decisions-reigns-like",
     "file": "design/10-anchors/reigns.md"
   },
   {
@@ -928,7 +928,7 @@
       "pattern-mastery-and-flow"
     ],
     "anchors": [],
-    "verify-with": "docs/FUN.md#1-grid-puzzle-sokoban",
+    "verify-with": "design/FUN.md#1-grid-puzzle-sokoban",
     "file": "design/10-anchors/return-of-the-obra-dinn.md"
   },
   {
@@ -954,7 +954,7 @@
       "system-resource-loops"
     ],
     "anchors": [],
-    "verify-with": "docs/FUN.md#17-citycolony-builder",
+    "verify-with": "design/FUN.md#17-citycolony-builder",
     "file": "design/10-anchors/rimworld.md"
   },
   {
@@ -979,7 +979,7 @@
       "pattern-emergence"
     ],
     "anchors": [],
-    "verify-with": "docs/FUN.md#4-top-down-action-adventure-zelda-like",
+    "verify-with": "design/FUN.md#4-top-down-action-adventure-zelda-like",
     "file": "design/10-anchors/shadow-of-mordor.md"
   },
   {
@@ -1006,7 +1006,7 @@
     "anchors": [
       "anchor-slay-the-spire"
     ],
-    "verify-with": "docs/FUN.md#11-·-roguelike-deckbuilder",
+    "verify-with": "design/FUN.md#11-·-roguelike-deckbuilder",
     "file": "design/10-anchors/slay-the-spire.md"
   },
   {
@@ -1030,7 +1030,7 @@
     "anchors": [
       "anchor-spelunky"
     ],
-    "verify-with": "docs/FUN.md#10-·-traditional-roguelike",
+    "verify-with": "design/FUN.md#10-·-traditional-roguelike",
     "file": "design/10-anchors/spelunky.md"
   },
   {
@@ -1056,7 +1056,7 @@
       "system-mastery-curve"
     ],
     "anchors": [],
-    "verify-with": "docs/FUN.md#9-rts-lite",
+    "verify-with": "design/FUN.md#9-rts-lite",
     "file": "design/10-anchors/starcraft.md"
   },
   {
@@ -1082,7 +1082,7 @@
       "system-session-structure"
     ],
     "anchors": [],
-    "verify-with": "docs/FUN.md#15-farminglife-sim",
+    "verify-with": "design/FUN.md#15-farminglife-sim",
     "file": "design/10-anchors/stardew-valley.md"
   },
   {
@@ -1106,7 +1106,7 @@
     "anchors": [
       "anchor-street-fighter"
     ],
-    "verify-with": "docs/FUN.md#4-·-action-adventure",
+    "verify-with": "design/FUN.md#4-·-action-adventure",
     "file": "design/10-anchors/street-fighter.md"
   },
   {
@@ -1157,7 +1157,7 @@
     "anchors": [
       "anchor-tetris"
     ],
-    "verify-with": "docs/FUN.md#1-·-grid-puzzle-sokoban",
+    "verify-with": "design/FUN.md#1-·-grid-puzzle-sokoban",
     "file": "design/10-anchors/tetris.md"
   },
   {
@@ -1186,7 +1186,7 @@
     "anchors": [
       "anchor-trackmania"
     ],
-    "verify-with": "docs/FUN.md#20-·-top-down-racing",
+    "verify-with": "design/FUN.md#20-·-top-down-racing",
     "file": "design/10-anchors/trackmania.md"
   },
   {
@@ -1212,7 +1212,7 @@
     "anchors": [
       "anchor-vampire-survivors"
     ],
-    "verify-with": "docs/FUN.md#6-·-twin-stick-horde-survival-vampire-survivors-like",
+    "verify-with": "design/FUN.md#6-·-twin-stick-horde-survival-vampire-survivors-like",
     "file": "design/10-anchors/vampire-survivors.md"
   },
   {
@@ -1263,7 +1263,7 @@
       "anchor-into-the-breach",
       "anchor-mini-metro"
     ],
-    "verify-with": "docs/FUN.md#12-·-tactics",
+    "verify-with": "design/FUN.md#12-·-tactics",
     "file": "design/20-genres/abstract-strategy.md"
   },
   {
@@ -1293,7 +1293,7 @@
       "anchor-shadow-of-mordor",
       "anchor-dead-cells"
     ],
-    "verify-with": "docs/FUN.md#4--top-down-action-adventure-zelda-like",
+    "verify-with": "design/FUN.md#4--top-down-action-adventure-zelda-like",
     "file": "design/20-genres/action-adventure.md"
   },
   {
@@ -1322,7 +1322,7 @@
     "anchors": [
       "anchor-loop-hero"
     ],
-    "verify-with": "docs/FUN.md#12-·-turn-based-tactics",
+    "verify-with": "design/FUN.md#12-·-turn-based-tactics",
     "file": "design/20-genres/auto-battler.md"
   },
   {
@@ -1350,7 +1350,7 @@
     "anchors": [
       "anchor-nuclear-throne"
     ],
-    "verify-with": "docs/FUN.md#7--bullet-hell",
+    "verify-with": "design/FUN.md#7--bullet-hell",
     "file": "design/20-genres/bullet-hell.md"
   },
   {
@@ -1379,7 +1379,7 @@
       "anchor-factorio",
       "anchor-rimworld"
     ],
-    "verify-with": "docs/FUN.md#17--citycolony-builder",
+    "verify-with": "design/FUN.md#17--citycolony-builder",
     "file": "design/20-genres/city-builder.md"
   },
   {
@@ -1409,7 +1409,7 @@
       "anchor-overcooked",
       "anchor-it-takes-two"
     ],
-    "verify-with": "docs/FUN.md#8-·-tower-defense",
+    "verify-with": "design/FUN.md#8-·-tower-defense",
     "file": "design/20-genres/coop-chaos.md"
   },
   {
@@ -1439,7 +1439,7 @@
       "anchor-slay-the-spire",
       "anchor-balatro"
     ],
-    "verify-with": "docs/FUN.md#11--roguelike-deckbuilder",
+    "verify-with": "design/FUN.md#11--roguelike-deckbuilder",
     "file": "design/20-genres/deckbuilder.md"
   },
   {
@@ -1469,7 +1469,7 @@
       "anchor-outer-wilds",
       "anchor-return-of-the-obra-dinn"
     ],
-    "verify-with": "docs/FUN.md#10-·-traditional-roguelike",
+    "verify-with": "design/FUN.md#10-·-traditional-roguelike",
     "file": "design/20-genres/exploration.md"
   },
   {
@@ -1523,7 +1523,7 @@
       "anchor-stardew-valley",
       "anchor-animal-crossing"
     ],
-    "verify-with": "docs/FUN.md#15--farminglife-sim",
+    "verify-with": "design/FUN.md#15--farminglife-sim",
     "file": "design/20-genres/farming-sim.md"
   },
   {
@@ -1548,7 +1548,7 @@
     "anchors": [
       "anchor-street-fighter"
     ],
-    "verify-with": "docs/FUN.md#4-·-action-adventure",
+    "verify-with": "design/FUN.md#4-·-action-adventure",
     "file": "design/20-genres/fighting-game.md"
   },
   {
@@ -1577,7 +1577,7 @@
       "anchor-baba-is-you",
       "anchor-into-the-breach"
     ],
-    "verify-with": "docs/FUN.md#1--grid-puzzle-sokoban",
+    "verify-with": "design/FUN.md#1--grid-puzzle-sokoban",
     "file": "design/20-genres/grid-puzzle.md"
   },
   {
@@ -1608,7 +1608,7 @@
       "anchor-vampire-survivors",
       "anchor-nuclear-throne"
     ],
-    "verify-with": "docs/FUN.md#6--twin-stick-horde-survival-vampire-survivors-like",
+    "verify-with": "design/FUN.md#6--twin-stick-horde-survival-vampire-survivors-like",
     "file": "design/20-genres/horde-survival.md"
   },
   {
@@ -1633,7 +1633,7 @@
     "anchors": [
       "anchor-dishonored"
     ],
-    "verify-with": "docs/FUN.md#5-·-stealth",
+    "verify-with": "design/FUN.md#5-·-stealth",
     "file": "design/20-genres/immersive-sim.md"
   },
   {
@@ -1662,7 +1662,7 @@
       "anchor-balatro",
       "anchor-factorio"
     ],
-    "verify-with": "docs/FUN.md#14--incrementalidle",
+    "verify-with": "design/FUN.md#14--incrementalidle",
     "file": "design/20-genres/incremental.md"
   },
   {
@@ -1687,7 +1687,7 @@
     "anchors": [
       "anchor-frostpunk"
     ],
-    "verify-with": "docs/FUN.md#17-·-city-builder",
+    "verify-with": "design/FUN.md#17-·-city-builder",
     "file": "design/20-genres/management-tycoon.md"
   },
   {
@@ -1716,7 +1716,7 @@
       "anchor-peggle",
       "anchor-balatro"
     ],
-    "verify-with": "docs/FUN.md#13--match-3",
+    "verify-with": "design/FUN.md#13--match-3",
     "file": "design/20-genres/match3.md"
   },
   {
@@ -1746,7 +1746,7 @@
       "anchor-dead-cells",
       "anchor-celeste"
     ],
-    "verify-with": "docs/FUN.md#3--metroidvania",
+    "verify-with": "design/FUN.md#3--metroidvania",
     "file": "design/20-genres/metroidvania.md"
   },
   {
@@ -1800,7 +1800,7 @@
     "anchors": [
       "anchor-reigns"
     ],
-    "verify-with": "docs/FUN.md#21-·-narrative-decisions-reigns-like",
+    "verify-with": "design/FUN.md#21-·-narrative-decisions-reigns-like",
     "file": "design/20-genres/narrative-decisions.md"
   },
   {
@@ -1832,7 +1832,7 @@
       "anchor-tetris",
       "anchor-katamari"
     ],
-    "verify-with": "docs/FUN.md#19-·-physics-arcade-breakoutpeggle",
+    "verify-with": "design/FUN.md#19-·-physics-arcade-breakoutpeggle",
     "file": "design/20-genres/physics-arcade.md"
   },
   {
@@ -1861,7 +1861,7 @@
     "anchors": [
       "anchor-celeste"
     ],
-    "verify-with": "docs/FUN.md#2--precision-platformer-celeste-like",
+    "verify-with": "design/FUN.md#2--precision-platformer-celeste-like",
     "file": "design/20-genres/precision-platformer.md"
   },
   {
@@ -1887,7 +1887,7 @@
       "anchor-braid",
       "anchor-portal"
     ],
-    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "verify-with": "design/FUN.md#1-·-grid-puzzle",
     "file": "design/20-genres/puzzle-platformer.md"
   },
   {
@@ -1918,7 +1918,7 @@
       "anchor-trackmania",
       "anchor-mario-kart"
     ],
-    "verify-with": "docs/FUN.md#20-·-top-down-racing",
+    "verify-with": "design/FUN.md#20-·-top-down-racing",
     "file": "design/20-genres/racing.md"
   },
   {
@@ -1947,7 +1947,7 @@
       "anchor-tetris",
       "anchor-peggle"
     ],
-    "verify-with": "docs/FUN.md#18--rhythm",
+    "verify-with": "design/FUN.md#18--rhythm",
     "file": "design/20-genres/rhythm.md"
   },
   {
@@ -1976,7 +1976,7 @@
       "anchor-nuclear-throne",
       "anchor-dead-cells"
     ],
-    "verify-with": "docs/FUN.md#10--traditional-roguelike",
+    "verify-with": "design/FUN.md#10--traditional-roguelike",
     "file": "design/20-genres/roguelike.md"
   },
   {
@@ -2008,7 +2008,7 @@
       "anchor-starcraft",
       "anchor-age-of-empires"
     ],
-    "verify-with": "docs/FUN.md#9--rts-lite",
+    "verify-with": "design/FUN.md#9--rts-lite",
     "file": "design/20-genres/rts.md"
   },
   {
@@ -2059,7 +2059,7 @@
     "anchors": [
       "anchor-dark-souls"
     ],
-    "verify-with": "docs/FUN.md#4-·-action-adventure",
+    "verify-with": "design/FUN.md#4-·-action-adventure",
     "file": "design/20-genres/soulslike.md"
   },
   {
@@ -2089,7 +2089,7 @@
     "anchors": [
       "anchor-shadow-of-mordor"
     ],
-    "verify-with": "docs/FUN.md#5--stealth",
+    "verify-with": "design/FUN.md#5--stealth",
     "file": "design/20-genres/stealth.md"
   },
   {
@@ -2117,7 +2117,7 @@
     "anchors": [
       "anchor-outer-wilds"
     ],
-    "verify-with": "docs/FUN.md#16--survival-horror",
+    "verify-with": "design/FUN.md#16--survival-horror",
     "file": "design/20-genres/survival-horror.md"
   },
   {
@@ -2145,7 +2145,7 @@
     "anchors": [
       "anchor-into-the-breach"
     ],
-    "verify-with": "docs/FUN.md#12--turn-based-tactics-into-the-breach-like",
+    "verify-with": "design/FUN.md#12--turn-based-tactics-into-the-breach-like",
     "file": "design/20-genres/tactics.md"
   },
   {
@@ -2173,7 +2173,7 @@
     "anchors": [
       "anchor-into-the-breach"
     ],
-    "verify-with": "docs/FUN.md#8--tower-defense",
+    "verify-with": "design/FUN.md#8--tower-defense",
     "file": "design/20-genres/tower-defense.md"
   },
   {
@@ -2198,7 +2198,7 @@
     "anchors": [
       "anchor-disco-elysium"
     ],
-    "verify-with": "docs/FUN.md#21-·-narrative-decisions",
+    "verify-with": "design/FUN.md#21-·-narrative-decisions",
     "file": "design/20-genres/visual-novel.md"
   },
   {
@@ -2223,7 +2223,7 @@
     "anchors": [
       "anchor-outer-wilds"
     ],
-    "verify-with": "docs/JUDGE.md",
+    "verify-with": "design/JUDGE.md",
     "file": "design/20-genres/walking-sim.md"
   },
   {
@@ -2251,7 +2251,7 @@
     "anchors": [
       "anchor-celeste"
     ],
-    "verify-with": "docs/JUDGE.md",
+    "verify-with": "design/JUDGE.md",
     "file": "design/30-systems/accessibility.md"
   },
   {
@@ -2301,7 +2301,7 @@
       "anchor-hades",
       "anchor-into-the-breach"
     ],
-    "verify-with": "docs/FUN.md#7-bullet-hell",
+    "verify-with": "design/FUN.md#7-bullet-hell",
     "file": "design/30-systems/boss-design.md"
   },
   {
@@ -2331,7 +2331,7 @@
       "anchor-vampire-survivors",
       "anchor-hades"
     ],
-    "verify-with": "docs/FUN.md#11-roguelike-deckbuilder",
+    "verify-with": "design/FUN.md#11-roguelike-deckbuilder",
     "file": "design/30-systems/build-diversity.md"
   },
   {
@@ -2352,7 +2352,7 @@
       "mechanic-lock-on",
       "pattern-fairness-and-trust"
     ],
-    "verify-with": "docs/JUICE.md",
+    "verify-with": "design/JUICE.md",
     "file": "design/30-systems/camera-and-controls.md"
   },
   {
@@ -2382,7 +2382,7 @@
       "anchor-dead-cells",
       "anchor-vampire-survivors"
     ],
-    "verify-with": "docs/FUN.md#15-farminglife-sim",
+    "verify-with": "design/FUN.md#15-farminglife-sim",
     "file": "design/30-systems/collectibles.md"
   },
   {
@@ -2412,7 +2412,7 @@
       "anchor-hades",
       "anchor-slay-the-spire"
     ],
-    "verify-with": "docs/FUN.md#4-top-down-action-adventure-zelda-like",
+    "verify-with": "design/FUN.md#4-top-down-action-adventure-zelda-like",
     "file": "design/30-systems/combat-model.md"
   },
   {
@@ -2441,7 +2441,7 @@
       "anchor-overcooked",
       "anchor-it-takes-two"
     ],
-    "verify-with": "docs/FUN.md#part-1--universal-laws",
+    "verify-with": "design/FUN.md#part-1--universal-laws",
     "file": "design/30-systems/coop-and-competition.md"
   },
   {
@@ -2469,7 +2469,7 @@
       "anchor-starcraft",
       "anchor-age-of-empires"
     ],
-    "verify-with": "docs/FUN.md#8-tower-defense",
+    "verify-with": "design/FUN.md#8-tower-defense",
     "file": "design/30-systems/counter-systems.md"
   },
   {
@@ -2498,7 +2498,7 @@
       "anchor-factorio",
       "anchor-stardew-valley"
     ],
-    "verify-with": "docs/FUN.md#1-grid-puzzle-sokoban",
+    "verify-with": "design/FUN.md#1-grid-puzzle-sokoban",
     "file": "design/30-systems/crafting.md"
   },
   {
@@ -2522,7 +2522,7 @@
     "anchors": [
       "anchor-disco-elysium"
     ],
-    "verify-with": "docs/FUN.md#21-·-narrative-decisions",
+    "verify-with": "design/FUN.md#21-·-narrative-decisions",
     "file": "design/30-systems/dialogue-and-branching.md"
   },
   {
@@ -2552,7 +2552,7 @@
       "anchor-rimworld",
       "anchor-celeste"
     ],
-    "verify-with": "docs/FUN.md#8-tower-defense",
+    "verify-with": "design/FUN.md#8-tower-defense",
     "file": "design/30-systems/difficulty-and-dda.md"
   },
   {
@@ -2583,7 +2583,7 @@
       "anchor-stardew-valley",
       "anchor-civilization"
     ],
-    "verify-with": "docs/FUN.md#14-incrementalidle",
+    "verify-with": "design/FUN.md#14-incrementalidle",
     "file": "design/30-systems/economy.md"
   },
   {
@@ -2612,7 +2612,7 @@
       "anchor-shadow-of-mordor",
       "anchor-rimworld"
     ],
-    "verify-with": "docs/FUN.md#7-pure-data-state-pays-compound-interest",
+    "verify-with": "design/FUN.md#7-pure-data-state-pays-compound-interest",
     "file": "design/30-systems/emergent-systems.md"
   },
   {
@@ -2641,7 +2641,7 @@
       "anchor-into-the-breach",
       "anchor-vampire-survivors"
     ],
-    "verify-with": "docs/FUN.md#5-stealth",
+    "verify-with": "design/FUN.md#5-stealth",
     "file": "design/30-systems/encounter-design.md"
   },
   {
@@ -2671,7 +2671,7 @@
       "anchor-nuclear-throne",
       "anchor-shadow-of-mordor"
     ],
-    "verify-with": "docs/FUN.md#4-top-down-action-adventure-zelda-like",
+    "verify-with": "design/FUN.md#4-top-down-action-adventure-zelda-like",
     "file": "design/30-systems/enemy-ai.md"
   },
   {
@@ -2701,7 +2701,7 @@
       "anchor-vampire-survivors",
       "anchor-into-the-breach"
     ],
-    "verify-with": "docs/FUN.md#4-top-down-action-adventure-zelda-like",
+    "verify-with": "design/FUN.md#4-top-down-action-adventure-zelda-like",
     "file": "design/30-systems/enemy-archetypes.md"
   },
   {
@@ -2730,7 +2730,7 @@
       "anchor-starcraft",
       "anchor-age-of-empires"
     ],
-    "verify-with": "docs/FUN.md#9-rts-lite",
+    "verify-with": "design/FUN.md#9-rts-lite",
     "file": "design/30-systems/faction-asymmetry.md"
   },
   {
@@ -2760,7 +2760,7 @@
       "anchor-celeste",
       "anchor-into-the-breach"
     ],
-    "verify-with": "docs/FUN.md#part-1--universal-laws",
+    "verify-with": "design/FUN.md#part-1--universal-laws",
     "file": "design/30-systems/grace.md"
   },
   {
@@ -2805,7 +2805,7 @@
       "antipattern-currency-spaghetti",
       "antipattern-decision-paralysis"
     ],
-    "verify-with": "docs/JUICE.md",
+    "verify-with": "design/JUICE.md",
     "file": "design/30-systems/inventory-and-ui.md"
   },
   {
@@ -2847,7 +2847,7 @@
       "antipattern-rng-frustration",
       "system-economy"
     ],
-    "verify-with": "docs/FUN.md#10-·-traditional-roguelike",
+    "verify-with": "design/FUN.md#10-·-traditional-roguelike",
     "file": "design/30-systems/loot-tables.md"
   },
   {
@@ -2868,7 +2868,7 @@
       "antipattern-backtracking-tax",
       "world-level-as-story"
     ],
-    "verify-with": "docs/FUN.md#3-·-metroidvania",
+    "verify-with": "design/FUN.md#3-·-metroidvania",
     "file": "design/30-systems/map-and-navigation.md"
   },
   {
@@ -2898,7 +2898,7 @@
       "anchor-celeste",
       "anchor-balatro"
     ],
-    "verify-with": "docs/FUN.md#2-skill-delta-proofs",
+    "verify-with": "design/FUN.md#2-skill-delta-proofs",
     "file": "design/30-systems/mastery-curve.md"
   },
   {
@@ -2928,7 +2928,7 @@
       "anchor-dead-cells",
       "anchor-nuclear-throne"
     ],
-    "verify-with": "docs/FUN.md#10-traditional-roguelike",
+    "verify-with": "design/FUN.md#10-traditional-roguelike",
     "file": "design/30-systems/meta-progression.md"
   },
   {
@@ -2956,7 +2956,7 @@
       "anchor-celeste",
       "anchor-into-the-breach"
     ],
-    "verify-with": "docs/FUN.md#2-precision-platformer-celeste-like",
+    "verify-with": "design/FUN.md#2-precision-platformer-celeste-like",
     "file": "design/30-systems/onboarding.md"
   },
   {
@@ -2977,7 +2977,7 @@
       "system-progression",
       "pattern-mastery-and-flow"
     ],
-    "verify-with": "docs/FUN.md#14-·-incremental",
+    "verify-with": "design/FUN.md#14-·-incremental",
     "file": "design/30-systems/prestige-and-newgame-plus.md"
   },
   {
@@ -3006,7 +3006,7 @@
       "anchor-dead-cells",
       "anchor-slay-the-spire"
     ],
-    "verify-with": "docs/FUN.md#10-traditional-roguelike",
+    "verify-with": "design/FUN.md#10-traditional-roguelike",
     "file": "design/30-systems/procgen-design.md"
   },
   {
@@ -3037,7 +3037,7 @@
       "anchor-vampire-survivors",
       "anchor-dead-cells"
     ],
-    "verify-with": "docs/FUN.md#14-incrementalidle",
+    "verify-with": "design/FUN.md#14-incrementalidle",
     "file": "design/30-systems/progression.md"
   },
   {
@@ -3087,7 +3087,7 @@
       "anchor-factorio",
       "anchor-stardew-valley"
     ],
-    "verify-with": "docs/FUN.md#14-incrementalidle",
+    "verify-with": "design/FUN.md#14-incrementalidle",
     "file": "design/30-systems/resource-loops.md"
   },
   {
@@ -3118,7 +3118,7 @@
       "anchor-hades",
       "anchor-peggle"
     ],
-    "verify-with": "docs/FUN.md#19-physics-arcade-breakoutpeggle",
+    "verify-with": "design/FUN.md#19-physics-arcade-breakoutpeggle",
     "file": "design/30-systems/reward-schedules.md"
   },
   {
@@ -3177,7 +3177,7 @@
       "anchor-hades",
       "anchor-slay-the-spire"
     ],
-    "verify-with": "docs/FUN.md#14-incrementalidle",
+    "verify-with": "design/FUN.md#14-incrementalidle",
     "file": "design/30-systems/session-structure.md"
   },
   {
@@ -3206,7 +3206,7 @@
       "anchor-dead-cells",
       "anchor-slay-the-spire"
     ],
-    "verify-with": "docs/FUN.md#2-skill-delta-proofs",
+    "verify-with": "design/FUN.md#2-skill-delta-proofs",
     "file": "design/30-systems/skill-trees.md"
   },
   {
@@ -3259,7 +3259,7 @@
       "anchor-slay-the-spire",
       "anchor-hades"
     ],
-    "verify-with": "docs/FUN.md#11-roguelike-deckbuilder",
+    "verify-with": "design/FUN.md#11-roguelike-deckbuilder",
     "file": "design/30-systems/status-effects.md"
   },
   {
@@ -3289,7 +3289,7 @@
       "anchor-civilization",
       "anchor-factorio"
     ],
-    "verify-with": "docs/FUN.md#9-rts-lite",
+    "verify-with": "design/FUN.md#9-rts-lite",
     "file": "design/30-systems/tech-tree.md"
   },
   {
@@ -3318,7 +3318,7 @@
       "anchor-into-the-breach",
       "anchor-shadow-of-mordor"
     ],
-    "verify-with": "docs/FUN.md#4-top-down-action-adventure-zelda-like",
+    "verify-with": "design/FUN.md#4-top-down-action-adventure-zelda-like",
     "file": "design/30-systems/telegraphs.md"
   },
   {
@@ -3347,7 +3347,7 @@
       "anchor-starcraft",
       "anchor-age-of-empires"
     ],
-    "verify-with": "docs/FUN.md#9-rts-lite",
+    "verify-with": "design/FUN.md#9-rts-lite",
     "file": "design/30-systems/unit-rosters.md"
   },
   {
@@ -3395,7 +3395,7 @@
       "world-faction-identity",
       "world-naming-and-tone"
     ],
-    "verify-with": "docs/JUDGE.md",
+    "verify-with": "design/JUDGE.md",
     "file": "design/40-worldbuilding/aesthetic-direction.md"
   },
   {
@@ -3416,7 +3416,7 @@
       "system-unit-rosters",
       "world-naming-and-tone"
     ],
-    "verify-with": "docs/JUDGE.md",
+    "verify-with": "design/JUDGE.md",
     "file": "design/40-worldbuilding/character-design.md"
   },
   {
@@ -3444,7 +3444,7 @@
       "anchor-starcraft",
       "anchor-shadow-of-mordor"
     ],
-    "verify-with": "docs/JUDGE.md",
+    "verify-with": "design/JUDGE.md",
     "file": "design/40-worldbuilding/faction-identity.md"
   },
   {
@@ -3468,7 +3468,7 @@
     "anchors": [
       "anchor-outer-wilds"
     ],
-    "verify-with": "docs/JUDGE.md",
+    "verify-with": "design/JUDGE.md",
     "file": "design/40-worldbuilding/level-as-story.md"
   },
   {
@@ -3489,7 +3489,7 @@
       "world-soundscape",
       "pattern-juice-choreography"
     ],
-    "verify-with": "docs/JUDGE.md",
+    "verify-with": "design/JUDGE.md",
     "file": "design/40-worldbuilding/mood-and-atmosphere.md"
   },
   {
@@ -3510,7 +3510,7 @@
       "world-aesthetic-direction",
       "world-tonal-juxtaposition"
     ],
-    "verify-with": "docs/JUDGE.md",
+    "verify-with": "design/JUDGE.md",
     "file": "design/40-worldbuilding/motif-and-symbol.md"
   },
   {
@@ -3583,7 +3583,7 @@
       "pattern-juice-choreography",
       "system-camera-and-controls"
     ],
-    "verify-with": "docs/JUICE.md",
+    "verify-with": "design/JUICE.md",
     "file": "design/40-worldbuilding/soundscape.md"
   },
   {
@@ -3630,7 +3630,7 @@
     "anchors": [
       "anchor-katamari"
     ],
-    "verify-with": "docs/JUDGE.md",
+    "verify-with": "design/JUDGE.md",
     "file": "design/40-worldbuilding/tonal-juxtaposition.md"
   },
   {
@@ -3680,7 +3680,7 @@
       "system-grace",
       "system-save-and-checkpoint"
     ],
-    "verify-with": "docs/FUN.md#part-1-—-universal-laws",
+    "verify-with": "design/FUN.md#part-1-—-universal-laws",
     "file": "design/50-patterns/anti-frustration.md"
   },
   {
@@ -3705,7 +3705,7 @@
       "system-emergent-systems",
       "system-build-diversity"
     ],
-    "verify-with": "docs/FUN.md#12-·-turn-based-tactics-into-the-breach-like",
+    "verify-with": "design/FUN.md#12-·-turn-based-tactics-into-the-breach-like",
     "file": "design/50-patterns/emergence.md"
   },
   {
@@ -3747,7 +3747,7 @@
       "antipattern-rng-frustration",
       "antipattern-input-lie"
     ],
-    "verify-with": "docs/JUICE.md",
+    "verify-with": "design/JUICE.md",
     "file": "design/50-patterns/fairness-and-trust.md"
   },
   {
@@ -3772,7 +3772,7 @@
       "system-economy",
       "system-difficulty-and-dda"
     ],
-    "verify-with": "docs/FUN.md#part-1-—-universal-laws",
+    "verify-with": "design/FUN.md#part-1-—-universal-laws",
     "file": "design/50-patterns/feedback-loops.md"
   },
   {
@@ -3798,7 +3798,7 @@
       "pattern-pacing-and-tension",
       "system-combat-model"
     ],
-    "verify-with": "docs/JUICE.md#part-3-—-make-the-feel-checkable-channel-4-gates",
+    "verify-with": "design/JUICE.md#part-3-—-make-the-feel-checkable-channel-4-gates",
     "file": "design/50-patterns/juice-choreography.md"
   },
   {
@@ -3823,7 +3823,7 @@
       "system-mastery-curve",
       "system-difficulty-and-dda"
     ],
-    "verify-with": "docs/FUN.md#part-1-—-universal-laws",
+    "verify-with": "design/FUN.md#part-1-—-universal-laws",
     "file": "design/50-patterns/mastery-and-flow.md"
   },
   {
@@ -3844,7 +3844,7 @@
       "system-build-diversity",
       "antipattern-fake-choice"
     ],
-    "verify-with": "docs/FUN.md",
+    "verify-with": "design/FUN.md",
     "file": "design/50-patterns/meaningful-choice.md"
   },
   {
@@ -3891,7 +3891,7 @@
       "pattern-risk-reward",
       "system-session-structure"
     ],
-    "verify-with": "docs/FUN.md#8-·-tower-defense",
+    "verify-with": "design/FUN.md#8-·-tower-defense",
     "file": "design/50-patterns/pacing-and-tension.md"
   },
   {
@@ -3916,7 +3916,7 @@
       "system-telegraphs",
       "system-onboarding"
     ],
-    "verify-with": "docs/JUDGE.md#the-rubric",
+    "verify-with": "design/JUDGE.md#the-rubric",
     "file": "design/50-patterns/readability.md"
   },
   {
@@ -3940,7 +3940,7 @@
     "anchors": [
       "anchor-mini-metro"
     ],
-    "verify-with": "docs/FUN.md",
+    "verify-with": "design/FUN.md",
     "file": "design/50-patterns/restraint-and-negative-space.md"
   },
   {
@@ -3965,7 +3965,7 @@
       "system-reward-schedules",
       "system-build-diversity"
     ],
-    "verify-with": "docs/FUN.md#21-·-narrative-decisions-reigns-like",
+    "verify-with": "design/FUN.md#21-·-narrative-decisions-reigns-like",
     "file": "design/50-patterns/risk-reward.md"
   },
   {
@@ -3986,7 +3986,7 @@
       "system-emergent-systems",
       "world-narrative-delivery"
     ],
-    "verify-with": "docs/JUDGE.md",
+    "verify-with": "design/JUDGE.md",
     "file": "design/50-patterns/surprise-and-delight.md"
   },
   {
@@ -4026,7 +4026,7 @@
       "mechanic-double-jump",
       "pattern-mastery-and-flow"
     ],
-    "verify-with": "docs/FUN.md#19-·-physics-arcade",
+    "verify-with": "design/FUN.md#19-·-physics-arcade",
     "file": "design/60-mechanics/bounce.md"
   },
   {
@@ -4046,7 +4046,7 @@
       "pattern-risk-reward",
       "system-telegraphs"
     ],
-    "verify-with": "docs/JUICE.md",
+    "verify-with": "design/JUICE.md",
     "file": "design/60-mechanics/charge-attack.md"
   },
   {
@@ -4086,7 +4086,7 @@
       "pattern-emergence",
       "genre-grid-puzzle"
     ],
-    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "verify-with": "design/FUN.md#1-·-grid-puzzle",
     "file": "design/60-mechanics/clone.md"
   },
   {
@@ -4109,7 +4109,7 @@
     "anchors": [
       "anchor-street-fighter"
     ],
-    "verify-with": "docs/FUN.md#4-·-action-adventure",
+    "verify-with": "design/FUN.md#4-·-action-adventure",
     "file": "design/60-mechanics/combo-string.md"
   },
   {
@@ -4130,7 +4130,7 @@
       "system-grace",
       "pattern-mastery-and-flow"
     ],
-    "verify-with": "docs/JUICE.md",
+    "verify-with": "design/JUICE.md",
     "file": "design/60-mechanics/dash.md"
   },
   {
@@ -4150,7 +4150,7 @@
       "genre-bullet-hell",
       "system-telegraphs"
     ],
-    "verify-with": "docs/FUN.md#7-·-bullet-hell",
+    "verify-with": "design/FUN.md#7-·-bullet-hell",
     "file": "design/60-mechanics/deflect.md"
   },
   {
@@ -4173,7 +4173,7 @@
     "anchors": [
       "anchor-dark-souls"
     ],
-    "verify-with": "docs/FUN.md#4-·-action-adventure",
+    "verify-with": "design/FUN.md#4-·-action-adventure",
     "file": "design/60-mechanics/dodge-roll.md"
   },
   {
@@ -4193,7 +4193,7 @@
       "mechanic-glide",
       "system-grace"
     ],
-    "verify-with": "docs/FUN.md#2-·-precision-platformer",
+    "verify-with": "design/FUN.md#2-·-precision-platformer",
     "file": "design/60-mechanics/double-jump.md"
   },
   {
@@ -4213,7 +4213,7 @@
       "mechanic-dash",
       "pattern-pacing-and-tension"
     ],
-    "verify-with": "docs/FUN.md#19-·-physics-arcade",
+    "verify-with": "design/FUN.md#19-·-physics-arcade",
     "file": "design/60-mechanics/glide.md"
   },
   {
@@ -4234,7 +4234,7 @@
       "mechanic-throw",
       "system-map-and-navigation"
     ],
-    "verify-with": "docs/JUICE.md",
+    "verify-with": "design/JUICE.md",
     "file": "design/60-mechanics/grapple.md"
   },
   {
@@ -4254,7 +4254,7 @@
       "genre-puzzle-platformer",
       "pattern-emergence"
     ],
-    "verify-with": "docs/FUN.md#2-·-precision-platformer",
+    "verify-with": "design/FUN.md#2-·-precision-platformer",
     "file": "design/60-mechanics/gravity-flip.md"
   },
   {
@@ -4274,7 +4274,7 @@
       "mechanic-bounce",
       "system-telegraphs"
     ],
-    "verify-with": "docs/JUICE.md",
+    "verify-with": "design/JUICE.md",
     "file": "design/60-mechanics/ground-pound.md"
   },
   {
@@ -4294,7 +4294,7 @@
       "genre-puzzle-platformer",
       "pattern-emergence"
     ],
-    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "verify-with": "design/FUN.md#1-·-grid-puzzle",
     "file": "design/60-mechanics/grow-shrink.md"
   },
   {
@@ -4314,7 +4314,7 @@
       "system-grace",
       "pattern-anti-frustration"
     ],
-    "verify-with": "docs/FUN.md#2-·-precision-platformer",
+    "verify-with": "design/FUN.md#2-·-precision-platformer",
     "file": "design/60-mechanics/ledge-grab.md"
   },
   {
@@ -4357,7 +4357,7 @@
       "genre-physics-arcade",
       "system-hazards-and-environment"
     ],
-    "verify-with": "docs/FUN.md#19-·-physics-arcade",
+    "verify-with": "design/FUN.md#19-·-physics-arcade",
     "file": "design/60-mechanics/magnet.md"
   },
   {
@@ -4380,7 +4380,7 @@
     "anchors": [
       "anchor-katamari"
     ],
-    "verify-with": "docs/FUN.md#13-·-match-3",
+    "verify-with": "design/FUN.md#13-·-match-3",
     "file": "design/60-mechanics/merge.md"
   },
   {
@@ -4403,7 +4403,7 @@
     "anchors": [
       "anchor-into-the-breach"
     ],
-    "verify-with": "docs/FUN.md#4-·-action-adventure",
+    "verify-with": "design/FUN.md#4-·-action-adventure",
     "file": "design/60-mechanics/parry.md"
   },
   {
@@ -4426,7 +4426,7 @@
     "anchors": [
       "anchor-portal"
     ],
-    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "verify-with": "design/FUN.md#1-·-grid-puzzle",
     "file": "design/60-mechanics/portal.md"
   },
   {
@@ -4449,7 +4449,7 @@
     "anchors": [
       "anchor-dishonored"
     ],
-    "verify-with": "docs/FUN.md#5-·-stealth",
+    "verify-with": "design/FUN.md#5-·-stealth",
     "file": "design/60-mechanics/possess.md"
   },
   {
@@ -4472,7 +4472,7 @@
     "anchors": [
       "anchor-braid"
     ],
-    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "verify-with": "design/FUN.md#1-·-grid-puzzle",
     "file": "design/60-mechanics/rewind.md"
   },
   {
@@ -4492,7 +4492,7 @@
       "genre-physics-arcade",
       "pattern-risk-reward"
     ],
-    "verify-with": "docs/FUN.md#19-·-physics-arcade",
+    "verify-with": "design/FUN.md#19-·-physics-arcade",
     "file": "design/60-mechanics/stack.md"
   },
   {
@@ -4512,7 +4512,7 @@
       "pattern-mastery-and-flow",
       "genre-physics-arcade"
     ],
-    "verify-with": "docs/FUN.md#19-·-physics-arcade",
+    "verify-with": "design/FUN.md#19-·-physics-arcade",
     "file": "design/60-mechanics/swing.md"
   },
   {
@@ -4532,7 +4532,7 @@
       "mechanic-clone",
       "system-telegraphs"
     ],
-    "verify-with": "docs/JUICE.md",
+    "verify-with": "design/JUICE.md",
     "file": "design/60-mechanics/teleport.md"
   },
   {
@@ -4555,7 +4555,7 @@
     "anchors": [
       "anchor-overcooked"
     ],
-    "verify-with": "docs/FUN.md#19-·-physics-arcade",
+    "verify-with": "design/FUN.md#19-·-physics-arcade",
     "file": "design/60-mechanics/throw.md"
   },
   {
@@ -4575,7 +4575,7 @@
       "system-telegraphs",
       "pattern-pacing-and-tension"
     ],
-    "verify-with": "docs/JUICE.md",
+    "verify-with": "design/JUICE.md",
     "file": "design/60-mechanics/time-stop.md"
   },
   {
@@ -4595,7 +4595,7 @@
       "mechanic-ledge-grab",
       "system-grace"
     ],
-    "verify-with": "docs/FUN.md#2-·-precision-platformer",
+    "verify-with": "design/FUN.md#2-·-precision-platformer",
     "file": "design/60-mechanics/wall-jump.md"
   },
   {
@@ -4615,7 +4615,7 @@
       "mechanic-dash",
       "pattern-mastery-and-flow"
     ],
-    "verify-with": "docs/JUICE.md",
+    "verify-with": "design/JUICE.md",
     "file": "design/60-mechanics/wall-run.md"
   },
   {
@@ -4635,7 +4635,7 @@
       "pattern-pacing-and-tension",
       "genre-metroidvania"
     ],
-    "verify-with": "docs/FUN.md#3-·-metroidvania",
+    "verify-with": "design/FUN.md#3-·-metroidvania",
     "file": "design/70-antipatterns/backtracking-tax.md"
   },
   {
@@ -4655,7 +4655,7 @@
       "system-economy",
       "pattern-meaningful-choice"
     ],
-    "verify-with": "docs/FUN.md",
+    "verify-with": "design/FUN.md",
     "file": "design/70-antipatterns/boring-optimal.md"
   },
   {
@@ -4675,7 +4675,7 @@
       "pattern-pacing-and-tension",
       "world-level-as-story"
     ],
-    "verify-with": "docs/FUN.md#3-·-metroidvania",
+    "verify-with": "design/FUN.md#3-·-metroidvania",
     "file": "design/70-antipatterns/content-desert.md"
   },
   {
@@ -4795,7 +4795,7 @@
       "system-build-diversity",
       "antipattern-solved-metagame"
     ],
-    "verify-with": "docs/FUN.md",
+    "verify-with": "design/FUN.md",
     "file": "design/70-antipatterns/fake-choice.md"
   },
   {
@@ -4815,7 +4815,7 @@
       "pattern-meaningful-choice",
       "system-mastery-curve"
     ],
-    "verify-with": "docs/FUN.md",
+    "verify-with": "design/FUN.md",
     "file": "design/70-antipatterns/false-depth.md"
   },
   {
@@ -4835,7 +4835,7 @@
       "process-core-loop",
       "antipattern-second-system"
     ],
-    "verify-with": "docs/FUN.md",
+    "verify-with": "design/FUN.md",
     "file": "design/70-antipatterns/feature-soup.md"
   },
   {
@@ -4855,7 +4855,7 @@
       "pattern-pacing-and-tension",
       "antipattern-pay-to-skip"
     ],
-    "verify-with": "docs/FUN.md#14-·-incremental",
+    "verify-with": "design/FUN.md#14-·-incremental",
     "file": "design/70-antipatterns/grind-wall.md"
   },
   {
@@ -4875,7 +4875,7 @@
       "pattern-readability",
       "genre-grid-puzzle"
     ],
-    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "verify-with": "design/FUN.md#1-·-grid-puzzle",
     "file": "design/70-antipatterns/guess-the-designer.md"
   },
   {
@@ -4895,7 +4895,7 @@
       "system-grace",
       "pattern-fairness-and-trust"
     ],
-    "verify-with": "docs/JUICE.md",
+    "verify-with": "design/JUICE.md",
     "file": "design/70-antipatterns/input-lie.md"
   },
   {
@@ -4915,7 +4915,7 @@
       "system-reward-schedules",
       "antipattern-grind-wall"
     ],
-    "verify-with": "docs/FUN.md",
+    "verify-with": "design/FUN.md",
     "file": "design/70-antipatterns/pay-to-skip.md"
   },
   {
@@ -4955,7 +4955,7 @@
       "pattern-fairness-and-trust",
       "system-loot-tables"
     ],
-    "verify-with": "docs/FUN.md#10-·-traditional-roguelike",
+    "verify-with": "design/FUN.md#10-·-traditional-roguelike",
     "file": "design/70-antipatterns/rng-frustration.md"
   },
   {
@@ -4975,7 +4975,7 @@
       "antipattern-feature-soup",
       "pattern-restraint-and-negative-space"
     ],
-    "verify-with": "docs/FUN.md",
+    "verify-with": "design/FUN.md",
     "file": "design/70-antipatterns/second-system.md"
   },
   {
@@ -5035,7 +5035,7 @@
       "pattern-juice-choreography",
       "world-mood-and-atmosphere"
     ],
-    "verify-with": "docs/JUICE.md",
+    "verify-with": "design/JUICE.md",
     "file": "design/70-antipatterns/unreadable-juice.md"
   },
   {
@@ -5087,7 +5087,7 @@
       "anchor-slay-the-spire",
       "anchor-stardew-valley"
     ],
-    "verify-with": "docs/FUN.md#11-·-deckbuilder",
+    "verify-with": "design/FUN.md#11-·-deckbuilder",
     "file": "design/80-recipes/cozy-deckbuilder.md"
   },
   {
@@ -5112,7 +5112,7 @@
     "anchors": [
       "anchor-return-of-the-obra-dinn"
     ],
-    "verify-with": "docs/FUN.md#1-·-grid-puzzle",
+    "verify-with": "design/FUN.md#1-·-grid-puzzle",
     "file": "design/80-recipes/detective-deduction-board.md"
   },
   {
@@ -5138,7 +5138,7 @@
       "anchor-factorio",
       "anchor-katamari"
     ],
-    "verify-with": "docs/FUN.md#14-·-incremental",
+    "verify-with": "design/FUN.md#14-·-incremental",
     "file": "design/80-recipes/merge-factory.md"
   },
   {
@@ -5164,7 +5164,7 @@
       "anchor-cuphead",
       "anchor-peggle"
     ],
-    "verify-with": "docs/FUN.md#7-·-bullet-hell",
+    "verify-with": "design/FUN.md#7-·-bullet-hell",
     "file": "design/80-recipes/one-button-boss-rush.md"
   },
   {
@@ -5189,7 +5189,7 @@
     "anchors": [
       "anchor-celeste"
     ],
-    "verify-with": "docs/FUN.md#18-·-rhythm",
+    "verify-with": "design/FUN.md#18-·-rhythm",
     "file": "design/80-recipes/rhythm-platformer.md"
   },
   {
@@ -5214,7 +5214,7 @@
     "anchors": [
       "anchor-reigns"
     ],
-    "verify-with": "docs/FUN.md#21-·-narrative-decisions-reigns-like",
+    "verify-with": "design/FUN.md#21-·-narrative-decisions-reigns-like",
     "file": "design/80-recipes/swipe-kingdom.md"
   },
   {
@@ -5240,7 +5240,7 @@
       "anchor-slay-the-spire",
       "anchor-into-the-breach"
     ],
-    "verify-with": "docs/FUN.md#8-·-tower-defense",
+    "verify-with": "design/FUN.md#8-·-tower-defense",
     "file": "design/80-recipes/tower-defense-roguelite.md"
   }
 ]

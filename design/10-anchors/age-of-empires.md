@@ -7,7 +7,7 @@ summary: RTS whose fun is the eco→tech ramp — you bank a peaceful economy in
 use-when: The intent is an economy-first RTS/strategy where teching up and timing a power spike is the core decision.
 composes-with: [genre-rts, system-tech-tree, system-economy, system-resource-loops, system-unit-rosters]
 anchors: []
-verify-with: docs/FUN.md#9-rts-lite
+verify-with: design/FUN.md#9-rts-lite
 ---
 
 # Age of Empires
@@ -96,7 +96,7 @@ with an army while the enemy is still stone-age).
 
 ## See also
 
-- [`docs/FUN.md#9-rts-lite`](../../docs/FUN.md) — mass pathing via cached flow
+- [`design/FUN.md#9-rts-lite`](../FUN.md) — mass pathing via cached flow
   fields; the intended line (turtle→counterpush) must beat attack-move.
 - [`sandboxes/pathfinding-demo`](../../sandboxes/pathfinding-demo) — `astarGrid` /
   flow-field wiring for wall-aware unit movement.

@@ -7,7 +7,7 @@ summary: Deliberate combat + a world that gates itself + the bonfire risk loop �
 use-when: You want weighty, readable combat where every attack is a commitment and rest is a gamble.
 composes-with: [genre-soulslike, mechanic-dodge-roll, system-save-and-checkpoint]
 anchors: [anchor-dark-souls]
-verify-with: docs/FUN.md#4-·-action-adventure
+verify-with: design/FUN.md#4-·-action-adventure
 ---
 
 **What it is.** Slow, legible melee combat where **stamina** rations your every move, resting **respawns the world** and re-arms every enemy, and death drops your entire **currency** on the ground for one anxious retrieval run.

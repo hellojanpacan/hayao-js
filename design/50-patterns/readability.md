@@ -6,7 +6,7 @@ tags: [readability, salience, signposting, affordance, contrast, clarity, legibi
 summary: The player must instantly find the avatar, read the threat, and see the way — salience, signposting, and affordances.
 use-when: Anywhere the player might lose the avatar, misread a threat, or miss a path/interaction; setting the visual hierarchy.
 composes-with: [pattern-juice-choreography, pattern-emergence, system-telegraphs, system-onboarding]
-verify-with: docs/JUDGE.md#the-rubric
+verify-with: design/JUDGE.md#the-rubric
 ---
 
 # Readability
@@ -115,7 +115,7 @@ updrift's invisible mountains the salience check couldn't.
 
 ## See also
 
-- [`docs/JUDGE.md`](../../docs/JUDGE.md) — the vision judge; rubric axes 1, 2 & 6 are
+- [`design/JUDGE.md`](../JUDGE.md) — the vision judge; rubric axes 1, 2 & 6 are
   this pattern scored from pixels. **The** reference here.
-- [`docs/JUICE.md`](../../docs/JUICE.md) Part 2 & 3 — the salience rule and the
+- [`design/JUICE.md`](../JUICE.md) Part 2 & 3 — the salience rule and the
   `salienceIssues` gate.

@@ -7,7 +7,7 @@ summary: Rewriting a telegraphed future — perfect information, honest tells st
 use-when: You want a grid combat game where you see the enemy's plan and the fun is redirecting it, not out-rolling it.
 composes-with: [system-telegraphs, system-enemy-archetypes, system-encounter-design, system-combat-model, system-difficulty-and-dda]
 anchors: [anchor-into-the-breach]
-verify-with: docs/FUN.md#12--turn-based-tactics-into-the-breach-like
+verify-with: design/FUN.md#12--turn-based-tactics-into-the-breach-like
 ---
 
 # Turn-Based Tactics
@@ -104,7 +104,7 @@ is *found*, not *rolled*, and a clean multi-enemy redirect is pure satisfaction.
 ## Verify
 
 Prove it in **[FUN.md §12 · Turn-based
-tactics](../../docs/FUN.md#12--turn-based-tactics-into-the-breach-like)**: the
+tactics](../FUN.md#12--turn-based-tactics-into-the-breach-like)**: the
 greedy bot perfect-clears, the do-nothing bot loses everything, each mechanic
 (push/bump/redirect) is proven in isolation, and a golden end-state replays.
 
@@ -119,5 +119,5 @@ greedy bot perfect-clears, the do-nothing bot loses everything, each mechanic
 - [`examples/sokoban`](../../examples/sokoban) — the pure `Puzzle<State,Move>`
   logic/view split and clone-and-score bot; tactics is that pattern with
   telegraphs (laws 6, 7).
-- [docs/FUN.md](../../docs/FUN.md) Part 1 — laws 3, 6, 7 underwrite this genre's
+- [design/FUN.md](../FUN.md) Part 1 — laws 3, 6, 7 underwrite this genre's
   determinism and honesty.

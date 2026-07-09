@@ -7,7 +7,7 @@ summary: A survival city-builder where every efficient choice has a human cost �
 use-when: You want management with moral weight — survival vs. what you become to survive.
 composes-with: [genre-management-tycoon, genre-city-builder, pattern-risk-reward]
 anchors: [anchor-frostpunk]
-verify-with: docs/FUN.md#17-·-city-builder
+verify-with: design/FUN.md#17-·-city-builder
 ---
 
 **What it is.** A city-builder wrapped around a dying generator: you keep a frozen society alive by rationing heat, food, and hope, and you pass **laws** that buy survival at the price of what the city becomes. The map is a resource puzzle; the law book is a moral one.

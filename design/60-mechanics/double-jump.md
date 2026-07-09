@@ -6,7 +6,7 @@ tags: [movement, platformer, air-control, traversal]
 summary: A second airborne impulse — the forgiveness verb that turns one commitment into two decisions.
 use-when: A platformer needs air agency and a recovery beat without full flight.
 composes-with: [mechanic-wall-jump, mechanic-glide, system-grace]
-verify-with: docs/FUN.md#2-·-precision-platformer
+verify-with: design/FUN.md#2-·-precision-platformer
 ---
 
 **What it is.** A second jump the player triggers mid-air, after the first has already committed them to an arc. One button, two impulses, one refill rule.
@@ -55,7 +55,7 @@ Press jump while airborne to spend a second impulse, resetting vertical velocity
 - The double jump is a **state machine on an air-charge counter**: grounded → set charge; airborne + press + charge>0 → apply impulse, decrement. Keep the counter in sim state so it lands in the world hash; render the "have a charge" tell as a [[pattern-readability]] cue.
 - Read the platformer motion lab / `sandboxes/` movement lab for jump-arc math, coyote time, and input buffering in isolation — don't reinvent apex tuning inside a full game.
 - The gated-upgrade version (metroidvania) is progression, not physics: model the unlock as a flag in your [[system-progression]] / worldgraph, provable like any other lock.
-- Feel and forgiveness are proven downstream — the frontmatter's `verify-with` (docs/FUN.md precision-platformer) and Channel-4 feel gates own that. Design the rule here; prove the arc there.
+- Feel and forgiveness are proven downstream — the frontmatter's `verify-with` (design/FUN.md precision-platformer) and Channel-4 feel gates own that. Design the rule here; prove the arc there.
 
 ## Fails when…
 - **Charge state is invisible.** Player can't tell if they have the second jump → every air moment is a coin flip. Fix with an unmissable tell (sprite state, dust puff, meter) — [[pattern-readability]].

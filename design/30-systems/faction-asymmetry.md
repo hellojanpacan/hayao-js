@@ -7,7 +7,7 @@ summary: Asymmetric factions that play nothing alike yet balance — distinct ro
 use-when: You want factions/sides that feel genuinely different to play, not palette-swaps, and still need them to be fair against each other.
 composes-with: [system-counter-systems, system-unit-rosters, system-combat-model, system-economy, system-build-diversity]
 anchors: [anchor-starcraft, anchor-age-of-empires]
-verify-with: docs/FUN.md#9-rts-lite
+verify-with: design/FUN.md#9-rts-lite
 ---
 
 # Faction Asymmetry — different but fair
@@ -118,11 +118,11 @@ Symmetry makes fairness free; asymmetry makes you *earn* it. Four disciplines:
 
 ## Verify
 
-- **[FUN.md §9](../../docs/FUN.md)** — every counter edge wins its NvN duel; commander
+- **[FUN.md §9](../FUN.md)** — every counter edge wins its NvN duel; commander
   bot wins with the intended line; walled units route around; ms/step at peak.
-- **[FUN.md §11 window logic](../../docs/FUN.md)** — matchup win-rates sit inside a
+- **[FUN.md §11 window logic](../FUN.md)** — matchup win-rates sit inside a
   fairness window (both edges break CI: 80/20 *and* an unlosable 99/1).
-- **[FUN.md law 2](../../docs/FUN.md)** — per faction, the intended strategy beats a
+- **[FUN.md law 2](../FUN.md)** — per faction, the intended strategy beats a
   null (attack-move / do-nothing) strategy.
 - Determinism: golden hash of a scripted cross-faction match.
 
@@ -138,7 +138,7 @@ Symmetry makes fairness free; asymmetry makes you *earn* it. Four disciplines:
 
 ## See also
 
-- [`docs/FUN.md`](../../docs/FUN.md) §9 (RTS-lite duels), §11 (fairness as a window).
+- [`design/FUN.md`](../FUN.md) §9 (RTS-lite duels), §11 (fairness as a window).
 - [[anchor-starcraft]] — the reference: three rosters, one balance, tuned as matchups.
 - [[anchor-age-of-empires]] — asymmetry via civ bonuses on a shared unit base (a gentler dose).
 - [`sandboxes/pathfinding-demo`](../../sandboxes/pathfinding-demo) — mass pathing all factions share.

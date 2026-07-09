@@ -14,6 +14,21 @@ import {
   type Vec2,
 } from '../core/math';
 import type { DrawCommand } from '../render/commands';
+import { fail } from '../core/errors';
+
+/** Guard a coordinate/scalar: a provided value must be a finite number. */
+function finiteOrFail(kind: string, field: string, value: number | undefined): void {
+  if (value !== undefined && !Number.isFinite(value))
+    fail({
+      problem: `${kind} was given a non-finite ${field}.`,
+      field,
+      expected: 'a finite number',
+      received: value,
+      hasReceived: true,
+      hint: 'A NaN/Infinity coordinate usually comes from a divide-by-zero or reading an unset world.state field (undefined → NaN in arithmetic). Trace the math that produced it — the node would silently vanish from the view otherwise.',
+      anchor: 'coordinates',
+    });
+}
 
 /**
  * What a live node can see of its host world. The World implements this — it is
@@ -143,6 +158,21 @@ export class Node {
   private _freed = false;
 
   constructor(config: NodeConfig = {}) {
+    // Guard finite coordinates up front: a NaN/undefined coordinate otherwise
+    // propagates silently through the transform and the node just disappears —
+    // one of the most opaque failures for a newcomer (issue #66).
+    const kind = this.constructor.name; // subclass field initializers haven't run yet
+    if (config.pos) {
+      finiteOrFail(kind, 'pos.x', config.pos.x);
+      finiteOrFail(kind, 'pos.y', config.pos.y);
+    }
+    if (config.scale) {
+      finiteOrFail(kind, 'scale.x', config.scale.x);
+      finiteOrFail(kind, 'scale.y', config.scale.y);
+    }
+    finiteOrFail(kind, 'rotation', config.rotation);
+    finiteOrFail(kind, 'z', config.z);
+
     this.id = `n${__idCounter++}`;
     this.name = config.name ?? this.constructor.name;
     this.pos = config.pos ? { ...config.pos } : { x: 0, y: 0 };

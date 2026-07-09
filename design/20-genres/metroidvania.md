@@ -7,7 +7,7 @@ summary: The locked-door promise kept — a single connected world where every a
 use-when: Designing an interconnected exploration game whose progression is spatial — abilities as keys, the map as the meta-puzzle.
 composes-with: [system-progression, system-skill-trees, system-save-and-checkpoint, system-onboarding, system-boss-design, system-collectibles]
 anchors: [anchor-dead-cells, anchor-celeste]
-verify-with: docs/FUN.md#3--metroidvania
+verify-with: design/FUN.md#3--metroidvania
 ---
 
 # Metroidvania
@@ -114,7 +114,7 @@ abilities each extend the movement envelope (the metroidvania spine).
 
 ## Verify
 
-Prove it with **[FUN.md §3 · Metroidvania](../../docs/FUN.md#3--metroidvania)** —
+Prove it with **[FUN.md §3 · Metroidvania](../FUN.md#3--metroidvania)** —
 bot full-run with abilities; both-ways gate proofs (best ungated maneuver fails,
 gated passes); save/load hash round-trip; clean room-transition triggers. Design
 the lock-and-key world here; prove the doors there.
@@ -129,4 +129,4 @@ the lock-and-key world here; prove the doors there.
 
 - [`examples/kintsugi`](../../examples/kintsugi) — the flagship metroidvania spine.
 - [`examples/sproutveil`](../../examples/sproutveil) — room-connected structure.
-- [`docs/FUN.md §3`](../../docs/FUN.md#3--metroidvania) — the proof playbook.
+- [`design/FUN.md §3`](../FUN.md#3--metroidvania) — the proof playbook.

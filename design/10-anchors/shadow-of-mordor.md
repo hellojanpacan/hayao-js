@@ -7,7 +7,7 @@ summary: The nemesis system — a systemic hierarchy of enemies that remember yo
 use-when: The design wants antagonists (or allies) that persist, remember player history, and generate personal stories from systemic memory.
 composes-with: [genre-action-adventure, system-emergent-systems, system-enemy-ai, system-progression, pattern-emergence]
 anchors: []
-verify-with: docs/FUN.md#4-top-down-action-adventure-zelda-like
+verify-with: design/FUN.md#4-top-down-action-adventure-zelda-like
 ---
 
 # Shadow of Mordor
@@ -99,7 +99,7 @@ authored. This is the same family as [[anchor-rimworld]]'s director, aimed at
 
 ## See also
 
-- [`docs/FUN.md#4-top-down-action-adventure-zelda-like`](../../docs/FUN.md) —
+- [`design/FUN.md#4-top-down-action-adventure-zelda-like`](../FUN.md) —
   readable telegraphs; hit-stop buffering; containment every frame — the combat
   substrate the nemesis roster fights on.
 - [[system-emergent-systems]] · [[anchor-rimworld]] (the crisis-director sibling) ·

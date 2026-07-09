@@ -7,7 +7,7 @@ summary: Consistent, interacting systems + a verb toolkit = every problem has ma
 use-when: You want player expression and emergent solutions over authored paths.
 composes-with: [anchor-dishonored, system-emergent-systems, pattern-emergence, mechanic-possess]
 anchors: [anchor-dishonored]
-verify-with: docs/FUN.md#5-·-stealth
+verify-with: design/FUN.md#5-·-stealth
 ---
 
 **What it is.** A space of **consistent, interacting systems** and a small **verb toolkit**, arranged so any obstacle admits several valid solutions the designer never scripted. The author builds the physics, not the path.
@@ -74,4 +74,4 @@ Neighbors worth raiding: [[genre-stealth]] (the detection core), [[genre-metroid
 
 ## Verify
 
-Prove the systems, not the vibe. Reachability of every intended route belongs in a pure solver; the stealth detection and consequence model verify against **docs/FUN.md#5-·-stealth**. Feel and legibility are proven in JUICE/JUDGE, not asserted here.
+Prove the systems, not the vibe. Reachability of every intended route belongs in a pure solver; the stealth detection and consequence model verify against **design/FUN.md#5-·-stealth**. Feel and legibility are proven in JUICE/JUDGE, not asserted here.

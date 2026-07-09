@@ -6,7 +6,7 @@ tags: [time, combat, puzzle, control]
 summary: Freeze or slow the world while you act — bullet-time as a spendable resource.
 use-when: You want reaction relief, planning windows, or a power fantasy of control.
 composes-with: [mechanic-rewind, system-telegraphs, pattern-pacing-and-tension]
-verify-with: docs/JUICE.md
+verify-with: design/JUICE.md
 ---
 
 **What it is.** Bend the world's clock: freeze everything or drag it to a crawl while you keep acting near-normal speed. The gap between your clock and theirs is the whole mechanic.

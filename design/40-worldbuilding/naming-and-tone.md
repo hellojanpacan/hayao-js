@@ -93,7 +93,7 @@ craft* (the name *kentō* — 見当 — is the woodblock registration mark that
 each colour pass), so the copy should share that restraint — spare, concrete,
 unhurried. Text is a **DOM overlay** in the house style, not `Text` nodes drawn
 into the scene (`docs/CONVENTIONS.md`), which frees the voice from HUD clutter:
-say less, and set it in the serif the JUDGE renders true (`docs/JUDGE.md` fonts).
+say less, and set it in the serif the JUDGE renders true (`design/JUDGE.md` fonts).
 A title screen with one word in ink on washi *invites* (JUDGE chrome axis) far
 better than a paragraph of lore. Match the naming register to the palette
 register: weathered names for the woodblock look; save the neon-mythic voice for
@@ -122,7 +122,7 @@ a deliberately swapped palette.
 
 ## See also
 
-- [`docs/JUDGE.md`](../../docs/JUDGE.md) — chrome & finish: a spare, well-set
+- [`design/JUDGE.md`](../JUDGE.md) — chrome & finish: a spare, well-set
   title *invites*; a wall of lore doesn't.
 - `docs/CONVENTIONS.md` — menus/titles/HUD are DOM overlays; Kentō is the house
   palette and *kentō* the registration-mark namesake.

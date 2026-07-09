@@ -7,7 +7,7 @@ summary: Pick up and hurl a thing — makes the world into ammo, keys, and share
 use-when: You want object interaction, coop hand-offs, or physics puzzles.
 composes-with: [mechanic-grapple, genre-coop-chaos, pattern-emergence]
 anchors: [anchor-overcooked]
-verify-with: docs/FUN.md#19-·-physics-arcade
+verify-with: design/FUN.md#19-·-physics-arcade
 ---
 
 **What it is.** A two-beat verb: **pick up** a loose object, then **release** it — drop, place, or hurl along an arc. The carried thing rides *on* the player, so holding it changes what the player can do until they let go.
@@ -50,7 +50,7 @@ Grab (enter carry) → move under a **carry constraint** → aim → throw (exit
 - For the physics feel (arc, mass, bounce, impact), study the **`sandboxes/physics-lab`** in isolation before wiring it into a game.
 - If throw is a *puzzle* move (grid, provable), keep it a pure `Move` and model it the way **`examples/sokoban`** splits pushable-object logic from view — the thrown block's landing cell is state; the arc you draw between cells is **cosmetic** and stays out of the world hash.
 - The held-object sprite, the aim reticle, and the arc preview are all **cosmetic** overlays. What's held and where it lands is state.
-- Prove the *throw feel* against docs/FUN.md#19-·-physics-arcade; prove puzzle levels the way a puzzle proves winnability — every solution must have a reachable throw.
+- Prove the *throw feel* against design/FUN.md#19-·-physics-arcade; prove puzzle levels the way a puzzle proves winnability — every solution must have a reachable throw.
 
 ### Fails when…
 - **Carry has no cost.** If holding an object doesn't slow, block, or spend anything, it's an invisible backpack — the tension evaporates and it becomes [[antipattern-false-depth]]. Make hands *full*.
