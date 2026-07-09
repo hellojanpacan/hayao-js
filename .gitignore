@@ -12,3 +12,8 @@ scratchpad/
 
 # Studio session/knob/variant artifacts (filesystem bus — local, never versioned)
 .studio/
+
+# vercel
+.vercel
+.env*.local
+.env*
