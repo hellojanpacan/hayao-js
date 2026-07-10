@@ -50,6 +50,14 @@ export interface RunOptions {
    * after the handle is returned via GameHandle.addSource().
    */
   sources?: InputSource[];
+  /**
+   * Where the built-in KeyboardSource listens. Default `document` — right for a
+   * game that owns the page. Pass a focusable wrapper element instead when
+   * EMBEDDING a game in a content page: keys (and the arrow/space scroll
+   * preventDefault) are then captured only while focus is inside the wrapper,
+   * so the rest of the page keeps scrolling normally.
+   */
+  keyboardTarget?: Document | HTMLElement;
 }
 
 export interface GameHandle {
@@ -132,7 +140,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
   renderer.mount?.(mount);
   setOverlayHost(mount);
 
-  const input = new KeyboardSource(def.inputMap ?? {}, document);
+  const input = new KeyboardSource(def.inputMap ?? {}, opts.keyboardTarget ?? document);
   // keyboard wired in so mouse buttons enter the same deterministic action log
   // as keys (mouse.left/right/middle held actions + inputMap bindings).
   const pointer = new PointerSource(renderer, { keyboard: input });
