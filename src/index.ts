@@ -178,4 +178,4 @@ export * from './workshop/timeline';
 export * from './workshop/run';
 
 /** Engine version. Must equal package.json — guarded by src/version.test.ts. */
-export const VERSION = '0.5.0';
+export const VERSION = '0.5.1';
