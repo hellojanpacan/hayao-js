@@ -59,3 +59,92 @@
     background: var(--color-paper);
   }
 }
+
+/* Let hydrated islands (e.g. the sticky nav) lay out as if they weren't wrapped. */
+astro-island {
+  display: contents;
+}
+
+/* ── Woodblock lattice — brand-tinted "zigzag" background ──
+   Four repeating line-gradients (horizontal, vertical, and two diagonals)
+   cross to form a fine kentō-style lattice. Tinted with the Hayao palette
+   at a whisper of opacity so it reads as printed washi, not a tech grid. */
+.site-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--color-paper);
+  background-image:
+    repeating-linear-gradient(0deg,   transparent, transparent 22px, rgb(41 51 92 / 0.05)   22px, rgb(41 51 92 / 0.05)   23px),
+    repeating-linear-gradient(90deg,  transparent, transparent 30px, rgb(102 155 188 / 0.045) 30px, rgb(102 155 188 / 0.045) 31px),
+    repeating-linear-gradient(60deg,  transparent, transparent 40px, rgb(51 115 87 / 0.04)   40px, rgb(51 115 87 / 0.04)   41px),
+    repeating-linear-gradient(150deg, transparent, transparent 35px, rgb(229 149 0 / 0.05)   35px, rgb(229 149 0 / 0.05)   36px);
+  /* Soften the lattice through the middle so headlines stay crisp,
+     keep it fullest toward the edges for a framed, printed feel. */
+  -webkit-mask-image: radial-gradient(115% 90% at 50% 32%, rgb(0 0 0 / 0.5) 0%, #000 72%);
+  mask-image: radial-gradient(115% 90% at 50% 32%, rgb(0 0 0 / 0.5) 0%, #000 72%);
+}
+
+/* ── Navigation dropdown (Radix NavigationMenu viewport) ── */
+.nav-viewport {
+  position: relative;
+  transform-origin: top center;
+  overflow: hidden;
+  border-radius: 1.35rem;
+  border: 1px solid #e7e8ee;
+  background: #fff;
+  box-shadow: 0 18px 50px -20px rgb(41 51 92 / 0.28);
+  /* Size to our own content — Radix's --radix-navigation-menu-viewport-* vars
+     mis-measure fixed-width panels (reporting just the padding), so don't use them. */
+  width: max-content;
+  height: auto;
+}
+.nav-viewport[data-state="open"] {
+  animation: navIn 0.18s ease-out;
+}
+.nav-viewport[data-state="closed"] {
+  animation: navOut 0.15s ease-in forwards;
+}
+@keyframes navIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes navOut {
+  from { opacity: 1; }
+  to { opacity: 0; transform: translateY(-6px); }
+}
+
+/* ── Dialog / modal animations ── */
+.dialog-overlay {
+  animation: fadeIn 0.18s ease-out;
+}
+.dialog-content {
+  transform: translate(-50%, -50%);
+  animation: popIn 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+.sheet-content {
+  animation: slideDown 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes popIn {
+  from { opacity: 0; transform: translate(-50%, -46%) scale(0.96); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-viewport,
+  .nav-viewport[data-state],
+  .dialog-overlay,
+  .dialog-content,
+  .sheet-content {
+    animation: none;
+  }
+}

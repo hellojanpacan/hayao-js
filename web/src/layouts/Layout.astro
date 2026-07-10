@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import SiteNav from "../components/SiteNav.tsx";
 interface Props {
   title?: string;
   description?: string;
@@ -23,6 +24,8 @@ const {
     <meta property="og:type" content="website" />
   </head>
   <body>
+    <div class="site-bg" aria-hidden="true"></div>
+    <SiteNav client:load />
     <slot />
   </body>
 </html>
