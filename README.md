@@ -1,6 +1,15 @@
-# hayao.js
+<p align="center">
+  <a href="https://hayao.dev/">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://hayao.dev/logo-dark.svg">
+      <img src="https://hayao.dev/logo.svg" alt="Hayao.js" width="340">
+    </picture>
+  </a>
+</p>
 
-[![ci](https://github.com/hellojanpacan/hayao-js/actions/workflows/ci.yml/badge.svg)](https://github.com/hellojanpacan/hayao-js/actions/workflows/ci.yml)
+<p align="center">
+  <a href="https://github.com/hellojanpacan/hayao-js/actions/workflows/ci.yml"><img src="https://github.com/hellojanpacan/hayao-js/actions/workflows/ci.yml/badge.svg" alt="ci"></a>
+</p>
 
 **Play the machine-verified example games at [hayao.dev/play](https://hayao.dev/play/).**
 Four are art-finished in the house woodblock style (Lanternway, Rootward,
@@ -191,6 +200,13 @@ store (`play/index.html`), [hayao.dev/roadmap](https://hayao.dev/roadmap/) is th
 public roadmap + js13k benchmark ladder (`roadmap/index.html`), and developer docs
 live at [hayao.js.org](https://hayao.js.org/). Featured-game thumbnails are
 regenerated with `npm run thumbs`.
+
+The official logo — the Regalia crown lockup above — is a pure-vector single
+source of truth: [hayao.dev/logo.svg](https://hayao.dev/logo.svg) (light) and
+[hayao.dev/logo-dark.svg](https://hayao.dev/logo-dark.svg) (dark), generated
+from [`web/src/components/logo.ts`](https://github.com/hellojanpacan/hayao-js/blob/main/web/src/components/logo.ts)
+by `web/scripts/outline-logo.mjs`. The full brand sheet lives at
+[hayao.dev/style](https://hayao.dev/style/).
 
 ## Status
 
