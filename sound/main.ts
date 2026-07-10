@@ -5,6 +5,7 @@
 import {
   GENRES,
   ALBUM,
+  SOUNDTRACK,
   audio,
   renderSong,
   renderAudioFilmstrip,
@@ -22,6 +23,10 @@ const volEl = document.getElementById('vol') as HTMLInputElement;
 const tracklistEl = document.getElementById('tracklist')!;
 const albumVizEl = document.getElementById('album-viz')!;
 const albumConceptEl = document.getElementById('album-concept')!;
+const stTracklistEl = document.getElementById('st-tracklist')!;
+const stVizEl = document.getElementById('st-viz')!;
+const stConceptEl = document.getElementById('st-concept')!;
+const stDesignEl = document.getElementById('st-designnote')!;
 
 let stopCurrent: (() => void) | null = null;
 let activeId: string | null = null;
@@ -105,6 +110,40 @@ for (const t of ALBUM.tracks) {
     li.classList.add('on');
     nowEl.textContent = `▸ now playing: Neon Precinct — ${t.title} (looping)`;
     showFilmstrip(t.id, song, albumVizEl);
+  });
+}
+
+// ── the game soundtrack: Palace Hours (background-first) ──
+stConceptEl.textContent = SOUNDTRACK.concept;
+stDesignEl.innerHTML = `<strong>The promise:</strong> ${SOUNDTRACK.designNote}`;
+for (const t of SOUNDTRACK.cues) {
+  const song = t.make();
+  const li = document.createElement('li');
+  li.dataset.id = t.id;
+  li.innerHTML = `
+    <div>
+      <div class="tk-title">${t.title} <span style="color:#7d7360;font-family:var(--mono);font-size:11px">· ${t.state}</span></div>
+      <div class="tk-intent">${t.intent}</div>
+    </div>
+    <span class="tk-meta">${song.bpm} bpm</span>`;
+  stTracklistEl.appendChild(li);
+  li.addEventListener('click', () => {
+    audio.start();
+    if (activeId === t.id) {
+      stopCurrent?.();
+      stopCurrent = null;
+      activeId = null;
+      clearActive();
+      nowEl.textContent = '';
+      return;
+    }
+    stopCurrent?.();
+    clearActive();
+    stopCurrent = audio.playSong(song, { loop: true });
+    activeId = t.id;
+    li.classList.add('on');
+    nowEl.textContent = `▸ now playing: Palace Hours — ${t.title} (looping)`;
+    showFilmstrip(t.id, song, stVizEl);
   });
 }
 
