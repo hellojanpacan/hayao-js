@@ -492,6 +492,11 @@ with a big `advance(ms)` — use `runSteps(n)`, which has no realtime clamp.
 
 ## House style (defaults — swap deliberately, not accidentally)
 
+Everything in this section is the *default cartridge*, not a wall: to swap in
+outside assets (your own art, sound, fonts) see [ASSETS.md](ASSETS.md) — the
+four-clause contract that keeps a brought asset as first-class as the house
+style it replaces.
+
 - **Code-as-art, zero binary assets.** A `Sprite` is a vector `Shape`
   (`rect` / `circle` / `poly` / `path`) or a `glyph` (a Unicode character) —
   never a bitmap. Unicode glyphs (♞ ♝ ⚔ ☠ ✿) are instant, legible art.

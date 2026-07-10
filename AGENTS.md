@@ -4,6 +4,45 @@ You are the primary game developer here. The engine pre-solves the traps
 (headless verification, determinism, crisp rendering, DOM menus). Trust it and
 hold the invariants.
 
+## The identity: Pico-8's soul on Godot's skeleton
+
+Hayao is two layers with opposite temperaments, and keeping them apart is the
+root architectural discipline:
+
+- **The skeleton is Godot-shaped and unconstrained.** Scene tree, deterministic
+  kernel, pure `Puzzle` logic, solver proofs, the verification gates. Nothing
+  here is stylistic; nothing here caps a game's scale or ambition. This layer
+  stays unopinionated forever — hayao is not *just* for game jams.
+- **The cartridge is Pico-8-shaped and complete.** The house style — the
+  Regalia palette and its duotone asset language, soft-synthesis audio,
+  generated solver-proven campaigns — is a finished, opinionated *default* so
+  prompt-to-game lands somewhere polished, not on a gray box. It lives entirely
+  in content and convention (`src/art/`, palettes, instruments, docs) — never
+  in engine primitives.
+
+Pico-8's limits exist for a human reason (constraint as creative fuel, a
+shared aesthetic as culture); hayao's exist for an **AI reason** (vector art
+is generatable and diffable, determinism is verifiable, the synth is
+promptable). That difference is why hayao can be open where Pico-8 must be
+closed: **the style is a default, not a wall.** A creative human + productive
+agent must be able to leave the house style entirely — their own art, sound,
+fonts — and lose nothing structural.
+
+The test for any engine change: *could someone ship a game with zero
+hayao-branded assets and lose nothing but the look?* If a renderer can only
+paint duotone, or the audio bus can only voice Regalia, the change is wrong.
+Tiebreakers this settles:
+
+- "Should the engine hard-require the house style?" — **no.**
+- "Should `create-hayao`, the examples, and prompt-to-game default to it?" —
+  **yes, fully.**
+- "Is a new style-specific capability an engine primitive or a content pack?"
+  — content pack, behind `@hayao`'s neutral surface.
+
+The precise rules for bringing ANY outside asset (art, sound, fonts) as a
+first-class citizen are the four clauses of `docs/ASSETS.md` — the asset
+contract.
+
 ## Commands
 - `npm run dev` — dev server (hub + all examples; MPA, honest 404s)
 - `npm run check` — typecheck (must pass before any handoff)
