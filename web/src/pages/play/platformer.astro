@@ -1,0 +1,95 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
+import PlatformerPlay from "../../components/PlatformerPlay.tsx";
+
+const features = [
+  {
+    t: "One verb: a jetpack you feather",
+    d: "Hold to burn fuel and rise, release to fall soft under a floaty gravity. The whole game is analog throttle — when to feather, when to let the arc carry, when to let go. One deep verb, no toolbox.",
+  },
+  {
+    t: "Fuel is the poem",
+    d: "A full tank can't clear the screen — the engine proves it. Rest on ledges to refill, brush embers mid-air; the climb is a fuel economy you ration, not a straight burn. The pretty line is the efficient one.",
+  },
+  {
+    t: "Grace you can trust, proven",
+    d: "Coyote time, input buffering, ceiling corner-correction — the full precision-platformer grace canon, tested to the frame. A fuel-aware bot flies the whole line zero-death, and it replays deterministically.",
+  },
+];
+---
+
+<Layout
+  title="2D Platformer — Small Flame · Hayao"
+  description="Small Flame — a meditative precision platformer with one verb: a jetpack you feather. Hold to burn fuel and rise, ration the tank, reach the lantern. Grace-canon movement, bot-proven zero-death, built on Hayao."
+>
+  <main class="flex flex-col items-center text-center">
+    <!-- hero -->
+    <section class="mx-auto flex w-full max-w-2xl flex-col items-center px-6 pt-28 pb-10 md:pt-36">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Play · 2D Platformer</p>
+      <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
+        Small Flame
+      </h1>
+      <p class="mt-6 max-w-[48ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
+        Celeste, but the dash is a fuel gauge you feather. A single still night shaft you learn to
+        breathe your way up — hold to rise, ration the tank, reach the lantern.
+      </p>
+    </section>
+
+    <!-- the live game -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-6">
+      <PlatformerPlay client:visible />
+    </section>
+
+    <p class="mb-16 max-w-[46ch] px-6 font-body text-[0.85rem] font-light leading-relaxed text-muted">
+      This isn't a video — it's the engine running the real game on this page. Hold ↑ / Z / Space to
+      rise, drift with ← →, and reach the lantern before the tank runs dry.
+    </p>
+
+    <!-- what makes it tick -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-20">
+      <div class="grid gap-4 md:grid-cols-3">
+        {
+          features.map((f) => (
+            <div class="flex flex-col rounded-3xl border border-hair bg-panel p-6 text-left">
+              <h2 class="font-display text-[1.05rem] font-semibold text-ink">{f.t}</h2>
+              <p class="mt-2 grow font-body text-[0.88rem] font-light leading-relaxed text-soft">{f.d}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- how it was made -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-28">
+      <div class="rounded-[2.25rem] bg-navy px-6 py-14 md:px-14">
+        <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Designed, then proven</p>
+        <h2 class="mx-auto max-w-[24ch] text-balance font-display text-[clamp(1.6rem,4vw,2.2rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-white">
+          Composed from a mechanic, verified before it shipped
+        </h2>
+        <p class="mx-auto mt-5 max-w-[48ch] font-body text-[1rem] font-light leading-relaxed text-white/70">
+          Small Flame was designed with the Hayao Design Codex — an anchor, a genre, and one twist —
+          then built in the default Regalia style. Its controller is a pure module: a fuel-aware bot
+          proves the climb is winnable zero-death, one tank is proven unable to clear the screen, and
+          the whole flight replays deterministically.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <a
+            href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/small-flame"
+            class="inline-flex items-center rounded-full bg-orange px-6 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:bg-green"
+          >
+            Read the source
+          </a>
+          <a
+            href="/create/concept"
+            class="inline-flex items-center rounded-full border border-white/25 px-6 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:border-white/60"
+          >
+            Design your own
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
