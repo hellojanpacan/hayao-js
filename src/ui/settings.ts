@@ -1,19 +1,23 @@
-// Player settings, persisted to localStorage and pushed into the audio bus.
-// Framework-agnostic (plain object + subscribe), so any game/UI can bind to it.
+// Player settings, persisted to localStorage and pushed into the audio bus
+// (and the haptics switch). Framework-agnostic (plain object + subscribe), so
+// any game/UI can bind to it.
 
 import { audio } from '../audio/audio';
+import { setHapticsEnabled } from '../input/haptics';
 
 export interface Settings {
   master: number;
   music: number;
   sfx: number;
   muted: boolean;
+  /** Gamepad rumble / device vibration (input/haptics.ts honours this). */
+  haptics: boolean;
   colorblind: boolean;
   reducedMotion: boolean;
 }
 
 const KEY = 'hayao.settings.v1';
-const DEFAULTS: Settings = { master: 0.7, music: 0.6, sfx: 0.8, muted: false, colorblind: false, reducedMotion: false };
+const DEFAULTS: Settings = { master: 0.7, music: 0.6, sfx: 0.8, muted: false, haptics: true, colorblind: false, reducedMotion: false };
 
 type Sub = (s: Settings) => void;
 
@@ -44,6 +48,7 @@ class SettingsStore {
 
   private pushToAudio(): void {
     audio.setVolumes({ master: this.state.master, music: this.state.music, sfx: this.state.sfx, muted: this.state.muted });
+    setHapticsEnabled(this.state.haptics);
   }
 
   private load(): Settings {

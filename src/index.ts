@@ -29,6 +29,7 @@ export * from './scene/ikTarget';
 export * from './scene/skeletonDebug';
 export * from './scene/light';
 export * from './scene/shadow2d';
+export * from './scene/tileLayer';
 export * from './scene/registry';
 
 // ── anim: authored clips, blend spaces, skeletons, IK (cosmetic view) ─
@@ -41,6 +42,8 @@ export * from './anim/skeleton';
 export * from './input/actions';
 export * from './input/source';
 export * from './input/gamepad';
+export * from './input/haptics';
+export * from './input/device';
 
 // ── physics: tilemaps, kinematic AABB, character controllers ────
 export * from './physics/tilemap';
@@ -74,6 +77,8 @@ export * from './art/texture';
 export * from './art/font5';
 export * from './art/bitmapFont';
 export * from './art/autotile';
+export * from './art/duotone';
+export * from './art/hero';
 
 // ── procgen: deterministic generators + stateless scatter ───────
 export * from './procgen/grid';
@@ -105,6 +110,8 @@ export * from './ui/settings';
 export * from './ui/shell';
 export * from './ui/touch';
 export * from './ui/transition';
+export * from './ui/toast';
+export * from './ui/menuNav';
 
 // ── verify: the AI-first harness ────────────────────────────────
 export * from './verify/solver';
@@ -133,6 +140,7 @@ export * from './logic/history';
 export * from './persist/storage';
 export * from './persist/codec';
 export * from './persist/save';
+export * from './persist/achievements';
 
 // ── content: data-driven wave/spawn directors + upgrade trees ───
 export * from './content/dsl';
@@ -151,11 +159,16 @@ export * from './net/rollback';
 export * from './net/room';
 export * from './net/browser';
 
+// ── debug: immediate-mode draws + the Backspace runtime pane ────
+export * from './debug/draw';
+export * from './debug/pane';
+
 // ── world + app ─────────────────────────────────────────────────
 export * from './world';
 export * from './app/game';
 export * from './app/tuning';
 export * from './app/browser';
+export * from './app/share';
 
 // ── studio (browser-safe parts; the vite plugin ships via `hayao/studio`) ──
 export * from './studio/session';

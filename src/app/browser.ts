@@ -17,8 +17,11 @@ import { renderToSVGString } from '../render/svgString';
 import { audio } from '../audio/audio';
 import { settings } from '../ui/settings';
 import { setOverlayHost } from '../ui/overlay';
+import { MenuGamepad } from '../ui/menuNav';
 import { Shell } from '../ui/shell';
 import { installCapture, isCaptureMode } from '../verify/capture';
+import { DebugPane } from '../debug/pane';
+import { drainDebugCommands } from '../debug/draw';
 import type { World } from '../world';
 
 export interface RunOptions {
@@ -26,6 +29,13 @@ export interface RunOptions {
   renderer?: 'svg' | 'canvas' | 'webgl';
   /** Start the pause/settings shell (Esc). Default true. */
   shell?: boolean;
+  /** Gamepad navigation of menu screens (d-pad/stick + Ⓐ/Ⓑ). Default true. */
+  menuGamepad?: boolean;
+  /**
+   * The runtime debug pane on Backspace (freeze/step, node inspector, probe,
+   * screenshot/video). Default true; off automatically in capture mode.
+   */
+  debugPane?: boolean;
   onRestart?: () => void;
   /** World creation overrides (seed, tuning) — applied on start AND restart. */
   world?: CreateWorldOptions;
@@ -163,13 +173,40 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
   window.addEventListener('pointerdown', startAudio);
   window.addEventListener('keydown', startAudio);
 
-  const renderFrame = () => renderer.draw(world.render());
+  const renderFrame = () => {
+    const cmds = world.render();
+    // Immediate-mode debug draws paint above everything (see debug/draw.ts).
+    const dbg = drainDebugCommands(world.viewTransform());
+    renderer.draw(dbg.length > 0 ? cmds.concat(dbg) : cmds);
+  };
   const restart = () => {
     world = createWorld(def, opts.world);
     declareInputs();
     renderFrame();
   };
 
+  // One fixed step with live-held inputs + a render — what the debug pane's
+  // frame-stepper drives while the freeze gate holds the wall-clock loop.
+  const debugStepOnce = () => {
+    pointer.sample(world.input);
+    for (const s of extraSources) s.sample(world.input);
+    world.step(input.currentActions());
+    input.clearPressed();
+    renderFrame();
+  };
+  const debugPane =
+    opts.debugPane === false || capture
+      ? null
+      : new DebugPane({
+          get world() {
+            return world;
+          },
+          stepOnce: debugStepOnce,
+          canvas: renderer.element,
+          mount,
+        });
+
+  const menuPad = opts.menuGamepad === false ? null : new MenuGamepad();
   const shell =
     opts.shell === false
       ? null
@@ -202,7 +239,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
   // One real frame: sample sources → advance → render. Shared verbatim by the
   // wall-clock loop and handle.tick() so tool-driven stepping IS the loop.
   const perFrame = (dtMs: number) => {
-    if (!capture && !(shell?.isPaused) && !opts.isHeld?.()) {
+    if (!capture && !(shell?.isPaused) && !opts.isHeld?.() && !debugPane?.held) {
       pointer.sample(world.input); // pointer.x/y/down into axes before the step reads them
       for (const s of extraSources) s.sample(world.input);
       const actions = input.currentActions();
@@ -327,6 +364,8 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
       pointer.dispose();
       for (const s of extraSources) s.dispose?.();
       extraSources.length = 0;
+      menuPad?.dispose();
+      debugPane?.dispose();
       shell?.dispose();
       renderer.dispose?.();
     },

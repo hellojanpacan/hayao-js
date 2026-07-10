@@ -37,6 +37,70 @@ export const TAU = Math.PI * 2;
 export const deg2rad = (d: number): number => (d * Math.PI) / 180;
 export const rad2deg = (r: number): number => (r * 180) / Math.PI;
 
+/** Wrap `v` into [lo, hi) — the modular clamp for toroidal worlds and angle bins. */
+export function wrap(v: number, lo: number, hi: number): number {
+  const size = hi - lo;
+  if (size <= 0) return lo;
+  const m = (v - lo) % size;
+  return m < 0 ? m + size + lo : m + lo;
+}
+
+/**
+ * Signed shortest difference `b − a` on a wrapping axis of the given `size`
+ * (screen-wrap distance): result ∈ [−size/2, size/2).
+ */
+export function distanceWrap(a: number, b: number, size: number): number {
+  const d = (b - a) % size;
+  return wrap(d, -size / 2, size / 2);
+}
+
+/** Signed shortest angular difference `b − a`, in (−π, π]. */
+export function angleDelta(a: number, b: number): number {
+  return -distanceWrap(b, a, TAU);
+}
+
+/** Lerp between angles along the SHORTEST arc (no 350°→10° long-way spin). */
+export function lerpAngle(a: number, b: number, t: number): number {
+  return a + angleDelta(a, b) * t;
+}
+
+export type WaveKind = 'sine' | 'triangle' | 'square' | 'saw';
+
+/**
+ * A periodic wave of `time`, `frequency` cycles per second, in [−1, 1] — the
+ * idle-bob / blink / hover primitive. Phase convention: sine and triangle
+ * cross zero rising at t = 0; square starts its high half; saw rises from −1
+ * over the whole cycle. Deterministic (sine routes through dsin), so it is
+ * safe inside the sim.
+ */
+export function oscillate(time: number, frequency = 1, wave: WaveKind = 'sine'): number {
+  const phase = wrap(time * frequency, 0, 1);
+  switch (wave) {
+    case 'sine':
+      return dsin(phase * TAU);
+    case 'triangle':
+      return phase < 0.25 ? phase * 4 : phase < 0.75 ? 2 - phase * 4 : phase * 4 - 4;
+    case 'square':
+      return phase < 0.5 ? 1 : -1;
+    case 'saw':
+      return phase * 2 - 1;
+  }
+}
+
+/**
+ * Seconds → a clock string: `"1:05"`, `"12:07"`, or `"1:02:33"` past an hour.
+ * Negative or non-finite input reads `"0:00"`. For HUD timers and results screens.
+ */
+export function formatTime(seconds: number): string {
+  if (!Number.isFinite(seconds) || seconds < 0) seconds = 0;
+  const total = Math.floor(seconds);
+  const s = total % 60;
+  const m = Math.floor(total / 60) % 60;
+  const h = Math.floor(total / 3600);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return h > 0 ? `${h}:${pad(m)}:${pad(s)}` : `${m}:${pad(s)}`;
+}
+
 /** Axis-aligned rectangle. */
 export interface Rect {
   x: number;

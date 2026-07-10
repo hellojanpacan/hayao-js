@@ -19,6 +19,16 @@ export interface Volumes {
 
 const DEFAULT_VOLUMES: Volumes = { master: 0.7, music: 0.6, sfx: 0.8, muted: false };
 
+/** A playing sample instance (see AudioBus.playSample). */
+export interface SampleHandle {
+  /** Fade out over `fadeSec` (default: cut immediately) and end the instance. */
+  stop(fadeSec?: number): void;
+  /** Ramp this instance's own gain (independent of bus volumes). */
+  setGain(v: number, rampSec?: number): void;
+  /** False once ended or stopped. */
+  playing: boolean;
+}
+
 /** A single zzfx-ish tone spec. */
 export interface Tone {
   freq: number;
@@ -199,6 +209,78 @@ export class AudioBus {
         /* already stopped */
       }
     };
+  }
+
+  // ── Sample playback (recorded audio files) ─────────────────────
+  // Synthesis-first stays the doctrine — specs verify headlessly, files don't —
+  // but "play this one recorded sting" shouldn't require resynthesis. Samples
+  // route through the same sfx/music buses, so volumes and mute still apply.
+
+  private sampleCache = new Map<string, Promise<AudioBuffer | null>>();
+
+  /**
+   * Fetch + decode an audio file (mp3/ogg/wav) into an AudioBuffer, cached by
+   * URL. Requires a started bus (user gesture); resolves null on any failure —
+   * a missing asset must never crash a game. Headless: always null.
+   */
+  loadSample(url: string): Promise<AudioBuffer | null> {
+    if (!this._ctx) return Promise.resolve(null);
+    let p = this.sampleCache.get(url);
+    if (!p) {
+      p = fetch(url)
+        .then((r) => (r.ok ? r.arrayBuffer() : Promise.reject(new Error(`${r.status}`))))
+        .then((ab) => this._ctx!.decodeAudioData(ab))
+        .catch(() => null);
+      this.sampleCache.set(url, p);
+    }
+    return p;
+  }
+
+  /**
+   * Play a decoded sample. Returns a live handle: `stop(fadeSec)` fades out and
+   * ends it, `setGain(v, rampSec)` adjusts it mid-flight — the per-instance
+   * controls one-shot tones don't need but loops and stingers do.
+   */
+  playSample(buf: AudioBuffer, opts: { gain?: number; pan?: number; loop?: boolean; when?: number; music?: boolean } = {}): SampleHandle {
+    const dead: SampleHandle = { stop() {}, setGain() {}, playing: false };
+    const bus = opts.music ? this.musicGain : this.sfxGain;
+    if (!this._ctx || !bus) return dead;
+    const ctx = this._ctx;
+    const src = ctx.createBufferSource();
+    src.buffer = buf;
+    src.loop = opts.loop ?? false;
+    const g = ctx.createGain();
+    g.gain.value = opts.gain ?? 1;
+    src.connect(g);
+    if (opts.pan !== undefined && typeof ctx.createStereoPanner === 'function') {
+      const p = ctx.createStereoPanner();
+      p.pan.value = Math.max(-1, Math.min(1, opts.pan));
+      g.connect(p);
+      p.connect(bus);
+    } else {
+      g.connect(bus);
+    }
+    src.start(ctx.currentTime + (opts.when ?? 0));
+    const handle: SampleHandle = {
+      playing: true,
+      stop(fadeSec = 0) {
+        if (!handle.playing) return;
+        handle.playing = false;
+        try {
+          if (fadeSec > 0) {
+            g.gain.setTargetAtTime(0, ctx.currentTime, fadeSec / 3);
+            src.stop(ctx.currentTime + fadeSec + 0.1);
+          } else src.stop();
+        } catch {
+          /* already stopped */
+        }
+      },
+      setGain(v: number, rampSec = 0.02) {
+        g.gain.setTargetAtTime(v, ctx.currentTime, Math.max(0.001, rampSec / 3));
+      },
+    };
+    src.onended = () => (handle.playing = false);
+    return handle;
   }
 
   /** Convenience SFX. */

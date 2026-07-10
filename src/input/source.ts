@@ -193,7 +193,9 @@ export const MOUSE_ACTIONS = ['mouse.left', 'mouse.right', 'mouse.middle'] as co
  * analog axes: `pointer.x`, `pointer.y`, `pointer.down` (1/0), plus
  * `pointer.right` / `pointer.middle` (1/0) for the secondary mouse buttons
  * (the context menu is suppressed by default so right-click is usable — see
- * PointerSourceOptions). Sim code then reads `world.input.axis('pointer.x')`
+ * PointerSourceOptions), `pointer.wheel` (integer scroll notches this step),
+ * and `pointer.dx` / `pointer.dy` (relative motion since the last step — the
+ * aiming channel under `lockPointer()`). Sim code then reads `world.input.axis('pointer.x')`
  * — no out-of-engine letterbox glue. With `keyboard` wired, buttons also enter
  * the action pipeline as `mouse.left/right/middle` (bindable in an inputMap,
  * `justPressed`-able, replay-exact).
@@ -251,6 +253,9 @@ export class PointerSource {
       this.clientX = e.clientX;
       this.clientY = e.clientY;
       this.seen = true;
+      // Relative motion (the pointer-lock channel; also live unlocked).
+      this.dxAcc += e.movementX ?? 0;
+      this.dyAcc += e.movementY ?? 0;
       // Hover-only moves carry buttons=0 and must not clear a press tracked
       // from pointerdown — only chorded changes (some button held) apply.
       if (typeof e.buttons === 'number' && e.buttons !== 0) readButtons(e);
@@ -286,6 +291,14 @@ export class PointerSource {
     };
     // Right-click is game input: suppress the context menu unless opted back in.
     this.onCtx = (e) => e.preventDefault();
+    // Wheel is game input too (zoom, weapon cycle): normalize the three delta
+    // modes to ~px so a notch reads ≈100 whatever the browser reports.
+    this.onWheel = (e) => {
+      const scale = e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? 400 : 1;
+      this.wheelAcc += (e.deltaY ?? 0) * scale;
+      if (!opts.pageScroll) e.preventDefault();
+    };
+    this.el?.addEventListener('wheel', this.onWheel as EventListener, { passive: !!opts.pageScroll });
     this.el?.addEventListener('pointermove', this.onMove as EventListener);
     this.el?.addEventListener('pointerdown', this.onDown as EventListener);
     // A finger lifted on the canvas ends its own touch…
@@ -336,6 +349,17 @@ export class PointerSource {
     input.axes.set('pointer.down', r.down ? 1 : 0);
     input.axes.set('pointer.right', this.rightDown ? 1 : 0);
     input.axes.set('pointer.middle', this.middleDown ? 1 : 0);
+    // Wheel: integer notches this step (~100 normalized px each); the sub-notch
+    // remainder carries over so trackpad micro-deltas accumulate instead of dying.
+    const notches = Math.trunc(this.wheelAcc / 100);
+    this.wheelAcc -= notches * 100;
+    input.axes.set('pointer.wheel', notches);
+    // Relative motion since the last step (client px, 1/8-px quantized) — THE
+    // aiming channel under pointer lock, where absolute x/y stops moving.
+    input.axes.set('pointer.dx', q(this.dxAcc));
+    input.axes.set('pointer.dy', q(this.dyAcc));
+    this.dxAcc = 0;
+    this.dyAcc = 0;
     if (this.keyboard) {
       input.declareActions(MOUSE_ACTIONS);
       this.keyboard.setHeld('mouse.left', this.isDown);
@@ -344,8 +368,38 @@ export class PointerSource {
     }
   }
 
+  /**
+   * Request pointer lock on the game element (FPS-style relative aiming).
+   * Browsers only grant it inside a user gesture — call from a click/key
+   * handler. While locked, read `pointer.dx` / `pointer.dy`; the absolute
+   * `pointer.x/y` freezes because the OS cursor stops moving.
+   */
+  lockPointer(): void {
+    (this.el as HTMLElement | undefined)?.requestPointerLock?.();
+  }
+
+  /** Release pointer lock (also freed by the browser on Esc). */
+  unlockPointer(): void {
+    if (typeof document !== 'undefined') document.exitPointerLock?.();
+  }
+
+  /** Is the pointer currently locked to the game element? */
+  get isLocked(): boolean {
+    return typeof document !== 'undefined' && !!this.el && document.pointerLockElement === this.el;
+  }
+
+  /**
+   * Set the CSS cursor over the game ('crosshair', 'grab', 'none' to hide —
+   * pair 'none' with a cosmetic in-world cursor sprite).
+   */
+  setCursor(cursor: string): void {
+    const el = this.el as HTMLElement | SVGElement | undefined;
+    if (el && 'style' in el) el.style.cursor = cursor;
+  }
+
   dispose(): void {
     if (this.keyboard) for (const a of MOUSE_ACTIONS) this.keyboard.releaseHeld(a);
+    this.el?.removeEventListener('wheel', this.onWheel as EventListener);
     this.el?.removeEventListener('pointermove', this.onMove as EventListener);
     this.el?.removeEventListener('pointerdown', this.onDown as EventListener);
     this.el?.removeEventListener('pointerup', this.onUp as EventListener);

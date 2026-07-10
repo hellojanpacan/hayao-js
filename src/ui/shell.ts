@@ -55,17 +55,20 @@ export class Shell {
 
   private render(): void {
     const s = settings.get();
-    const vol = (label: string, v: number) => `${label}: ${Math.round(v * 100)}`;
+    const slider = (label: string, key: 'master' | 'music' | 'sfx') => ({
+      label,
+      slider: { value: s[key], step: 0.1, onChange: (v: number) => settings.set({ [key]: v }) },
+    });
     showScreen({
       title: this.opts.title ?? 'Paused',
-      body:
-        `<div style="font-size:13px;text-align:left;line-height:1.9">` +
-        `${vol('Master', s.master)} · ${vol('Music', s.music)} · ${vol('Sfx', s.sfx)}` +
-        `<br/><span style="opacity:.7">Use the menu, or keys: M mute · F fullscreen</span></div>`,
+      onCancel: () => this.resume(),
       actions: [
         { label: 'Resume', primary: true, onSelect: () => this.resume() },
-        { label: s.muted ? 'Unmute (M)' : 'Mute (M)', onSelect: () => { settings.set({ muted: !settings.get().muted }); this.render(); } },
-        { label: 'Music −/+', onSelect: () => { const m = Math.min(1, settings.get().music + 0.1) % 1.05; settings.set({ music: m > 1 ? 0 : m }); this.render(); } },
+        slider('Master', 'master'),
+        slider('Music', 'music'),
+        slider('Sfx', 'sfx'),
+        { label: 'Mute', toggle: { value: s.muted, onChange: (v) => settings.set({ muted: v }) } },
+        { label: 'Rumble', toggle: { value: s.haptics, onChange: (v) => settings.set({ haptics: v }) } },
         { label: 'Fullscreen (F)', onSelect: () => toggleFullscreen() },
         ...(this.opts.onRestart ? [{ label: 'Restart', onSelect: () => { this.resume(); this.opts.onRestart!(); } }] : []),
         ...(this.opts.onQuit ? [{ label: 'Quit', onSelect: () => { this.resume(); this.opts.onQuit!(); } }] : []),
