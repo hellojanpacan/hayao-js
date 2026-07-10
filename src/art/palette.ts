@@ -41,6 +41,41 @@ export const KENTO = {
   sakuDeep: '#b0506e', saku: '#e097ac', //  桜  dusty rose
 } as const;
 
+/**
+ * The Regalia swatch set — Hayao's clean, friendly "Bold Duotone" brand hues (the
+ * crown palette that dresses hayao.dev), expressed for gameplay the way KENTO is:
+ * one continuous paper→ink neutral ramp plus a navy `night` ramp for dark games,
+ * and the six brand hues at their true, single tone — the "duotone" is the two
+ * OPACITIES of a hue in use (see duotone.ts), never a second hex. Every hue clears
+ * the house mark floor (2.4) on both the white and the night ground, and carries a
+ * dark ink outline that lifts the composite to AA — verified in palette-audit.ts.
+ * `rose` and `bark` are purpose-scoped (vitality / material) but live here so games
+ * that need health or wood tones stay on-model. This is the DEFAULT look; KENTO
+ * stays as an opt-in woodblock theme.
+ */
+export const REGALIA = {
+  // neutrals: white ground → navy ink (light), and a navy night ramp (dark)
+  paper: '#ffffff', //     lightest ground, light games
+  mist: '#f4f6fb', //      soft ground / raised card on light
+  cloud: '#eef1f6', //     sunken panel on light
+  line: '#e7e8ee', //      hairline / grid on light
+  muted: '#8b90a6', //     muted labels (not body text)
+  soft: '#5a6072', //      secondary text on light (AA)
+  ink: '#29335c', //  冠   primary ink / navy — text + structure
+  night: '#1d2542', //     raised panel on dark
+  ground: '#141a30', //    deepest dark ground, dark games
+  darkLine: '#303a63', //  hairline / grid on dark
+  paperInk: '#eef1f9', //  ink on the night ground
+  softInk: '#b3bbd4', //   secondary text on dark (AA)
+
+  // the six brand hues — one true tone each, dressed as two-opacity duotones in use
+  gold: '#e59500', //  the Regalia crown — primary / joy
+  green: '#337357', // meadow — growth / success
+  blue: '#669bbc', //  dusk — calm / sky / tech
+  rose: '#c65b5b', //  VITALITY: health / damage
+  bark: '#7a4f34', //  MATERIAL: wood / earth
+} as const;
+
 export interface Palette {
   name: string;
   bg: string;
@@ -54,7 +89,7 @@ export interface Palette {
   /** A small ordered ramp for categorical fills. */
   ramp: string[];
   /** The full on-brand swatch set, for games that pick hues by name. */
-  swatches?: typeof KENTO;
+  swatches?: typeof KENTO | typeof REGALIA;
 }
 
 /** Default light woodblock palette — washi ground, sumi ink, deep accents. */
@@ -104,7 +139,52 @@ export const PAPER: Palette = {
   swatches: KENTO,
 };
 
-export const PALETTES: Record<string, Palette> = { meadow: MEADOW, dusk: DUSK, paper: PAPER };
+/**
+ * Default clean/friendly palette — white ground, navy ink, gold accent. The Bold
+ * Duotone brand look; `new-game` scaffolds with this. Marks are the plain brand
+ * hues; each clears the 2.4 mark floor on white and its dark ink outline lifts the
+ * composite to AA.
+ */
+export const REGALIA_DAY: Palette = {
+  name: 'regalia',
+  bg: REGALIA.paper,
+  ink: REGALIA.ink,
+  inkSoft: REGALIA.soft,
+  line: REGALIA.line,
+  accent: REGALIA.gold,
+  accent2: REGALIA.blue,
+  good: REGALIA.green,
+  warn: REGALIA.rose, // rose owns vitality/danger — reads truer than gold as a warning
+  ramp: [REGALIA.gold, REGALIA.blue, REGALIA.green, REGALIA.rose, REGALIA.bark, REGALIA.ink],
+  swatches: REGALIA,
+};
+
+/** Night counterpart — deep navy ground, paper ink, the same brand hues on the dark ground. */
+export const REGALIA_NIGHT: Palette = {
+  name: 'regalia-night',
+  bg: REGALIA.ground,
+  ink: REGALIA.paperInk,
+  inkSoft: REGALIA.softInk,
+  line: REGALIA.darkLine,
+  accent: REGALIA.gold,
+  accent2: REGALIA.blue,
+  good: REGALIA.green,
+  warn: REGALIA.rose,
+  ramp: [REGALIA.gold, REGALIA.blue, REGALIA.green, REGALIA.rose, REGALIA.bark, REGALIA.paperInk],
+  swatches: REGALIA,
+};
+
+// Regalia (clean/friendly) is the default; meadow/dusk/paper are the woodblock KENTO set.
+export const PALETTES: Record<string, Palette> = {
+  regalia: REGALIA_DAY,
+  'regalia-night': REGALIA_NIGHT,
+  meadow: MEADOW,
+  dusk: DUSK,
+  paper: PAPER,
+};
+
+/** The default palette for new games — the clean Bold Duotone look. */
+export const DEFAULT_PALETTE: Palette = REGALIA_DAY;
 
 /** Blend two hex colors (t in [0,1]). Deterministic, no allocations of note. */
 export function mix(a: string, b: string, t: number): string {

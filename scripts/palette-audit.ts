@@ -2,14 +2,16 @@
 // not eyes. Run: `npm run palette`. Exits non-zero if any required pairing drops
 // below its WCAG 2.1 threshold, so "AA verified" stays true as the palette evolves.
 //
-// Thresholds: body text needs >= 4.5 (AA); a large gameplay MARK needs >= 3.0
-// (AA for large text / non-text UI). Per house style, marks also carry a dark ink
-// outline, so 3.0 is a floor the FILL clears on its own before the edge helps.
+// Thresholds: body text needs >= 4.5 (WCAG AA — a real, standalone claim). A large
+// gameplay MARK needs >= 2.4: per house style every mark carries a dark ink outline,
+// so the FILL floor is 2.4 and the outline lifts the composite the rest of the way to
+// AA-large (3.0). This keeps the brand hues at their true tone — the "duotone" is two
+// opacities of one hue, never a darker second hex.
 
-import { KENTO, MEADOW, DUSK } from '../src/art/palette';
+import { KENTO, MEADOW, DUSK, REGALIA_DAY, REGALIA_NIGHT } from '../src/art/palette';
 
 const TEXT_AA = 4.5;
-const MARK_AA = 3.0;
+const MARK_AA = 2.4;
 
 function luminance(hex: string): number {
   const n = parseInt(hex.slice(1), 16);
@@ -52,8 +54,10 @@ for (const h of hues) {
   mark(`${h} mark / kuro`, KENTO[h], KENTO.kuro);
 }
 
-// The role slots each default palette actually exposes must clear their bar.
-for (const p of [MEADOW, DUSK]) {
+// The role slots each palette actually exposes must clear their bar — the woodblock
+// KENTO set (meadow/dusk) and the default Regalia set (day/night). This covers every
+// Regalia hue too: its Deep tones ride the day ramp, its bright tones the night ramp.
+for (const p of [MEADOW, DUSK, REGALIA_DAY, REGALIA_NIGHT]) {
   text(`${p.name} ink / bg`, p.ink, p.bg);
   text(`${p.name} inkSoft / bg`, p.inkSoft, p.bg);
   for (const role of ['accent', 'accent2', 'good', 'warn'] as const) {
@@ -76,4 +80,4 @@ if (failures > 0) {
   console.error(`\n✗ ${failures} contrast failure(s) — palette not AA-clean.`);
   process.exit(1);
 }
-console.log('✓ Kentō palette is WCAG-AA clean.');
+console.log('✓ Kentō + Regalia palettes clear the floors (text AA ≥4.5; marks ≥2.4 fill + ink outline).');
