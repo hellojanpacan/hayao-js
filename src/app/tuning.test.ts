@@ -111,7 +111,7 @@ describe('tuning determinism', () => {
     const w = run({ gravity: 2600 });
     const yBefore = w.state.y as number;
     const snap = w.snapshot();
-    snap.tuning!.gravity = 3000; // the Studio knob-change flow
+    snap.tuning!.gravity = 3000; // the Workshop knob-change flow
     const w2 = createWorld(tunedGame, { tuning: { gravity: 3000 } });
     w2.restore(snap);
     expect(w2.state.y).toBe(yBefore); // carried over, not restarted

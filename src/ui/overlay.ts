@@ -110,7 +110,7 @@ export function setOverlayHost(el: HTMLElement): void {
 let screenObserver: ((kind: 'show' | 'hide', title?: string) => void) | null = null;
 /**
  * Observe DOM screen chrome (menus/title/game-over) opening and closing —
- * Studio's session recorder uses this to time menu dwell, which the sim can't
+ * Workshop's session recorder uses this to time menu dwell, which the sim can't
  * see. Observer only; it must never mutate.
  */
 export function setScreenObserver(cb: ((kind: 'show' | 'hide', title?: string) => void) | null): void {

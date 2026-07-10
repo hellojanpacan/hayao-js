@@ -1,16 +1,16 @@
-# STUDIO.md — the human/AI playtest loop
+# WORKSHOP.md — the human/AI playtest loop
 
 Hayao proves almost everything by machine — winnability, determinism, ramp,
 feel floors. The one channel no headless gate can close is **fun**, and that
-takes a human. Studio is the instrument for that channel: it turns every human
+takes a human. Workshop is the instrument for that channel: it turns every human
 playtest into a machine-legible, bit-exactly replayable artifact, and gives the
 agent sanctioned verbs to act on it.
 
 The design doctrine, in one line each:
 
-- **Text is the source of truth.** The Studio UI and its knob panel are
+- **Text is the source of truth.** The Workshop UI and its knob panel are
   observers; accepted values become code only when the agent edits the declared
-  defaults. `.studio/` is session data, never config.
+  defaults. `.workshop/` is session data, never config.
 - **Filesystem is the bus.** The browser posts artifacts to the dev server; the
   agent reads the same files via the MCP sidecar. The two never hold a socket
   to each other, so everything works across restarts and from cloud agents.
@@ -22,21 +22,21 @@ The design doctrine, in one line each:
 - **The human's job is taste, not construction.** Knobs are taste over a
   continuum; variants — and, next, candidate picks — are taste over discrete
   alternatives. The pane presents, the human picks, the agent writes the pick
-  into source. Studio never grows a construction UI.
+  into source. Workshop never grows a construction UI.
 
 ## Pieces
 
 | Piece | Where | Role |
 |---|---|---|
 | Tuning knobs | `tuning:` on `defineGame` (see `src/app/tuning.ts`) | declared live-adjustable params; resolved values are hashed sim state read via `world.tune(key)` |
-| `runStudio()` | game `main.ts` (instead of `runBrowser`) | records the session, applies `?seed=`/`?tuning=` URL overrides, exposes `window.__studio` (setKnob / annotate / flush) |
-| Dev middleware | `hayaoStudio()` plugin in `vite.config.ts` | persists sessions + knob values under `.studio/`, serves `/__studio/state`, implements `/__shot` |
+| `runWorkshop()` | game `main.ts` (instead of `runBrowser`) | records the session, applies `?seed=`/`?tuning=` URL overrides, exposes `window.__workshop` (setKnob / annotate / flush) |
+| Dev middleware | `hayaoWorkshop()` plugin in `vite.config.ts` | persists sessions + knob values under `.workshop/`, serves `/__workshop/state`, implements `/__shot` |
 | MCP sidecar | `bin/hayao-mcp.ts`, registered in `.mcp.json` | the agent's verbs: `list_games`, `list_sessions`, `inspect_moment`, `get_knob_state`, `run_verify` |
-| `/studio` skill | `.claude/skills/studio/` | the two loops: knob write-back and playtest reading |
+| `/workshop` skill | `.claude/skills/workshop/` | the two loops: knob write-back and playtest reading |
 
 ## The session artifact
 
-`.studio/sessions/<id>.json` (`PlaytestSession` in `src/studio/session.ts`):
+`.workshop/sessions/<id>.json` (`PlaytestSession` in `src/workshop/session.ts`):
 seed, initial tuning, per-frame action log, delta-encoded analog axes
 (pointer is grid-quantized at the source so replay is exact), mid-play knob
 events (replayed via rebuild-with-carryover at their exact frame), DOM screen
@@ -48,7 +48,7 @@ recorded** — this is a dev-server instrument only.
 
 `replaySession(def, session, toFrame?)` reconstructs the world at any tick;
 `assertSnapshotStable`-grade hash equality is covered in
-`src/studio/session.test.ts`.
+`src/workshop/session.test.ts`.
 
 ## Scrub semantics (time travel in the play pane)
 
@@ -68,13 +68,13 @@ read-only player for that artifact: the exact starting world is rebuilt, the
 whole recording is fast-replayed once to fill an adaptively-strided snapshot
 ring, and the full tape is scrubbable end to end — playback steps recorded
 frames at real time (elapsed-time accumulator, so throttled background timers
-can't slow it). The Studio drawer's report links each moment ("longest pause @
+can't slow it). The Workshop drawer's report links each moment ("longest pause @
 frame N", your annotations, the quit frame) straight into the tape at that
 frame. Knobs and annotation are disabled; nothing records.
 
 ## Hot-swap semantics (play across code edits)
 
-A game entry that passes `hot: import.meta.hot` to `runStudio` AND contains the
+A game entry that passes `hot: import.meta.hot` to `runWorkshop` AND contains the
 literal line `import.meta.hot?.accept();` keeps its live world across code
 edits: on swap the old run snapshots into `hot.data`, the re-executed module
 restores it (new module's tuning wins), and the session splits into segments —
@@ -103,7 +103,7 @@ The loop:
 
 1. **The agent generates N candidates of ONE dimension** — four soundtracks,
    three hero sprite sets, two palettes, a pair of feel presets — each
-   expressed as a module variant (`variants:` on `runStudio`: a `patch` that
+   expressed as a module variant (`variants:` on `runWorkshop`: a `patch` that
    rewrites the definition plus optional `tuning` seeds).
 2. **The pane presents them side-by-side in the running game.** Not
    thumbnails in a gallery — the actual game, hot-swapping candidates on the
@@ -115,7 +115,7 @@ The loop:
    data, never config.
 4. **The agent writes the pick into source.** Same doctrine as knobs: the
    winning candidate's code becomes the game's code via an agent edit; the
-   losers are deleted or kept as named variants. `.studio/` remembers *that*
+   losers are deleted or kept as named variants. `.workshop/` remembers *that*
    a choice happened; the repo owns *what* was chosen.
 
 What already exists for this: module variants + `?variant=<name>`, worktree
@@ -141,7 +141,7 @@ Two guards, so this stays hayao and not a no-code editor:
   acceptable emergent property of a good choice surface, never the goal:
   the agent is the code layer, and the human directs it in text.
 
-## Working on Studio itself
+## Working on Workshop itself
 
 Browser-safe parts (`session.ts`, `record.ts`, `run.ts`) export through the
 `@hayao` barrel; the Vite plugin and MCP sidecar are Node-only and must never

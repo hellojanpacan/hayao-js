@@ -1,7 +1,7 @@
-// The Studio dev-server plugin. Filesystem is the bus: the browser posts
+// The Workshop dev-server plugin. Filesystem is the bus: the browser posts
 // session artifacts / knob values here, the MCP sidecar and the agent read the
-// same `.studio/` files — the dev server and the agent never talk directly.
-// Node-only module: exported via the `hayao/studio` subpath, NEVER the barrel
+// same `.workshop/` files — the dev server and the agent never talk directly.
+// Node-only module: exported via the `hayao/workshop` subpath, NEVER the barrel
 // (games must stay browser-clean).
 
 import type { Plugin, ViteDevServer } from 'vite';
@@ -12,14 +12,14 @@ import { fileURLToPath } from 'node:url';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 
 /**
- * The prebuilt Studio UI shipped with the package (dist-studio/). Projects
- * with their own studio/index.html (this repo) serve the live page instead.
- * Checked relative to this module: works from dist/studio-plugin.js (package)
- * and from src/studio/vitePlugin.ts (repo, where ../../dist-studio also holds
- * the build:studio output).
+ * The prebuilt Workshop UI shipped with the package (dist-workshop/). Projects
+ * with their own workshop/index.html (this repo) serve the live page instead.
+ * Checked relative to this module: works from dist/workshop-plugin.js (package)
+ * and from src/workshop/vitePlugin.ts (repo, where ../../dist-workshop also holds
+ * the build:workshop output).
  */
-function findPrebuiltStudio(): string | null {
-  for (const rel of ['../dist-studio', '../../dist-studio']) {
+function findPrebuiltWorkshop(): string | null {
+  for (const rel of ['../dist-workshop', '../../dist-workshop']) {
     try {
       const dir = fileURLToPath(new URL(rel, import.meta.url));
       if (existsSync(join(dir, 'index.html'))) return dir;
@@ -42,8 +42,8 @@ const MIME: Record<string, string> = {
   '.wasm': 'application/wasm',
 };
 
-export interface StudioPluginOptions {
-  /** Where session/knob/variant files live. Default: `.studio` under the project root. */
+export interface WorkshopPluginOptions {
+  /** Where session/knob/variant files live. Default: `.workshop` under the project root. */
   dir?: string;
 }
 
@@ -64,18 +64,18 @@ function json(res: ServerResponse, status: number, body: unknown): void {
 
 const SAFE_ID = /^[a-z0-9][a-z0-9._-]*$/i;
 
-export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
-  let studioDir = '';
+export function hayaoWorkshop(opts: WorkshopPluginOptions = {}): Plugin {
+  let workshopDir = '';
   let projectRoot = '';
   let buildRef = 'unknown';
 
   return {
-    name: 'hayao-studio',
+    name: 'hayao-workshop',
     configResolved(config) {
       projectRoot = config.root;
-      studioDir = resolve(projectRoot, opts.dir ?? '.studio');
-      mkdirSync(join(studioDir, 'sessions'), { recursive: true });
-      mkdirSync(join(studioDir, 'shots'), { recursive: true });
+      workshopDir = resolve(projectRoot, opts.dir ?? '.workshop');
+      mkdirSync(join(workshopDir, 'sessions'), { recursive: true });
+      mkdirSync(join(workshopDir, 'shots'), { recursive: true });
       try {
         buildRef = execSync('git rev-parse --short HEAD', { cwd: projectRoot, stdio: ['ignore', 'pipe', 'ignore'] })
           .toString()
@@ -128,15 +128,15 @@ export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
           const url = (req.url ?? '').split('?')[0];
 
           // The ethnographer, for humans: analyze a recorded session and hand
-          // the report to the Studio UI. Cached per buildRef (same cache the
+          // the report to the Workshop UI. Cached per buildRef (same cache the
           // MCP sidecar uses).
-          if (req.method === 'GET' && url.startsWith('/__studio/report/')) {
-            const id = decodeURIComponent(url.slice('/__studio/report/'.length));
+          if (req.method === 'GET' && url.startsWith('/__workshop/report/')) {
+            const id = decodeURIComponent(url.slice('/__workshop/report/'.length));
             if (!SAFE_ID.test(id)) return json(res, 400, { error: 'bad session id' });
-            const sessionPath = join(studioDir, 'sessions', `${id}.json`);
+            const sessionPath = join(workshopDir, 'sessions', `${id}.json`);
             if (!existsSync(sessionPath)) return json(res, 404, { error: 'no such session' });
             const session = JSON.parse(readFileSync(sessionPath, 'utf8')) as { game: string; buildRef?: string };
-            const reportsDir = join(studioDir, 'reports');
+            const reportsDir = join(workshopDir, 'reports');
             const cachePath = join(reportsDir, `${id}.json`);
             if (existsSync(cachePath)) {
               const cachedReport = JSON.parse(readFileSync(cachePath, 'utf8')) as { buildRef?: string };
@@ -149,12 +149,12 @@ export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
             return json(res, 200, report);
           }
 
-          if (req.method === 'POST' && url === '/__studio/session') {
+          if (req.method === 'POST' && url === '/__workshop/session') {
             const session = JSON.parse(await readBody(req)) as { id?: string };
             if (typeof session.id !== 'string' || !SAFE_ID.test(session.id)) {
               return json(res, 400, { error: 'bad session id' });
             }
-            writeFileSync(join(studioDir, 'sessions', `${session.id}.json`), JSON.stringify(session, null, 1));
+            writeFileSync(join(workshopDir, 'sessions', `${session.id}.json`), JSON.stringify(session, null, 1));
             return json(res, 200, { ok: true });
           }
 
@@ -164,22 +164,22 @@ export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
             if (typeof svg !== 'string') return json(res, 400, { error: 'missing svg' });
             const rel = normalize(path ?? `shot-${buildRef}.svg`).replace(/^([/\\])+/, '');
             if (rel.split(/[/\\]/).includes('..')) return json(res, 400, { error: 'bad path' });
-            const target = rel.startsWith('shots/') || rel.startsWith('.studio/') ? resolve(projectRoot, rel) : join(studioDir, 'shots', rel);
+            const target = rel.startsWith('shots/') || rel.startsWith('.workshop/') ? resolve(projectRoot, rel) : join(workshopDir, 'shots', rel);
             mkdirSync(dirname(target), { recursive: true });
             writeFileSync(target, svg);
             return json(res, 200, { ok: true, path: target });
           }
 
-          if (req.method === 'POST' && url === '/__studio/knobs') {
+          if (req.method === 'POST' && url === '/__workshop/knobs') {
             const body = await readBody(req);
             JSON.parse(body); // validate before persisting
-            writeFileSync(join(studioDir, 'knobs.json'), body);
+            writeFileSync(join(workshopDir, 'knobs.json'), body);
             return json(res, 200, { ok: true });
           }
 
-          if (req.method === 'GET' && url === '/__studio/games') {
-            // Playable pages for the Studio picker. Titles/knobs come from the
-            // iframe's window.__studio once a game loads — this only lists URLs.
+          if (req.method === 'GET' && url === '/__workshop/games') {
+            // Playable pages for the Workshop picker. Titles/knobs come from the
+            // iframe's window.__workshop once a game loads — this only lists URLs.
             const games: Array<{ slug: string; kind: string; url: string }> = [];
             for (const [parent, kind, prefix] of [
               ['examples', 'example', '/examples/'],
@@ -198,12 +198,12 @@ export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
             return json(res, 200, games);
           }
 
-          // The Studio UI for projects without their own studio/ page: serve
+          // The Workshop UI for projects without their own workshop/ page: serve
           // the prebuilt app shipped in the hayao package.
-          if (req.method === 'GET' && (url === '/studio' || url.startsWith('/studio/')) && !existsSync(join(projectRoot, 'studio', 'index.html'))) {
-            const prebuilt = findPrebuiltStudio();
-            if (!prebuilt) return json(res, 404, { error: 'no prebuilt Studio UI in this hayao build' });
-            const rel = normalize(decodeURIComponent(url.replace(/^\/studio\/?/, '')));
+          if (req.method === 'GET' && (url === '/workshop' || url.startsWith('/workshop/')) && !existsSync(join(projectRoot, 'workshop', 'index.html'))) {
+            const prebuilt = findPrebuiltWorkshop();
+            if (!prebuilt) return json(res, 404, { error: 'no prebuilt Workshop UI in this hayao build' });
+            const rel = normalize(decodeURIComponent(url.replace(/^\/workshop\/?/, '')));
             if (rel.split(/[/\\]/).includes('..')) return json(res, 400, { error: 'bad path' });
             let file = join(prebuilt, rel);
             if (!existsSync(file) || statSync(file).isDirectory()) file = join(prebuilt, 'index.html');
@@ -213,11 +213,11 @@ export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
             return;
           }
 
-          // Immutable worktree-variant builds: /__studio/variants/<name>/… → static files.
-          if (req.method === 'GET' && url.startsWith('/__studio/variants/')) {
-            const rel = normalize(decodeURIComponent(url.slice('/__studio/variants/'.length)));
+          // Immutable worktree-variant builds: /__workshop/variants/<name>/… → static files.
+          if (req.method === 'GET' && url.startsWith('/__workshop/variants/')) {
+            const rel = normalize(decodeURIComponent(url.slice('/__workshop/variants/'.length)));
             if (rel.split(/[/\\]/).includes('..')) return json(res, 400, { error: 'bad path' });
-            let file = join(studioDir, 'variants', rel);
+            let file = join(workshopDir, 'variants', rel);
             if (existsSync(file) && statSync(file).isDirectory()) file = join(file, 'index.html');
             if (!existsSync(file)) return json(res, 404, { error: 'no such variant file' });
             res.statusCode = 200;
@@ -227,10 +227,10 @@ export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
           }
 
           // Full session artifact — the play pane's replay mode loads this.
-          if (req.method === 'GET' && url.startsWith('/__studio/session/')) {
-            const id = decodeURIComponent(url.slice('/__studio/session/'.length));
+          if (req.method === 'GET' && url.startsWith('/__workshop/session/')) {
+            const id = decodeURIComponent(url.slice('/__workshop/session/'.length));
             if (!SAFE_ID.test(id)) return json(res, 400, { error: 'bad session id' });
-            const file = join(studioDir, 'sessions', `${id}.json`);
+            const file = join(workshopDir, 'sessions', `${id}.json`);
             if (!existsSync(file)) return json(res, 404, { error: 'no such session' });
             res.statusCode = 200;
             res.setHeader('content-type', 'application/json');
@@ -238,16 +238,16 @@ export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
             return;
           }
 
-          if (req.method === 'GET' && url === '/__studio/state') {
-            const knobsPath = join(studioDir, 'knobs.json');
+          if (req.method === 'GET' && url === '/__workshop/state') {
+            const knobsPath = join(workshopDir, 'knobs.json');
             const knobs = existsSync(knobsPath) ? (JSON.parse(readFileSync(knobsPath, 'utf8')) as unknown) : null;
-            const variantsPath = join(studioDir, 'variants.json');
+            const variantsPath = join(workshopDir, 'variants.json');
             const variants = existsSync(variantsPath) ? (JSON.parse(readFileSync(variantsPath, 'utf8')) as unknown) : {};
-            const sessions = readdirSync(join(studioDir, 'sessions'))
+            const sessions = readdirSync(join(workshopDir, 'sessions'))
               .filter((f) => f.endsWith('.json'))
               .map((f) => {
                 try {
-                  const s = JSON.parse(readFileSync(join(studioDir, 'sessions', f), 'utf8')) as Record<string, unknown>;
+                  const s = JSON.parse(readFileSync(join(workshopDir, 'sessions', f), 'utf8')) as Record<string, unknown>;
                   return {
                     id: s.id,
                     game: s.game,
@@ -267,13 +267,13 @@ export function hayaoStudio(opts: StudioPluginOptions = {}): Plugin {
             return json(res, 200, { buildRef, knobs, variants, sessions, urls });
           }
 
-          if (req.method === 'GET' && url === '/__studio/events') {
-            // SSE: the browser UI reacts when the AGENT writes .studio/ files.
+          if (req.method === 'GET' && url === '/__workshop/events') {
+            // SSE: the browser UI reacts when the AGENT writes .workshop/ files.
             res.statusCode = 200;
             res.setHeader('content-type', 'text/event-stream');
             res.setHeader('cache-control', 'no-cache');
             res.write('retry: 2000\n\n');
-            const watcher = watch(studioDir, { recursive: true }, (_event, filename) => {
+            const watcher = watch(workshopDir, { recursive: true }, (_event, filename) => {
               res.write(`data: ${JSON.stringify({ file: filename ?? '' })}\n\n`);
             });
             req.on('close', () => watcher.close());

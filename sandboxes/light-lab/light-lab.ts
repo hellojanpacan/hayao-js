@@ -3,7 +3,7 @@
 // pools of light out of the ambient darkness and cast hard/soft shadows off the
 // blocks. Drive the first light with arrows/WASD; the second orbits on its own.
 // Everything here is COSMETIC — lights render state, they never drive it — so
-// this lab is a pure view showcase with no win/lose, no genre. Knobs (Studio
+// this lab is a pure view showcase with no win/lose, no genre. Knobs (Workshop
 // tuning panel): ambient level/color, light radius/intensity/falloff/flicker,
 // and the soft-shadow toggle. See sandboxes/README.md.
 
@@ -56,7 +56,7 @@ const OY = Math.round((720 - mapHeight(MAP)) / 2);
 class LightLab extends Node {
   override readonly type = 'LightLab';
   // Player-driven light position (design-space, room-local). Canonical knob-ish
-  // state so the moment survives a snapshot/rebuild in Studio.
+  // state so the moment survives a snapshot/rebuild in Workshop.
   lx = mapWidth(MAP) * 0.32;
   ly = mapHeight(MAP) * 0.55;
   private t = 0;
@@ -113,7 +113,7 @@ class LightLab extends Node {
     this.layer.addChild(this.lightB);
     this.addChild(this.layer);
 
-    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 690 }, z: 9, size: 20, align: 'center', fill: REGALIA_NIGHT.inkSoft, text: 'LIGHTLAYER + POINTLIGHT + occludersFromTilemap · arrows/WASD move the white light · Studio knobs: ambient, radius, intensity, falloff, flicker, soft shadows' });
+    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 690 }, z: 9, size: 20, align: 'center', fill: REGALIA_NIGHT.inkSoft, text: 'LIGHTLAYER + POINTLIGHT + occludersFromTilemap · arrows/WASD move the white light · Workshop knobs: ambient, radius, intensity, falloff, flicker, soft shadows' });
     this.hud.cosmetic = true;
     this.addChild(this.hud);
   }

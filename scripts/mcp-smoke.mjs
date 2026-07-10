@@ -1,4 +1,4 @@
-// Smoke test for the Studio MCP sidecar: spawn it over stdio, run the MCP
+// Smoke test for the Workshop MCP sidecar: spawn it over stdio, run the MCP
 // handshake, list tools, and call list_games + (if a session exists)
 // inspect_moment. Exercises the real transport — the same path Claude Code
 // uses. Run: node scripts/mcp-smoke.mjs
@@ -63,7 +63,7 @@ const knobs = JSON.parse((await rpc('tools/call', { name: 'get_knob_state', argu
 if (knobs.spec.knobs.length !== 3) fail('physics-lab knob spec wrong');
 console.log('✓ get_knob_state → physics-lab declares 3 knobs');
 
-const sessionsDir = join(process.cwd(), '.studio', 'sessions');
+const sessionsDir = join(process.cwd(), '.workshop', 'sessions');
 const sessions = existsSync(sessionsDir) ? readdirSync(sessionsDir).filter((f) => f.endsWith('.json')) : [];
 if (sessions.length > 0) {
   const id = sessions[sessions.length - 1].replace(/\.json$/, '');
@@ -81,7 +81,7 @@ if (sessions.length > 0) {
       `${rep.quit ? `, quit@${rep.quit.frame}` : ''}`,
   );
 } else {
-  console.log('· no sessions on disk — inspect_moment/report skipped (play something in Studio first)');
+  console.log('· no sessions on disk — inspect_moment/report skipped (play something in Workshop first)');
 }
 
 console.log('MCP smoke: all green');

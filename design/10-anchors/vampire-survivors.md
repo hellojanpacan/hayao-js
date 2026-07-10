@@ -117,6 +117,6 @@ low-stakes, one-of-three) matters more than any single weapon's numbers.
   [[system-reward-schedules]]
 - `design/FUN.md#6-·-twin-stick-horde-survival-vampire-survivors-like` —
   orbit-bot + peak-alive verify.
-- `sandboxes/particle-studio/` — pooled, cosmetic swarm rendering (deletable
+- `sandboxes/particle-workshop/` — pooled, cosmetic swarm rendering (deletable
   per law 6).
 - `design/JUICE.md` — the level-up / crit / clear feedback choreography.

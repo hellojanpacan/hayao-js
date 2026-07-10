@@ -56,7 +56,7 @@ If the honest answer to "what does this version say **no** to?" is *nothing*, yo
 
 - **Franchise bloat.** Sequels that answer "what worked?" with "more of everything" — sprawling skill webs, doubled currencies, a system for every review-bullet. The player's minute-to-minute got *busier*, not better. This is the sequel that added a crafting tree, a base-building layer, and a card mini-game onto a game that was fun because it did one thing.
 - **The reverse — sequels that resisted it.** [[anchor-hades]] to its follow-up: same run-based [[process-core-loop]], refined not reinvented. [[anchor-civilization]] entries win or lose on whether the new system *replaces* an old one rather than stacking on it. [[anchor-portal]] earned its sequel with a focused set of new elements built on the same portal verb, not a sprawl of unrelated systems.
-- **Studio-scale versions.** Ambitious follow-ups whose marketing lists forty systems and whose core loop nobody can summarize — the tell every time.
+- **Workshop-scale versions.** Ambitious follow-ups whose marketing lists forty systems and whose core loop nobody can summarize — the tell every time.
 
 ## Verify / guard
 

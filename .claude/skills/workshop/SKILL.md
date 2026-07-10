@@ -1,12 +1,12 @@
 ---
-name: studio
-description: Work with Hayao Studio playtest data — read human sessions, inspect stuck moments, apply accepted knob values back to source, and iterate on feel. Use after a human has playtested in the Studio (dev server) and you need to act on what they experienced.
+name: workshop
+description: Work with Hayao Workshop playtest data — read human sessions, inspect stuck moments, apply accepted knob values back to source, and iterate on feel. Use after a human has playtested in the Workshop (dev server) and you need to act on what they experienced.
 ---
 
-# /studio — act on human playtests
+# /workshop — act on human playtests
 
-The Studio records every dev-server playtest as a re-executable artifact under
-`.studio/sessions/` (gitignored). The `hayao-studio` MCP server (in `.mcp.json`)
+The Workshop records every dev-server playtest as a re-executable artifact under
+`.workshop/sessions/` (gitignored). The `hayao-workshop` MCP server (in `.mcp.json`)
 is your window into them — it replays sessions headlessly through the engine, so
 you can inspect any tick without a browser. **Telemetry describes, the human
 directs**: reports and metrics inform your proposals; never wire a metric
@@ -31,7 +31,7 @@ without asking.
    defaults.
 2. Apply accepted values to the SOURCE defaults (the `tuning:` block in
    `defineGame`, and any mirrored consts like updrift's `CONFIG`). Code is the
-   single source of truth — `.studio/knobs.json` is session data, never config.
+   single source of truth — `.workshop/knobs.json` is session data, never config.
 3. `run_verify(<slug>)` — a knob change can break a solver proof or feel gate
    (e.g. a jump that no longer clears the designed envelope). If red, tell the
    human what the new value breaks instead of silently reverting.
@@ -47,4 +47,4 @@ without asking.
    take. Hesitation ≠ confusion — treat inferred signals as hypotheses to put
    to the human, not verdicts.
 
-Full architecture and artifact format: `docs/STUDIO.md`.
+Full architecture and artifact format: `docs/WORKSHOP.md`.

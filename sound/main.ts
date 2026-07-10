@@ -1,4 +1,4 @@
-// Sound Studio — the audio showcase, driving the real @hayao API in the browser.
+// Sound Workshop — the audio showcase, driving the real @hayao API in the browser.
 // Music: GENRES → audio.playSong (looping). SFX: SoundSpec → audio.playSpec.
 // The waveform/spectrogram is the same renderAudioFilmstrip used in verification.
 

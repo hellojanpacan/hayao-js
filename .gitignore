@@ -1,7 +1,7 @@
 node_modules/
 dist/
 dist-site/
-dist-studio/
+dist-workshop/
 *.log
 .DS_Store
 .vite/
@@ -10,8 +10,8 @@ coverage/
 .claude/settings.local.json
 scratchpad/
 
-# Studio session/knob/variant artifacts (filesystem bus — local, never versioned)
-.studio/
+# Workshop session/knob/variant artifacts (filesystem bus — local, never versioned)
+.workshop/
 
 # vercel
 .vercel

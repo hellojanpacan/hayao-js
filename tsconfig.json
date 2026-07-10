@@ -26,5 +26,5 @@
       "hayao": ["./src/index.ts"]
     }
   },
-  "include": ["src", "examples", "sandboxes", "scripts", "studio", "bin", "vite.config.ts"]
+  "include": ["src", "examples", "sandboxes", "scripts", "workshop", "bin", "vite.config.ts"]
 }

@@ -1,5 +1,5 @@
-// The Studio MCP sidecar — the agent's window into human playtests. Stateless
-// stdio server: reads/writes the `.studio/` filesystem bus and REPLAYS sessions
+// The Workshop MCP sidecar — the agent's window into human playtests. Stateless
+// stdio server: reads/writes the `.workshop/` filesystem bus and REPLAYS sessions
 // headlessly through the deterministic engine, so it needs no browser and no
 // live dev server. Run under tsx (which resolves @hayao + TS game modules):
 // this repo starts it from bin/hayao-mcp.ts; npm consumers from dist/mcp.js
@@ -27,9 +27,9 @@ import { analyzePlaytest, renderToSVGString, replaySession, type GameDefinition,
 
 const execFileAsync = promisify(execFile);
 const root = process.cwd();
-const studioDir = join(root, '.studio');
-const sessionsDir = join(studioDir, 'sessions');
-const shotsDir = join(studioDir, 'shots');
+const workshopDir = join(root, '.workshop');
+const sessionsDir = join(workshopDir, 'sessions');
+const shotsDir = join(workshopDir, 'shots');
 
 /**
  * The rasterizer runs in a CHILD process because resvg can panic (SIGABRT —
@@ -157,7 +157,7 @@ const text = (v: unknown) => ({ content: [{ type: 'text' as const, text: typeof 
 
 // ── server ───────────────────────────────────────────────────────────────────
 
-const server = new McpServer({ name: 'hayao-studio', version: '0.1.0' });
+const server = new McpServer({ name: 'hayao-workshop', version: '0.1.0' });
 
 server.registerTool(
   'list_games',
@@ -194,12 +194,12 @@ server.registerTool(
   'get_knob_state',
   {
     description:
-      'A game\'s declared tuning spec plus the values the human accepted in the Studio panel (.studio/knobs.json). To make accepted values permanent, edit the DECLARED DEFAULTS in the game source, then run_verify.',
+      'A game\'s declared tuning spec plus the values the human accepted in the Workshop panel (.workshop/knobs.json). To make accepted values permanent, edit the DECLARED DEFAULTS in the game source, then run_verify.',
     inputSchema: { game: z.string().describe('game slug, e.g. "sokoban"') },
   },
   async ({ game }) => {
     const def = await loadGame(game);
-    const knobsPath = join(studioDir, 'knobs.json');
+    const knobsPath = join(workshopDir, 'knobs.json');
     const accepted = existsSync(knobsPath) ? (JSON.parse(readFileSync(knobsPath, 'utf8')) as unknown) : null;
     return text({ slug: game, title: def.title, spec: def.tuning ?? { knobs: [] }, accepted });
   },
@@ -250,9 +250,9 @@ server.registerTool(
 
 server.registerTool(
   'list_variants',
-  { description: 'Worktree variant builds registered for A/B comparison (.studio/variants.json). Module variants live in each game\'s variants.ts.' },
+  { description: 'Worktree variant builds registered for A/B comparison (.workshop/variants.json). Module variants live in each game\'s variants.ts.' },
   async () => {
-    const p = join(studioDir, 'variants.json');
+    const p = join(workshopDir, 'variants.json');
     return text(existsSync(p) ? JSON.parse(readFileSync(p, 'utf8')) : {});
   },
 );
@@ -261,7 +261,7 @@ server.registerTool(
   'build_variant',
   {
     description:
-      'Build a git ref as an immutable worktree variant for side-by-side A/B in the Studio (e.g. name="before-fix", ref="HEAD~1"). Takes ~a minute; the human then picks it in a Studio pane.',
+      'Build a git ref as an immutable worktree variant for side-by-side A/B in the Workshop (e.g. name="before-fix", ref="HEAD~1"). Takes ~a minute; the human then picks it in a Workshop pane.',
     inputSchema: {
       name: z.string().regex(/^[a-z0-9][a-z0-9._-]*$/i),
       ref: z.string(),
@@ -269,7 +269,7 @@ server.registerTool(
   },
   async ({ name, ref }) => {
     try {
-      const { stdout, stderr } = await execFileAsync('node', ['scripts/studio-variant.mjs', name, ref], {
+      const { stdout, stderr } = await execFileAsync('node', ['scripts/workshop-variant.mjs', name, ref], {
         cwd: root,
         maxBuffer: 16 * 1024 * 1024,
         timeout: 600_000,
@@ -291,7 +291,7 @@ server.registerTool(
   },
   async ({ sessionId }) => {
     const session = readSession(sessionId);
-    const reportsDir = join(studioDir, 'reports');
+    const reportsDir = join(workshopDir, 'reports');
     const cachePath = join(reportsDir, `${sessionId}.json`);
     // Cache key: same session + same code. buildRef changes bust it.
     if (existsSync(cachePath)) {
@@ -338,6 +338,6 @@ server.registerTool(
 );
 
 /** Start serving over stdio (the entry points call this — never on import). */
-export async function startStudioMcp(): Promise<void> {
+export async function startWorkshopMcp(): Promise<void> {
   await server.connect(new StdioServerTransport());
 }

@@ -1,13 +1,13 @@
-// Hayao Studio — the director's surface. The game runs in a same-origin iframe
+// Hayao Workshop — the director's surface. The game runs in a same-origin iframe
 // (dev page, module variant, or worktree build — a pane is just a URL); the
-// page reads the iframe's window.__studio (StudioHandle) directly. Knobs are
+// page reads the iframe's window.__workshop (WorkshopHandle) directly. Knobs are
 // leva controls built from the game's declared TuningSpec; "accept" persists
-// values to .studio/knobs.json for the agent's knob write-back loop.
+// values to .workshop/knobs.json for the agent's knob write-back loop.
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Leva, useControls } from 'leva';
 import QRCode from 'qrcode';
-import type { StudioHandle } from '@hayao';
+import type { WorkshopHandle } from '@hayao';
 
 interface GameEntry {
   slug: string;
@@ -28,7 +28,7 @@ interface SessionEntry {
 interface ServerState {
   buildRef: string;
   sessions: SessionEntry[];
-  /** Worktree builds registered by scripts/studio-variant.mjs. */
+  /** Worktree builds registered by scripts/workshop-variant.mjs. */
   variants: Record<string, { kind: string; ref: string; commit: string }>;
   /** LAN addresses of this dev server (phone play). */
   urls: string[];
@@ -48,9 +48,9 @@ interface Report {
   knobEvents: Array<{ frame: number; key: string; value: number | string }>;
 }
 
-/** Poll a same-origin iframe until the game inside publishes window.__studio. */
-function useFrameHandle(nonce: number): { frameRef: (el: HTMLIFrameElement | null) => void; handle: StudioHandle | null } {
-  const [handle, setHandle] = useState<StudioHandle | null>(null);
+/** Poll a same-origin iframe until the game inside publishes window.__workshop. */
+function useFrameHandle(nonce: number): { frameRef: (el: HTMLIFrameElement | null) => void; handle: WorkshopHandle | null } {
+  const [handle, setHandle] = useState<WorkshopHandle | null>(null);
   const el = useRef<HTMLIFrameElement | null>(null);
   const frameRef = useCallback((node: HTMLIFrameElement | null) => {
     el.current = node;
@@ -59,9 +59,9 @@ function useFrameHandle(nonce: number): { frameRef: (el: HTMLIFrameElement | nul
   useEffect(() => {
     setHandle(null);
     const t = window.setInterval(() => {
-      const w = el.current?.contentWindow as (Window & { __studio?: StudioHandle }) | null | undefined;
-      if (w?.__studio) {
-        setHandle(w.__studio);
+      const w = el.current?.contentWindow as (Window & { __workshop?: WorkshopHandle }) | null | undefined;
+      if (w?.__workshop) {
+        setHandle(w.__workshop);
         window.clearInterval(t);
       }
     }, 150);
@@ -79,7 +79,7 @@ function paneUrl(game: GameEntry, seed: number, variant: string, replay?: { id: 
     return `${game.url}?${q}`;
   }
   // 'wt:<name>' plays the same game page inside an immutable worktree build.
-  if (variant.startsWith('wt:')) return `/__studio/variants/${variant.slice(3)}${game.url}?${q}`;
+  if (variant.startsWith('wt:')) return `/__workshop/variants/${variant.slice(3)}${game.url}?${q}`;
   if (variant) q.set('variant', variant);
   return `${game.url}?${q}`;
 }
@@ -109,7 +109,7 @@ function VariantOptions({ moduleVariants, worktrees }: { moduleVariants: Record<
 }
 
 /** Knob panel: leva controls generated from the game's declared tuning spec. */
-function Knobs({ handle, onDirty }: { handle: StudioHandle; onDirty: () => void }) {
+function Knobs({ handle, onDirty }: { handle: WorkshopHandle; onDirty: () => void }) {
   const spec = handle.tuningSpec();
   const values = handle.knobValues();
   useControls(
@@ -166,7 +166,7 @@ function Knobs({ handle, onDirty }: { handle: StudioHandle; onDirty: () => void 
  * engine restores a snapshot and re-steps the recorded inputs), resume to
  * fork from there. The probe inspector shows the sim's own state snapshot.
  */
-function Timeline({ handle }: { handle: StudioHandle }) {
+function Timeline({ handle }: { handle: WorkshopHandle }) {
   const [tl, setTl] = useState(() => handle.timeline());
   const [frozen, setFrozen] = useState(() => handle.frozen());
   const [probe, setProbe] = useState<Record<string, unknown> | null>(null);
@@ -221,11 +221,11 @@ function Timeline({ handle }: { handle: StudioHandle }) {
 
 /**
  * Phone play: scan and the couch playtest starts. Sessions record to the same
- * .studio/ bus regardless of which device played — develop mobile games on
+ * .workshop/ bus regardless of which device played — develop mobile games on
  * the device they're for.
  */
 function PhoneModal({ urls, onClose }: { urls: string[]; onClose: () => void }) {
-  const lan = urls[0] ? `${urls[0].replace(/\/$/, '')}/studio/` : null;
+  const lan = urls[0] ? `${urls[0].replace(/\/$/, '')}/workshop/` : null;
   const [qr, setQr] = useState<string | null>(null);
   useEffect(() => {
     if (lan) void QRCode.toDataURL(lan, { margin: 1, width: 260, color: { dark: '#242019', light: '#f8f3e9' } }).then(setQr);
@@ -236,7 +236,7 @@ function PhoneModal({ urls, onClose }: { urls: string[]; onClose: () => void }) 
         <b>Play on your phone</b>
         {lan ? (
           <>
-            {qr && <img src={qr} alt="QR to the Studio on your LAN" width={260} height={260} />}
+            {qr && <img src={qr} alt="QR to the Workshop on your LAN" width={260} height={260} />}
             <code>{lan}</code>
             <span className="note">Same Wi-Fi. Touch works out of the box; every session records here.</span>
           </>
@@ -276,7 +276,7 @@ function SessionsDrawer({
     setReport(null);
     setLoading(true);
     try {
-      const r = await fetch(`/__studio/report/${encodeURIComponent(id)}`);
+      const r = await fetch(`/__workshop/report/${encodeURIComponent(id)}`);
       if (r.ok) setReport((await r.json()) as Report);
     } finally {
       setLoading(false);
@@ -291,7 +291,7 @@ function SessionsDrawer({
       try {
         const body = await file.text();
         JSON.parse(body); // refuse garbage before it reaches the bus
-        await fetch('/__studio/session', { method: 'POST', headers: { 'content-type': 'application/json' }, body });
+        await fetch('/__workshop/session', { method: 'POST', headers: { 'content-type': 'application/json' }, body });
       } catch {
         /* skip unreadable files */
       }
@@ -336,7 +336,7 @@ function SessionsDrawer({
                 {new Date(s.startedAt).toLocaleTimeString()}{' '}
                 <a
                   className="moment-link"
-                  href={`/__studio/session/${encodeURIComponent(s.id)}`}
+                  href={`/__workshop/session/${encodeURIComponent(s.id)}`}
                   download={`${s.id}.json`}
                   onClick={(e) => e.stopPropagation()}
                   title="download this session (send it to the developer)"
@@ -434,18 +434,18 @@ export function App() {
   const [showPhone, setShowPhone] = useState(false);
   const [tape, setTape] = useState<{ id: string; at?: number } | null>(null); // pane A watches a past session
 
-  const refreshState = () => void fetch('/__studio/state').then(async (r) => setState((await r.json()) as ServerState));
+  const refreshState = () => void fetch('/__workshop/state').then(async (r) => setState((await r.json()) as ServerState));
   const a = useFrameHandle(nonce);
   const b = useFrameHandle(nonce);
 
   useEffect(() => {
-    void fetch('/__studio/games').then(async (r) => {
+    void fetch('/__workshop/games').then(async (r) => {
       const list = (await r.json()) as GameEntry[];
       setGames(list);
       const params = new URLSearchParams(location.search);
       setSlug(params.get('game') ?? list.find((g) => g.slug === 'physics-lab')?.slug ?? list[0]?.slug ?? '');
     });
-    void fetch('/__studio/state').then(async (r) => setState((await r.json()) as ServerState));
+    void fetch('/__workshop/state').then(async (r) => setState((await r.json()) as ServerState));
   }, [nonce]);
 
   const game = games.find((g) => g.slug === slug);
@@ -455,7 +455,7 @@ export function App() {
     window.setTimeout(() => setToast(''), 1800);
   };
 
-  const annotate = (h: StudioHandle | null) => {
+  const annotate = (h: WorkshopHandle | null) => {
     if (!h) return;
     const note = window.prompt('What felt bad? (optional note)') ?? undefined;
     h.annotate('felt-bad', note || undefined);
@@ -465,7 +465,7 @@ export function App() {
 
   const accept = async () => {
     if (!a.handle || !game) return;
-    await fetch('/__studio/knobs', {
+    await fetch('/__workshop/knobs', {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ game: game.slug, values: a.handle.knobValues(), acceptedAt: new Date().toISOString() }),
@@ -478,7 +478,7 @@ export function App() {
     <>
       <header className="bar">
         <a className="brand" href="/">
-          hayao<span className="js"> studio</span>
+          hayao<span className="js"> workshop</span>
         </a>
         <select value={slug} onChange={(e) => (setSlug(e.target.value), setVariantB(null), setVariantA(''), setNonce((n) => n + 1))} aria-label="game">
           {games.map((g) => (

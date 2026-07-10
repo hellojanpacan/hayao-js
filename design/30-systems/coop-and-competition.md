@@ -63,13 +63,13 @@ predictable system in the room — a *person* — at the center.
 - **Multiple players = multiple input streams into one deterministic sim.** Each
   player's intent flows as input *actions* on the shared `world.state`; because the
   sim is pure and rolls through `world.rng`, a co-op or PvP session is one
-  deterministic, replayable artifact — the same seam Studio records
-  ([`docs/STUDIO.md`](../../docs/STUDIO.md), FUN.md law 7). *(Grep `docs/API.md`
+  deterministic, replayable artifact — the same seam Workshop records
+  ([`docs/WORKSHOP.md`](../../docs/WORKSHOP.md), FUN.md law 7). *(Grep `docs/API.md`
   before assuming any specific netcode primitive — Hayao's guarantee is the
   deterministic sim, not a bundled transport.)*
 - **Rollback-with-carryover is already here.** The knob-change / hot-swap
   "snapshot → restore → `attach`" contract is the *same* contract rollback netplay
-  uses (STUDIO knob-change semantics) — the determinism you need for co-op is the
+  uses (WORKSHOP knob-change semantics) — the determinism you need for co-op is the
   determinism the engine already enforces.
 - **Asymmetric roles reuse faction design.** "Different but fair" is exactly
   [[system-faction-asymmetry]] applied to players — assert each role's viability the
@@ -113,6 +113,6 @@ predictable system in the room — a *person* — at the center.
 
 ## See also
 
-- [`docs/STUDIO.md`](../../docs/STUDIO.md) — deterministic sessions + the rollback-with-carryover contract.
+- [`docs/WORKSHOP.md`](../../docs/WORKSHOP.md) — deterministic sessions + the rollback-with-carryover contract.
 - [`design/FUN.md` law 7](../FUN.md#part-1--universal-laws) — pure state makes multiplayer replayable.
 - [[anchor-overcooked]] · [[anchor-it-takes-two]] — forced communication and asymmetric interdependence.

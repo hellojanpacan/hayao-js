@@ -3,7 +3,7 @@ import { defineConfig } from 'vitest/config';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { readdirSync, existsSync } from 'node:fs';
-import { hayaoStudio } from './src/studio/vitePlugin';
+import { hayaoWorkshop } from './src/workshop/vitePlugin';
 
 const root = dirname(fileURLToPath(import.meta.url));
 
@@ -12,8 +12,8 @@ const root = dirname(fileURLToPath(import.meta.url));
 function exampleInputs(): Record<string, string> {
   const dir = resolve(root, 'examples');
   const inputs: Record<string, string> = { hub: resolve(root, 'index.html') };
-  // The site doors: marketing landing (hub, above), the store, the roadmap, the Sound Studio, the Studio.
-  for (const page of ['play', 'roadmap', 'sound', 'studio']) {
+  // The site doors: marketing landing (hub, above), the store, the roadmap, the Sound Workshop, the Workshop.
+  for (const page of ['play', 'roadmap', 'sound', 'workshop']) {
     const html = resolve(root, page, 'index.html');
     if (existsSync(html)) inputs[page] = html;
   }
@@ -44,7 +44,7 @@ export default defineConfig({
   appType: 'mpa',
   // Cast: vitest/config bundles its own vite, so the two Plugin types are
   // nominally (not structurally) different. Runtime shape is identical.
-  plugins: [hayaoStudio() as unknown as import('vitest/config').Plugin],
+  plugins: [hayaoWorkshop() as unknown as import('vitest/config').Plugin],
   resolve: {
     alias: {
       '@hayao': resolve(root, 'src/index.ts'),

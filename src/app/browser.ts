@@ -3,12 +3,12 @@
 // Wall-clock only feeds the accumulator (how many steps to run) — replays use the
 // input log, not wall time, so the sim stays deterministic.
 
-import type { CreateWorldOptions, GameDefinition, SplashConfig } from './game';
+import type { CreateWorldOptions, GameDefinition } from './game';
 import { createWorld } from './game';
+import { makeSplash } from './splash';
 import { KeyboardSource, PointerSource, type InputSource } from '../input/source';
 import type { Vec2 } from '../core/math';
 import type { DrawCommand } from '../render/commands';
-import { relLuminance } from '../verify/gates';
 import { SvgRenderer } from '../render/svg';
 import { Canvas2DRenderer } from '../render/canvas';
 import { WebGL2Renderer } from '../render/webgl';
@@ -43,14 +43,14 @@ export interface RunOptions {
    * Observer hook: called after each advance that ran ≥1 step, with the step
    * count and the action set those steps saw. Every step in the batch saw the
    * SAME actions and axes, so recording `steps × (actions, axes)` replays
-   * exactly. Studio's session recorder rides this; it must never mutate.
+   * exactly. Workshop's session recorder rides this; it must never mutate.
    */
   onAdvance?: (world: World, steps: number, actions: readonly string[]) => void;
   /** Shell pause/resume observer (true = paused). */
   onPause?: (paused: boolean) => void;
   /**
    * Freeze gate: while it returns true the loop keeps rendering but runs no
-   * steps (no pause overlay — Studio's scrubber holds the sim with this).
+   * steps (no pause overlay — Workshop's scrubber holds the sim with this).
    */
   isHeld?: () => boolean;
   /**
@@ -115,23 +115,14 @@ export interface GameHandle {
   restart(): void;
 }
 
-/**
- * A palette-guaranteed splash display list. The fg is picked to clear the WCAG AA
- * bar against the bg, so the boot cover can never ship the low-contrast defect a
- * hand-rolled loading <div> can (that's the whole reason this lives in the engine).
- */
-function splashCommands(cfg: SplashConfig, def: GameDefinition, width: number, height: number): DrawCommand[] {
-  const bg = cfg.palette?.bg ?? '#141821';
-  // Guaranteed-contrast ink: whichever of near-black / near-white reads on the bg.
-  const fg = cfg.palette?.fg ?? (relLuminance(bg) > 0.4 ? '#14171f' : '#f4efe3');
-  const title = cfg.title ?? def.title;
-  const t = { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 };
-  return [
-    { kind: 'rect', x: 0, y: 0, w: width, h: height, fill: bg, transform: t, z: 0 },
-    { kind: 'text', text: title, x: width / 2, y: height / 2, size: Math.round(height * 0.06), align: 'center', weight: 700, fill: fg, transform: t, z: 1 },
-    { kind: 'text', text: 'loading…', x: width / 2, y: height / 2 + height * 0.08, size: Math.round(height * 0.03), align: 'center', fill: fg, opacity: 0.7, transform: t, z: 1 },
-  ];
-}
+// The animated boot cover (Hayao logo reveal) lives in ./splash — a pure
+// DrawCommand[] builder, so it's unit-testable without a DOM.
+
+// The cold-open holds the boot cover (and fires the chime) for at least this
+// long — enough for the logo to fade/rise in, hold, and dissolve to the game.
+// It's the default when a game doesn't set splash.minDurationMs; opt out of the
+// whole ritual (cover + chime) with `splash: false`.
+const BOOT_COLD_OPEN_MS = 900;
 
 export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOptions = {}): GameHandle {
   const width = def.width ?? 1280;
@@ -219,12 +210,19 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
   // ── Boot lifecycle: splash → preload → first frame → ready ──────────────
   // Capture mode wants the real game immediately (headless SVG), so it skips boot.
   const splashCfg = def.splash === false ? null : def.splash ?? {};
-  const splash = splashCfg && !capture ? splashCommands(splashCfg, def, width, height) : null;
+  const showSplash = splashCfg !== null && !capture;
+  const splashFrame = showSplash ? makeSplash(splashCfg!, def, width, height) : null;
+  // Hold the cover at least this long; a game may lengthen it via minDurationMs.
+  // With splash:false there is no cover, no hold, and no chime — boot is immediate.
+  const minDur = splashCfg ? splashCfg.minDurationMs ?? BOOT_COLD_OPEN_MS : 0;
   let booting = !capture;
   const readyCbs: Array<() => void> = [];
   let resolveReady!: () => void;
   const ready = new Promise<void>((r) => (resolveReady = r));
   const bootStart = performance.now();
+  // Fire the chime WITH the cover so the logo reveal and the sound land together
+  // (no-op headless/muted, or when a game opts out of the splash).
+  if (showSplash) audio.bootChime();
 
   let last = performance.now();
   const finishBoot = () => {
@@ -304,7 +302,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
 
   const loop = (now: number) => {
     if (booting) {
-      if (splash) renderer.draw(splash);
+      if (splashFrame) renderer.draw(splashFrame(now - bootStart, minDur));
       schedule(loop);
       return;
     }
@@ -316,7 +314,6 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
   schedule(loop);
 
   if (booting) {
-    const minDur = splashCfg?.minDurationMs ?? 0;
     const preload = def.preload ? Promise.resolve().then(() => def.preload!(world)) : Promise.resolve();
     const holdSplash = new Promise<void>((r) => setTimeout(r, Math.max(0, minDur - (performance.now() - bootStart))));
     Promise.all([preload, holdSplash])

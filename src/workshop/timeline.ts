@@ -2,7 +2,7 @@
 // input log = exact time travel. Scrubbing restores the nearest snapshot at or
 // before the target frame and re-steps the RECORDED inputs to it — determinism
 // makes the result identical to having stopped there live. Pure module (no
-// DOM): runStudio drives it in the browser, tests drive it headlessly.
+// DOM): runWorkshop drives it in the browser, tests drive it headlessly.
 
 import type { GameDefinition } from '../app/game';
 import type { World, WorldSnapshot } from '../world';

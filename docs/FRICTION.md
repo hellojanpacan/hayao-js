@@ -62,7 +62,7 @@ don't delete history. Vocabulary:
   un-letterboxed via the CTM and exposes `pointer.x/y/down` as axes.
   **(c) Resolved** — CONVENTIONS "Shape origins" documents center-anchoring +
   `anchor:'topLeft'`. **(d) Resolved** — `package.json#files` now ships
-  QUICKSTART/CONVENTIONS/EMBED/VERIFICATION/STUDIO/API (see also the npm-drift
+  QUICKSTART/CONVENTIONS/EMBED/VERIFICATION/WORKSHOP/API (see also the npm-drift
   entry below). **(e) partly Resolved** — `docs/EMBED.md` ships embed recipes;
   full component-embed (not owning the page) is still `runBrowser`-shaped.
   **(b) fixed here:** the SVG + canvas renderers now honor `stroke`/`strokeWidth`
@@ -106,18 +106,18 @@ don't delete history. Vocabulary:
 
 ## 2026-07-05 — Repo drifted ahead of npm at an unchanged version → partial publish shipped
 
-- **Happened:** Studio, the `bin` CLIs, the `./studio` export subpath, and 5 of
+- **Happened:** Workshop, the `bin` CLIs, the `./workshop` export subpath, and 5 of
   6 docs were added to `package.json` (`files`/`bin`/`exports`) but the version
   stayed `0.2.0` — same as the last publish. So npm kept serving the OLD, thin
   `0.2.0` tarball (built from `files: ["dist", "docs/API.md"]`, no bin, no
-  `./studio`); none of the new surface ever reached consumers.
+  `./workshop`); none of the new surface ever reached consumers.
 - **Surfaced as:** a downstream `hayao` consumer reported "README links to docs
   that aren't in the package" and "types look missing." Both traced to the stale
   tarball, not the source: the README's doc links were relative (`docs/….md`)
-  so they 404 on npmjs.com, and `./studio`'s `types` pointer dangled because
-  `dist/studio/vitePlugin.d.ts` was never packed. (The "types missing" read was
+  so they 404 on npmjs.com, and `./workshop`'s `types` pointer dangled because
+  `dist/workshop/vitePlugin.d.ts` was never packed. (The "types missing" read was
   itself wrong — `0.2.0` ships 77 `.d.ts` behind a re-export barrel — but the
-  broken `./studio` pointer made it plausible.) Nothing in-repo failed; `npm
+  broken `./workshop` pointer made it plausible.) Nothing in-repo failed; `npm
   publish` just silently no-ops a re-publish at an existing version.
 - **Fix landed:** bumped to `0.3.0`, rewrote README doc links to absolute
   `github.com/.../blob/main/…` URLs (resolve on npm, GitHub, and in the

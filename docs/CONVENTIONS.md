@@ -245,7 +245,7 @@ Never call `sample()` inside `onUpdate` or from sim code — axes are host-side.
 3. **For replay-exact analog** (twin-stick aim, analog throttle): pass the
    quantized axes as the SECOND argument to `world.step(actions, axes)`. They
    then enter `getState()` → hash and `InputRecorder` (same as pointer axes in
-   Studio sessions). Only do this if you need bit-exact replay of analog values.
+   Workshop sessions). Only do this if you need bit-exact replay of analog values.
 4. **For discrete input** (button press → action): call
    `keyboard.setHeld(action, on)` — presses flow through `KeyboardSource.currentActions()`
    into the SAME deterministic string log as keys and are covered by record/replay

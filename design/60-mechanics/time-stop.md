@@ -51,7 +51,7 @@ Default failure mode is *too generous*. Start stingy; a 2-second window that the
 
 ## How it wires to Hayao
 
-Time control is a **time-scale** problem, not an animation trick: multiply the sim's per-tick delta for the world while keeping the player's near 1.0, and keep it deterministic (all pacing derived from the fixed step, never wall-clock). Study the pause/time-scale seam in `sandboxes/juice-lab` for how eased scalars ramp without snapping, and `sandboxes/particle-studio` for the desaturate-and-trail activation look. Keep the freeze **cosmetic where it's only a look** (vignette, chroma shift) so it stays out of `world.hash()` — the mechanical truth is the single scalar. For turn-based stop (plan, then commit), the frozen board is literally a `Puzzle<State, Move>` snapshot; the resume is one applied move sequence — see [[anchor-into-the-breach]] and the solver discipline in `examples/sokoban`.
+Time control is a **time-scale** problem, not an animation trick: multiply the sim's per-tick delta for the world while keeping the player's near 1.0, and keep it deterministic (all pacing derived from the fixed step, never wall-clock). Study the pause/time-scale seam in `sandboxes/juice-lab` for how eased scalars ramp without snapping, and `sandboxes/particle-workshop` for the desaturate-and-trail activation look. Keep the freeze **cosmetic where it's only a look** (vignette, chroma shift) so it stays out of `world.hash()` — the mechanical truth is the single scalar. For turn-based stop (plan, then commit), the frozen board is literally a `Puzzle<State, Move>` snapshot; the resume is one applied move sequence — see [[anchor-into-the-breach]] and the solver discipline in `examples/sokoban`.
 
 ## Fails when…
 

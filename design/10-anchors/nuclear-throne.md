@@ -126,5 +126,5 @@ test you can pass.
 - `design/FUN.md#6-·-twin-stick-horde-survival-vampire-survivors-like` —
   orbit/dodge-bot + peak-alive verify.
 - `sandboxes/juice-lab/` — hit-impact, muzzle, screenshake choreography.
-- `sandboxes/particle-studio/` — pooled cosmetic effects (deletable per law
+- `sandboxes/particle-workshop/` — pooled cosmetic effects (deletable per law
   6).

@@ -38,7 +38,7 @@ const chaseGame = defineGame({
   },
 });
 
-/** Simulate live play: drive the world AND the recorder exactly like runStudio does. */
+/** Simulate live play: drive the world AND the recorder exactly like runWorkshop does. */
 function playLive(frames: Array<{ actions: string[]; pointerX?: number }>, knobAt?: { frame: number; value: number }) {
   const recorder = new SessionRecorder({ game: 'Chase', seed: 7, tuningValues: { speed: 120 }, startedAt: '2026-07-05T00:00:00.000Z' });
   let world = createWorld(chaseGame, { seed: 7, tuning: {} });
@@ -101,7 +101,7 @@ describe('session record → replay', () => {
 
   it('replays a post-hot-swap segment from its startSnapshot bit-exactly', () => {
     // Live play: 20 frames, then a "hot swap" — snapshot, restore into a fresh
-    // world (as runStudio does), and keep playing 15 frames into a new
+    // world (as runWorkshop does), and keep playing 15 frames into a new
     // segment recorder that carries the snapshot as its origin.
     const { world } = playLive(script.slice(0, 20));
     const snap = world.snapshot();

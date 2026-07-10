@@ -78,7 +78,7 @@ Removing them collapses the later purge from ~50 files to ~6.
   references (e.g. `synth-lab` for audio, `physics-lab`) — re-theme, don't archive,
   or re-create clean. Decide per-lab; default is archive.
 - Update the discovery/registry surfaces so nothing dangles:
-  - `src/studio/mcpServer.ts` `discoverGames()` — will now find only the kept refs.
+  - `src/workshop/mcpServer.ts` `discoverGames()` — will now find only the kept refs.
   - `play/index.html`, `roadmap/index.html` — rewrite to "coming: platformer / RTS
     / puzzle" instead of listing archived games.
 - Gate: `npm run check` stays green with the reduced set.
@@ -148,7 +148,7 @@ Per decision, this pass rewrites the marketing/identity surfaces. Memory
   mark + copy with the Regalia crown mark and Bold-Duotone identity.
 - `README.md:6`, root `index.html:204,244` — drop "house woodblock style".
 - `web/src/styles/global.css:73-75` — remove the "kentō-style lattice" background.
-- `studio/studio.css:1` — retitle the "kentō woodblock chrome".
+- `workshop/workshop.css:1` — retitle the "kentō woodblock chrome".
 - `play/index.html`, `roadmap/index.html` — woodblock copy → Regalia.
 - `design/` doctrine — retire/rewrite the woodblock-centric docs:
   `40-worldbuilding/aesthetic-direction.md`, `naming-and-tone.md`, `JUDGE.md`

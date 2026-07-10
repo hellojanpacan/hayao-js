@@ -1,4 +1,4 @@
-// particle-studio — one primitive: the Particles emitter + PARTICLE_PRESETS.
+// particle-workshop — one primitive: the Particles emitter + PARTICLE_PRESETS.
 // A fountain emits the selected preset on a fixed cadence; SPACE fires a big
 // burst. Knobs: X = cycle preset, ↑↓ = burst count. Deterministic (seeded
 // emitter, frame-clocked cadence). No genre. See sandboxes/README.md.
@@ -20,8 +20,8 @@ type PresetName = (typeof PRESETS)[number];
 const COLORS = [REGALIA_DAY.accent, REGALIA_DAY.good, REGALIA.softInk];
 const CENTER = { x: 640, y: 430 };
 
-class ParticleStudio extends Node {
-  override readonly type = 'ParticleStudio';
+class ParticleWorkshop extends Node {
+  override readonly type = 'ParticleWorkshop';
   presetIdx = 0;
   count = 14;
   private fx = new Particles({ name: 'fx', seed: 7, z: 5, maxParticles: 900 });
@@ -65,16 +65,16 @@ class ParticleStudio extends Node {
   }
 }
 
-registerNode('ParticleStudio', () => new ParticleStudio());
+registerNode('ParticleWorkshop', () => new ParticleWorkshop());
 
-export const particleStudioGame = defineGame({
-  title: 'Particle Studio',
+export const particleWorkshopGame = defineGame({
+  title: 'Particle Workshop',
   width: 1280,
   height: 720,
   background: REGALIA_DAY.bg,
-  build: () => new ParticleStudio({ name: 'particle-studio' }),
+  build: () => new ParticleWorkshop({ name: 'particle-workshop' }),
   probe: (world) => {
-    const lab = world.root.find('particle-studio') as ParticleStudio | null;
+    const lab = world.root.find('particle-workshop') as ParticleWorkshop | null;
     return {
       frame: world.frame,
       hash: world.hash(),

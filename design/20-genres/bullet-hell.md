@@ -117,7 +117,7 @@ the per-step time budget holds.
 
 ## See also
 
-- [`sandboxes/particle-studio`](../../sandboxes/particle-studio) — emitter and
+- [`sandboxes/particle-workshop`](../../sandboxes/particle-workshop) — emitter and
   pooled-sprite wiring for cheap on-screen bullet mass.
 - [design/JUICE.md](../JUICE.md) — graze feedback, hit-stop, screen-clear
   flash as choreography (cosmetic, law 6).

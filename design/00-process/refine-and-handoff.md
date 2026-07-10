@@ -96,8 +96,8 @@ Where each concern goes, and the doc that owns it from here:
 | State/view split, `@hayao` imports, cosmetic rule, determinism hygiene | **[CONVENTIONS.md](../../docs/CONVENTIONS.md)** | Is it built the Hayao way? |
 
 After handoff, the build runs `npm run check`, `npm test`, `npm run verify`, and
-`npm run judge` — and the design stands or falls on the contract you wrote. Studio
-([Hayao Studio](../../docs/STUDIO.md); `runStudio`) then closes the human-feel loop.
+`npm run judge` — and the design stands or falls on the contract you wrote. Workshop
+([Hayao Workshop](../../docs/WORKSHOP.md); `runWorkshop`) then closes the human-feel loop.
 
 ## Worked example
 

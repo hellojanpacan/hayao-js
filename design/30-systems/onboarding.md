@@ -70,9 +70,9 @@ it"* — a rule you deduced from play sticks harder than one you were told.
 - **Menus/prompts are DOM chrome**, not sim: `showScreen({...})` (grep
   `docs/API.md`) for the "press start" and hint overlays — cosmetic, out of
   `world.hash()` (CONVENTIONS: DOM for menus).
-- **Hesitation data is your ground truth.** Studio records per-frame action logs,
+- **Hesitation data is your ground truth.** Workshop records per-frame action logs,
   wall-clock marks (tab-hidden ≠ hesitation), and the "longest pause @ frame N"
-  report ([`docs/STUDIO.md`](../../docs/STUDIO.md), `inspect_moment`). Where a real
+  report ([`docs/WORKSHOP.md`](../../docs/WORKSHOP.md), `inspect_moment`). Where a real
   human *stalled* is where onboarding failed — read it, don't guess. A pause that
   isn't menu time and isn't a background tab is a confusion signal.
 - **The teaching ramp** is the gentlest slope of [[system-difficulty-and-dda]] —
@@ -86,7 +86,7 @@ it"* — a rule you deduced from play sticks harder than one you were told.
 - **No safe space.** Learning under real threat means learning by punishment.
 - **No visible goal by minute ten.** Competence without direction is aimless — the
   loop must *close once* early so the player sees the point ([[process-core-loop]]).
-- **Guessing the stall points.** Designing onboarding from intuition when Studio
+- **Guessing the stall points.** Designing onboarding from intuition when Workshop
   hesitation data would show the real wall.
 
 ## Verify
@@ -98,8 +98,8 @@ it"* — a rule you deduced from play sticks harder than one you were told.
   the verb fails the room (FUN.md §3 gate pattern).
 - **Readability floor:** the avatar and the goal out-contrast the surroundings
   ([`src/verify/gates.ts`](../../src/verify/gates.ts) readability gate).
-- **Human stall check:** review the Studio report's longest-pause moments after a
-  real playtest ([`docs/STUDIO.md`](../../docs/STUDIO.md)).
+- **Human stall check:** review the Workshop report's longest-pause moments after a
+  real playtest ([`docs/WORKSHOP.md`](../../docs/WORKSHOP.md)).
 
 ## Composes with
 
@@ -110,6 +110,6 @@ it"* — a rule you deduced from play sticks harder than one you were told.
 
 ## See also
 
-- [`docs/STUDIO.md`](../../docs/STUDIO.md) — hesitation/longest-pause data; the real onboarding oracle.
+- [`docs/WORKSHOP.md`](../../docs/WORKSHOP.md) — hesitation/longest-pause data; the real onboarding oracle.
 - [`design/FUN.md` §2/§3](../FUN.md) — teach-by-geometry; negative gate proofs.
 - [[anchor-celeste]] · [[anchor-into-the-breach]] — teach-by-doing and teach-by-trust.

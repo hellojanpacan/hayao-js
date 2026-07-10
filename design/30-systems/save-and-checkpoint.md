@@ -65,8 +65,8 @@ The pull is that the game values your hours as much as you do.
   (grep `docs/API.md`) turn a `WorldSnapshot` into storable text and back —
   round-trip a snapshot and hash both sides for a save-integrity test.
 - **Checkpoints are cheap snapshots.** The engine already keeps a periodic
-  `SnapshotRing` (every N frames) for Studio scrubbing/tape
-  ([`docs/STUDIO.md`](../../docs/STUDIO.md)) — the same primitive that powers
+  `SnapshotRing` (every N frames) for Workshop scrubbing/tape
+  ([`docs/WORKSHOP.md`](../../docs/WORKSHOP.md)) — the same primitive that powers
   time-travel powers your checkpoints.
 - **Instant retry is `restart`.** A clean rebuild of world state (no leaked nodes,
   no stale RNG) is a verified checklist item (CONVENTIONS §6). Buffer the retry
@@ -109,5 +109,5 @@ The pull is that the game values your hours as much as you do.
 ## See also
 
 - [`docs/CONVENTIONS.md`](../../docs/CONVENTIONS.md) — pure state, snapshot/hash, restart cleanliness.
-- [`docs/STUDIO.md`](../../docs/STUDIO.md) — the `SnapshotRing` and replay round-trip.
+- [`docs/WORKSHOP.md`](../../docs/WORKSHOP.md) — the `SnapshotRing` and replay round-trip.
 - [[anchor-celeste]] · [[anchor-hades]] — instant retry and death-as-progress.

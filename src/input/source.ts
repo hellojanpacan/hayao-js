@@ -202,7 +202,7 @@ export const MOUSE_ACTIONS = ['mouse.left', 'mouse.right', 'mouse.middle'] as co
  *
  * Determinism note: axes are host-sampled live input and are NOT part of the
  * string input log or the world hash. `sample()` QUANTIZES design coords to a
- * 1/8-px grid so a recorded axes log (Studio sessions) replays bit-exactly —
+ * 1/8-px grid so a recorded axes log (Workshop sessions) replays bit-exactly —
  * the sim only ever sees the quantized values, live or replayed. For lockstep
  * netplay, still prefer discrete actions (map a tap to a key via
  * KeyboardSource.press, or snap position to a grid cell). See docs/CONVENTIONS.md.

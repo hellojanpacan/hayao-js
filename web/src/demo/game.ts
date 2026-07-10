@@ -484,7 +484,7 @@ export const game = defineGame({
   height: H,
   background: THEME.day.bg,
   inputMap: INPUT,
-  splash: false,
+  splash: { minDurationMs: 5000 }, // TEMP: long hold to inspect the logo splash
   build(world) {
     Object.assign(world.state as DemoState, initialState());
     return new DemoRoot();
@@ -505,6 +505,9 @@ export interface DemoController {
 }
 
 export function createDemo(mount: HTMLElement, keyboardTarget: HTMLElement): DemoController {
+  // Unlock audio here (still inside the click's sticky activation) so the boot
+  // chime the cold-open fires ~400ms later plays on a live bus.
+  audio.start();
   const handle = runBrowser(game, mount, { shell: false, keyboardTarget });
   const st = (): DemoState => handle.world.state as DemoState;
   return {

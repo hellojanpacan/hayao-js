@@ -65,7 +65,7 @@ game reachable. The pull is dignity: the game meets the player where they are.
   telegraph shape so the signal survives colour-blindness ([[pattern-readability]],
   JUDGE).
 - **Remap & assist are declared tuning.** Model assist axes as `tuning:` knobs
-  ([`docs/STUDIO.md`](../../docs/STUDIO.md)); resolved via `world.tune(key)`, they
+  ([`docs/WORKSHOP.md`](../../docs/WORKSHOP.md)); resolved via `world.tune(key)`, they
   stay in `world.hash()`, so an assisted or remapped run is still a first-class,
   replayable artifact — never a cheat path.
 - **Input is action-based.** Because UI intent flows through input *actions*
@@ -92,7 +92,7 @@ game reachable. The pull is dignity: the game meets the player where they are.
   [`src/verify/gates.ts`](../../src/verify/gates.ts) + [JUDGE.md](../JUDGE.md)
   (the headless SVG look).
 - **Assist stays deterministic:** golden-hash a run per assist setting; tuning is
-  in `world.hash()` (STUDIO knob semantics).
+  in `world.hash()` (WORKSHOP knob semantics).
 - **Remap covers every action:** lint that no gameplay action is bound to an
   unremappable key.
 

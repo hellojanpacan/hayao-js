@@ -29,7 +29,7 @@ Meyda, FMOD/Wwise) but reimplemented fresh to fit the determinism invariant.
 | **Genre songbook** | `src/audio/genres.ts` | Five hand-composed reference tracks (electronic, lo-fi, piano, orchestral, jazz-funk) — a demo *and* a test fixture. |
 | **Quality scorer** | `src/audio/quality.ts` | Objective 0–100 mix scoring vs genre-target windows: loudness, headroom, dynamics (crest), stereo width, spectral balance (mud/harshness/low-end), genre-fit. The hard gate for "is this good?" — proven to score good tracks high and bad mixes low. `npm run audio` prints it. |
 | **Playback** | `src/audio/audio.ts` | `AudioBus.playSpec` / `playSong` render the data at the live context rate and push it through the SFX/music buses. Still a no-op headless. |
-| **Showcase** | `sound/` | The **Sound Studio** web page (`/sound/`) plays every genre live and shows its filmstrip; drives the real published API. `npm run audio` regenerates WAV+SVG artifacts. |
+| **Showcase** | `sound/` | The **Sound Workshop** web page (`/sound/`) plays every genre live and shows its filmstrip; drives the real published API. `npm run audio` regenerates WAV+SVG artifacts. |
 
 ### Expressive / arrangement features (what lifts it above a MIDI demo)
 

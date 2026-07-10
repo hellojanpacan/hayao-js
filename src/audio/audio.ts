@@ -9,6 +9,7 @@
 
 import { renderSound, type SoundSpec } from './synth';
 import { renderSong, songDuration, type Song } from './music';
+import { midiToFreq } from './theory';
 
 export interface Volumes {
   master: number;
@@ -290,6 +291,10 @@ export class AudioBus {
   chime(): void {
     [523.25, 659.25, 783.99].forEach((f, i) => this.tone({ freq: f, duration: 0.9 - i * 0.15, type: 'sine', gain: 0.15, delay: i * 0.04 }));
   }
+  /** The signature cold-open cue — the pane announcing "you are somewhere now" (see BOOT_CHIME). */
+  bootChime(): void {
+    for (const t of bootChimeScore()) this.tone(t);
+  }
   success(): void {
     [392, 493.88, 587.33, 783.99].forEach((f, i) => this.tone({ freq: f, duration: 0.4, type: 'triangle', gain: 0.15, delay: i * 0.08 }));
   }
@@ -320,6 +325,25 @@ export class AudioBus {
     }
     bus.gain.setTargetAtTime(0.9, this._ctx.currentTime, 3);
   }
+}
+
+// ── Boot chime ─────────────────────────────────────────────────────────────
+// The signature "the pane just woke" gesture — cheap identity, high charm. The
+// "Warm" voicing: a soft C-major-pentatonic climb dropped an octave (E3 G3 A3
+// C4), four pure sine voices panning left→right onto a gently held landing. No
+// bass bed, no ringing bell — just the warm rising sparkle. Deterministic by
+// construction (fixed pitches/timings, no rng) and built from theory helpers so
+// a test can assert the score never drifts; silent until the bus is started.
+const BOOT_CHIME: ReadonlyArray<{ midi: number; type: OscillatorType; delay: number; duration: number; gain: number; pan: number }> = [
+  { midi: 52, type: 'sine', delay: 0.0, duration: 0.6, gain: 0.12, pan: -0.28 }, //  E3
+  { midi: 55, type: 'sine', delay: 0.09, duration: 0.6, gain: 0.12, pan: -0.1 }, //  G3
+  { midi: 57, type: 'sine', delay: 0.18, duration: 0.65, gain: 0.12, pan: 0.1 }, //  A3
+  { midi: 60, type: 'sine', delay: 0.27, duration: 1.05, gain: 0.12, pan: 0.28 }, // C4 — soft landing
+];
+
+/** The boot chime as a pure, deterministic list of tones (a4 defaults to 440). */
+export function bootChimeScore(a4 = 440): Tone[] {
+  return BOOT_CHIME.map((v) => ({ freq: midiToFreq(v.midi, a4), duration: v.duration, type: v.type, gain: v.gain, delay: v.delay, pan: v.pan }));
 }
 
 /** Shared default bus. */
