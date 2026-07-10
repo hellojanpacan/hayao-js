@@ -60,6 +60,17 @@ export class KeyboardSource {
     globalThis.addEventListener?.('blur', this.onBlur);
   }
 
+  /**
+   * Release everything currently held. Embedding hosts call this when focus
+   * leaves the game's wrapper (an element-bound source never hears the keyup
+   * that happens elsewhere, so a held key would otherwise stick).
+   */
+  clear(): void {
+    this.keysDown.clear();
+    this.pressed.clear();
+    this.held.clear();
+  }
+
   /** The actions currently held down, as a stable sorted array. */
   currentActions(): string[] {
     // Held entries double as binding codes: PointerSource holds `mouse.right`
@@ -164,6 +175,11 @@ export interface PointerSourceOptions {
    * wires this to the GameHandle's KeyboardSource automatically.
    */
   keyboard?: KeyboardSource;
+  /**
+   * Let wheel events scroll the page. Default false — scrolling over the game
+   * is game input (`pointer.wheel` axis), so the page must not move under it.
+   */
+  pageScroll?: boolean;
 }
 
 /** The pointer-button action names PointerSource can hold (via its keyboard). */
@@ -203,6 +219,11 @@ export class PointerSource {
   private seen = false;
   /** Live touches by pointerId (a pressed finger/button); excludes hover-only mouse. */
   private touches = new Map<number, { clientX: number; clientY: number }>();
+  /** Wheel scroll accumulated since the last sample, in normalized px (~100/notch). */
+  private wheelAcc = 0;
+  /** Relative movement accumulated since the last sample (movementX/Y, client px). */
+  private dxAcc = 0;
+  private dyAcc = 0;
   private target: PointerTarget;
   private el: EventTarget | undefined;
   private keyboard: KeyboardSource | undefined;
@@ -210,6 +231,7 @@ export class PointerSource {
   private onDown: (e: PointerEvent) => void;
   private onUp: (e: PointerEvent) => void;
   private onCtx: (e: Event) => void;
+  private onWheel: (e: WheelEvent) => void;
 
   constructor(target: PointerTarget, opts: PointerSourceOptions = {}) {
     this.target = target;

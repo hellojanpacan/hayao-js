@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import Footer from "../components/Footer.astro";
 import InstallBox from "../components/InstallBox.astro";
+import LiveDemo from "../components/LiveDemo.tsx";
 
 const benefits = [
   { c: "green", t: "Prove it works", d: "Run in Node, assert on state. No browser, no pixels, no flakiness." },
@@ -42,7 +43,20 @@ const rows: { label: string; marks: Mark[] }[] = [
       </div>
     </section>
 
-    <!-- (live game demo lands here) -->
+    <!-- ── 2 · LIVE DEMO ── -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-20 md:pb-24">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-green">Show, don't tell</p>
+      <h2 class="mx-auto max-w-[22ch] text-balance font-display text-[clamp(1.7rem,4vw,2.4rem)] font-semibold leading-[1.12] tracking-[-0.01em] text-ink">
+        Prompt a real game. Watch it change.
+      </h2>
+      <p class="mx-auto mt-5 max-w-[48ch] font-body text-[1.05rem] font-light leading-relaxed text-soft">
+        This platformer runs on hayao, live on this page. Each prompt makes the kind of
+        multi-system edit your agent makes — mechanics, art, sound and HUD in one go. Stack them.
+      </p>
+      <div class="mt-10">
+        <LiveDemo client:visible />
+      </div>
+    </section>
 
     <!-- ── 3 · ASSETS AI CAN MAKE ── -->
     <section class="mx-auto w-full max-w-2xl px-6 py-20 md:py-24">

@@ -37,6 +37,11 @@
   --color-orange: #e59500;
   --color-blue: #669bbc;
 
+  /* Purpose-scoped brand extensions — grown by the job, not the mood.
+     rose = vitality (hearts, health, damage); bark = material (wood, earth). */
+  --color-rose: #c65b5b;
+  --color-bark: #7a4f34;
+
   --color-ink: #29335c;
   --color-muted: #8b90a6;
   --color-soft: #5a6072;
