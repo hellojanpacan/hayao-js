@@ -1,6 +1,18 @@
 # Regalia Migration — one canonical design + sound system
 
-**Status:** proposed plan, not yet executed. Written 2026-07-10.
+**Status:** Phases 0–2 executed & green (2026-07-10). Phases 3–7 pending.
+Written 2026-07-10.
+
+**Progress:**
+- ✅ **Phase 0–1** — tagged `corpus-v0`, archived 33 games (`docs/ARCHIVE.md`), kept
+  sokoban + embed.html + sandboxes. Committed `c2aa9e0`.
+- ✅ **Phase 2** — removed `KENTO`/`MEADOW`/`DUSK`/`PAPER` from the engine; added the
+  derived `REGALIA_EXT` (teal + violet) categorical extension; widened the day/night
+  ramps to 8; re-themed the 3 engine consumers, sokoban, all 11 sandboxes, the
+  `create-hayao` scaffold, and the palette gate to Regalia. `check` clean, 788 tests,
+  46/46 palette pairings, sokoban verifies, API.md regenerated.
+- ⏳ **Phase 3+** — Regalia-only color lint, token-vocabulary unification, audio
+  branding, identity rebrand, shared game kit + the three games.
 
 **Goal.** Make **Regalia** the single, canonical, still-growing design system for
 Hayao — color, type, UI, motion, **and sound**. Fully remove **Kentō / Woodblock**

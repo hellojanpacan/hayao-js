@@ -6,8 +6,8 @@ import {
   Node,
   Sprite,
   Text,
-  MEADOW,
-  KENTO,
+  REGALIA,
+  REGALIA_DAY,
   registerNode,
   showScreen,
   hideScreen,
@@ -67,8 +67,8 @@ class SokobanView extends Node {
             pos: at(x, y),
             z: 0,
             shape: { kind: 'rect', w: CELL - 4, h: CELL - 4, r: wall ? 8 : 6 },
-            fill: wall ? KENTO.sumiSoft : KENTO.gofun,
-            stroke: wall ? KENTO.sumi : MEADOW.line,
+            fill: wall ? REGALIA.soft : REGALIA.paper,
+            stroke: wall ? REGALIA.ink : REGALIA_DAY.line,
             strokeWidth: wall ? 2 : 1,
           }),
         );
@@ -77,24 +77,24 @@ class SokobanView extends Node {
     // Goals
     for (const g of lvl.goals) {
       this.layer.addChild(
-        new Sprite({ name: 'goal', pos: at(g.x, g.y), z: 1, shape: { kind: 'circle', radius: 12 }, fill: 'none', stroke: MEADOW.accent, strokeWidth: 3 }),
+        new Sprite({ name: 'goal', pos: at(g.x, g.y), z: 1, shape: { kind: 'circle', radius: 12 }, fill: 'none', stroke: REGALIA_DAY.accent, strokeWidth: 3 }),
       );
     }
     // Boxes (green when on a goal)
     for (const b of this.state.boxes) {
       const onGoal = lvl.goals.some((g) => g.x === b.x && g.y === b.y);
       this.layer.addChild(
-        new Sprite({ name: 'box', pos: at(b.x, b.y), z: 2, shape: { kind: 'rect', w: CELL - 22, h: CELL - 22, r: 8 }, fill: onGoal ? MEADOW.good : MEADOW.warn, stroke: KENTO.sumi, strokeWidth: 2 }),
+        new Sprite({ name: 'box', pos: at(b.x, b.y), z: 2, shape: { kind: 'rect', w: CELL - 22, h: CELL - 22, r: 8 }, fill: onGoal ? REGALIA_DAY.good : REGALIA_DAY.warn, stroke: REGALIA.ink, strokeWidth: 2 }),
       );
     }
     // Player
     this.layer.addChild(
-      new Sprite({ name: 'player', pos: at(this.state.player.x, this.state.player.y), z: 3, shape: { kind: 'circle', radius: 22 }, fill: MEADOW.accent, stroke: KENTO.sumi, strokeWidth: 2 }),
+      new Sprite({ name: 'player', pos: at(this.state.player.x, this.state.player.y), z: 3, shape: { kind: 'circle', radius: 22 }, fill: REGALIA_DAY.accent, stroke: REGALIA.ink, strokeWidth: 2 }),
     );
 
     // HUD
     this.layer.addChild(
-      new Text({ name: 'hud', text: `Level ${this.state.levelIndex + 1} / ${LEVELS.length}   ·   Moves ${this.history.length}   ·   arrows to push, U undo, R restart`, pos: { x: 640, y: 44 }, size: 22, align: 'center', fill: MEADOW.inkSoft }),
+      new Text({ name: 'hud', text: `Level ${this.state.levelIndex + 1} / ${LEVELS.length}   ·   Moves ${this.history.length}   ·   arrows to push, U undo, R restart`, pos: { x: 640, y: 44 }, size: 22, align: 'center', fill: REGALIA_DAY.inkSoft }),
     );
   }
 
@@ -181,7 +181,7 @@ export const sokobanGame = defineGame({
   title: 'Sokoban',
   width: 1280,
   height: 720,
-  background: MEADOW.bg,
+  background: REGALIA_DAY.bg,
   build: () => makeSokobanRoot(),
   probe: (world) => {
     const view = world.root.find('sokoban') as SokobanView | null;

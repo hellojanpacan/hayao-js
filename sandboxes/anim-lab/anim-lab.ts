@@ -26,8 +26,8 @@ import {
   SkeletonDebug,
   Blend1D,
   applyChannel,
-  KENTO,
-  MEADOW,
+  REGALIA,
+  REGALIA_DAY,
   registerNode,
   defineGame,
   knob,
@@ -174,7 +174,7 @@ class AnimLab extends Node {
     this.rig.addChild(this.debugOverlay);
     this.debugOverlay.visible = this.debug;
 
-    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 44 }, size: 20, align: 'center', fill: MEADOW.inkSoft, text: '' });
+    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 44 }, size: 20, align: 'center', fill: REGALIA_DAY.inkSoft, text: '' });
     this.hud.cosmetic = true;
     this.addChild(this.hud);
     this.refreshHud();
@@ -183,13 +183,13 @@ class AnimLab extends Node {
   /** Static torso + head sprites — context so the arm reads as an arm. Cosmetic. */
   private buildFigure(): void {
     // Ground shadow.
-    this.rig.addChild(new Sprite({ pos: { x: 0, y: 96 }, z: 0, shape: { kind: 'circle', radius: 44 }, fill: KENTO.line, opacity: 0.5 }));
+    this.rig.addChild(new Sprite({ pos: { x: 0, y: 96 }, z: 0, shape: { kind: 'circle', radius: 44 }, fill: REGALIA.line, opacity: 0.5 }));
     // Torso.
-    this.rig.addChild(new Sprite({ pos: { x: 0, y: 6 }, z: 2, shape: { kind: 'rect', w: 64, h: 150, r: 26 }, fill: KENTO.ko, stroke: KENTO.sumi, strokeWidth: 3 }));
+    this.rig.addChild(new Sprite({ pos: { x: 0, y: 6 }, z: 2, shape: { kind: 'rect', w: 64, h: 150, r: 26 }, fill: REGALIA.gold, stroke: REGALIA.ink, strokeWidth: 3 }));
     // Head.
-    this.rig.addChild(new Sprite({ pos: { x: 0, y: -96 }, z: 3, shape: { kind: 'circle', radius: 30 }, fill: KENTO.kinu, stroke: KENTO.sumi, strokeWidth: 3 }));
+    this.rig.addChild(new Sprite({ pos: { x: 0, y: -96 }, z: 3, shape: { kind: 'circle', radius: 30 }, fill: REGALIA.cloud, stroke: REGALIA.ink, strokeWidth: 3 }));
     // A far (static) arm for silhouette balance, behind the torso.
-    this.rig.addChild(new Sprite({ pos: { x: -34, y: 4 }, z: 1, shape: { kind: 'rect', w: 22, h: 118, r: 11 }, fill: KENTO.koDeep, stroke: KENTO.sumi, strokeWidth: 2.5 }));
+    this.rig.addChild(new Sprite({ pos: { x: -34, y: 4 }, z: 1, shape: { kind: 'rect', w: 22, h: 118, r: 11 }, fill: REGALIA.gold, stroke: REGALIA.ink, strokeWidth: 2.5 }));
   }
 
   /** The animated arm: shoulder → upperArm(Bone2D) → forearm(Bone2D) → hand. */
@@ -200,12 +200,12 @@ class AnimLab extends Node {
 
     this.upperArm = new Bone2D({ name: 'upperArm', length: UPPER_LEN, z: 4 });
     this.forearm = new Bone2D({ name: 'forearm', length: FORE_LEN, pos: { x: UPPER_LEN, y: 0 }, z: 4 });
-    this.hand = new Sprite({ name: 'hand', pos: { x: FORE_LEN, y: 0 }, z: 5, shape: { kind: 'circle', radius: 13 }, fill: KENTO.kinu, stroke: KENTO.sumi, strokeWidth: 3 });
+    this.hand = new Sprite({ name: 'hand', pos: { x: FORE_LEN, y: 0 }, z: 5, shape: { kind: 'circle', radius: 13 }, fill: REGALIA.cloud, stroke: REGALIA.ink, strokeWidth: 3 });
 
     // Skin: draw each bone as a limb segment. A child sprite offset to the bone's
     // midpoint gives the segment its thickness (the Bone2D itself is a pivot).
-    this.upperArm.addChild(new Sprite({ pos: { x: UPPER_LEN / 2, y: 0 }, z: 4, shape: { kind: 'rect', w: UPPER_LEN, h: 22, r: 11 }, fill: KENTO.shu, stroke: KENTO.sumi, strokeWidth: 3 }));
-    this.forearm.addChild(new Sprite({ pos: { x: FORE_LEN / 2, y: 0 }, z: 4, shape: { kind: 'rect', w: FORE_LEN, h: 18, r: 9 }, fill: KENTO.shuDeep, stroke: KENTO.sumi, strokeWidth: 3 }));
+    this.upperArm.addChild(new Sprite({ pos: { x: UPPER_LEN / 2, y: 0 }, z: 4, shape: { kind: 'rect', w: UPPER_LEN, h: 22, r: 11 }, fill: REGALIA.rose, stroke: REGALIA.ink, strokeWidth: 3 }));
+    this.forearm.addChild(new Sprite({ pos: { x: FORE_LEN / 2, y: 0 }, z: 4, shape: { kind: 'rect', w: FORE_LEN, h: 18, r: 9 }, fill: REGALIA.rose, stroke: REGALIA.ink, strokeWidth: 3 }));
 
     this.forearm.addChild(this.hand);
     this.upperArm.addChild(this.forearm);
@@ -294,7 +294,7 @@ export const animLabGame = defineGame({
   title: 'Anim Lab',
   width: 1280,
   height: 720,
-  background: MEADOW.bg,
+  background: REGALIA_DAY.bg,
   inputMap: AL_INPUT_MAP,
   tuning: {
     knobs: [

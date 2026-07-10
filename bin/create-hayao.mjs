@@ -146,7 +146,7 @@ export function makeToggle(rng: Rng, cols = 4, rows = 4, scramble = 8): Puzzle<T
 
   'game.ts': `// The game: pure logic (logic.ts) → a scene-tree view. Content is generated and
 // PROVEN by the solver-backed generator, then composed into a ramped campaign.
-import { Node, Sprite, Text, KENTO, withAlpha, linearGradient, glow, registerNode, audio,
+import { Node, Sprite, Text, REGALIA, REGALIA_EXT, withAlpha, linearGradient, glow, registerNode, audio,
          defineGame, composeCampaign, knob, type World } from '@hayao';
 import { makeToggle, flip, type ToggleState } from './logic';
 
@@ -183,14 +183,14 @@ class GameView extends Node {
       const x = ox + (i%cols)*cell, y = oy + Math.floor(i/cols)*cell, on = this.lit[i]===1;
       this.layer.addChild(new Sprite({ name:\`c\${i}\`, pos:{x,y}, z:1,
         shape:{kind:'rect', w:cell*0.7, h:cell*0.7, r:round},
-        fill: on ? KENTO.kaki : withAlpha(KENTO.kinako, 0.15),
-        gradient: on ? linearGradient([KENTO.ko, KENTO.shuDeep], 90) : undefined,
-        stroke: withAlpha(KENTO.gofun, on?0.5:0.2), strokeWidth: 2,
-        shadow: on ? glow(withAlpha(KENTO.kaki,0.8), 40) : undefined }));
+        fill: on ? REGALIA.gold : withAlpha(REGALIA.softInk, 0.15),
+        gradient: on ? linearGradient([REGALIA.gold, REGALIA.rose], 90) : undefined,
+        stroke: withAlpha(REGALIA.paper, on?0.5:0.2), strokeWidth: 2,
+        shadow: on ? glow(withAlpha(REGALIA.gold,0.8), 40) : undefined }));
     }
     const cp = { x: ox + (this.cursor%cols)*cell, y: oy + Math.floor(this.cursor/cols)*cell };
-    this.layer.addChild(new Sprite({ name:'cursor', pos:cp, z:5, shape:{kind:'rect', w:cell*0.82, h:cell*0.82, r:22}, fill:'none', stroke:KENTO.asagi, strokeWidth:3 }));
-    this.layer.addChild(new Text({ name:'hud', text:\`\${LEVELS[this.idx].actName} — level \${this.idx+1}/\${LEVELS.length} · arrows move · space tap\`, pos:{x:W/2,y:60}, size:24, align:'center', fill:KENTO.gofun }));
+    this.layer.addChild(new Sprite({ name:'cursor', pos:cp, z:5, shape:{kind:'rect', w:cell*0.82, h:cell*0.82, r:22}, fill:'none', stroke:REGALIA_EXT.teal, strokeWidth:3 }));
+    this.layer.addChild(new Text({ name:'hud', text:\`\${LEVELS[this.idx].actName} — level \${this.idx+1}/\${LEVELS.length} · arrows move · space tap\`, pos:{x:W/2,y:60}, size:24, align:'center', fill:REGALIA.paper }));
   }
 
   private tap(): void {
@@ -219,7 +219,7 @@ class GameView extends Node {
 registerNode('GameView', () => new GameView());
 
 export const game = defineGame({
-  title: '${slug}', width: W, height: H, background: KENTO.yohaku,
+  title: '${slug}', width: W, height: H, background: REGALIA.ground,
   // Live-tunable knobs: the /studio/ page builds sliders from this spec, values
   // are hashed sim state read via world.tune(). Defaults ARE the config.
   tuning: { knobs: [knob.num('cellRound', { default: 18, min: 0, max: 40, step: 1, group: 'look' })] },

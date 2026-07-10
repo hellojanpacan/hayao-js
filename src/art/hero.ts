@@ -26,7 +26,7 @@ import { Node, type NodeConfig } from '../scene/node';
 import { Sprite } from '../scene/nodes';
 import { ClipPlayer } from '../scene/clipPlayer';
 import type { ClipChannel, ClipDef, Keyframe, TrackDef } from '../anim/clip';
-import { KENTO } from './palette';
+import { REGALIA } from './palette';
 import { duotone, type DuotoneScheme } from './duotone';
 
 // ── Rig geometry (design px, hero ≈ 150px hip-to-crown) ────────────────────
@@ -52,7 +52,7 @@ export const HERO_FOOT_OFFSET = LEG_LEN + FOOT_R;
 const ARM_FRONT_REST = -0.1;
 const ARM_BACK_REST = 0.14;
 
-const DEFAULT_SCHEME = duotone(KENTO.asagiDeep);
+const DEFAULT_SCHEME = duotone(REGALIA.blue);
 
 // ── Rig builder ────────────────────────────────────────────────────────────
 
@@ -298,7 +298,7 @@ export function heroStateFromMotion(m: HeroMotion, opts: { runThreshold?: number
 // ── DuotoneHero: batteries-included node ───────────────────────────────────
 
 export interface HeroConfig extends NodeConfig {
-  /** Duotone dressing. Default: teal (KENTO.asagiDeep). */
+  /** Duotone dressing. Default: blue (REGALIA.blue). */
   scheme?: DuotoneScheme;
   /** State to start in. Default 'idle'. Pass 'spawn' to materialize on entry. */
   state?: HeroState;
@@ -311,7 +311,7 @@ export interface HeroConfig extends NodeConfig {
  * frame at the character's foot/hip, and drive it with `setState(...)` /
  * `setFacing(...)` from your logical state. Cosmetic — it never enters the hash.
  *
- *   const hero = new DuotoneHero({ scheme: DUOTONE_SCHEMES.vermilion, state: 'spawn' });
+ *   const hero = new DuotoneHero({ scheme: REGALIA_SCHEMES.rose, state: 'spawn' });
  *   this.addChild(hero);
  *   // per frame:
  *   hero.pos = { x: pc.x, y: pc.y };

@@ -16,7 +16,7 @@
 import { Rng } from '../core/rng';
 import { dsin, dhypot } from '../core/dmath';
 import { IDENTITY, type Transform } from '../core/math';
-import { DUSK, mixLinear } from '../art/palette';
+import { REGALIA_NIGHT, mixLinear } from '../art/palette';
 import { LAYER_LIGHT, type CircleCommand, type DrawCommand, type PolyCommand, type RectCommand } from '../render/commands';
 import { Node, type NodeConfig } from './node';
 import { cullSegments, shadowQuads, type Occluder } from './shadow2d';
@@ -118,7 +118,7 @@ export class LightLayer extends Node {
     super(config);
     this.cosmetic = true;
     this.ambient = {
-      color: config.ambient?.color ?? DUSK.bg,
+      color: config.ambient?.color ?? REGALIA_NIGHT.bg,
       level: config.ambient?.level ?? 0,
     };
     this.softShadows = config.softShadows ?? false;

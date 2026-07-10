@@ -10,8 +10,9 @@ import {
   Text,
   Particles,
   PARTICLE_PRESETS,
-  KENTO,
-  MEADOW,
+  REGALIA,
+  REGALIA_EXT,
+  REGALIA_DAY,
   linearGradient,
   glow,
   registerNode,
@@ -129,14 +130,14 @@ class WebGLLab extends Node {
         this.cosmLayer.addChild(new Sprite({
           pos: { x: col * TW + TW / 2, y: row * TH + TH / 2 }, z: 0,
           shape: { kind: 'rect', w: TW - 2, h: TH - 2, r: 4 },
-          fill, stroke: accent ? KENTO.ai : '#1e1e2a',
+          fill, stroke: accent ? REGALIA.blue : '#1e1e2a',
           strokeWidth: accent ? 1.5 : 0.5,
         }));
         if (accent) {
           this.cosmLayer.addChild(new Sprite({
             pos: { x: col * TW + TW / 2, y: row * TH + TH / 2 }, z: 1,
             shape: { kind: 'circle', radius: TW * 0.08 },
-            fill: KENTO.asagi, opacity: 0.3,
+            fill: REGALIA_EXT.teal, opacity: 0.3,
           }));
         }
       }
@@ -152,15 +153,15 @@ class WebGLLab extends Node {
     L.addChild(new Sprite({
       pos: { x: CX, y: CY }, z: 2,
       shape: { kind: 'rect', w: 660, h: 380, r: 16 },
-      gradient: linearGradient([KENTO.sumi + 'cc', '#0a0a1aee'], 180),
-      stroke: KENTO.ai, strokeWidth: 2, opacity: 0.88,
+      gradient: linearGradient([REGALIA.ink + 'cc', '#0a0a1aee'], 180),
+      stroke: REGALIA.blue, strokeWidth: 2, opacity: 0.88,
     }));
 
     // Poly: hexagonal ring.
     L.addChild(new Sprite({
       pos: { x: CX, y: CY }, z: 3,
       shape: { kind: 'poly', points: hexPoints(0, 0, 160), closed: true },
-      fill: 'none', stroke: KENTO.asagi, strokeWidth: 1.5, opacity: 0.5,
+      fill: 'none', stroke: REGALIA_EXT.teal, strokeWidth: 1.5, opacity: 0.5,
     }));
 
     // Poly: spinning star (ref kept for animation).
@@ -168,9 +169,9 @@ class WebGLLab extends Node {
       name: 'spinner',
       pos: { x: CX, y: CY }, z: 4,
       shape: { kind: 'poly', points: starPoints(0, 0, 80, 35, 8), closed: true },
-      gradient: linearGradient([KENTO.ai, KENTO.asagi, KENTO.gofun], 45),
-      stroke: KENTO.gofun, strokeWidth: 1,
-      shadow: glow(KENTO.asagi, 18),
+      gradient: linearGradient([REGALIA.blue, REGALIA_EXT.teal, REGALIA.paper], 45),
+      stroke: REGALIA.paper, strokeWidth: 1,
+      shadow: glow(REGALIA_EXT.teal, 18),
     });
     L.addChild(this.spinner);
 
@@ -178,29 +179,29 @@ class WebGLLab extends Node {
     L.addChild(new Sprite({
       pos: { x: CX, y: CY }, z: 5,
       shape: { kind: 'circle', radius: 28 },
-      fill: KENTO.gofun, stroke: KENTO.ai, strokeWidth: 3,
-      shadow: glow(KENTO.asagi, 24),
+      fill: REGALIA.paper, stroke: REGALIA.blue, strokeWidth: 3,
+      shadow: glow(REGALIA_EXT.teal, 24),
     }));
 
     // Path: decorative quarter arcs (SVG d — the path DrawCommand type).
     L.addChild(new Sprite({ pos: { x: CX, y: CY }, z: 3,
       shape: { kind: 'path', d: 'M -220 0 A 220 220 0 0 1 0 -220' },
-      fill: 'none', stroke: KENTO.ko, strokeWidth: 2, opacity: 0.45, round: true }));
+      fill: 'none', stroke: REGALIA.gold, strokeWidth: 2, opacity: 0.45, round: true }));
     L.addChild(new Sprite({ pos: { x: CX, y: CY }, z: 3,
       shape: { kind: 'path', d: 'M 220 0 A 220 220 0 0 1 0 220' },
-      fill: 'none', stroke: KENTO.saku, strokeWidth: 2, opacity: 0.45, round: true }));
+      fill: 'none', stroke: REGALIA.rose, strokeWidth: 2, opacity: 0.45, round: true }));
     L.addChild(new Sprite({ pos: { x: CX, y: CY }, z: 3,
       shape: { kind: 'path', d: 'M -220 0 A 220 220 0 0 0 0 220' },
-      fill: 'none', stroke: KENTO.fuji, strokeWidth: 2, opacity: 0.35, round: true }));
+      fill: 'none', stroke: REGALIA_EXT.violet, strokeWidth: 2, opacity: 0.35, round: true }));
 
     // Circles: three orbiting orbs.
     const orbStyle = { z: 6, shape: { kind: 'circle' as const, radius: 14 } };
     this.orbA = new Sprite({ name: 'orbA', pos: { x: CX+140, y: CY }, ...orbStyle,
-      fill: MEADOW.accent, stroke: KENTO.gofun, strokeWidth: 2, shadow: glow(MEADOW.accent, 12) });
+      fill: REGALIA_DAY.ramp[2], stroke: REGALIA.paper, strokeWidth: 2, shadow: glow(REGALIA_DAY.ramp[2], 12) });
     this.orbB = new Sprite({ name: 'orbB', pos: { x: CX, y: CY-140 }, ...orbStyle,
-      fill: KENTO.saku, stroke: KENTO.gofun, strokeWidth: 2, shadow: glow(KENTO.saku, 12) });
+      fill: REGALIA.rose, stroke: REGALIA.paper, strokeWidth: 2, shadow: glow(REGALIA.rose, 12) });
     this.orbC = new Sprite({ name: 'orbC', pos: { x: CX-140, y: CY }, ...orbStyle,
-      fill: KENTO.ko, stroke: KENTO.gofun, strokeWidth: 2, shadow: glow(KENTO.ko, 12) });
+      fill: REGALIA.gold, stroke: REGALIA.paper, strokeWidth: 2, shadow: glow(REGALIA.gold, 12) });
     L.addChild(this.orbA);
     L.addChild(this.orbB);
     L.addChild(this.orbC);
@@ -209,24 +210,24 @@ class WebGLLab extends Node {
     const diamond = (x: number, y: number, r: number, fill: string) =>
       new Sprite({ pos: { x, y }, z: 6,
         shape: { kind: 'poly', points: [0,-r, r,0, 0,r, -r,0], closed: true },
-        fill, stroke: KENTO.gofun, strokeWidth: 1, opacity: 0.7 });
-    L.addChild(diamond(120,   80,   22, KENTO.asagi));
-    L.addChild(diamond(W-120, 80,   22, KENTO.saku));
-    L.addChild(diamond(120,   H-80, 22, KENTO.ko));
-    L.addChild(diamond(W-120, H-80, 22, MEADOW.accent));
+        fill, stroke: REGALIA.paper, strokeWidth: 1, opacity: 0.7 });
+    L.addChild(diamond(120,   80,   22, REGALIA_EXT.teal));
+    L.addChild(diamond(W-120, 80,   22, REGALIA.rose));
+    L.addChild(diamond(120,   H-80, 22, REGALIA.gold));
+    L.addChild(diamond(W-120, H-80, 22, REGALIA_DAY.ramp[2]));
 
     // Text: title (in-world Text command).
     L.addChild(new Text({ text: 'WebGL Lab', pos: { x: CX, y: CY-168 }, z: 7,
       size: 36, weight: 700, align: 'center',
-      fill: KENTO.gofun, stroke: KENTO.sumi, strokeWidth: 3 }));
+      fill: REGALIA.paper, stroke: REGALIA.ink, strokeWidth: 3 }));
     L.addChild(new Text({ text: 'hayao.js · WebGL2 post-processing', pos: { x: CX, y: CY-128 }, z: 7,
-      size: 16, align: 'center', fill: KENTO.asagi, opacity: 0.85 }));
+      size: 16, align: 'center', fill: REGALIA_EXT.teal, opacity: 0.85 }));
 
     // Text: DrawCommand type legend (bottom-left) — proves text at small sizes.
     const legend = ['rect','circle','poly','path','gradient','shadow','opacity'];
     legend.forEach((s, i) =>
       L.addChild(new Text({ text: s, pos: { x: 38, y: 24 + i * 18 }, z: 7,
-        size: 12, fill: KENTO.asagi, opacity: 0.5 })));
+        size: 12, fill: REGALIA_EXT.teal, opacity: 0.5 })));
 
     // Particles system.
     this.particles = new Particles({ name: 'fx', seed: 42, z: 10, maxParticles: 700 });
@@ -243,7 +244,7 @@ class WebGLLab extends Node {
         pos: { x: CX + Math.cos(angle) * r, y: CY + Math.sin(angle) * r }, z: 8,
         shape: { kind: 'circle', radius: 4 },
         fill: TILE_FILLS[i % TILE_FILLS.length],
-        stroke: KENTO.asagi, strokeWidth: 0.5,
+        stroke: REGALIA_EXT.teal, strokeWidth: 0.5,
         opacity: 0,
       });
       this.stormSprites.push(s);
@@ -259,16 +260,16 @@ class WebGLLab extends Node {
     HL.addChild(new Sprite({ pos: { x: CX, y: H - 40 }, z: 20,
       shape: { kind: 'rect', w: W, h: 80 }, fill: '#00000099' }));
     this.hudMain = new Text({ name: 'hudMain', pos: { x: CX, y: H - 54 }, z: 21,
-      size: 20, weight: 700, align: 'center', fill: KENTO.gofun, text: '' });
+      size: 20, weight: 700, align: 'center', fill: REGALIA.paper, text: '' });
     this.hudSub = new Text({ name: 'hudSub',  pos: { x: CX, y: H - 28 }, z: 21,
-      size: 14, align: 'center', fill: KENTO.asagi, text: '' });
+      size: 14, align: 'center', fill: REGALIA_EXT.teal, text: '' });
     HL.addChild(this.hudMain);
     HL.addChild(this.hudSub);
     // Controls legend (right side).
     HL.addChild(new Text({
       text: 'X: effect   ↑↓: param   SPACE: burst   U: storm',
       pos: { x: W - 18, y: H - 54 }, z: 21,
-      size: 13, align: 'right', fill: KENTO.asagi, opacity: 0.7 }));
+      size: 13, align: 'right', fill: REGALIA_EXT.teal, opacity: 0.7 }));
   }
 
   // ── Logic ─────────────────────────────────────────────────────────────────
@@ -290,7 +291,7 @@ class WebGLLab extends Node {
 
     if (input.justPressed('confirm')) {
       this.particles.burst(80, { x: CX, y: CY },
-        PARTICLE_PRESETS.burst([KENTO.asagi, KENTO.gofun, MEADOW.accent, KENTO.ko]));
+        PARTICLE_PRESETS.burst([REGALIA_EXT.teal, REGALIA.paper, REGALIA_DAY.ramp[2], REGALIA.gold]));
     }
     if (input.justPressed('undo')) this.storm = !this.storm;
 

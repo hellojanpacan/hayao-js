@@ -9,7 +9,7 @@
 // and deterministic: colors are derived by `mix` toward the palette's paper/ink,
 // never hand-typed RGB (keeps `npm run palette` honest).
 
-import { KENTO, REGALIA, mix, withAlpha } from './palette';
+import { REGALIA, mix, withAlpha } from './palette';
 
 /** The four tones an asset paints with, derived from one hue. */
 export interface DuotoneScheme {
@@ -30,20 +30,20 @@ export interface DuotoneOptions {
   lift?: number;
   /** How far recessed parts sink toward `ink` (0..1). Default 0.24. */
   recess?: number;
-  /** Light target the second tone mixes toward. Default KENTO.gofun (shell-white). */
+  /** Light target the second tone mixes toward. Default REGALIA.paper (white). */
   paper?: string;
-  /** Dark target ink/shade mix toward. Default KENTO.sumi (墨 ink). */
+  /** Dark target ink/shade mix toward. Default REGALIA.ink (navy). */
   ink?: string;
 }
 
 /**
- * Build a duotone scheme from a single base hue. Pick the base from a `Deep`
- * swatch (e.g. `KENTO.asagiDeep`) so it holds AA as a large mark on light paper;
- * the lighter/darker planes are derived from it. Pure — same args, same result.
+ * Build a duotone scheme from a single base hue. Pick the base from a Regalia hue
+ * (e.g. `REGALIA.blue`) so it holds the mark floor on light paper; the
+ * lighter/darker planes are derived from it. Pure — same args, same result.
  */
 export function duotone(base: string, opts: DuotoneOptions = {}): DuotoneScheme {
-  const paper = opts.paper ?? KENTO.gofun;
-  const ink = opts.ink ?? KENTO.sumi;
+  const paper = opts.paper ?? REGALIA.paper;
+  const ink = opts.ink ?? REGALIA.ink;
   return {
     base,
     light: mix(base, paper, opts.lift ?? 0.34),
@@ -66,21 +66,6 @@ export const REGALIA_SCHEMES = {
   rose: duotone(REGALIA.rose, { paper: REGALIA.paper, ink: REGALIA.ink }),
   bark: duotone(REGALIA.bark, { paper: REGALIA.paper, ink: REGALIA.ink }),
 } as const;
-
-/** Ready-made schemes on the Kentō woodblock hues — an opt-in theme, never a restriction. */
-export const DUOTONE_SCHEMES = {
-  teal: duotone(KENTO.asagiDeep),
-  vermilion: duotone(KENTO.shuDeep),
-  pine: duotone(KENTO.matsuDeep),
-  wisteria: duotone(KENTO.fujiDeep),
-  rose: duotone(KENTO.sakuDeep),
-  persimmon: duotone(KENTO.kakiDeep),
-  indigo: duotone(KENTO.aiDeep),
-} as const;
-
-/** The name of every ready-made scheme, for tuning knobs / catalogs. */
-export type DuotoneSchemeName = keyof typeof DUOTONE_SCHEMES;
-export const DUOTONE_SCHEME_NAMES = Object.keys(DUOTONE_SCHEMES) as DuotoneSchemeName[];
 
 /** The name of every Regalia scheme, for tuning knobs / catalogs. */
 export type RegaliaSchemeName = keyof typeof REGALIA_SCHEMES;
