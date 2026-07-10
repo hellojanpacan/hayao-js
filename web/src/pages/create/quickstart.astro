@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Footer from "../../components/Footer.astro";
 import AgentPrompt from "../../components/AgentPrompt.astro";
+import BoxLive from "../../components/BoxLive.tsx";
 
 const PROMPT = `Set up the Hayao game engine and build me a 2D platformer in the default (Regalia) style.
 
@@ -25,32 +26,6 @@ const steps = [
   { n: "3", t: "Play & prove", d: "npm run dev to play it; npm run verify to machine-prove every level is winnable.", code: "npm run verify" },
 ];
 
-const box = [
-  {
-    t: "A rigged hero",
-    d: "A posed vector character with seven authored clips — idle, run, jump, fall, wall-slide, death, spawn — that maps straight onto the controller.",
-  },
-  {
-    t: "The Regalia palette",
-    d: "A curated, contrast-checked colour system with five duotone schemes: gold, meadow, dusk, rose and bark. The whole game inherits it.",
-  },
-  {
-    t: "A tuned platformer controller",
-    d: "Coyote time, jump buffering, variable jump height, dash, wall-jump, moving platforms — pure, deterministic, and pre-tuned to feel right.",
-  },
-  {
-    t: "The juice kit",
-    d: "Particle presets, trauma-based camera shake, floating text, easing curves, slow-mo — feel as small declarative recipes.",
-  },
-  {
-    t: "Synth audio",
-    d: "SFX and music are synthesised from parameters — no samples to source. A mixer with separate music and SFX buses is built in.",
-  },
-  {
-    t: "Proof tooling",
-    d: "A solver proves levels winnable; replay hashes prove refactors safe. The same checks your agent runs before showing you anything.",
-  },
-];
 ---
 
 <Layout
@@ -99,15 +74,12 @@ const box = [
       <h2 class="mx-auto max-w-[24ch] text-balance font-display text-[clamp(1.7rem,4vw,2.4rem)] font-semibold leading-[1.12] tracking-[-0.01em] text-ink">
         Everything here is code your agent can read and rewrite
       </h2>
-      <div class="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-        {
-          box.map((b) => (
-            <div class="rounded-3xl border border-hair bg-panel p-5 text-left">
-              <h3 class="font-display text-[0.98rem] font-semibold text-ink">{b.t}</h3>
-              <p class="mt-2 font-body text-[0.83rem] font-light leading-relaxed text-soft">{b.d}</p>
-            </div>
-          ))
-        }
+      <p class="mx-auto mt-5 max-w-[48ch] font-body text-[1.05rem] font-light leading-relaxed text-soft">
+        This grid isn't illustrations — it's the engine running on this page. The hero is the
+        shipped rig playing its authored clips; the sounds come off the real synth bus.
+      </p>
+      <div class="mt-10">
+        <BoxLive client:visible />
       </div>
     </section>
 
