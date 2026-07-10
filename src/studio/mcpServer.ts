@@ -195,7 +195,7 @@ server.registerTool(
   {
     description:
       'A game\'s declared tuning spec plus the values the human accepted in the Studio panel (.studio/knobs.json). To make accepted values permanent, edit the DECLARED DEFAULTS in the game source, then run_verify.',
-    inputSchema: { game: z.string().describe('game slug, e.g. "updrift"') },
+    inputSchema: { game: z.string().describe('game slug, e.g. "sokoban"') },
   },
   async ({ game }) => {
     const def = await loadGame(game);
