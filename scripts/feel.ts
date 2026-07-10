@@ -6,7 +6,7 @@
 // games that declare one must PASS every gate it enables, or the audit exits non-zero.
 //
 // Run:  npm run feel            (all games)
-//       npm run feel updrift    (one or more)
+//       npm run feel sokoban    (one or more)
 
 import { readdirSync, existsSync } from 'node:fs';
 import { join, dirname } from 'node:path';

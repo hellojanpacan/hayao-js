@@ -11,8 +11,8 @@ import {
   Text,
   Camera2D,
   CameraController,
-  MEADOW,
-  KENTO,
+  REGALIA,
+  REGALIA_DAY,
   registerNode,
   defineGame,
   type World,
@@ -29,7 +29,7 @@ class CameraLab extends Node {
   dzIdx = 1;
   smIdx = 0;
   private world2 = new Node2D({ name: 'world' });
-  private target = new Sprite({ name: 'target', z: 5, shape: { kind: 'circle', radius: 22 }, fill: MEADOW.accent, stroke: KENTO.sumi, strokeWidth: 3 });
+  private target = new Sprite({ name: 'target', z: 5, shape: { kind: 'circle', radius: 22 }, fill: REGALIA_DAY.accent, stroke: REGALIA.ink, strokeWidth: 3 });
   private cam!: Camera2D;
   private ctrl!: CameraController;
   private hud!: Text;
@@ -39,7 +39,7 @@ class CameraLab extends Node {
     for (let y = 0; y <= WORLD.h; y += 200) {
       for (let x = 0; x <= WORLD.w; x += 200) {
         const edge = x === 0 || y === 0 || x >= WORLD.w - 200 || y >= WORLD.h - 200;
-        this.world2.addChild(new Sprite({ pos: { x, y }, z: 0, shape: { kind: 'rect', w: 30, h: 30, r: 4 }, fill: edge ? KENTO.sumiSoft : MEADOW.line }));
+        this.world2.addChild(new Sprite({ pos: { x, y }, z: 0, shape: { kind: 'rect', w: 30, h: 30, r: 4 }, fill: edge ? REGALIA.ink : REGALIA_DAY.line }));
       }
     }
     this.world2.cosmetic = true;
@@ -52,7 +52,7 @@ class CameraLab extends Node {
     this.ctrl = new CameraController({ name: 'follow', target: this.target, deadzone: { x: DEADZONES[this.dzIdx], y: DEADZONES[this.dzIdx] }, smooth: SMOOTHS[this.smIdx], bounds: { minX: 0, minY: 0, maxX: WORLD.w, maxY: WORLD.h } });
     this.addChild(this.ctrl);
 
-    this.hud = new Text({ name: 'hud', pos: { x: 0, y: 0 }, size: 22, align: 'center', fill: MEADOW.inkSoft, text: '' });
+    this.hud = new Text({ name: 'hud', pos: { x: 0, y: 0 }, size: 22, align: 'center', fill: REGALIA_DAY.inkSoft, text: '' });
     this.hud.cosmetic = true;
     this.addChild(this.hud);
     this.refreshHud();
@@ -99,7 +99,7 @@ export const cameraLabGame = defineGame({
   title: 'Camera Lab',
   width: 1280,
   height: 720,
-  background: MEADOW.bg,
+  background: REGALIA_DAY.bg,
   build: () => new CameraLab({ name: 'camera-lab' }),
   probe: (world) => {
     const lab = world.root.find('camera-lab') as CameraLab | null;

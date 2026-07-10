@@ -21,8 +21,8 @@ import {
   tileAt,
   dcos,
   dsin,
-  DUSK,
-  KENTO,
+  REGALIA,
+  REGALIA_NIGHT,
   registerNode,
   defineGame,
   knob,
@@ -77,17 +77,17 @@ class LightLab extends Node {
     this.addChild(scene);
 
     // Floor slab so the lit area reads as a surface, not the void.
-    scene.addChild(new Sprite({ z: 0, pos: { x: mapWidth(MAP) / 2, y: mapHeight(MAP) / 2 }, shape: { kind: 'rect', w: mapWidth(MAP), h: mapHeight(MAP) }, fill: KENTO.yohaku }));
+    scene.addChild(new Sprite({ z: 0, pos: { x: mapWidth(MAP) / 2, y: mapHeight(MAP) / 2 }, shape: { kind: 'rect', w: mapWidth(MAP), h: mapHeight(MAP) }, fill: REGALIA.ground }));
     // Solid blocks (the occluders), drawn so you can see what casts the shadows.
     for (let ty = 0; ty < MAP.rows; ty++) {
       for (let tx = 0; tx < MAP.cols; tx++) {
         if (tileAt(MAP, tx, ty) !== TILE.SOLID) continue;
-        scene.addChild(new Sprite({ z: 1, pos: { x: (tx + 0.5) * TILE_SIZE, y: (ty + 0.5) * TILE_SIZE }, shape: { kind: 'rect', w: TILE_SIZE, h: TILE_SIZE }, fill: KENTO.sumi, stroke: KENTO.darkLine, strokeWidth: 1 }));
+        scene.addChild(new Sprite({ z: 1, pos: { x: (tx + 0.5) * TILE_SIZE, y: (ty + 0.5) * TILE_SIZE }, shape: { kind: 'rect', w: TILE_SIZE, h: TILE_SIZE }, fill: REGALIA.ink, stroke: REGALIA.darkLine, strokeWidth: 1 }));
       }
     }
     // Little markers at the light centres so the pool source is legible.
-    this.markerA = scene.addChild(new Sprite({ z: 3, shape: { kind: 'circle', radius: 5 }, fill: KENTO.gofun }));
-    this.markerB = scene.addChild(new Sprite({ z: 3, shape: { kind: 'circle', radius: 5 }, fill: KENTO.kaki }));
+    this.markerA = scene.addChild(new Sprite({ z: 3, shape: { kind: 'circle', radius: 5 }, fill: REGALIA.paper }));
+    this.markerB = scene.addChild(new Sprite({ z: 3, shape: { kind: 'circle', radius: 5 }, fill: REGALIA.gold }));
 
     // ── LightLayer: MUST sit at the tree origin in world space (never under a
     //    screenSpace subtree). We place the lights at the same OX/OY offset as
@@ -107,13 +107,13 @@ class LightLab extends Node {
     const intensity = world.tune('intensity') as number;
     const falloff = world.tune('falloff') as number;
     const flickerAmt = world.tune('flicker') as number;
-    this.lightA = new PointLight({ name: 'lightA', pos: { x: OX + this.lx, y: OY + this.ly }, radius, intensity, falloff, color: KENTO.gofun, flicker: { amount: flickerAmt, speed: 9 }, seed: 11 });
-    this.lightB = new PointLight({ name: 'lightB', radius: radius * 0.8, intensity: intensity * 0.85, falloff, color: KENTO.kaki, flicker: { amount: flickerAmt, speed: 6 }, seed: 29 });
+    this.lightA = new PointLight({ name: 'lightA', pos: { x: OX + this.lx, y: OY + this.ly }, radius, intensity, falloff, color: REGALIA.paper, flicker: { amount: flickerAmt, speed: 9 }, seed: 11 });
+    this.lightB = new PointLight({ name: 'lightB', radius: radius * 0.8, intensity: intensity * 0.85, falloff, color: REGALIA.gold, flicker: { amount: flickerAmt, speed: 6 }, seed: 29 });
     this.layer.addChild(this.lightA);
     this.layer.addChild(this.lightB);
     this.addChild(this.layer);
 
-    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 690 }, z: 9, size: 20, align: 'center', fill: DUSK.inkSoft, text: 'LIGHTLAYER + POINTLIGHT + occludersFromTilemap · arrows/WASD move the white light · Studio knobs: ambient, radius, intensity, falloff, flicker, soft shadows' });
+    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 690 }, z: 9, size: 20, align: 'center', fill: REGALIA_NIGHT.inkSoft, text: 'LIGHTLAYER + POINTLIGHT + occludersFromTilemap · arrows/WASD move the white light · Studio knobs: ambient, radius, intensity, falloff, flicker, soft shadows' });
     this.hud.cosmetic = true;
     this.addChild(this.hud);
   }
@@ -174,11 +174,11 @@ export const lightLabGame = defineGame({
   title: 'Light Lab',
   width: 1280,
   height: 720,
-  background: KENTO.kuro,
+  background: REGALIA.ground,
   tuning: {
     knobs: [
       knob.num('ambientLevel', { default: 0.12, min: 0, max: 1, step: 0.02, label: 'ambient level', group: 'ambient', cosmetic: true }),
-      knob.color('ambientColor', { default: DUSK.bg, label: 'ambient color', group: 'ambient' }),
+      knob.color('ambientColor', { default: REGALIA_NIGHT.bg, label: 'ambient color', group: 'ambient' }),
       knob.num('radius', { default: 260, min: 80, max: 520, step: 10, label: 'light radius', group: 'light', cosmetic: true }),
       knob.num('intensity', { default: 1, min: 0.1, max: 1, step: 0.05, label: 'intensity', group: 'light', cosmetic: true }),
       knob.num('falloff', { default: 1, min: 0.4, max: 3, step: 0.1, label: 'falloff', group: 'light', cosmetic: true }),

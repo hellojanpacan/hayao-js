@@ -56,8 +56,8 @@ for (const t of ['get_knob_state', 'inspect_moment', 'list_games', 'list_session
 console.log(`✓ tools/list → ${tools.join(', ')}`);
 
 const games = JSON.parse((await rpc('tools/call', { name: 'list_games', arguments: {} })).content[0].text);
-if (!games.some((g) => g.slug === 'updrift' && g.knobs.includes('jumpVelocity'))) fail('list_games missing updrift knobs');
-console.log(`✓ list_games → ${games.length} games (updrift has jump knobs)`);
+if (!games.some((g) => g.slug === 'physics-lab' && g.knobs.length > 0)) fail('list_games missing physics-lab knobs');
+console.log(`✓ list_games → ${games.length} games (physics-lab exposes knobs)`);
 
 const knobs = JSON.parse((await rpc('tools/call', { name: 'get_knob_state', arguments: { game: 'physics-lab' } })).content[0].text);
 if (knobs.spec.knobs.length !== 3) fail('physics-lab knob spec wrong');

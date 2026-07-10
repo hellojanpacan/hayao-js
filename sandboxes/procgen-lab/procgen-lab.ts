@@ -10,8 +10,8 @@ import {
   Text,
   Rng,
   generateCave,
-  MEADOW,
-  KENTO,
+  REGALIA,
+  REGALIA_DAY,
   registerNode,
   defineGame,
   type World,
@@ -35,7 +35,7 @@ class ProcgenLab extends Node {
   protected override onReady(): void {
     this.layer.cosmetic = true;
     this.addChild(this.layer);
-    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 40 }, size: 22, align: 'center', fill: MEADOW.inkSoft, text: '' });
+    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 40 }, size: 22, align: 'center', fill: REGALIA_DAY.inkSoft, text: '' });
     this.rebuild();
   }
 
@@ -50,7 +50,7 @@ class ProcgenLab extends Node {
         const solid = grid.cells[y * COLS + x] === 1;
         if (solid) this.solidCount++;
         this.layer.addChild(
-          new Sprite({ pos: { x: OX + x * CELL, y: OY + y * CELL }, z: 0, shape: { kind: 'rect', w: CELL - 2, h: CELL - 2, r: 3 }, fill: solid ? KENTO.sumiSoft : KENTO.gofun, stroke: 'none' }),
+          new Sprite({ pos: { x: OX + x * CELL, y: OY + y * CELL }, z: 0, shape: { kind: 'rect', w: CELL - 2, h: CELL - 2, r: 3 }, fill: solid ? REGALIA.ink : REGALIA.paper, stroke: 'none' }),
         );
       }
     }
@@ -87,7 +87,7 @@ export const procgenLabGame = defineGame({
   title: 'Procgen Lab',
   width: 1280,
   height: 720,
-  background: MEADOW.bg,
+  background: REGALIA_DAY.bg,
   build: () => new ProcgenLab({ name: 'procgen-lab' }),
   probe: (world) => {
     const lab = world.root.find('procgen-lab') as ProcgenLab | null;

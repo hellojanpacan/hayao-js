@@ -8,8 +8,8 @@ import {
   Sprite,
   Text,
   astarGrid,
-  MEADOW,
-  KENTO,
+  REGALIA_DAY,
+  REGALIA,
   registerNode,
   defineGame,
   type Cell,
@@ -36,7 +36,7 @@ class PathfindingDemo extends Node {
   protected override onReady(): void {
     this.layer.cosmetic = true;
     this.addChild(this.layer);
-    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 40 }, size: 22, align: 'center', fill: MEADOW.inkSoft, text: '' });
+    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 40 }, size: 22, align: 'center', fill: REGALIA_DAY.inkSoft, text: '' });
     this.rebuild();
   }
 
@@ -62,14 +62,14 @@ class PathfindingDemo extends Node {
         const wall = this.walls[this.idx(x, y)];
         const lit = onPath.has(this.idx(x, y));
         this.layer.addChild(
-          new Sprite({ pos: this.at({ x, y }), z: 0, shape: { kind: 'rect', w: CELL - 4, h: CELL - 4, r: 5 }, fill: wall ? KENTO.sumiSoft : lit ? MEADOW.good : KENTO.gofun, stroke: MEADOW.line, strokeWidth: 1 }),
+          new Sprite({ pos: this.at({ x, y }), z: 0, shape: { kind: 'rect', w: CELL - 4, h: CELL - 4, r: 5 }, fill: wall ? REGALIA.ink : lit ? REGALIA_DAY.good : REGALIA.paper, stroke: REGALIA_DAY.line, strokeWidth: 1 }),
         );
       }
     }
     // start, goal, cursor
-    this.layer.addChild(new Sprite({ pos: this.at(this.start), z: 2, shape: { kind: 'circle', radius: 15 }, fill: MEADOW.accent, stroke: KENTO.sumi, strokeWidth: 2 }));
-    this.layer.addChild(new Sprite({ pos: this.at(this.goal), z: 2, shape: { kind: 'circle', radius: 15 }, fill: 'none', stroke: MEADOW.accent, strokeWidth: 4 }));
-    this.layer.addChild(new Sprite({ pos: this.at(this.cursor), z: 3, shape: { kind: 'rect', w: CELL - 10, h: CELL - 10, r: 4 }, fill: 'none', stroke: MEADOW.warn, strokeWidth: 3 }));
+    this.layer.addChild(new Sprite({ pos: this.at(this.start), z: 2, shape: { kind: 'circle', radius: 15 }, fill: REGALIA_DAY.accent, stroke: REGALIA.ink, strokeWidth: 2 }));
+    this.layer.addChild(new Sprite({ pos: this.at(this.goal), z: 2, shape: { kind: 'circle', radius: 15 }, fill: 'none', stroke: REGALIA_DAY.accent, strokeWidth: 4 }));
+    this.layer.addChild(new Sprite({ pos: this.at(this.cursor), z: 3, shape: { kind: 'rect', w: CELL - 10, h: CELL - 10, r: 4 }, fill: 'none', stroke: REGALIA_DAY.warn, strokeWidth: 3 }));
     this.hud.text = `A* GRID · path ${this.pathLen} cells${this.pathLen === 0 ? ' (blocked!)' : ''}   ·   diagonal ${this.diagonal ? 'on' : 'off'}   ·   arrows move, SPACE wall, X goal, Z diag, R clear`;
     this.layer.addChild(this.hud);
   }
@@ -107,7 +107,7 @@ export const pathfindingDemoGame = defineGame({
   title: 'Pathfinding Demo',
   width: 1280,
   height: 720,
-  background: MEADOW.bg,
+  background: REGALIA_DAY.bg,
   build: () => new PathfindingDemo({ name: 'pathfinding-demo' }),
   probe: (world) => {
     const lab = world.root.find('pathfinding-demo') as PathfindingDemo | null;

@@ -12,6 +12,14 @@ with a Godot-style scene tree, pluggable renderers (SVG / Canvas / headless),
 and a built-in verification harness — designed so an LLM can author, test, and
 *prove correct* a whole game without ever opening a browser.
 
+**Pico-8's soul on Godot's skeleton.** The core is an unconstrained,
+unopinionated engine — scene tree, deterministic kernel, solver proofs — that
+never caps a game's scale. On top of it ships a complete, opinionated house
+style (palette, duotone vector art, soft-synthesis audio, generated campaigns)
+so prompt-to-game lands somewhere polished. Where Pico-8's constraints are the
+product, hayao's are **a default, not a wall**: bring your own art, sound, and
+assets and lose nothing structural.
+
 ## The one idea
 
 > The game is a pure, deterministic function of its inputs. Rendering, audio,
@@ -166,6 +174,7 @@ reasoning in [docs/ENGINE.md](https://github.com/hellojanpacan/hayao-js/blob/mai
 - [docs/API.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/API.md) — the full, greppable public surface (every export + signature). Ships in the package.
 - [docs/ARCHITECTURE.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/ARCHITECTURE.md) — the authoritative design and the determinism contract.
 - [docs/CONVENTIONS.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/CONVENTIONS.md) — how games are structured, house style, definition of done.
+- [docs/ASSETS.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/ASSETS.md) — the asset contract: the four clauses that make any outside asset (art, sound, fonts) first-class; "a default, not a wall" made precise.
 - [docs/VERIFICATION.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/VERIFICATION.md) — the two verification channels; how to prove a game correct.
 - [docs/STUDIO.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/STUDIO.md) — the human/AI playtest loop: sessions, live knobs, A/B variants, the MCP sidecar.
 - [docs/GALLERY.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/GALLERY.md) — the verified gallery: what "machine-proven" means per game, and how to run the proof yourself.

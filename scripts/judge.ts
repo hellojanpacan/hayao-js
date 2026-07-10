@@ -11,7 +11,7 @@
 // pathological SVGs — a panic then skips one image, never the whole run.
 //
 // Run:  npm run judge            (all games)
-//       npm run judge updrift    (one or more)
+//       npm run judge sokoban    (one or more)
 
 import { readdirSync, existsSync, mkdirSync, writeFileSync, readFileSync, rmSync } from 'node:fs';
 import { join, dirname } from 'node:path';

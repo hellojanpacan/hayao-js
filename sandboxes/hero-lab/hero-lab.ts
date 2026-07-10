@@ -13,18 +13,18 @@ import {
   Sprite,
   Text,
   DuotoneHero,
-  DUOTONE_SCHEMES,
-  DUOTONE_SCHEME_NAMES,
+  REGALIA_SCHEMES,
+  REGALIA_SCHEME_NAMES,
   HERO_CLIPS,
   HERO_STATES,
   HERO_FOOT_OFFSET,
-  KENTO,
-  MEADOW,
+  REGALIA,
+  REGALIA_DAY,
   registerNode,
   defineGame,
   knob,
   type DuotoneScheme,
-  type DuotoneSchemeName,
+  type RegaliaSchemeName,
   type HeroState,
   type InputMap,
   type World,
@@ -48,7 +48,7 @@ class HeroLab extends Node {
   override readonly type = 'HeroLab';
 
   // ── Canonical (hashed) knob state ────────────────────────────────────────
-  palette: DuotoneSchemeName = 'teal';
+  palette: RegaliaSchemeName = 'dusk';
   facing: 1 | -1 = 1;
 
   // ── Cosmetic view ────────────────────────────────────────────────────────
@@ -57,9 +57,9 @@ class HeroLab extends Node {
 
   protected override onReady(): void {
     const w = this.world as World;
-    this.palette = w.tune<DuotoneSchemeName>('palette');
+    this.palette = w.tune<RegaliaSchemeName>('palette');
     this.facing = w.tune<string>('facing') === 'left' ? -1 : 1;
-    const scheme: DuotoneScheme = DUOTONE_SCHEMES[this.palette] ?? DUOTONE_SCHEMES.teal;
+    const scheme: DuotoneScheme = REGALIA_SCHEMES[this.palette] ?? REGALIA_SCHEMES.dusk;
 
     HERO_STATES.forEach((state, i) => {
       const { cx, floorY } = cell(i);
@@ -67,7 +67,7 @@ class HeroLab extends Node {
 
       // A short wall stub so the wall-slide pose reads in context.
       if (state === 'wallSlide') {
-        this.addCosmetic(new Sprite({ z: 1, pos: { x: cx + 34, y: floorY - 78 }, shape: { kind: 'rect', w: 16, h: 150, r: 4 }, fill: KENTO.kinako }));
+        this.addCosmetic(new Sprite({ z: 1, pos: { x: cx + 34, y: floorY - 78 }, shape: { kind: 'rect', w: 16, h: 150, r: 4 }, fill: REGALIA.softInk }));
       }
 
       const hero = new DuotoneHero({
@@ -82,7 +82,7 @@ class HeroLab extends Node {
       this.heroes.push(hero);
     });
 
-    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 40 }, size: 20, align: 'center', fill: MEADOW.inkSoft, text: '' });
+    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 40 }, size: 20, align: 'center', fill: REGALIA_DAY.inkSoft, text: '' });
     this.hud.cosmetic = true;
     this.addChild(this.hud);
     this.refreshHud();
@@ -90,10 +90,10 @@ class HeroLab extends Node {
 
   /** A catalog card + its state label, both cosmetic. */
   private buildCard(cx: number, floorY: number, state: HeroState): void {
-    this.addCosmetic(new Sprite({ z: -5, pos: { x: cx, y: floorY - 96 }, shape: { kind: 'rect', w: 286, h: 268, r: 20 }, fill: KENTO.kinu }));
+    this.addCosmetic(new Sprite({ z: -5, pos: { x: cx, y: floorY - 96 }, shape: { kind: 'rect', w: 286, h: 268, r: 20 }, fill: REGALIA.cloud }));
     // Floor line inside the card.
-    this.addCosmetic(new Sprite({ z: -4, pos: { x: cx, y: floorY }, shape: { kind: 'rect', w: 220, h: 4, r: 2 }, fill: KENTO.line }));
-    const label = new Text({ pos: { x: cx, y: floorY + 40 }, size: 22, align: 'center', fill: MEADOW.ink, text: state });
+    this.addCosmetic(new Sprite({ z: -4, pos: { x: cx, y: floorY }, shape: { kind: 'rect', w: 220, h: 4, r: 2 }, fill: REGALIA.line }));
+    const label = new Text({ pos: { x: cx, y: floorY + 40 }, size: 22, align: 'center', fill: REGALIA_DAY.ink, text: state });
     label.cosmetic = true;
     this.addChild(label);
   }
@@ -130,7 +130,7 @@ class HeroLab extends Node {
     return { palette: this.palette, facing: this.facing };
   }
   override applyProps(props: Record<string, unknown>): void {
-    if (typeof props.palette === 'string') this.palette = props.palette as DuotoneSchemeName;
+    if (typeof props.palette === 'string') this.palette = props.palette as RegaliaSchemeName;
     if (props.facing === 1 || props.facing === -1) this.facing = props.facing;
   }
 }
@@ -141,11 +141,11 @@ export const heroLabGame = defineGame({
   title: 'Hero Lab',
   width: 1280,
   height: 720,
-  background: MEADOW.bg,
+  background: REGALIA_DAY.bg,
   inputMap: HL_INPUT_MAP,
   tuning: {
     knobs: [
-      knob.enumOf('palette', { default: 'teal', options: DUOTONE_SCHEME_NAMES as unknown as string[], group: 'style', label: 'duotone scheme' }),
+      knob.enumOf('palette', { default: 'dusk', options: REGALIA_SCHEME_NAMES as unknown as string[], group: 'style', label: 'duotone scheme' }),
       knob.enumOf('facing', { default: 'right', options: ['right', 'left'], group: 'style' }),
     ],
   },
@@ -155,7 +155,7 @@ export const heroLabGame = defineGame({
     return {
       frame: world.frame,
       hash: world.hash(),
-      palette: lab?.palette ?? 'teal',
+      palette: lab?.palette ?? 'dusk',
       facing: lab?.facing ?? 1,
       states: HERO_STATES.length,
     };

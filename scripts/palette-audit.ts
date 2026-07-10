@@ -1,14 +1,15 @@
-// Palette a11y gate — proves the Kentō palette's contrast claims with numbers,
+// Palette a11y gate — proves the Regalia palette's contrast claims with numbers,
 // not eyes. Run: `npm run palette`. Exits non-zero if any required pairing drops
-// below its WCAG 2.1 threshold, so "AA verified" stays true as the palette evolves.
+// below its WCAG 2.1 threshold, so "AA verified" stays true as Regalia grows.
 //
 // Thresholds: body text needs >= 4.5 (WCAG AA — a real, standalone claim). A large
 // gameplay MARK needs >= 2.4: per house style every mark carries a dark ink outline,
 // so the FILL floor is 2.4 and the outline lifts the composite the rest of the way to
 // AA-large (3.0). This keeps the brand hues at their true tone — the "duotone" is two
-// opacities of one hue, never a darker second hex.
+// opacities of one hue, never a darker second hex. Every hue that enters Regalia
+// (core or `REGALIA_EXT`) must clear the mark floor on both grounds here.
 
-import { KENTO, MEADOW, DUSK, REGALIA_DAY, REGALIA_NIGHT } from '../src/art/palette';
+import { REGALIA, REGALIA_EXT, REGALIA_DAY, REGALIA_NIGHT } from '../src/art/palette';
 
 const TEXT_AA = 4.5;
 const MARK_AA = 2.4;
@@ -38,26 +39,25 @@ const checks: Check[] = [];
 const text = (label: string, fg: string, bg: string) => checks.push({ label, fg, bg, min: TEXT_AA });
 const mark = (label: string, fg: string, bg: string) => checks.push({ label, fg, bg, min: MARK_AA });
 
-// Light woodblock: ink roles as body text on washi.
-text('sumi text / washi', KENTO.sumi, KENTO.washi);
-text('sumiSoft text / washi', KENTO.sumiSoft, KENTO.washi);
-text('stone text / washi', KENTO.stone, KENTO.washi);
-// Dark nightblock: paper inks as body text on kuro.
-text('gofun text / kuro', KENTO.gofun, KENTO.kuro);
-text('kinako text / kuro', KENTO.kinako, KENTO.kuro);
+// Regalia neutrals as body text: navy ink on the light ground, paper inks on night.
+text('ink text / paper', REGALIA.ink, REGALIA.paper);
+text('soft text / paper', REGALIA.soft, REGALIA.paper);
+text('paperInk text / ground', REGALIA.paperInk, REGALIA.ground);
+text('softInk text / ground', REGALIA.softInk, REGALIA.ground);
 
-// Every hue as a gameplay mark: deep tone on light, bright tone on dark.
-const hues = ['shu', 'kaki', 'ko', 'matsu', 'asagi', 'ai', 'fuji', 'saku'] as const;
-for (const h of hues) {
-  mark(`${h}Deep mark / washi`, KENTO[`${h}Deep`], KENTO.washi);
-  mark(`${h} mark / sumi`, KENTO[h], KENTO.sumi);
-  mark(`${h} mark / kuro`, KENTO[h], KENTO.kuro);
+// Every Regalia hue as a gameplay mark — core hues plus the REGALIA_EXT extension —
+// on both the white ground and the navy night ground.
+const HUES: Record<string, string> = {
+  gold: REGALIA.gold, green: REGALIA.green, blue: REGALIA.blue, rose: REGALIA.rose,
+  bark: REGALIA.bark, teal: REGALIA_EXT.teal, violet: REGALIA_EXT.violet,
+};
+for (const [name, hex] of Object.entries(HUES)) {
+  mark(`${name} mark / paper`, hex, REGALIA.paper);
+  mark(`${name} mark / ground`, hex, REGALIA.ground);
 }
 
-// The role slots each palette actually exposes must clear their bar — the woodblock
-// KENTO set (meadow/dusk) and the default Regalia set (day/night). This covers every
-// Regalia hue too: its Deep tones ride the day ramp, its bright tones the night ramp.
-for (const p of [MEADOW, DUSK, REGALIA_DAY, REGALIA_NIGHT]) {
+// The role slots each palette actually exposes must clear their bar — Regalia day/night.
+for (const p of [REGALIA_DAY, REGALIA_NIGHT]) {
   text(`${p.name} ink / bg`, p.ink, p.bg);
   text(`${p.name} inkSoft / bg`, p.inkSoft, p.bg);
   for (const role of ['accent', 'accent2', 'good', 'warn'] as const) {
@@ -80,4 +80,4 @@ if (failures > 0) {
   console.error(`\n✗ ${failures} contrast failure(s) — palette not AA-clean.`);
   process.exit(1);
 }
-console.log('✓ Kentō + Regalia palettes clear the floors (text AA ≥4.5; marks ≥2.4 fill + ink outline).');
+console.log('✓ Regalia palette clears the floors (text AA ≥4.5; marks ≥2.4 fill + ink outline).');

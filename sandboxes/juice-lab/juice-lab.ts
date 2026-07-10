@@ -8,8 +8,8 @@ import {
   Sprite,
   Text,
   EASINGS,
-  MEADOW,
-  KENTO,
+  REGALIA,
+  REGALIA_DAY,
   registerNode,
   defineGame,
   type World,
@@ -58,7 +58,7 @@ class JuiceLab extends Node {
       const { x, y } = this.cellOrigin(i);
       // plot frame
       this.layer.addChild(
-        new Sprite({ pos: { x: x + PLOT_W / 2, y: y + PLOT_H / 2 }, z: 0, shape: { kind: 'rect', w: PLOT_W, h: PLOT_H, r: 6 }, fill: KENTO.gofun, stroke: MEADOW.line, strokeWidth: 1 }),
+        new Sprite({ pos: { x: x + PLOT_W / 2, y: y + PLOT_H / 2 }, z: 0, shape: { kind: 'rect', w: PLOT_W, h: PLOT_H, r: 6 }, fill: REGALIA.paper, stroke: REGALIA_DAY.line, strokeWidth: 1 }),
       );
       // sampled curve
       const pts: number[] = [];
@@ -67,19 +67,19 @@ class JuiceLab extends Node {
         pts.push(px, py);
       }
       this.layer.addChild(
-        new Sprite({ pos: { x: 0, y: 0 }, z: 1, shape: { kind: 'poly', points: pts, closed: false }, fill: 'none', stroke: MEADOW.accent, strokeWidth: 2 }),
+        new Sprite({ pos: { x: 0, y: 0 }, z: 1, shape: { kind: 'poly', points: pts, closed: false }, fill: 'none', stroke: REGALIA_DAY.accent, strokeWidth: 2 }),
       );
       // moving marker
       const p0 = this.plot(i, 0);
-      const m = new Sprite({ pos: { x: p0.px, y: p0.py }, z: 2, shape: { kind: 'circle', radius: 6 }, fill: MEADOW.good, stroke: KENTO.sumi, strokeWidth: 2 });
+      const m = new Sprite({ pos: { x: p0.px, y: p0.py }, z: 2, shape: { kind: 'circle', radius: 6 }, fill: REGALIA_DAY.good, stroke: REGALIA.ink, strokeWidth: 2 });
       this.markers.push(m);
       this.layer.addChild(m);
       // label
       this.layer.addChild(
-        new Text({ text: NAMES[i], pos: { x, y: y - 10 }, size: 18, align: 'left', fill: MEADOW.inkSoft }),
+        new Text({ text: NAMES[i], pos: { x, y: y - 10 }, size: 18, align: 'left', fill: REGALIA_DAY.inkSoft }),
       );
     }
-    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 44 }, size: 22, align: 'center', fill: MEADOW.inkSoft, text: '' });
+    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 44 }, size: 22, align: 'center', fill: REGALIA_DAY.inkSoft, text: '' });
     this.layer.addChild(this.hud);
     this.refreshHud();
   }
@@ -123,7 +123,7 @@ export const juiceLabGame = defineGame({
   title: 'Juice Lab',
   width: 1280,
   height: 720,
-  background: MEADOW.bg,
+  background: REGALIA_DAY.bg,
   build: () => new JuiceLab({ name: 'juice-lab' }),
   probe: (world) => {
     const lab = world.root.find('juice-lab') as JuiceLab | null;

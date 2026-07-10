@@ -19,6 +19,10 @@ The design doctrine, in one line each:
   computable retroactively, any tick re-inspectable.
 - **Telemetry describes, the human directs.** Metrics and reports feed the
   human's decisions; nothing is auto-"fixed" from data alone.
+- **The human's job is taste, not construction.** Knobs are taste over a
+  continuum; variants — and, next, candidate picks — are taste over discrete
+  alternatives. The pane presents, the human picks, the agent writes the pick
+  into source. Studio never grows a construction UI.
 
 ## Pieces
 
@@ -87,6 +91,55 @@ tuning → restore → `def.attach?.(world)`. Behaviors are closures and die on
 restore, so games whose nodes hold closures re-wire them in `attach` — the
 same contract rollback netplay uses. Tuning values live in `world.hash()`, so
 a knob change can never silently escape determinism checks.
+
+## The selection surface (the next thesis — designed, not yet built)
+
+Knob write-back proved the loop for *continuous* taste: the agent declares,
+the human tweaks live, the accepted value flows back into `tuning:` defaults.
+The selection surface is the same loop for **discrete** taste — and it is an
+increment on the seams above, not a new product.
+
+The loop:
+
+1. **The agent generates N candidates of ONE dimension** — four soundtracks,
+   three hero sprite sets, two palettes, a pair of feel presets — each
+   expressed as a module variant (`variants:` on `runStudio`: a `patch` that
+   rewrites the definition plus optional `tuning` seeds).
+2. **The pane presents them side-by-side in the running game.** Not
+   thumbnails in a gallery — the actual game, hot-swapping candidates on the
+   live world via the same rebuild-with-carryover contract knobs use
+   (snapshot → patched def → restore → `attach`). Hearing soundtrack B over
+   the level you were just playing is the comparison; a preview grid is not.
+3. **The human picks.** The pick is recorded in the session artifact as an
+   event (which candidates were compared, which won, at what frame) — session
+   data, never config.
+4. **The agent writes the pick into source.** Same doctrine as knobs: the
+   winning candidate's code becomes the game's code via an agent edit; the
+   losers are deleted or kept as named variants. `.studio/` remembers *that*
+   a choice happened; the repo owns *what* was chosen.
+
+What already exists for this: module variants + `?variant=<name>`, worktree
+variants for whole-build A/B (`build_variant` / `list_variants` MCP verbs,
+sessions stamped with their variant), the carryover contract, and the session
+artifact. What's genuinely missing: a picker UI that swaps ONE dimension
+in-place (today a variant is a whole definition patch picked per page load),
+a `pick` event in the session schema, and an MCP verb for the agent to read
+picks (the discrete sibling of `get_knob_state`).
+
+Two guards, so this stays hayao and not a no-code editor:
+
+- **Cosmetic candidates must be hash-invariant.** Swapping art or audio
+  candidates may never change `world.hash()` — the comparison is looks and
+  sound over an identical sim, so any candidate can be swapped mid-session
+  without forking the timeline. A candidate that *does* touch the sim (a feel
+  preset, a rule change) is a tuning/variant compare and lives under the
+  existing determinism rules: tuning is hashed, the swap forks like any knob
+  event.
+- **Selection is the ceiling of the UI's ambition.** The pane presents
+  choices the agent authored; it never becomes a construction surface —
+  no asset editors, no node inspectors, no drag-and-drop. "No-code" is an
+  acceptable emergent property of a good choice surface, never the goal:
+  the agent is the code layer, and the human directs it in text.
 
 ## Working on Studio itself
 

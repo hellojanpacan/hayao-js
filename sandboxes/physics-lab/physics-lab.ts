@@ -12,8 +12,8 @@ import {
   rigidStep,
   polygonBox,
   worldPoints,
-  MEADOW,
-  KENTO,
+  REGALIA_DAY,
+  REGALIA,
   registerNode,
   defineGame,
   knob,
@@ -40,7 +40,7 @@ class PhysicsLab extends Node {
     this.gravity = (this.world as World).tune('gravity');
     this.layer.cosmetic = true;
     this.addChild(this.layer);
-    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 44 }, size: 22, align: 'center', fill: MEADOW.inkSoft, text: '' });
+    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 44 }, size: 22, align: 'center', fill: REGALIA_DAY.inkSoft, text: '' });
     this.layer.addChild(this.hud);
     this.reset();
   }
@@ -97,8 +97,8 @@ class PhysicsLab extends Node {
       if (!sp) {
         sp =
           b.shape.kind === 'circle'
-            ? new Sprite({ z: isStatic ? 1 : 3, shape: { kind: 'circle', radius: b.shape.r }, fill: MEADOW.good, stroke: KENTO.sumi, strokeWidth: 2 })
-            : new Sprite({ z: isStatic ? 1 : 3, shape: { kind: 'poly', points: worldPoints(b) }, fill: isStatic ? KENTO.sumiSoft : MEADOW.warn, stroke: KENTO.sumi, strokeWidth: 2 });
+            ? new Sprite({ z: isStatic ? 1 : 3, shape: { kind: 'circle', radius: b.shape.r }, fill: REGALIA_DAY.good, stroke: REGALIA.ink, strokeWidth: 2 })
+            : new Sprite({ z: isStatic ? 1 : 3, shape: { kind: 'poly', points: worldPoints(b) }, fill: isStatic ? REGALIA.ink : REGALIA_DAY.warn, stroke: REGALIA.ink, strokeWidth: 2 });
         this.sprites.set(b.id, sp);
         this.layer.addChild(sp);
       }
@@ -126,7 +126,7 @@ export const physicsLabGame = defineGame({
   title: 'Physics Lab',
   width: 1280,
   height: 720,
-  background: MEADOW.bg,
+  background: REGALIA_DAY.bg,
   tuning: {
     knobs: [
       knob.num('gravity', { default: 900, min: 0, max: 3000, step: 50, group: 'world' }),

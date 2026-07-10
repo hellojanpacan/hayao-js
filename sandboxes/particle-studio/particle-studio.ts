@@ -8,8 +8,8 @@ import {
   Text,
   Particles,
   PARTICLE_PRESETS,
-  MEADOW,
-  KENTO,
+  REGALIA,
+  REGALIA_DAY,
   registerNode,
   defineGame,
   type World,
@@ -17,7 +17,7 @@ import {
 
 const PRESETS = ['burst', 'hit', 'dust'] as const;
 type PresetName = (typeof PRESETS)[number];
-const COLORS = [MEADOW.accent, MEADOW.good, KENTO.kinako ?? '#b9a882'];
+const COLORS = [REGALIA_DAY.accent, REGALIA_DAY.good, REGALIA.softInk];
 const CENTER = { x: 640, y: 430 };
 
 class ParticleStudio extends Node {
@@ -30,7 +30,7 @@ class ParticleStudio extends Node {
   protected override onReady(): void {
     this.fx.cosmetic = true;
     this.addChild(this.fx);
-    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 44 }, size: 22, align: 'center', fill: MEADOW.inkSoft, text: '' });
+    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 44 }, size: 22, align: 'center', fill: REGALIA_DAY.inkSoft, text: '' });
     this.hud.cosmetic = true;
     this.addChild(this.hud);
     this.refreshHud();
@@ -71,7 +71,7 @@ export const particleStudioGame = defineGame({
   title: 'Particle Studio',
   width: 1280,
   height: 720,
-  background: MEADOW.bg,
+  background: REGALIA_DAY.bg,
   build: () => new ParticleStudio({ name: 'particle-studio' }),
   probe: (world) => {
     const lab = world.root.find('particle-studio') as ParticleStudio | null;

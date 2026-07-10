@@ -1,57 +1,25 @@
 // Curated palettes — code-as-art means no arbitrary RGB; pick from a named,
-// on-model set. The default is "Kentō" (見当): the woodblock-registration palette
-// that also dresses hayao.dev. It fuses the site's washi/sumi/ai/shu ink tokens
-// with landscape hues loosely drawn from Lospec's "Miyazaki 16", giving a warm,
-// low-key set that reads cleanly in BOTH light and dark games. Every pairing here
-// is WCAG-AA verified (see scripts/palette-audit.ts); the engine stays fully
-// palette-agnostic — this is a nice starting point, never a restriction.
+// on-model set. The one canonical system is "Regalia": Hayao's clean, friendly
+// "Bold Duotone" brand hues (the crown palette that dresses hayao.dev), expressed
+// for gameplay as a paper→ink light ramp plus a navy night ramp. It reads cleanly
+// in BOTH light and dark games. Every pairing here is WCAG-AA verified (see
+// scripts/palette-audit.ts); the engine stays fully palette-agnostic — Regalia is
+// the default look, expandable by need ("grow by the job"), never a restriction.
 
 import type { Rng } from '../core/rng';
 import { dpow } from '../core/dmath';
 
 /**
- * The Kentō swatch set — the single source of truth every named palette derives
- * from. Neutrals form one continuous ground→ink ramp; each of the eight hues has
- * a `Deep` tone (holds AA as a large mark on light washi) and a bright tone (pops
- * on dark sumi/kuro). Traditional Japanese color names keep it on-brand. Pick a
- * hue by name the way the site does, or use a ready-made `Palette` below.
- */
-export const KENTO = {
-  // neutrals: light ground → dark ink, one continuous ramp
-  gofun: '#f7f1e2', // 胡粉  shell-white, lightest paper
-  washi: '#efe7d3', // 和紙  default light ground
-  kinu: '#e4d8bd', //  絹    warm raised panel / card
-  line: '#d8cbac', //  ─     hairline / grid on light
-  kinako: '#b9a882', // 黄粉  tan mid-neutral / muted ink on dark
-  stone: '#6c6252', // 石    secondary text on light (AA at body size)
-  sumiSoft: '#494133', // 墨薄  body ink
-  sumi: '#23201a', // 墨    primary ink / default dark-ish ground
-  kuro: '#181820', // 玄    cool near-black ground for dark games
-  yohaku: '#12121a', // 余白  deepest dark ground
-  darkLine: '#2c2c36', //     hairline / grid on dark
-
-  // eight hues: `Deep` for light-mode fills, bright for dark-mode / emphasis
-  shuDeep: '#b23a24', shu: '#d9583c', //   朱  vermilion
-  kakiDeep: '#bf6a1c', kaki: '#e79a49', //  柿  persimmon / orange
-  koDeep: '#94741d', ko: '#e3c054', //     黄土 ochre-gold
-  matsuDeep: '#4a7a3a', matsu: '#8bad52', // 松葉 pine green
-  asagiDeep: '#2c7a90', asagi: '#57bad2', // 浅葱 teal-cyan
-  aiDeep: '#2b4257', ai: '#5a86ad', //     藍  indigo
-  fujiDeep: '#63548c', fuji: '#a091cf', //  藤  wisteria violet
-  sakuDeep: '#b0506e', saku: '#e097ac', //  桜  dusty rose
-} as const;
-
-/**
  * The Regalia swatch set — Hayao's clean, friendly "Bold Duotone" brand hues (the
- * crown palette that dresses hayao.dev), expressed for gameplay the way KENTO is:
+ * crown palette that dresses hayao.dev), expressed for gameplay as
  * one continuous paper→ink neutral ramp plus a navy `night` ramp for dark games,
  * and the six brand hues at their true, single tone — the "duotone" is the two
  * OPACITIES of a hue in use (see duotone.ts), never a second hex. Every hue clears
  * the house mark floor (2.4) on both the white and the night ground, and carries a
  * dark ink outline that lifts the composite to AA — verified in palette-audit.ts.
  * `rose` and `bark` are purpose-scoped (vitality / material) but live here so games
- * that need health or wood tones stay on-model. This is the DEFAULT look; KENTO
- * stays as an opt-in woodblock theme.
+ * that need health or wood tones stay on-model. This is the one canonical look;
+ * grow it by need (see `REGALIA_EXT`), never by mood.
  */
 export const REGALIA = {
   // neutrals: white ground → navy ink (light), and a navy night ramp (dark)
@@ -70,10 +38,22 @@ export const REGALIA = {
 
   // the six brand hues — one true tone each, dressed as two-opacity duotones in use
   gold: '#e59500', //  the Regalia crown — primary / joy
-  green: '#337357', // meadow — growth / success
-  blue: '#669bbc', //  dusk — calm / sky / tech
+  green: '#337357', // growth / success
+  blue: '#669bbc', //  calm / sky / tech
   rose: '#c65b5b', //  VITALITY: health / damage
   bark: '#7a4f34', //  MATERIAL: wood / earth
+} as const;
+
+/**
+ * Categorical extension — two more distinct series hues for charts, particle sets,
+ * and labs that need more than the six core hues. DERIVED from the core via `mix()`
+ * (never a new hand-typed brand hex) so they stay on-Regalia and honest to
+ * `palette-audit`. "Grow by the job, not the mood" — add here only when a real need
+ * appears. `teal` sits between blue and green; `violet` between blue and rose.
+ */
+export const REGALIA_EXT = {
+  teal: mix(REGALIA.blue, REGALIA.green, 0.5), //  cool cyan — water / tech, distinct from blue
+  violet: mix(REGALIA.blue, REGALIA.rose, 0.5), // wisteria — magic / night accents
 } as const;
 
 export interface Palette {
@@ -89,55 +69,8 @@ export interface Palette {
   /** A small ordered ramp for categorical fills. */
   ramp: string[];
   /** The full on-brand swatch set, for games that pick hues by name. */
-  swatches?: typeof KENTO | typeof REGALIA;
+  swatches?: typeof REGALIA;
 }
-
-/** Default light woodblock palette — washi ground, sumi ink, deep accents. */
-export const MEADOW: Palette = {
-  name: 'meadow',
-  bg: KENTO.washi,
-  ink: KENTO.sumi,
-  inkSoft: KENTO.sumiSoft,
-  line: KENTO.line,
-  accent: KENTO.shuDeep,
-  accent2: KENTO.aiDeep,
-  good: KENTO.matsuDeep,
-  warn: KENTO.kakiDeep,
-  // deep tones so categorical fills hold contrast on the light ground
-  ramp: [KENTO.shuDeep, KENTO.kakiDeep, KENTO.koDeep, KENTO.matsuDeep, KENTO.asagiDeep, KENTO.aiDeep, KENTO.fujiDeep, KENTO.sakuDeep],
-  swatches: KENTO,
-};
-
-/** Dark counterpart — kuro ground, gofun ink, the same hues in their bright tone. */
-export const DUSK: Palette = {
-  name: 'dusk',
-  bg: KENTO.kuro,
-  ink: KENTO.gofun,
-  inkSoft: KENTO.kinako,
-  line: KENTO.darkLine,
-  accent: KENTO.shu,
-  accent2: KENTO.asagi,
-  good: KENTO.matsu,
-  warn: KENTO.ko,
-  // bright tones so categorical fills pop on the dark ground
-  ramp: [KENTO.shu, KENTO.kaki, KENTO.ko, KENTO.matsu, KENTO.asagi, KENTO.ai, KENTO.fuji, KENTO.saku],
-  swatches: KENTO,
-};
-
-/** Higher-key paper variant — brightest ground, same hue family. */
-export const PAPER: Palette = {
-  name: 'paper',
-  bg: KENTO.gofun,
-  ink: KENTO.sumi,
-  inkSoft: KENTO.stone,
-  line: KENTO.kinu,
-  accent: KENTO.sakuDeep,
-  accent2: KENTO.asagiDeep,
-  good: KENTO.matsuDeep,
-  warn: KENTO.kakiDeep,
-  ramp: [KENTO.sakuDeep, KENTO.kakiDeep, KENTO.koDeep, KENTO.matsuDeep, KENTO.asagiDeep, KENTO.aiDeep, KENTO.fujiDeep, KENTO.shuDeep],
-  swatches: KENTO,
-};
 
 /**
  * Default clean/friendly palette — white ground, navy ink, gold accent. The Bold
@@ -155,7 +88,7 @@ export const REGALIA_DAY: Palette = {
   accent2: REGALIA.blue,
   good: REGALIA.green,
   warn: REGALIA.rose, // rose owns vitality/danger — reads truer than gold as a warning
-  ramp: [REGALIA.gold, REGALIA.blue, REGALIA.green, REGALIA.rose, REGALIA.bark, REGALIA.ink],
+  ramp: [REGALIA.gold, REGALIA.blue, REGALIA.green, REGALIA.rose, REGALIA.bark, REGALIA_EXT.teal, REGALIA_EXT.violet, REGALIA.ink],
   swatches: REGALIA,
 };
 
@@ -170,17 +103,14 @@ export const REGALIA_NIGHT: Palette = {
   accent2: REGALIA.blue,
   good: REGALIA.green,
   warn: REGALIA.rose,
-  ramp: [REGALIA.gold, REGALIA.blue, REGALIA.green, REGALIA.rose, REGALIA.bark, REGALIA.paperInk],
+  ramp: [REGALIA.gold, REGALIA.blue, REGALIA.green, REGALIA.rose, REGALIA.bark, REGALIA_EXT.teal, REGALIA_EXT.violet, REGALIA.paperInk],
   swatches: REGALIA,
 };
 
-// Regalia (clean/friendly) is the default; meadow/dusk/paper are the woodblock KENTO set.
+// Regalia is the one canonical system — a day and a night dressing of the same hues.
 export const PALETTES: Record<string, Palette> = {
   regalia: REGALIA_DAY,
   'regalia-night': REGALIA_NIGHT,
-  meadow: MEADOW,
-  dusk: DUSK,
-  paper: PAPER,
 };
 
 /** The default palette for new games — the clean Bold Duotone look. */

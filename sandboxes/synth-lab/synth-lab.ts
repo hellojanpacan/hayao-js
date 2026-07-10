@@ -10,8 +10,8 @@ import {
   Text,
   Rng,
   audio,
-  MEADOW,
-  KENTO,
+  REGALIA,
+  REGALIA_DAY,
   registerNode,
   defineGame,
   type World,
@@ -36,7 +36,7 @@ class SynthLab extends Node {
   protected override onReady(): void {
     this.layer.cosmetic = true;
     this.addChild(this.layer);
-    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 44 }, size: 22, align: 'center', fill: MEADOW.inkSoft, text: '' });
+    this.hud = new Text({ name: 'hud', pos: { x: 640, y: 44 }, size: 22, align: 'center', fill: REGALIA_DAY.inkSoft, text: '' });
     this.rebuild();
   }
 
@@ -60,17 +60,17 @@ class SynthLab extends Node {
   private rebuild(): void {
     for (const c of this.layer.children.slice()) this.layer.removeChild(c);
     // baseline
-    this.layer.addChild(new Sprite({ pos: { x: (PLOT.x0 + PLOT.x1) / 2, y: PLOT.y }, z: 0, shape: { kind: 'rect', w: PLOT.x1 - PLOT.x0, h: 2 }, fill: MEADOW.line }));
+    this.layer.addChild(new Sprite({ pos: { x: (PLOT.x0 + PLOT.x1) / 2, y: PLOT.y }, z: 0, shape: { kind: 'rect', w: PLOT.x1 - PLOT.x0, h: 2 }, fill: REGALIA_DAY.line }));
     const pts: number[] = [];
     for (let i = 0; i <= PLOT.n; i++) {
       const t = i / PLOT.n;
       pts.push(PLOT.x0 + t * (PLOT.x1 - PLOT.x0), PLOT.y - this.sample(t) * PLOT.amp);
     }
-    this.layer.addChild(new Sprite({ pos: { x: 0, y: 0 }, z: 1, shape: { kind: 'poly', points: pts, closed: false }, fill: 'none', stroke: MEADOW.accent, strokeWidth: 2 }));
+    this.layer.addChild(new Sprite({ pos: { x: 0, y: 0 }, z: 1, shape: { kind: 'poly', points: pts, closed: false }, fill: 'none', stroke: REGALIA_DAY.accent, strokeWidth: 2 }));
     // envelope length bar
     const barW = 120 + this.env * 900;
-    this.layer.addChild(new Sprite({ pos: { x: PLOT.x0 + barW / 2, y: 560 }, z: 1, shape: { kind: 'rect', w: barW, h: 16, r: 8 }, fill: MEADOW.good, stroke: KENTO.sumi, strokeWidth: 1 }));
-    this.layer.addChild(new Text({ text: 'envelope', pos: { x: PLOT.x0, y: 540 }, size: 16, align: 'left', fill: MEADOW.inkSoft }));
+    this.layer.addChild(new Sprite({ pos: { x: PLOT.x0 + barW / 2, y: 560 }, z: 1, shape: { kind: 'rect', w: barW, h: 16, r: 8 }, fill: REGALIA_DAY.good, stroke: REGALIA.ink, strokeWidth: 1 }));
+    this.layer.addChild(new Text({ text: 'envelope', pos: { x: PLOT.x0, y: 540 }, size: 16, align: 'left', fill: REGALIA_DAY.inkSoft }));
     this.hud.text = `audio.playSpec · ${this.wave()}   ·   ${this.freq} Hz   ·   env ${this.env.toFixed(2)}s   ·   SPACE play, ↑↓ pitch, X wave, ←→ envelope`;
     this.layer.addChild(this.hud);
   }
@@ -111,7 +111,7 @@ export const synthLabGame = defineGame({
   title: 'Synth Lab',
   width: 1280,
   height: 720,
-  background: MEADOW.bg,
+  background: REGALIA_DAY.bg,
   build: () => new SynthLab({ name: 'synth-lab' }),
   probe: (world) => {
     const lab = world.root.find('synth-lab') as SynthLab | null;
