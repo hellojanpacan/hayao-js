@@ -484,7 +484,7 @@ export const game = defineGame({
   height: H,
   background: THEME.day.bg,
   inputMap: INPUT,
-  splash: { minDurationMs: 5000 }, // TEMP: long hold to inspect the logo splash
+  splash: {}, // boot ritual: the engine's logo cold-open + chime (900ms default)
   build(world) {
     Object.assign(world.state as DemoState, initialState());
     return new DemoRoot();
