@@ -11,7 +11,6 @@ import {
   Particles,
   PARTICLE_PRESETS,
   REGALIA,
-  REGALIA_EXT,
   REGALIA_DAY,
   linearGradient,
   glow,
@@ -137,7 +136,7 @@ class WebGLLab extends Node {
           this.cosmLayer.addChild(new Sprite({
             pos: { x: col * TW + TW / 2, y: row * TH + TH / 2 }, z: 1,
             shape: { kind: 'circle', radius: TW * 0.08 },
-            fill: REGALIA_EXT.teal, opacity: 0.3,
+            fill: REGALIA.blue, opacity: 0.3,
           }));
         }
       }
@@ -161,7 +160,7 @@ class WebGLLab extends Node {
     L.addChild(new Sprite({
       pos: { x: CX, y: CY }, z: 3,
       shape: { kind: 'poly', points: hexPoints(0, 0, 160), closed: true },
-      fill: 'none', stroke: REGALIA_EXT.teal, strokeWidth: 1.5, opacity: 0.5,
+      fill: 'none', stroke: REGALIA.blue, strokeWidth: 1.5, opacity: 0.5,
     }));
 
     // Poly: spinning star (ref kept for animation).
@@ -169,9 +168,9 @@ class WebGLLab extends Node {
       name: 'spinner',
       pos: { x: CX, y: CY }, z: 4,
       shape: { kind: 'poly', points: starPoints(0, 0, 80, 35, 8), closed: true },
-      gradient: linearGradient([REGALIA.blue, REGALIA_EXT.teal, REGALIA.paper], 45),
+      gradient: linearGradient([REGALIA.blue, REGALIA.paper], 45),
       stroke: REGALIA.paper, strokeWidth: 1,
-      shadow: glow(REGALIA_EXT.teal, 18),
+      shadow: glow(REGALIA.blue, 18),
     });
     L.addChild(this.spinner);
 
@@ -180,7 +179,7 @@ class WebGLLab extends Node {
       pos: { x: CX, y: CY }, z: 5,
       shape: { kind: 'circle', radius: 28 },
       fill: REGALIA.paper, stroke: REGALIA.blue, strokeWidth: 3,
-      shadow: glow(REGALIA_EXT.teal, 24),
+      shadow: glow(REGALIA.blue, 24),
     }));
 
     // Path: decorative quarter arcs (SVG d — the path DrawCommand type).
@@ -192,7 +191,7 @@ class WebGLLab extends Node {
       fill: 'none', stroke: REGALIA.rose, strokeWidth: 2, opacity: 0.45, round: true }));
     L.addChild(new Sprite({ pos: { x: CX, y: CY }, z: 3,
       shape: { kind: 'path', d: 'M -220 0 A 220 220 0 0 0 0 220' },
-      fill: 'none', stroke: REGALIA_EXT.violet, strokeWidth: 2, opacity: 0.35, round: true }));
+      fill: 'none', stroke: REGALIA.green, strokeWidth: 2, opacity: 0.35, round: true }));
 
     // Circles: three orbiting orbs.
     const orbStyle = { z: 6, shape: { kind: 'circle' as const, radius: 14 } };
@@ -211,7 +210,7 @@ class WebGLLab extends Node {
       new Sprite({ pos: { x, y }, z: 6,
         shape: { kind: 'poly', points: [0,-r, r,0, 0,r, -r,0], closed: true },
         fill, stroke: REGALIA.paper, strokeWidth: 1, opacity: 0.7 });
-    L.addChild(diamond(120,   80,   22, REGALIA_EXT.teal));
+    L.addChild(diamond(120,   80,   22, REGALIA.blue));
     L.addChild(diamond(W-120, 80,   22, REGALIA.rose));
     L.addChild(diamond(120,   H-80, 22, REGALIA.gold));
     L.addChild(diamond(W-120, H-80, 22, REGALIA_DAY.ramp[2]));
@@ -221,13 +220,13 @@ class WebGLLab extends Node {
       size: 36, weight: 700, align: 'center',
       fill: REGALIA.paper, stroke: REGALIA.ink, strokeWidth: 3 }));
     L.addChild(new Text({ text: 'hayao.js · WebGL2 post-processing', pos: { x: CX, y: CY-128 }, z: 7,
-      size: 16, align: 'center', fill: REGALIA_EXT.teal, opacity: 0.85 }));
+      size: 16, align: 'center', fill: REGALIA.blue, opacity: 0.85 }));
 
     // Text: DrawCommand type legend (bottom-left) — proves text at small sizes.
     const legend = ['rect','circle','poly','path','gradient','shadow','opacity'];
     legend.forEach((s, i) =>
       L.addChild(new Text({ text: s, pos: { x: 38, y: 24 + i * 18 }, z: 7,
-        size: 12, fill: REGALIA_EXT.teal, opacity: 0.5 })));
+        size: 12, fill: REGALIA.blue, opacity: 0.5 })));
 
     // Particles system.
     this.particles = new Particles({ name: 'fx', seed: 42, z: 10, maxParticles: 700 });
@@ -244,7 +243,7 @@ class WebGLLab extends Node {
         pos: { x: CX + Math.cos(angle) * r, y: CY + Math.sin(angle) * r }, z: 8,
         shape: { kind: 'circle', radius: 4 },
         fill: TILE_FILLS[i % TILE_FILLS.length],
-        stroke: REGALIA_EXT.teal, strokeWidth: 0.5,
+        stroke: REGALIA.blue, strokeWidth: 0.5,
         opacity: 0,
       });
       this.stormSprites.push(s);
@@ -262,14 +261,14 @@ class WebGLLab extends Node {
     this.hudMain = new Text({ name: 'hudMain', pos: { x: CX, y: H - 54 }, z: 21,
       size: 20, weight: 700, align: 'center', fill: REGALIA.paper, text: '' });
     this.hudSub = new Text({ name: 'hudSub',  pos: { x: CX, y: H - 28 }, z: 21,
-      size: 14, align: 'center', fill: REGALIA_EXT.teal, text: '' });
+      size: 14, align: 'center', fill: REGALIA.blue, text: '' });
     HL.addChild(this.hudMain);
     HL.addChild(this.hudSub);
     // Controls legend (right side).
     HL.addChild(new Text({
       text: 'X: effect   ↑↓: param   SPACE: burst   U: storm',
       pos: { x: W - 18, y: H - 54 }, z: 21,
-      size: 13, align: 'right', fill: REGALIA_EXT.teal, opacity: 0.7 }));
+      size: 13, align: 'right', fill: REGALIA.blue, opacity: 0.7 }));
   }
 
   // ── Logic ─────────────────────────────────────────────────────────────────
@@ -291,7 +290,7 @@ class WebGLLab extends Node {
 
     if (input.justPressed('confirm')) {
       this.particles.burst(80, { x: CX, y: CY },
-        PARTICLE_PRESETS.burst([REGALIA_EXT.teal, REGALIA.paper, REGALIA_DAY.ramp[2], REGALIA.gold]));
+        PARTICLE_PRESETS.burst([REGALIA.blue, REGALIA.paper, REGALIA_DAY.ramp[2], REGALIA.gold]));
     }
     if (input.justPressed('undo')) this.storm = !this.storm;
 

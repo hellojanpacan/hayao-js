@@ -7,9 +7,9 @@
 // so the FILL floor is 2.4 and the outline lifts the composite the rest of the way to
 // AA-large (3.0). This keeps the brand hues at their true tone — the "duotone" is two
 // opacities of one hue, never a darker second hex. Every hue that enters Regalia
-// (core or `REGALIA_EXT`) must clear the mark floor on both grounds here.
+// must clear the mark floor on both grounds here.
 
-import { REGALIA, REGALIA_EXT, REGALIA_DAY, REGALIA_NIGHT } from '../src/art/palette';
+import { REGALIA, REGALIA_DAY, REGALIA_NIGHT } from '../src/art/palette';
 
 const TEXT_AA = 4.5;
 const MARK_AA = 2.4;
@@ -39,17 +39,25 @@ const checks: Check[] = [];
 const text = (label: string, fg: string, bg: string) => checks.push({ label, fg, bg, min: TEXT_AA });
 const mark = (label: string, fg: string, bg: string) => checks.push({ label, fg, bg, min: MARK_AA });
 
-// Regalia neutrals as body text: navy ink on the light ground, paper inks on night.
-text('ink text / paper', REGALIA.ink, REGALIA.paper);
-text('soft text / paper', REGALIA.soft, REGALIA.paper);
-text('paperInk text / ground', REGALIA.paperInk, REGALIA.ground);
-text('softInk text / ground', REGALIA.softInk, REGALIA.ground);
+// Regalia neutrals as body text — the day and night ramps mirror seven roles, and a
+// light/dark toggle swaps sides role-for-role, so BOTH inks must clear AA on EVERY
+// surface of their side (canvas, raised, sunken), not just the canvas.
+const DAY_SURFACES = { paper: REGALIA.paper, mist: REGALIA.mist, cloud: REGALIA.cloud };
+const NIGHT_SURFACES = { ground: REGALIA.ground, night: REGALIA.night, shade: REGALIA.shade };
+for (const [name, bg] of Object.entries(DAY_SURFACES)) {
+  text(`ink text / ${name}`, REGALIA.ink, bg);
+  text(`soft text / ${name}`, REGALIA.soft, bg);
+}
+for (const [name, bg] of Object.entries(NIGHT_SURFACES)) {
+  text(`paperInk text / ${name}`, REGALIA.paperInk, bg);
+  text(`softInk text / ${name}`, REGALIA.softInk, bg);
+}
 
-// Every Regalia hue as a gameplay mark — core hues plus the REGALIA_EXT extension —
-// on both the white ground and the navy night ground.
+// Every Regalia hue as a gameplay mark, on both the white ground and the navy
+// night ground.
 const HUES: Record<string, string> = {
   gold: REGALIA.gold, green: REGALIA.green, blue: REGALIA.blue, rose: REGALIA.rose,
-  bark: REGALIA.bark, teal: REGALIA_EXT.teal, violet: REGALIA_EXT.violet,
+  bark: REGALIA.bark,
 };
 for (const [name, hex] of Object.entries(HUES)) {
   mark(`${name} mark / paper`, hex, REGALIA.paper);

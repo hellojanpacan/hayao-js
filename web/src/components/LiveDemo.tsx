@@ -114,7 +114,7 @@ export default function LiveDemo() {
   }
 
   return (
-    <div className="overflow-hidden rounded-3xl border border-hair bg-white text-left shadow-[0_18px_50px_-24px_rgba(41,51,92,0.3)]">
+    <div className="overflow-hidden rounded-3xl border border-hair bg-panel text-left shadow-[0_18px_50px_-24px_rgba(41,51,92,0.3)]">
       <div className="grid md:grid-cols-[300px_1fr]">
         {/* ── chat pane ── */}
         <div className="order-2 flex flex-col border-t border-hair md:order-1 md:border-r md:border-t-0">
@@ -130,14 +130,14 @@ export default function LiveDemo() {
                 className={
                   m.role === "user"
                     ? "ml-6 self-end rounded-2xl rounded-br-md bg-navy px-3.5 py-2 font-body text-[0.8rem] font-light leading-snug text-white"
-                    : "mr-6 self-start rounded-2xl rounded-bl-md bg-[#f2f4f8] px-3.5 py-2 font-body text-[0.8rem] font-light leading-snug text-ink"
+                    : "mr-6 self-start rounded-2xl rounded-bl-md bg-mist px-3.5 py-2 font-body text-[0.8rem] font-light leading-snug text-ink"
                 }
               >
                 {m.text}
               </div>
             ))}
             {busy && (
-              <div className="mr-6 self-start rounded-2xl rounded-bl-md bg-[#f2f4f8] px-3.5 py-2 font-body text-[0.8rem] text-muted">
+              <div className="mr-6 self-start rounded-2xl rounded-bl-md bg-mist px-3.5 py-2 font-body text-[0.8rem] text-muted">
                 <span className="inline-flex gap-1">
                   <span className="animate-bounce">·</span>
                   <span className="animate-bounce [animation-delay:120ms]">·</span>
@@ -163,7 +163,7 @@ export default function LiveDemo() {
                       : "border-hair text-soft hover:border-orange/40 hover:text-ink")
                   }
                 >
-                  <span className={"mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md " + (active ? "bg-orange text-white" : "bg-[#f2f4f8] text-muted")}>
+                  <span className={"mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md " + (active ? "bg-orange text-white" : "bg-mist text-muted")}>
                     {active ? <Check className="size-3" /> : <p.icon className="size-3" />}
                   </span>
                   {p.label}
@@ -187,7 +187,7 @@ export default function LiveDemo() {
             {!started && (
               <button
                 onClick={() => void onPlay()}
-                className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-[#eef2f7] transition-colors hover:bg-[#e6ecf4]"
+                className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-mist transition-colors hover:bg-cloud"
               >
                 <span className="flex size-16 items-center justify-center rounded-full bg-orange text-white shadow-lg">
                   {loading ? (
@@ -205,7 +205,7 @@ export default function LiveDemo() {
                 onClick={() => void onPlay()}
                 className="absolute inset-0 flex items-center justify-center bg-navy/40 backdrop-blur-[2px]"
               >
-                <span className="rounded-full bg-white px-5 py-2.5 font-display text-[0.9rem] font-semibold text-ink shadow-lg">Paused — click to resume</span>
+                <span className="rounded-full bg-panel px-5 py-2.5 font-display text-[0.9rem] font-semibold text-ink shadow-lg">Paused — click to resume</span>
               </button>
             )}
           </div>

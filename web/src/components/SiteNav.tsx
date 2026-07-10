@@ -18,6 +18,8 @@ import {
   X,
   ArrowRight,
   Menu,
+  Sun,
+  Moon,
 } from "lucide-react";
 
 /* ── The Regalia mark ── */
@@ -30,7 +32,7 @@ function Mark({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="2 2 20 20" className={className} aria-hidden="true">
       <path d={CROWN} fill="#e59500" />
-      <path d={RULE} fill="#29335c" />
+      <path d={RULE} fill="var(--color-ink)" />
     </svg>
   );
 }
@@ -72,13 +74,40 @@ function ext(item: Item) {
   return item.external ? { target: "_blank", rel: "noreferrer" } : {};
 }
 
+/* ── Day / night toggle ──
+   The current theme lives on <html data-theme> (set before paint by the boot
+   script in Layout.astro); the sun/moon swap is pure CSS keyed off it, so this
+   button renders identically on server and client — no hydration mismatch. */
+function ThemeToggle() {
+  function toggle() {
+    const html = document.documentElement;
+    const next = html.dataset.theme === "dark" ? "light" : "dark";
+    html.dataset.theme = next;
+    try {
+      localStorage.setItem("hayao-theme", next);
+    } catch {
+      /* storage unavailable — theme still applies for this page */
+    }
+  }
+  return (
+    <button
+      onClick={toggle}
+      aria-label="Toggle day / night mode"
+      className="relative inline-flex size-10 items-center justify-center overflow-hidden rounded-full transition-colors hover:bg-mist focus:outline-none focus-visible:ring-2 focus-visible:ring-orange"
+    >
+      <Sun className="tt-sun absolute size-5 text-orange" aria-hidden="true" />
+      <Moon className="tt-moon absolute size-5 text-blue" aria-hidden="true" />
+    </button>
+  );
+}
+
 function PanelLink({ icon: Icon, title, desc, href, external }: Item) {
   return (
     <NavigationMenu.Link asChild>
       <a
         href={href}
         {...(external ? { target: "_blank", rel: "noreferrer" } : {})}
-        className="flex items-start gap-3 rounded-xl p-3 no-underline transition-colors hover:bg-[#f5f6f8]"
+        className="flex items-start gap-3 rounded-xl p-3 no-underline transition-colors hover:bg-mist"
       >
         <span className="mt-0.5 flex size-9 shrink-0 items-center justify-center rounded-full bg-orange/10 text-orange">
           <Icon className="size-[18px]" strokeWidth={2} />
@@ -151,8 +180,8 @@ function GetStarted({ variant = "solid" }: { variant?: "solid" | "block" }) {
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="dialog-overlay fixed inset-0 z-[60] bg-ink/30 backdrop-blur-md" />
-        <Dialog.Content className="dialog-content fixed left-1/2 top-1/2 z-[70] w-[min(92vw,560px)] rounded-3xl border border-hair bg-white p-6 shadow-2xl focus:outline-none">
+        <Dialog.Overlay className="dialog-overlay fixed inset-0 z-[60] bg-navy/40 backdrop-blur-md" />
+        <Dialog.Content className="dialog-content fixed left-1/2 top-1/2 z-[70] w-[min(92vw,560px)] rounded-3xl border border-hair bg-panel p-6 shadow-2xl focus:outline-none">
           <Dialog.Title className="font-display text-[1.5rem] font-semibold text-ink">
             Start with your agent
           </Dialog.Title>
@@ -160,7 +189,7 @@ function GetStarted({ variant = "solid" }: { variant?: "solid" | "block" }) {
             Paste this into Claude Code, Cursor, or any coding agent — it does the rest.
           </Dialog.Description>
 
-          <pre className="mt-4 max-h-[46vh] overflow-auto whitespace-pre-wrap rounded-xl border border-hair bg-[#f8f9fb] p-4 font-mono text-[0.8rem] leading-relaxed text-ink">
+          <pre className="mt-4 max-h-[46vh] overflow-auto whitespace-pre-wrap rounded-xl border border-hair bg-mist p-4 font-mono text-[0.8rem] leading-relaxed text-ink">
 {AGENT_PROMPT}
           </pre>
 
@@ -175,7 +204,7 @@ function GetStarted({ variant = "solid" }: { variant?: "solid" | "block" }) {
           </div>
 
           <Dialog.Close
-            className="absolute right-4 top-4 rounded-md p-1 text-muted transition-colors hover:bg-[#f5f6f8] hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-orange"
+            className="absolute right-4 top-4 rounded-md p-1 text-muted transition-colors hover:bg-mist hover:text-ink focus:outline-none focus-visible:ring-2 focus-visible:ring-orange"
             aria-label="Close"
           >
             <X className="size-5" />
@@ -197,18 +226,18 @@ function MobileMenu() {
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <button
-          className="inline-flex size-10 items-center justify-center rounded-md text-ink transition-colors hover:bg-[#f5f6f8] md:hidden"
+          className="inline-flex size-10 items-center justify-center rounded-md text-ink transition-colors hover:bg-mist md:hidden"
           aria-label="Open menu"
         >
           <Menu className="size-6" />
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="dialog-overlay fixed inset-0 z-[60] bg-ink/30 backdrop-blur-md" />
-        <Dialog.Content className="sheet-content fixed inset-x-0 top-0 z-[70] max-h-[100dvh] overflow-auto rounded-b-3xl border-b border-hair bg-white p-6 focus:outline-none">
+        <Dialog.Overlay className="dialog-overlay fixed inset-0 z-[60] bg-navy/40 backdrop-blur-md" />
+        <Dialog.Content className="sheet-content fixed inset-x-0 top-0 z-[70] max-h-[100dvh] overflow-auto rounded-b-3xl border-b border-hair bg-panel p-6 focus:outline-none">
           <div className="mb-4 flex items-center justify-between">
             <span className="font-display text-[1.1rem] font-semibold text-ink">Menu</span>
-            <Dialog.Close className="rounded-md p-1 text-muted hover:bg-[#f5f6f8] hover:text-ink" aria-label="Close">
+            <Dialog.Close className="rounded-md p-1 text-muted hover:bg-mist hover:text-ink" aria-label="Close">
               <X className="size-5" />
             </Dialog.Close>
           </div>
@@ -222,7 +251,7 @@ function MobileMenu() {
                       key={t.title}
                       href={t.href}
                       {...ext(t)}
-                      className="flex items-center gap-3 rounded-lg p-2.5 no-underline transition-colors hover:bg-[#f5f6f8]"
+                      className="flex items-center gap-3 rounded-lg p-2.5 no-underline transition-colors hover:bg-mist"
                     >
                       <span className="flex size-8 items-center justify-center rounded-full bg-orange/10 text-orange">
                         <t.icon className="size-[17px]" />
@@ -245,7 +274,7 @@ function MobileMenu() {
 export default function SiteNav() {
   return (
     <header className="sticky top-0 z-50 px-4 pt-3">
-      <div className="mx-auto flex h-14 max-w-3xl items-center justify-between rounded-full border border-hair bg-white/80 pl-6 pr-2.5 shadow-[0_12px_34px_-14px_rgba(41,51,92,0.32)] backdrop-blur-md">
+      <div className="mx-auto flex h-14 max-w-3xl items-center justify-between rounded-full border border-hair bg-panel/80 pl-6 pr-2.5 shadow-[0_12px_34px_-14px_rgba(41,51,92,0.32)] backdrop-blur-md">
         {/* left — logo (whole area → home) */}
         <a
           href="/"
@@ -269,7 +298,7 @@ export default function SiteNav() {
                       <NavigationMenu.Link asChild key={t.title}>
                         <a
                           href={t.href}
-                          className="flex flex-col gap-2 rounded-xl border border-hair p-4 no-underline transition-colors hover:border-orange/50 hover:bg-[#fffaf0]"
+                          className="flex flex-col gap-2 rounded-xl border border-hair p-4 no-underline transition-colors hover:border-orange/50 hover:bg-orange/5"
                         >
                           <span className="flex size-10 items-center justify-center rounded-full bg-orange/10 text-orange">
                             <t.icon className="size-5" strokeWidth={2} />
@@ -283,7 +312,7 @@ export default function SiteNav() {
                   <NavigationMenu.Link asChild>
                     <a
                       href="/play"
-                      className="mt-3 flex items-center justify-between rounded-xl bg-[#f5f6f8] px-4 py-3 font-body text-[0.9rem] font-semibold text-ink no-underline transition-colors hover:bg-[#eceff3]"
+                      className="mt-3 flex items-center justify-between rounded-xl bg-mist px-4 py-3 font-body text-[0.9rem] font-semibold text-ink no-underline transition-colors hover:bg-cloud"
                     >
                       Explore all games
                       <ArrowRight className="size-4" />
@@ -296,7 +325,10 @@ export default function SiteNav() {
             <NavigationMenu.Item>
               <Trigger>Create</Trigger>
               <NavigationMenu.Content className="p-3">
-                <div className="flex w-[400px] flex-col gap-1">
+                <div className="flex w-[420px] flex-col gap-1">
+                  <p className="px-3 pb-1.5 pt-1 text-[0.8rem] leading-snug text-muted">
+                    Build fully your way — or take a quicker on-ramp.
+                  </p>
                   {CREATE.map((t) => (
                     <PanelLink key={t.title} {...t} />
                   ))}
@@ -321,8 +353,9 @@ export default function SiteNav() {
           </div>
         </NavigationMenu.Root>
 
-        {/* right — CTA + mobile */}
+        {/* right — theme + CTA + mobile */}
         <div className="flex items-center gap-1.5">
+          <ThemeToggle />
           <div className="hidden md:block">
             <GetStarted />
           </div>
