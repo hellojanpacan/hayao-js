@@ -15,7 +15,7 @@
 // probe fields px/py (or x/y).
 
 import type { GameDefinition } from '../app/game';
-import { replaySession, type PlaytestSession } from '../studio/session';
+import { replaySession, type PlaytestSession } from '../workshop/session';
 
 export interface HesitationSpan {
   startFrame: number;

@@ -21,7 +21,7 @@ imitation — is what gets learned.
 | Lab | Primitive | Knobs |
 |---|---|---|
 | `physics-lab` | rigid bodies, joints, raycasts (`createRigidWorld`) | spawn/drop bodies, gravity, restitution |
-| `particle-studio` | `Particles` + `PARTICLE_PRESETS` | preset, count, gravity, spread |
+| `particle-workshop` | `Particles` + `PARTICLE_PRESETS` | preset, count, gravity, spread |
 | `camera-lab` | `Camera2D` + `CameraController` | deadzone, smoothing, shake, bounds |
 | `pathfinding-demo` | `astarGrid` / `floodFill` | paint walls, move goal, toggle diagonal |
 | `juice-lab` | `EASINGS` + `AnimationPlayer` + `spring` | every easing curve, side by side |

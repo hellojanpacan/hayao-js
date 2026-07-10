@@ -98,19 +98,19 @@ whole portfolio.
 
 Hayao proves winnability, determinism, ramp, and feel-floors by machine. The one
 thing no headless gate can score is **fun** — and that takes a human. **Hayao
-Studio** is the instrument for that channel: `npm run dev`, open `/studio/`, and
+Workshop** is the instrument for that channel: `npm run dev`, open `/workshop/`, and
 every human playtest becomes a bit-exactly replayable artifact the agent can read.
 
 ```ts
-// main.ts — Studio-instrumented driver (drop-in for runBrowser)
-import { runStudio } from 'hayao';
-runStudio(game, document.getElementById('app')!, { hot: import.meta.hot });
+// main.ts — Workshop-instrumented driver (drop-in for runBrowser)
+import { runWorkshop } from 'hayao';
+runWorkshop(game, document.getElementById('app')!, { hot: import.meta.hot });
 ```
 
 ```ts
-// vite.config.ts — the dev-server harness (sessions, live knobs, A/B, /studio/)
-import { hayaoStudio } from 'hayao/studio';
-export default { plugins: [hayaoStudio()] };
+// vite.config.ts — the dev-server harness (sessions, live knobs, A/B, /workshop/)
+import { hayaoWorkshop } from 'hayao/workshop';
+export default { plugins: [hayaoWorkshop()] };
 ```
 
 A session `(seed, tuning, inputLog, axes, knobEvents)` re-simulates the whole run
@@ -119,7 +119,7 @@ The bundled `hayao-mcp` sidecar is the agent's window in — `list_sessions`,
 `get_playtest_report` (hesitations, deaths, quit context), `inspect_moment`
 (replay any tick → probe + screenshot), `get_knob_state` (values the human
 accepted, to write back into `tuning:` defaults). Telemetry describes; the human
-directs. Full doctrine in [docs/STUDIO.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/STUDIO.md).
+directs. Full doctrine in [docs/WORKSHOP.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/WORKSHOP.md).
 
 ## The layers
 
@@ -176,7 +176,7 @@ reasoning in [docs/ENGINE.md](https://github.com/hellojanpacan/hayao-js/blob/mai
 - [docs/CONVENTIONS.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/CONVENTIONS.md) — how games are structured, house style, definition of done.
 - [docs/ASSETS.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/ASSETS.md) — the asset contract: the four clauses that make any outside asset (art, sound, fonts) first-class; "a default, not a wall" made precise.
 - [docs/VERIFICATION.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/VERIFICATION.md) — the two verification channels; how to prove a game correct.
-- [docs/STUDIO.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/STUDIO.md) — the human/AI playtest loop: sessions, live knobs, A/B variants, the MCP sidecar.
+- [docs/WORKSHOP.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/WORKSHOP.md) — the human/AI playtest loop: sessions, live knobs, A/B variants, the MCP sidecar.
 - [docs/GALLERY.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/GALLERY.md) — the verified gallery: what "machine-proven" means per game, and how to run the proof yourself.
 - [docs/ENGINE.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/ENGINE.md) — why a custom engine, and when NOT to use one.
 - [docs/LESSONS.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/LESSONS.md) — transferable lessons from real LLM-authored game builds.
@@ -194,7 +194,7 @@ regenerated with `npm run thumbs`.
 
 ## Status
 
-**Hayao Studio — the human/AI playtest loop — ships with the engine.** The engine
+**Hayao Workshop — the human/AI playtest loop — ships with the engine.** The engine
 covers the most popular 2D indie genres end to end (platformer, metroidvania,
 Zelda-like, stealth, horde survival, bullet hell, tower defense, RTS, roguelike,
 deckbuilder, tactics, match-3, idle, farming, horror, city builder, rhythm,
@@ -209,7 +209,7 @@ fairness gates for procgen, frame-exact timing windows, bit-for-bit peer
 agreement, golden replay hashes.
 
 The one channel a machine can't close on its own — **fun** — is a first-class,
-replayable instrument (Hayao Studio, above). Alongside it, a de-anchoring
+replayable instrument (Hayao Workshop, above). Alongside it, a de-anchoring
 `sandboxes/` shelf collects single-mechanic labs (physics, particles, camera,
 pathfinding, procgen, synth, juice) for learning one primitive in isolation, and
 the engine surface keeps widening: a screen-space HUD layer (`node.screenSpace`),

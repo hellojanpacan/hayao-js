@@ -71,4 +71,4 @@ The **dominated option**: two doors, one strictly better on every axis. Or the *
 
 ## Verify / guard
 
-Before handoff, run the design against [[design/FUN.md]]: for each branch, name the axis it wins on and the axis it loses on. If you can't name a losing axis, it's dominant — cut it or re-cost it. Instrument pick rates once playable ([[system-achievements-and-leaderboards]] telemetry, or the studio playtest loop) and treat any >80% branch among informed players as a fake choice to fix, not ship.
+Before handoff, run the design against [[design/FUN.md]]: for each branch, name the axis it wins on and the axis it loses on. If you can't name a losing axis, it's dominant — cut it or re-cost it. Instrument pick rates once playable ([[system-achievements-and-leaderboards]] telemetry, or the workshop playtest loop) and treat any >80% branch among informed players as a fake choice to fix, not ship.

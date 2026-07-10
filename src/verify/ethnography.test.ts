@@ -3,8 +3,8 @@ import { defineGame } from '../app/game';
 import { Node } from '../scene/node';
 import { registerNode } from '../scene/registry';
 import type { World } from '../world';
-import { SessionRecorder } from '../studio/record';
-import { replaySession, type PlaytestSession } from '../studio/session';
+import { SessionRecorder } from '../workshop/record';
+import { replaySession, type PlaytestSession } from '../workshop/session';
 import { analyzePlaytest } from './ethnography';
 
 // A tiny side-scroller with a pit and a goal, exercising every analyzer

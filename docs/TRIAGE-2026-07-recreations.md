@@ -77,7 +77,7 @@ triaged against repo HEAD. Verdicts:
 | 4.5 | World-space radii vs screen perception | **DOCS** | Documented pattern: divide interaction radii by zoom when the affordance is perceived in screen space. |
 | 5.1 | No scene clear API | **CODE** | `node.clearChildren()` (frees children safely). |
 | 5.2 | Parent rotation affects children (undocumented) | **DOCS** | Transform semantics documented (incl. nve 12.1/12.2 flip/pivot patterns). |
-| 6.1 | Determinism constraint surfaced late | **CODE** | Opt-in `WorldConfig.guardDeterminism`: during `step()`, `Math.random`/`Date.now` warn once with a stack. (Auto-enabling it in capture/studio harnesses is follow-up work.) |
+| 6.1 | Determinism constraint surfaced late | **CODE** | Opt-in `WorldConfig.guardDeterminism`: during `step()`, `Math.random`/`Date.now` warn once with a stack. (Auto-enabling it in capture/workshop harnesses is follow-up work.) |
 | 7.0 | Unknown action names silent; `prevPointerDown` leak | **CODE + WONT-FIX** | Warn-once when querying an action name no source has declared. The prevPointerDown leak is game state (wont-fix), but `justPressed`/`justReleased` cover the underlying need. |
 | 7.1 | No `justReleased` | **FIXED@HEAD** | `input.justReleased()` exists. |
 | 7.2 | Pointer coords in design space undocumented | **DOCS** | Documented (+ `world.screenToWorld`). |

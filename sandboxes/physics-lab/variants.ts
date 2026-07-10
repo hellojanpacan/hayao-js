@@ -1,4 +1,4 @@
-// A/B variants for the physics gym: ?variant=<name> or the Studio's compare view.
+// A/B variants for the physics gym: ?variant=<name> or the Workshop's compare view.
 import type { Variant } from '@hayao';
 
 export const variants: Record<string, Variant> = {

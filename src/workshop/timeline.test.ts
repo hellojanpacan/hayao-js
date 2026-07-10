@@ -33,7 +33,7 @@ const game = defineGame({
   },
 });
 
-/** Live play driving world + recorder + ring exactly like runStudio does. */
+/** Live play driving world + recorder + ring exactly like runWorkshop does. */
 function play(frames: number, opts: { knobAt?: { frame: number; value: number }; pointerAt?: { frame: number; x: number } } = {}) {
   const recorder = new SessionRecorder({ game: 'TimelineWalk', seed: 5, tuningValues: { speed: 100 }, startedAt: '2026-07-05T02:00:00.000Z' });
   const world = createWorld(game, { seed: 5 });

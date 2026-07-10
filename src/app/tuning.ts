@@ -3,7 +3,7 @@
 // overrides into plain values the sim reads via `world.tune()`. Resolved values
 // are sim state — hashed and snapshotted — so a knob change can never escape the
 // determinism checks. The declared defaults ARE the config: code stays the
-// source of truth, and Studio overrides are session data, never a second config.
+// source of truth, and Workshop overrides are session data, never a second config.
 
 import type { GameDefinition } from './game';
 

@@ -1,8 +1,8 @@
-// runStudio: the Studio-instrumented browser driver. Wraps runBrowser (which
+// runWorkshop: the Workshop-instrumented browser driver. Wraps runBrowser (which
 // stays lean for shipped games) with: URL overrides (?seed=, ?tuning=), the
 // session recorder riding the onAdvance hook, shell/overlay/wall-clock
-// observers, autosave + pagehide flush to the dev server, and a window.__studio
-// API the Studio shell page drives across the iframe boundary.
+// observers, autosave + pagehide flush to the dev server, and a window.__workshop
+// API the Workshop shell page drives across the iframe boundary.
 
 import { runBrowser, type GameHandle, type RunOptions } from '../app/browser';
 import { resolveTuning, type TuningSpec, type TuningValues, type Variant } from '../app/tuning';
@@ -18,7 +18,7 @@ export interface HotContext {
   dispose(cb: (data: Record<string, unknown>) => void): void;
 }
 
-export interface StudioOptions extends RunOptions {
+export interface WorkshopOptions extends RunOptions {
   /**
    * Named A/B variants of this game. `?variant=<name>` picks one: its `patch`
    * rewrites the definition, its `tuning` seeds the knob values (explicit
@@ -40,18 +40,18 @@ export interface StudioOptions extends RunOptions {
   hot?: HotContext;
 }
 
-export interface StudioHandle extends GameHandle {
+export interface WorkshopHandle extends GameHandle {
   /** Live-change a tuning knob: rebuild-with-carryover, recorded as a knob event. */
   setKnob(key: string, value: number | string): void;
   /** Current resolved tuning values. */
   knobValues(): TuningValues;
-  /** The game's declared knob spec (the Studio panel builds its controls from this). */
+  /** The game's declared knob spec (the Workshop panel builds its controls from this). */
   tuningSpec(): TuningSpec | undefined;
   /** Declared A/B variants: name → label. */
   variants(): Record<string, string>;
   /** The variant this run is playing (name + kind, worktrees include commit). */
   activeVariant(): VariantRef;
-  /** The game title (the Studio page labels panes with it). */
+  /** The game title (the Workshop page labels panes with it). */
   title(): string;
   /** Drop a human annotation at the current frame ("felt bad here"). */
   annotate(tag: string, note?: string): void;
@@ -81,7 +81,7 @@ export interface StudioHandle extends GameHandle {
 
 declare global {
   interface Window {
-    __studio?: StudioHandle;
+    __workshop?: WorkshopHandle;
   }
 }
 
@@ -104,7 +104,7 @@ function urlOverrides(): { seed?: number; tuning?: TuningValues } {
   return out;
 }
 
-export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: StudioOptions = {}): StudioHandle {
+export function runWorkshop(baseDef: GameDefinition, mount: HTMLElement, opts: WorkshopOptions = {}): WorkshopHandle {
   const url = urlOverrides();
 
   // Variant resolution: ?variant= picks a named alternative; its patch rewrites
@@ -131,10 +131,10 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
   const post = (session: PlaytestSession, beacon: boolean) => {
     const body = JSON.stringify(session);
     if (beacon && typeof navigator !== 'undefined' && navigator.sendBeacon) {
-      navigator.sendBeacon('/__studio/session', new Blob([body], { type: 'application/json' }));
+      navigator.sendBeacon('/__workshop/session', new Blob([body], { type: 'application/json' }));
       return;
     }
-    void fetch('/__studio/session', { method: 'POST', headers: { 'content-type': 'application/json' }, body }).catch(() => {
+    void fetch('/__workshop/session', { method: 'POST', headers: { 'content-type': 'application/json' }, body }).catch(() => {
       /* dev server gone — the session still lives in memory */
     });
   };
@@ -232,7 +232,7 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
    * scrubbed at `at` (or frame 0). Determinism turns the artifact into footage.
    */
   async function enterReplay(id: string, at: number): Promise<void> {
-    const res = await fetch(`/__studio/session/${encodeURIComponent(id)}`);
+    const res = await fetch(`/__workshop/session/${encodeURIComponent(id)}`);
     if (!res.ok) return;
     const artifact = (await res.json()) as PlaytestSession;
     isFrozen = true;
@@ -266,7 +266,7 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
       ring.push(i + 1, w);
     }
     replay = { session: artifact, pos: frames.length };
-    studio.scrub(Number.isFinite(at) ? at : 0);
+    workshop.scrub(Number.isFinite(at) ? at : 0);
   }
 
   /**
@@ -316,7 +316,7 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
   if (replayId) void enterReplay(replayId, Number(new URLSearchParams(location.search).get('at') ?? 'NaN'));
 
   // Build identity comes from the dev server (git sha) — best-effort, async.
-  void fetch('/__studio/state')
+  void fetch('/__workshop/state')
     .then((r) => (r.ok ? r.json() : null))
     .then((s: { buildRef?: string } | null) => {
       if (s?.buildRef) recorder.buildRef = s.buildRef;
@@ -350,7 +350,7 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
     handle.stop();
   };
 
-  const studio: StudioHandle = {
+  const workshop: WorkshopHandle = {
     ...handle,
     get world() {
       return handle.world;
@@ -417,6 +417,6 @@ export function runStudio(baseDef: GameDefinition, mount: HTMLElement, opts: Stu
     stop: () => cleanup('navigate'),
   };
 
-  window.__studio = studio;
-  return studio;
+  window.__workshop = workshop;
+  return workshop;
 }

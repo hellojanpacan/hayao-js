@@ -37,7 +37,7 @@ export interface Annotation {
   note?: string;
 }
 
-/** A mid-play tuning change (Studio knob): replay applies it AT its frame. */
+/** A mid-play tuning change (Workshop knob): replay applies it AT its frame. */
 export interface KnobEvent {
   frame: number;
   key: string;
@@ -50,7 +50,7 @@ export interface PlaytestSession {
   id: string;
   game: string;
   startedAt: string;
-  /** Git short sha of the code that ran (from the Studio dev server). */
+  /** Git short sha of the code that ran (from the Workshop dev server). */
   buildRef: string;
   seed: number;
   variant: VariantRef;
@@ -87,7 +87,7 @@ export interface ReplayOptions {
  * Replay a session headlessly to `toFrame` (default: the whole log) and return
  * the live world. Bit-exact with the original run: axes deltas are applied
  * before the step that first saw them; knob events rebuild-with-carryover at
- * their frame exactly as the Studio panel did (including `def.attach`).
+ * their frame exactly as the Workshop panel did (including `def.attach`).
  * A bare number as `opts` is `toFrame`.
  */
 export function replaySession(def: GameDefinition, session: PlaytestSession, opts?: number | ReplayOptions): World {

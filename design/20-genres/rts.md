@@ -163,7 +163,7 @@ count.
 
 - [`sandboxes/pathfinding-demo`](../../sandboxes/pathfinding-demo) — flow-field
   mass pathing; the load-bearing tech for hundreds of wall-aware units.
-- [`sandboxes/particle-studio`](../../sandboxes/particle-studio) — pooled sprites
+- [`sandboxes/particle-workshop`](../../sandboxes/particle-workshop) — pooled sprites
   and effects for cheap, legible battle spectacle (cosmetic, law 6).
 - [design/JUICE.md](../JUICE.md) — impact feel for the payoff shot without
   touching the sim.

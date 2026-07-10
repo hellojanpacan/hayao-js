@@ -64,8 +64,8 @@ The two big shape decisions:
 
 - **A run is a seed + a snapshot.** Because state is pure JSON in `world.state`
   with `world.rng`, one run is fully described by `(seed, tuning, inputLog)` and
-  restorable from a snapshot — this is exactly the Studio session artifact
-  ([`docs/STUDIO.md`](../../docs/STUDIO.md), FUN.md law 7). Session structure and
+  restorable from a snapshot — this is exactly the Workshop session artifact
+  ([`docs/WORKSHOP.md`](../../docs/WORKSHOP.md), FUN.md law 7). Session structure and
   the replay artifact are the *same* nesting.
 - **Runs are generated.** A roguelite run is a `generateLevels`/`generateDungeon`
   sequence over a per-run seed ([[system-procgen-design]],
@@ -94,7 +94,7 @@ The two big shape decisions:
 - **The whole arc paces:** balance-sim the run/campaign; assert pacing windows and
   **no unlock deserts** across the arc ([FUN.md §14](../FUN.md#14-incrementalidle)).
 - **A run is reproducible:** golden-hash a full scripted run; snapshot→restore→hash
-  round-trips (FUN.md law 7; [`docs/STUDIO.md`](../../docs/STUDIO.md)).
+  round-trips (FUN.md law 7; [`docs/WORKSHOP.md`](../../docs/WORKSHOP.md)).
 - **Every level in the campaign is winnable:** solver proof per level via the
   generator (FUN.md §10, [`src/content/generate.ts`](../../src/content/generate.ts)).
 
@@ -109,5 +109,5 @@ The two big shape decisions:
 ## See also
 
 - [`src/content/campaign.ts`](../../src/content/campaign.ts) — `composeCampaign` (the meta tier as data).
-- [`docs/STUDIO.md`](../../docs/STUDIO.md) — a session as a replayable artifact.
+- [`docs/WORKSHOP.md`](../../docs/WORKSHOP.md) — a session as a replayable artifact.
 - [[anchor-hades]] · [[anchor-slay-the-spire]] — the run as the fundamental unit.

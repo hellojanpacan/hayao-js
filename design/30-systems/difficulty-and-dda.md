@@ -70,7 +70,7 @@ the fantasy exist (Celeste): the game meets you, it doesn't gate-keep you.
   `docs/API.md`) assert the *shape* — a designed ramp with breathers, not
   monotonicity. Author the sequence, then prove it breathes.
 - **Assist modes are tuning.** Model them as declared `tuning:` knobs
-  ([`docs/STUDIO.md`](../../docs/STUDIO.md)); their resolved values live in
+  ([`docs/WORKSHOP.md`](../../docs/WORKSHOP.md)); their resolved values live in
   `world.hash()` via `world.tune(key)`, so an assisted run is still a first-class,
   replayable artifact — not a second-class cheat path.
 
@@ -96,7 +96,7 @@ the fantasy exist (Celeste): the game meets you, it doesn't gate-keep you.
 - **Null loses at every tier:** the do-nothing/undefended run fails on easy too
   (FUN.md law 4).
 - **Determinism under DDA:** golden-hash a scripted run at each setting; tuning
-  values are in `world.hash()` (STUDIO knob-change semantics).
+  values are in `world.hash()` (WORKSHOP knob-change semantics).
 
 ## Composes with
 

@@ -1,5 +1,5 @@
 // SessionRecorder: accumulates a PlaytestSession during live play. DOM-free so
-// tests can drive it directly; runStudio (run.ts) wires it to the browser
+// tests can drive it directly; runWorkshop (run.ts) wires it to the browser
 // driver's onAdvance hook, the shell/overlay observers, and the wall clock.
 
 import type {
@@ -44,7 +44,7 @@ export class SessionRecorder {
   private readonly init: RecorderInit;
   private readonly startedAt: string;
   readonly id: string;
-  /** Set once the dev server reports the git sha (fetched async by runStudio). */
+  /** Set once the dev server reports the git sha (fetched async by runWorkshop). */
   buildRef: string;
 
   constructor(init: RecorderInit) {

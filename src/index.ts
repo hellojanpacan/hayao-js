@@ -171,11 +171,11 @@ export * from './app/tuning';
 export * from './app/browser';
 export * from './app/share';
 
-// ── studio (browser-safe parts; the vite plugin ships via `hayao/studio`) ──
-export * from './studio/session';
-export * from './studio/record';
-export * from './studio/timeline';
-export * from './studio/run';
+// ── workshop (browser-safe parts; the vite plugin ships via `hayao/workshop`) ──
+export * from './workshop/session';
+export * from './workshop/record';
+export * from './workshop/timeline';
+export * from './workshop/run';
 
 /** Engine version. Must equal package.json — guarded by src/version.test.ts. */
 export const VERSION = '0.4.4';

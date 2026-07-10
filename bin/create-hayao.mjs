@@ -71,14 +71,14 @@ const files = {
   ) + '\n',
 
   'vite.config.ts': `import { defineConfig } from 'vite';
-import { hayaoStudio } from 'hayao/studio';
+import { hayaoWorkshop } from 'hayao/workshop';
 // Mirror the hayao convention: games import from the single '@hayao' seam.
-// hayaoStudio() is the Studio dev harness: playtest sessions record to
-// .studio/, live tuning knobs, A/B variants, and the /studio/ page — see
-// docs/STUDIO.md in the hayao repo. Dev-only; production builds are untouched.
+// hayaoWorkshop() is the Workshop dev harness: playtest sessions record to
+// .workshop/, live tuning knobs, A/B variants, and the /workshop/ page — see
+// docs/WORKSHOP.md in the hayao repo. Dev-only; production builds are untouched.
 export default defineConfig({
   resolve: { alias: { '@hayao': 'hayao' } },
-  plugins: [hayaoStudio()],
+  plugins: [hayaoWorkshop()],
 });
 `,
 
@@ -91,7 +91,7 @@ declare module '@hayao' {
 `,
 
   '.mcp.json': JSON.stringify(
-    { mcpServers: { 'hayao-studio': { command: 'npx', args: ['hayao-mcp'] } } },
+    { mcpServers: { 'hayao-workshop': { command: 'npx', args: ['hayao-mcp'] } } },
     null,
     2,
   ) + '\n',
@@ -175,7 +175,7 @@ class GameView extends Node {
   private paint(): void {
     for (const c of this.layer.children.slice()) this.layer.removeChild(c);
     const { cols, rows } = this.dims();
-    // Studio knob: adjust live on /studio/ while playing, accept, then ask the
+    // Workshop knob: adjust live on /workshop/ while playing, accept, then ask the
     // agent to write the accepted value back into the tuning default below.
     const round = (this.world as World).tune<number>('cellRound');
     const cell = 120, ox = W/2 - (cols*cell)/2 + cell/2, oy = H/2 - (rows*cell)/2 + cell/2;
@@ -220,7 +220,7 @@ registerNode('GameView', () => new GameView());
 
 export const game = defineGame({
   title: '${slug}', width: W, height: H, background: REGALIA.ground,
-  // Live-tunable knobs: the /studio/ page builds sliders from this spec, values
+  // Live-tunable knobs: the /workshop/ page builds sliders from this spec, values
   // are hashed sim state read via world.tune(). Defaults ARE the config.
   tuning: { knobs: [knob.num('cellRound', { default: 18, min: 0, max: 40, step: 1, group: 'look' })] },
   build: () => new GameView({ name: 'game' }),
@@ -228,22 +228,22 @@ export const game = defineGame({
 });
 `,
 
-  'main.ts': `import { runStudio } from '@hayao';
+  'main.ts': `import { runWorkshop } from '@hayao';
 import { game } from './game';
 import { variants } from './variants';
 
-// Studio-instrumented dev driver: playtests record to the dev server,
-// ?seed=/?tuning=/?variant= override, the /studio/ page drives the knobs, and
+// Workshop-instrumented dev driver: playtests record to the dev server,
+// ?seed=/?tuning=/?variant= override, the /workshop/ page drives the knobs, and
 // \`hot\` carries the live world across code edits. Production builds behave
-// like plain runBrowser (the Studio endpoints simply aren't there).
-runStudio(game, document.getElementById('app')!, { variants, hot: import.meta.hot });
+// like plain runBrowser (the Workshop endpoints simply aren't there).
+runWorkshop(game, document.getElementById('app')!, { variants, hot: import.meta.hot });
 // Literal self-accept — Vite marks HMR boundaries by static source scan, so
 // this line (not a call inside the engine) is what prevents full reloads.
 import.meta.hot?.accept();
 `,
 
-  'variants.ts': `// A/B variants for Studio playtests: pick with ?variant=<name> or compare two
-// side by side on the /studio/ page. Tuning-only variants hot-toggle mid-play.
+  'variants.ts': `// A/B variants for Workshop playtests: pick with ?variant=<name> or compare two
+// side by side on the /workshop/ page. Tuning-only variants hot-toggle mid-play.
 import type { Variant } from '@hayao';
 
 export const variants: Record<string, Variant> = {
@@ -317,13 +317,13 @@ headless verification, determinism, crisp rendering, DOM menus. Hold the invaria
 ## Where things are
 - \`logic.ts\` — pure puzzle rules (the truth)
 - \`game.ts\`  — scene-tree view + the generated campaign + tuning knobs
-- \`variants.ts\` — named A/B alternatives for Studio playtests
+- \`variants.ts\` — named A/B alternatives for Workshop playtests
 - \`verify.ts\` — the proof harness (winnable + ramp)
 
-## The Studio (human playtests → your context)
-\`npm run dev\` then open \`/studio/\` — the human plays there; every session
-records to \`.studio/\` as a bit-exactly replayable artifact. The
-\`hayao-studio\` MCP server (.mcp.json) is YOUR window into them:
+## The Workshop (human playtests → your context)
+\`npm run dev\` then open \`/workshop/\` — the human plays there; every session
+records to \`.workshop/\` as a bit-exactly replayable artifact. The
+\`hayao-workshop\` MCP server (.mcp.json) is YOUR window into them:
 \`list_sessions\`, \`get_playtest_report\` (hesitations, deaths, futile verbs,
 quit context), \`inspect_moment\` (replay any tick → probe + screenshot),
 \`get_knob_state\` (values the human accepted — write them back into the
@@ -362,7 +362,7 @@ content is composed by \`composeCampaign\` (see \`game.ts\`), not hand-authored.
 \`AGENTS.md\` for the conventions an AI author should hold.
 `,
 
-  '.gitignore': `node_modules\ndist\n*.log\n.studio/\n`,
+  '.gitignore': `node_modules\ndist\n*.log\n.workshop/\n`,
 };
 
 mkdirSync(dir, { recursive: true });

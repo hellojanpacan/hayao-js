@@ -37,7 +37,7 @@ export interface GameDefinition<TState extends Record<string, unknown> = Record<
   /** Optional compact probe snapshot for verification (defaults to World.probe). */
   probe?(world: World<TState>): Record<string, unknown>;
   /**
-   * Live-tunable parameters, declared once. Defaults ARE the config; Studio and
+   * Live-tunable parameters, declared once. Defaults ARE the config; Workshop and
    * tests override them via `createWorld(def, { tuning })` and the sim reads
    * resolved values with `world.tune(key)`. Values are hashed + snapshotted.
    */
@@ -45,7 +45,7 @@ export interface GameDefinition<TState extends Record<string, unknown> = Record<
   /**
    * Re-attach behaviors/controllers after `world.restore()` rebuilds the tree
    * from data (closures do not survive a restore). One contract serves every
-   * carryover path: Studio knob changes, variant toggles, HMR, and net rollback.
+   * carryover path: Workshop knob changes, variant toggles, HMR, and net rollback.
    */
   attach?(world: World<TState>): void;
   /**

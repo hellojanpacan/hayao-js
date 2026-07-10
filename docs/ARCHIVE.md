@@ -58,6 +58,6 @@ Kentō-era prototypes, we reset and rebuild. See `docs/REGALIA-MIGRATION.md`.
   invariant 3). Re-themed to Regalia in Phase 2.
 - **`examples/embed.html`** — the shared embed shell.
 - **`sandboxes/*`** (11 labs: anim-lab, camera-lab, hero-lab, juice-lab, light-lab,
-  particle-studio, pathfinding-demo, physics-lab, procgen-lab, synth-lab,
+  particle-workshop, pathfinding-demo, physics-lab, procgen-lab, synth-lab,
   webgl-lab) — single-mechanic primitive references, not games. Re-themed to
   Regalia in Phase 2, leaned on by the Phase 7 shared-kit rebuild.

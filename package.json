@@ -28,23 +28,25 @@
   "types": "./dist/index.d.ts",
   "bin": {
     "create-hayao": "./bin/create-hayao.mjs",
-    "hayao-mcp": "./bin/hayao-mcp-cli.mjs"
+    "hayao-mcp": "./bin/hayao-mcp-cli.mjs",
+    "hayao": "./bin/hayao.mjs"
   },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./studio": {
-      "types": "./dist/studio/vitePlugin.d.ts",
-      "import": "./dist/studio-plugin.js"
+    "./workshop": {
+      "types": "./dist/workshop/vitePlugin.d.ts",
+      "import": "./dist/workshop-plugin.js"
     }
   },
   "files": [
     "dist",
-    "dist-studio",
+    "dist-workshop",
     "bin/create-hayao.mjs",
     "bin/hayao-mcp-cli.mjs",
+    "bin/hayao.mjs",
     "design",
     "sandboxes",
     "examples",
@@ -56,8 +58,9 @@
     "docs/VERIFICATION.md",
     "docs/CONVENTIONS.md",
     "docs/EMBED.md",
-    "docs/STUDIO.md",
-    "docs/ENGINE.md"
+    "docs/WORKSHOP.md",
+    "docs/ENGINE.md",
+    "docs/COIN.md"
   ],
   "engines": {
     "node": ">=18"
@@ -68,8 +71,8 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc --noEmit && vite build",
-    "build:lib": "rm -rf dist && esbuild src/index.ts --bundle --format=esm --platform=neutral --target=es2022 --outfile=dist/index.js --sourcemap && esbuild src/index.ts --bundle --minify --format=esm --platform=neutral --target=es2022 --outfile=dist/index.min.js && esbuild src/index.ts --bundle --minify --format=iife --global-name=hayao --platform=neutral --target=es2022 --outfile=dist/hayao.global.js && esbuild src/studio/mcpMain.ts --bundle --format=esm --platform=node --target=es2022 --outfile=dist/mcp.js --external:@resvg/resvg-js --external:hayao && esbuild src/studio/vitePlugin.ts --bundle --format=esm --platform=node --target=es2022 --outfile=dist/studio-plugin.js --external:vite && cp scripts/rasterize-worker-lite.mjs dist/rasterize-worker-lite.mjs && tsc -p tsconfig.build.json",
-    "build:studio": "vite build -c vite.studio.config.ts",
+    "build:lib": "rm -rf dist && esbuild src/index.ts --bundle --format=esm --platform=neutral --target=es2022 --outfile=dist/index.js --sourcemap && esbuild src/index.ts --bundle --minify --format=esm --platform=neutral --target=es2022 --outfile=dist/index.min.js && esbuild src/index.ts --bundle --minify --format=iife --global-name=hayao --platform=neutral --target=es2022 --outfile=dist/hayao.global.js && esbuild src/workshop/mcpMain.ts --bundle --format=esm --platform=node --target=es2022 --outfile=dist/mcp.js --external:@resvg/resvg-js --external:hayao && esbuild src/workshop/vitePlugin.ts --bundle --format=esm --platform=node --target=es2022 --outfile=dist/workshop-plugin.js --external:vite && esbuild src/coin/strike.ts --bundle --format=esm --platform=node --target=es2022 --outfile=dist/strike.js --external:esbuild && cp scripts/rasterize-worker-lite.mjs dist/rasterize-worker-lite.mjs && tsc -p tsconfig.build.json",
+    "build:workshop": "vite build -c vite.workshop.config.ts",
     "check": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -78,7 +81,7 @@
     "verify": "tsx scripts/verify-all.ts",
     "eval": "tsx scripts/eval.ts",
     "create": "node bin/create-hayao.mjs",
-    "prepublishOnly": "npm run check && npm test && npm run build:lib && npm run build:studio",
+    "prepublishOnly": "npm run check && npm test && npm run build:lib && npm run build:workshop",
     "relay": "node scripts/relay.mjs",
     "palette": "tsx scripts/palette-audit.ts",
     "audio": "tsx scripts/audio-render.ts",
@@ -87,7 +90,8 @@
     "judge": "tsx scripts/judge.ts",
     "thumbs": "tsx scripts/site-thumbs.ts",
     "design:index": "node scripts/build-design-index.mjs",
-    "design:spark": "node scripts/compose-design.mjs spark"
+    "design:spark": "node scripts/compose-design.mjs spark",
+    "strike": "tsx src/coin/strike.ts"
   },
   "devDependencies": {
     "@modelcontextprotocol/sdk": "^1.29.0",
@@ -106,5 +110,13 @@
     "typescript": "^5.7.0",
     "vite": "^6.0.0",
     "vitest": "^2.1.0"
+  },
+  "peerDependencies": {
+    "esbuild": "^0.28.0"
+  },
+  "peerDependenciesMeta": {
+    "esbuild": {
+      "optional": true
+    }
   }
 }
