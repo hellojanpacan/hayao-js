@@ -221,6 +221,11 @@ export class PointerSource {
   private seen = false;
   /** Live touches by pointerId (a pressed finger/button); excludes hover-only mouse. */
   private touches = new Map<number, { clientX: number; clientY: number }>();
+  /** Wheel scroll accumulated since the last sample, in normalized px (~100/notch). */
+  private wheelAcc = 0;
+  /** Relative movement accumulated since the last sample (movementX/Y, client px). */
+  private dxAcc = 0;
+  private dyAcc = 0;
   private target: PointerTarget;
   private el: EventTarget | undefined;
   private keyboard: KeyboardSource | undefined;
@@ -228,6 +233,7 @@ export class PointerSource {
   private onDown: (e: PointerEvent) => void;
   private onUp: (e: PointerEvent) => void;
   private onCtx: (e: Event) => void;
+  private onWheel: (e: WheelEvent) => void;
 
   constructor(target: PointerTarget, opts: PointerSourceOptions = {}) {
     this.target = target;
