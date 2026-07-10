@@ -1,0 +1,84 @@
+---
+/**
+ * The handoff block — the shared ending of every /create page. A dark card
+ * holding a copy-paste prompt for the user's coding agent, in the same visual
+ * family as InstallBox and the Get Started modal.
+ */
+interface Props {
+  prompt: string;
+  title?: string;
+  blurb?: string;
+}
+const {
+  prompt,
+  title = "Hand it to your agent",
+  blurb = "Paste this into Claude Code, Cursor, or any coding agent — it does the rest.",
+} = Astro.props;
+---
+
+<div class="agent-prompt mx-auto w-full max-w-2xl rounded-3xl border border-[#303a63] bg-[#141a30] p-6 text-left md:p-8">
+  <div class="flex items-start justify-between gap-4">
+    <div>
+      <h3 class="font-display text-[1.1rem] font-semibold text-white">{title}</h3>
+      <p class="mt-1 font-body text-[0.85rem] font-light leading-relaxed text-[#b3bbd4]">{blurb}</p>
+    </div>
+    <button
+      type="button"
+      class="copy-btn inline-flex shrink-0 items-center gap-2 rounded-full bg-orange px-4 py-2 font-body text-[0.85rem] font-semibold text-white transition-colors hover:bg-green focus:outline-none focus-visible:ring-2 focus-visible:ring-orange"
+      aria-label="Copy agent prompt"
+    >
+      <svg class="ico-copy" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>
+      <svg class="ico-check" xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"></path></svg>
+      <span class="copy-label">Copy</span>
+    </button>
+  </div>
+
+  <pre class="prompt-text mt-5 max-h-96 overflow-auto whitespace-pre-wrap rounded-xl border border-white/10 bg-white/5 p-4 font-mono text-[0.78rem] leading-relaxed text-[#eef1f9]">{prompt}</pre>
+</div>
+
+<style>
+  .ico-check {
+    display: none;
+  }
+  .copy-btn.copied .ico-copy {
+    display: none;
+  }
+  .copy-btn.copied .ico-check {
+    display: block;
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>(".agent-prompt .copy-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const text = btn.closest(".agent-prompt")?.querySelector(".prompt-text")?.textContent ?? "";
+      let ok = false;
+      try {
+        await navigator.clipboard.writeText(text);
+        ok = true;
+      } catch {
+        try {
+          const ta = document.createElement("textarea");
+          ta.value = text;
+          ta.style.position = "fixed";
+          ta.style.opacity = "0";
+          document.body.appendChild(ta);
+          ta.select();
+          ok = document.execCommand("copy");
+          ta.remove();
+        } catch {
+          /* clipboard unavailable */
+        }
+      }
+      if (ok) {
+        btn.classList.add("copied");
+        const label = btn.querySelector(".copy-label");
+        if (label) label.textContent = "Copied";
+        setTimeout(() => {
+          btn.classList.remove("copied");
+          if (label) label.textContent = "Copy";
+        }, 1600);
+      }
+    });
+  });
+</script>
