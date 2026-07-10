@@ -22,17 +22,24 @@ import {
   Moon,
 } from "lucide-react";
 
-/* ── The Regalia mark ── */
-const CROWN =
-  "m21.8382 11.1263 -0.2292 2.4353c-0.3777 4.0126 -0.5665 6.0189 -1.7491 7.2286C18.6773 22 16.9048 22 13.3599 22h-2.7198c-3.54493 0 -5.31739 0 -6.50001 -1.2098 -1.18261 -1.2097 -1.37144 -3.216 -1.74909 -7.2286l-0.22919 -2.4353c-0.18001 -1.9126 -0.27001 -2.86891 0.05718 -3.26423 0.17699 -0.21384 0.41767 -0.34487 0.675 -0.36747 0.47569 -0.04178 1.07309 0.6383 2.26788 1.99847 0.6179 0.70343 0.92685 1.05513 1.2715 1.10963 0.19097 0.0301 0.38555 -0.0009 0.56189 -0.0896 0.31825 -0.1602 0.53044 -0.59498 0.95481 -1.46458l2.23683 -4.58366C10.9888 2.82162 11.3898 2 12 2c0.6102 0 1.0112 0.82162 1.8131 2.46485l2.2368 4.58366c0.4244 0.86961 0.6366 1.30439 0.9548 1.46459 0.1764 0.0887 0.371 0.1197 0.5619 0.0896 0.3447 -0.0545 0.6536 -0.4062 1.2715 -1.10963 1.1948 -1.36017 1.7922 -2.04025 2.2679 -1.99847 0.2573 0.0226 0.498 0.15363 0.675 0.36747 0.3272 0.39532 0.2372 1.35163 0.0572 3.26423Z";
-const RULE =
-  "M8.25 18c0 -0.4142 0.33579 -0.75 0.75 -0.75h6c0.4142 0 0.75 0.3358 0.75 0.75s-0.3358 0.75 -0.75 0.75H9c-0.41421 0 -0.75 -0.3358 -0.75 -0.75Z";
+/* ── The canonical logo lockup — definition in ./logo.ts, all outlined vector ── */
+import {
+  LOGO_CROWN,
+  LOGO_RULE,
+  LOGO_GOLD,
+  WORDMARK_HAYAO,
+  WORDMARK_JS,
+  LOCKUP_VIEWBOX,
+  LOCKUP_CLASS,
+} from "./logo";
 
-function Mark({ className = "" }: { className?: string }) {
+function Lockup() {
   return (
-    <svg viewBox="2 2 20 20" className={className} aria-hidden="true">
-      <path d={CROWN} fill="#e59500" />
-      <path d={RULE} fill="var(--color-ink)" />
+    <svg viewBox={LOCKUP_VIEWBOX} className={LOCKUP_CLASS} role="img" aria-label="Hayao.js">
+      <path d={LOGO_CROWN} fill={LOGO_GOLD} />
+      <path d={LOGO_RULE} fill="var(--color-ink)" />
+      <path d={WORDMARK_HAYAO} fill="var(--color-ink)" />
+      <path d={WORDMARK_JS} fill="var(--color-muted)" />
     </svg>
   );
 }
@@ -276,14 +283,8 @@ export default function SiteNav() {
     <header className="sticky top-0 z-50 px-4 pt-3">
       <div className="mx-auto flex h-14 max-w-3xl items-center justify-between rounded-full border border-hair bg-panel/80 pl-6 pr-2.5 shadow-[0_12px_34px_-14px_rgba(41,51,92,0.32)] backdrop-blur-md">
         {/* left — logo (whole area → home) */}
-        <a
-          href="/"
-          className="flex items-center gap-2 font-display text-[1.375rem] font-semibold text-ink no-underline"
-        >
-          <Mark className="size-6" />
-          <span>
-            Hayao<span className="text-muted">.js</span>
-          </span>
+        <a href="/" className="flex items-center no-underline">
+          <Lockup />
         </a>
 
         {/* center — menu */}
