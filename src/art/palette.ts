@@ -12,48 +12,45 @@ import { dpow } from '../core/dmath';
 /**
  * The Regalia swatch set — Hayao's clean, friendly "Bold Duotone" brand hues (the
  * crown palette that dresses hayao.dev), expressed for gameplay as
- * one continuous paper→ink neutral ramp plus a navy `night` ramp for dark games,
- * and the six brand hues at their true, single tone — the "duotone" is the two
+ * two mirrored neutral ramps — a paper→ink day side and a navy night side — plus
+ * the five brand hues at their true, single tone — the "duotone" is the two
  * OPACITIES of a hue in use (see duotone.ts), never a second hex. Every hue clears
  * the house mark floor (2.4) on both the white and the night ground, and carries a
  * dark ink outline that lifts the composite to AA — verified in palette-audit.ts.
  * `rose` and `bark` are purpose-scoped (vitality / material) but live here so games
  * that need health or wood tones stay on-model. This is the one canonical look;
- * grow it by need (see `REGALIA_EXT`), never by mood.
+ * grow it by need, never by mood — derive any new series hue with `mix()` when a
+ * real job appears, never a hand-typed hex.
  */
 export const REGALIA = {
-  // neutrals: white ground → navy ink (light), and a navy night ramp (dark)
-  paper: '#ffffff', //     lightest ground, light games
-  mist: '#f4f6fb', //      soft ground / raised card on light
-  cloud: '#eef1f6', //     sunken panel on light
-  line: '#e7e8ee', //      hairline / grid on light
-  muted: '#8b90a6', //     muted labels (not body text)
-  soft: '#5a6072', //      secondary text on light (AA)
-  ink: '#29335c', //  冠   primary ink / navy — text + structure
-  night: '#1d2542', //     raised panel on dark
-  ground: '#141a30', //    deepest dark ground, dark games
-  darkLine: '#303a63', //  hairline / grid on dark
-  paperInk: '#eef1f9', //  ink on the night ground
-  softInk: '#b3bbd4', //   secondary text on dark (AA)
+  // neutrals: the SAME seven roles on each ground, mirrored day ↔ night, so a
+  // light/dark toggle swaps sides role-for-role with nothing missing:
+  //   canvas · raised · sunken · hairline · muted label · secondary text · primary ink
 
-  // the six brand hues — one true tone each, dressed as two-opacity duotones in use
+  // day side: white ground → navy ink
+  paper: '#ffffff', //     canvas / lightest ground, light games
+  mist: '#f4f6fb', //      raised card
+  cloud: '#eef1f6', //     sunken panel
+  line: '#e7e8ee', //      hairline / grid
+  muted: '#8b90a6', //     muted labels (not body text)
+  soft: '#5a6072', //      secondary text (AA)
+  ink: '#29335c', //  冠   primary ink / navy — text + structure
+
+  // night side: navy ground → paper ink
+  ground: '#141a30', //    canvas / deepest ground, dark games
+  night: '#1d2542', //     raised panel
+  shade: '#273053', //     sunken panel — mix(night, darkLine, 0.5)
+  darkLine: '#303a63', //  hairline / grid
+  mutedInk: '#727b9c', //  muted labels (not body text) — mix(darkLine, softInk, 0.5)
+  softInk: '#b3bbd4', //   secondary text (AA)
+  paperInk: '#eef1f9', //  primary ink on the night ground
+
+  // the five brand hues — one true tone each, dressed as two-opacity duotones in use
   gold: '#e59500', //  the Regalia crown — primary / joy
   green: '#337357', // growth / success
   blue: '#669bbc', //  calm / sky / tech
   rose: '#c65b5b', //  VITALITY: health / damage
   bark: '#7a4f34', //  MATERIAL: wood / earth
-} as const;
-
-/**
- * Categorical extension — two more distinct series hues for charts, particle sets,
- * and labs that need more than the six core hues. DERIVED from the core via `mix()`
- * (never a new hand-typed brand hex) so they stay on-Regalia and honest to
- * `palette-audit`. "Grow by the job, not the mood" — add here only when a real need
- * appears. `teal` sits between blue and green; `violet` between blue and rose.
- */
-export const REGALIA_EXT = {
-  teal: mix(REGALIA.blue, REGALIA.green, 0.5), //  cool cyan — water / tech, distinct from blue
-  violet: mix(REGALIA.blue, REGALIA.rose, 0.5), // wisteria — magic / night accents
 } as const;
 
 export interface Palette {
@@ -88,7 +85,7 @@ export const REGALIA_DAY: Palette = {
   accent2: REGALIA.blue,
   good: REGALIA.green,
   warn: REGALIA.rose, // rose owns vitality/danger — reads truer than gold as a warning
-  ramp: [REGALIA.gold, REGALIA.blue, REGALIA.green, REGALIA.rose, REGALIA.bark, REGALIA_EXT.teal, REGALIA_EXT.violet, REGALIA.ink],
+  ramp: [REGALIA.gold, REGALIA.blue, REGALIA.green, REGALIA.rose, REGALIA.bark, REGALIA.ink],
   swatches: REGALIA,
 };
 
@@ -103,7 +100,7 @@ export const REGALIA_NIGHT: Palette = {
   accent2: REGALIA.blue,
   good: REGALIA.green,
   warn: REGALIA.rose,
-  ramp: [REGALIA.gold, REGALIA.blue, REGALIA.green, REGALIA.rose, REGALIA.bark, REGALIA_EXT.teal, REGALIA_EXT.violet, REGALIA.paperInk],
+  ramp: [REGALIA.gold, REGALIA.blue, REGALIA.green, REGALIA.rose, REGALIA.bark, REGALIA.paperInk],
   swatches: REGALIA,
 };
 

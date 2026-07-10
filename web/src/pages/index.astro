@@ -72,7 +72,7 @@ const rows: { label: string; marks: Mark[] }[] = [
 
       <div class="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3">
         <!-- vector sprites -->
-        <div class="flex flex-col items-center gap-3 rounded-3xl border border-hair bg-white p-5">
+        <div class="flex flex-col items-center gap-3 rounded-3xl border border-hair bg-panel p-5">
           <svg viewBox="0 0 64 44" class="h-16 w-full" aria-hidden="true">
             <rect x="22" y="14" width="20" height="20" rx="5" fill="#669bbc"></rect>
             <circle cx="28" cy="22" r="2.5" fill="#29335c"></circle>
@@ -84,7 +84,7 @@ const rows: { label: string; marks: Mark[] }[] = [
           <p class="font-body text-[0.8rem] font-light leading-snug text-muted">Characters &amp; props drawn from shapes — no sprite sheets to source.</p>
         </div>
         <!-- palettes -->
-        <div class="flex flex-col items-center gap-3 rounded-3xl border border-hair bg-white p-5">
+        <div class="flex flex-col items-center gap-3 rounded-3xl border border-hair bg-panel p-5">
           <svg viewBox="0 0 64 44" class="h-16 w-full" aria-hidden="true">
             <rect x="8" y="12" width="10" height="20" rx="4" fill="#337357"></rect>
             <rect x="21" y="12" width="10" height="20" rx="4" fill="#29335c"></rect>
@@ -95,7 +95,7 @@ const rows: { label: string; marks: Mark[] }[] = [
           <p class="font-body text-[0.8rem] font-light leading-snug text-muted">Curated, contrast-checked colour systems the whole game inherits.</p>
         </div>
         <!-- textures & autotile -->
-        <div class="flex flex-col items-center gap-3 rounded-3xl border border-hair bg-white p-5">
+        <div class="flex flex-col items-center gap-3 rounded-3xl border border-hair bg-panel p-5">
           <svg viewBox="0 0 64 44" class="h-16 w-full" aria-hidden="true">
             {Array.from({ length: 4 }).map((_, i) =>
               Array.from({ length: 6 }).map((_, j) => (
@@ -107,13 +107,13 @@ const rows: { label: string; marks: Mark[] }[] = [
           <p class="font-body text-[0.8rem] font-light leading-snug text-muted">Procedural surfaces and tiles that seam themselves.</p>
         </div>
         <!-- bitmap fonts -->
-        <div class="flex flex-col items-center gap-3 rounded-3xl border border-hair bg-white p-5">
+        <div class="flex flex-col items-center gap-3 rounded-3xl border border-hair bg-panel p-5">
           <svg viewBox="0 0 64 44" class="h-16 w-full" aria-hidden="true">
             {[
               [1,1,1, 0,1,0, 1,0,1, 1,1,1, 1,0,1],
             ].map(() => null)}
             <!-- pixel "A" -->
-            <g fill="#29335c">
+            <g fill="var(--color-ink)">
               <rect x="26" y="8" width="4" height="4"/><rect x="30" y="8" width="4" height="4"/><rect x="34" y="8" width="4" height="4"/>
               <rect x="22" y="12" width="4" height="4"/><rect x="38" y="12" width="4" height="4"/>
               <rect x="22" y="16" width="4" height="4"/><rect x="26" y="16" width="4" height="4"/><rect x="30" y="16" width="4" height="4"/><rect x="34" y="16" width="4" height="4"/><rect x="38" y="16" width="4" height="4"/>
@@ -126,7 +126,7 @@ const rows: { label: string; marks: Mark[] }[] = [
           <p class="font-body text-[0.8rem] font-light leading-snug text-muted">Pixel type defined in code, rendered crisp at any scale.</p>
         </div>
         <!-- particles & juice -->
-        <div class="flex flex-col items-center gap-3 rounded-3xl border border-hair bg-white p-5">
+        <div class="flex flex-col items-center gap-3 rounded-3xl border border-hair bg-panel p-5">
           <svg viewBox="0 0 64 44" class="h-16 w-full" aria-hidden="true">
             <circle cx="32" cy="24" r="5" fill="#e59500"></circle>
             <circle cx="18" cy="14" r="2.5" fill="#e59500" opacity="0.75"></circle>
@@ -140,7 +140,7 @@ const rows: { label: string; marks: Mark[] }[] = [
           <p class="font-body text-[0.8rem] font-light leading-snug text-muted">Hit-stop, shake, bursts — feel as declarative recipes.</p>
         </div>
         <!-- procedural audio -->
-        <div class="flex flex-col items-center gap-3 rounded-3xl border border-hair bg-white p-5">
+        <div class="flex flex-col items-center gap-3 rounded-3xl border border-hair bg-panel p-5">
           <svg viewBox="0 0 64 44" class="h-16 w-full" aria-hidden="true">
             {[6, 14, 22, 10, 26, 16, 8, 20, 12, 24, 9, 15].map((h, i) => (
               <rect x={8 + i * 4.2} y={22 - h / 2} width="2.6" height={h} rx="1.3" fill={i % 3 === 0 ? "#e59500" : "#669bbc"}></rect>
@@ -164,7 +164,7 @@ const rows: { label: string; marks: Mark[] }[] = [
         agent can drive them.
       </p>
 
-      <div class="mt-10 overflow-x-auto rounded-3xl border border-hair bg-white">
+      <div class="mt-10 overflow-x-auto rounded-3xl border border-hair bg-panel">
         <table class="w-full min-w-[560px] border-collapse text-left">
           <thead>
             <tr class="border-b border-hair">
@@ -223,13 +223,13 @@ const rows: { label: string; marks: Mark[] }[] = [
           flows through one seeded RNG; no wall-clock, no hidden state. Same inputs, same result —
           bit for bit, on any machine.
         </p>
-        <div class="mx-auto mt-6 w-full max-w-md overflow-x-auto rounded-3xl border border-white/10 bg-[#0f1424] p-5 text-left">
-          <pre class="font-mono text-[0.8rem] leading-relaxed text-[#d7dcec]"><code><span class="text-[#8ea1c7]">const</span> w = createWorld(game);
-w.step([<span class="text-[#9cc98a]">'right'</span>]);   <span class="text-[#6b769b]">// advance one tick</span>
-w.step([]);          <span class="text-[#6b769b]">// release</span>
+        <div class="mx-auto mt-6 w-full max-w-md overflow-x-auto rounded-3xl border border-[#303a63] bg-[#141a30] p-5 text-left">
+          <pre class="font-mono text-[0.8rem] leading-relaxed text-[#eef1f9]"><code><span class="text-blue">const</span> w = createWorld(game);
+w.step([<span class="text-orange">'right'</span>]);   <span class="text-[#727b9c]">// advance one tick</span>
+w.step([]);          <span class="text-[#727b9c]">// release</span>
 
-w.probe().solved;    <span class="text-[#6b769b]">// assert on STATE</span>
-<span class="text-[#8ea1c7]">const</span> h = w.hash(); <span class="text-[#6b769b]">// replay → same hash</span></code></pre>
+w.probe().solved;    <span class="text-[#727b9c]">// assert on STATE</span>
+<span class="text-blue">const</span> h = w.hash(); <span class="text-[#727b9c]">// replay → same hash</span></code></pre>
         </div>
       </div>
 
@@ -241,7 +241,7 @@ w.probe().solved;    <span class="text-[#6b769b]">// assert on STATE</span>
           you build in TypeScript, not a binary you edit in a GUI. Rendering is a projection of
           that tree, so the simulation never needs a canvas.
         </p>
-        <div class="mx-auto mt-6 inline-block max-w-full overflow-x-auto rounded-3xl border border-hair bg-white p-5 text-left">
+        <div class="mx-auto mt-6 inline-block max-w-full overflow-x-auto rounded-3xl border border-hair bg-panel p-5 text-left">
           <pre class="font-mono text-[0.88rem] leading-relaxed text-muted"><code>World
 └─ <span class="text-blue">Node2D</span> <span class="text-ink">player</span>
    ├─ <span class="text-blue">Sprite</span> <span class="text-ink">body</span>

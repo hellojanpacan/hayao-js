@@ -22,6 +22,21 @@ const {
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <script is:inline>
+      // Day/night boot — runs before paint so there is no flash of the wrong
+      // theme. Stored choice wins; otherwise follow the OS.
+      (() => {
+        let theme = "light";
+        try {
+          theme =
+            localStorage.getItem("hayao-theme") ??
+            (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+        } catch {
+          /* storage unavailable — default to day */
+        }
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
   </head>
   <body>
     <div class="site-bg" aria-hidden="true"></div>

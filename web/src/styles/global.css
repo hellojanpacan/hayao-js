@@ -30,7 +30,14 @@
   src: url("/fonts/poppins-600.woff2") format("woff2");
 }
 
-/* ── Design tokens → Tailwind utilities (bg-navy, text-ink, font-display…) ── */
+/* ── Design tokens → Tailwind utilities (bg-navy, text-ink, font-display…) ──
+   Two kinds of token, mirroring src/art/palette.ts:
+   · brand HUES (navy, orange, green, blue, rose, bark) — one true tone, the
+     SAME in day and night; the duotone look is opacity, never a second hex.
+   · neutral ROLES (paper/panel/mist/cloud = surfaces, hair = hairline,
+     muted/soft/ink = text) — these swap to their night-ramp mirror under
+     [data-theme="dark"], role-for-role, so every component works on both
+     grounds without per-component dark styling. */
 @theme {
   --color-green: #337357;
   --color-navy: #29335c;
@@ -42,14 +49,41 @@
   --color-rose: #c65b5b;
   --color-bark: #7a4f34;
 
-  --color-ink: #29335c;
-  --color-muted: #8b90a6;
-  --color-soft: #5a6072;
-  --color-hair: #e7e8ee;
-  --color-paper: #ffffff;
+  /* neutral roles — day values; night mirrors below */
+  --color-paper: #ffffff; /*  canvas            ↔ ground   */
+  --color-panel: #ffffff; /*  raised card       ↔ night    */
+  --color-mist: #f4f6fb; /*   soft sunken/hover ↔ shade    */
+  --color-cloud: #eef1f6; /*  deeper sunken     ↔ darkLine */
+  --color-hair: #e7e8ee; /*   hairline / grid   ↔ darkLine */
+  --color-muted: #8b90a6; /*  muted labels      ↔ mutedInk */
+  --color-soft: #5a6072; /*   secondary text    ↔ softInk  */
+  --color-ink: #29335c; /*    primary ink       ↔ paperInk */
 
   --font-display: "Overpass", system-ui, sans-serif;
   --font-body: "Poppins", system-ui, sans-serif;
+}
+
+/* The night side of the mirror — the Regalia night ramp, role-for-role.
+   Unlayered on purpose so it always wins over the @layer'd theme defaults. */
+html[data-theme="dark"] {
+  --color-paper: #141a30;
+  --color-panel: #1d2542;
+  --color-mist: #273053;
+  --color-cloud: #303a63;
+  --color-hair: #303a63;
+  --color-muted: #727b9c;
+  --color-soft: #b3bbd4;
+  --color-ink: #eef1f9;
+}
+
+/* Opt Tailwind's dark: variant into the data-theme toggle (not the OS query). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+html[data-theme="light"] {
+  color-scheme: light;
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
 }
 
 @layer base {
@@ -62,6 +96,32 @@
     font-weight: 300;
     color: var(--color-ink);
     background: var(--color-paper);
+  }
+}
+
+/* ── Day/night toggle — the sun sets, the moon rises ── */
+.tt-sun,
+.tt-moon {
+  transition:
+    transform 0.5s cubic-bezier(0.34, 1.4, 0.44, 1),
+    opacity 0.25s ease;
+}
+.tt-moon {
+  opacity: 0;
+  transform: translateY(45%) rotate(-90deg) scale(0.5);
+}
+html[data-theme="dark"] .tt-sun {
+  opacity: 0;
+  transform: translateY(45%) rotate(90deg) scale(0.5);
+}
+html[data-theme="dark"] .tt-moon {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tt-sun,
+  .tt-moon {
+    transition: opacity 0.2s ease;
   }
 }
 
@@ -91,14 +151,25 @@ astro-island {
   mask-image: radial-gradient(115% 90% at 50% 32%, rgb(0 0 0 / 0.5) 0%, #000 72%);
 }
 
+/* Night lattice — same weave on the night ground: the navy threads flip to
+   paper ink (navy-on-navy would vanish) and the hue threads lift a touch so
+   the print still whispers through the dark. */
+html[data-theme="dark"] .site-bg {
+  background-image:
+    repeating-linear-gradient(0deg,   transparent, transparent 22px, rgb(238 241 249 / 0.05)  22px, rgb(238 241 249 / 0.05)  23px),
+    repeating-linear-gradient(90deg,  transparent, transparent 30px, rgb(102 155 188 / 0.07)  30px, rgb(102 155 188 / 0.07)  31px),
+    repeating-linear-gradient(60deg,  transparent, transparent 40px, rgb(51 115 87 / 0.07)    40px, rgb(51 115 87 / 0.07)    41px),
+    repeating-linear-gradient(150deg, transparent, transparent 35px, rgb(229 149 0 / 0.06)    35px, rgb(229 149 0 / 0.06)    36px);
+}
+
 /* ── Navigation dropdown (Radix NavigationMenu viewport) ── */
 .nav-viewport {
   position: relative;
   transform-origin: top center;
   overflow: hidden;
   border-radius: 1.35rem;
-  border: 1px solid #e7e8ee;
-  background: #fff;
+  border: 1px solid var(--color-hair);
+  background: var(--color-panel);
   box-shadow: 0 18px 50px -20px rgb(41 51 92 / 0.28);
   /* Size to our own content — Radix's --radix-navigation-menu-viewport-* vars
      mis-measure fixed-width panels (reporting just the padding), so don't use them. */
