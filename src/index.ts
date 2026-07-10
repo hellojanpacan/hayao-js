@@ -103,6 +103,7 @@ export * from './audio/quality';
 export * from './audio/genres';
 export * from './audio/zzfx';
 export * from './audio/album';
+export * from './audio/soundtrack';
 
 // ── ui: DOM overlays + shell + settings ─────────────────────────
 export * from './ui/overlay';
