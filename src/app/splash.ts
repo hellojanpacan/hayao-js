@@ -17,7 +17,8 @@ const MARK_GOLD = '#e59500'; //  crown
 const MARK_INK = '#29335c'; //   rule + "Hayao"
 const MARK_MUTED = '#8b90a6'; // ".js"
 const SPLASH_GROUND = '#f4f6fb'; // Regalia mist — a light ground the brand mark reads true on
-const SPLASH_FONT = '"Overpass", system-ui, sans-serif'; // the site's display face, then a system fallback
+// single-quote the family so it nests safely inside a double-quoted SVG font-family attribute
+const SPLASH_FONT = "'Overpass', system-ui, sans-serif"; // the site's display face, then a system fallback
 
 const clamp01 = (t: number): number => (t < 0 ? 0 : t > 1 ? 1 : t);
 const easeOut = (t: number): number => 1 - (1 - t) * (1 - t) * (1 - t);

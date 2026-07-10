@@ -8,7 +8,6 @@ import { createWorld } from './game';
 import { makeSplash } from './splash';
 import { KeyboardSource, PointerSource, type InputSource } from '../input/source';
 import type { Vec2 } from '../core/math';
-import type { DrawCommand } from '../render/commands';
 import { SvgRenderer } from '../render/svg';
 import { Canvas2DRenderer } from '../render/canvas';
 import { WebGL2Renderer } from '../render/webgl';
