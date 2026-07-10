@@ -1,21 +1,43 @@
 ---
 /**
- * The Hayao mark — "Regalia": an amber crown crossed by a navy rule. Tight
- * viewBox (the glyph fills a 20-unit square) so it reads at cap-height. Size it
- * from the parent, e.g. `h-[1cap] w-[1cap]` inside a font-display, items-baseline
- * lockup so it matches the wordmark's cap-height exactly.
+ * The Hayao logo. The canonical definition (paths, colors, lockup geometry)
+ * lives in ./logo.ts — this component just renders it.
+ *
+ * `<Logo />`          — the mark alone, sized by the parent.
+ * `<Logo wordmark />` — the full canonical lockup: crown + outlined "Hayao.js"
+ *                       (no font dependency; theme-aware via CSS vars). Sized
+ *                       by the parent too — LOCKUP_CLASS is the house default.
  */
+import {
+  LOGO_VIEWBOX,
+  LOGO_CROWN,
+  LOGO_RULE,
+  LOGO_GOLD,
+  WORDMARK_HAYAO,
+  WORDMARK_JS,
+  LOCKUP_VIEWBOX,
+  LOCKUP_CLASS,
+} from "./logo";
+
 interface Props {
   class?: string;
-  mono?: boolean; // solid navy — for tiny / single-colour contexts
+  mono?: boolean; //     solid ink — for tiny / single-colour contexts
+  wordmark?: boolean; // render the full canonical lockup
 }
-const { class: className = "", mono = false } = Astro.props;
-const CROWN =
-  "m21.8382 11.1263 -0.2292 2.4353c-0.3777 4.0126 -0.5665 6.0189 -1.7491 7.2286C18.6773 22 16.9048 22 13.3599 22h-2.7198c-3.54493 0 -5.31739 0 -6.50001 -1.2098 -1.18261 -1.2097 -1.37144 -3.216 -1.74909 -7.2286l-0.22919 -2.4353c-0.18001 -1.9126 -0.27001 -2.86891 0.05718 -3.26423 0.17699 -0.21384 0.41767 -0.34487 0.675 -0.36747 0.47569 -0.04178 1.07309 0.6383 2.26788 1.99847 0.6179 0.70343 0.92685 1.05513 1.2715 1.10963 0.19097 0.0301 0.38555 -0.0009 0.56189 -0.0896 0.31825 -0.1602 0.53044 -0.59498 0.95481 -1.46458l2.23683 -4.58366C10.9888 2.82162 11.3898 2 12 2c0.6102 0 1.0112 0.82162 1.8131 2.46485l2.2368 4.58366c0.4244 0.86961 0.6366 1.30439 0.9548 1.46459 0.1764 0.0887 0.371 0.1197 0.5619 0.0896 0.3447 -0.0545 0.6536 -0.4062 1.2715 -1.10963 1.1948 -1.36017 1.7922 -2.04025 2.2679 -1.99847 0.2573 0.0226 0.498 0.15363 0.675 0.36747 0.3272 0.39532 0.2372 1.35163 0.0572 3.26423Z";
-const RULE =
-  "M8.25 18c0 -0.4142 0.33579 -0.75 0.75 -0.75h6c0.4142 0 0.75 0.3358 0.75 0.75s-0.3358 0.75 -0.75 0.75H9c-0.41421 0 -0.75 -0.3358 -0.75 -0.75Z";
+const { class: className = "", mono = false, wordmark = false } = Astro.props;
 ---
-<svg viewBox="2 2 20 20" class={className} aria-hidden="true">
-  <path d={CROWN} fill={mono ? "var(--color-ink, #29335c)" : "#e59500"} />
-  <path d={RULE} fill="var(--color-ink, #29335c)" />
-</svg>
+{
+  wordmark ? (
+    <svg viewBox={LOCKUP_VIEWBOX} class={`${LOCKUP_CLASS} ${className}`} role="img" aria-label="Hayao.js">
+      <path d={LOGO_CROWN} fill={LOGO_GOLD} />
+      <path d={LOGO_RULE} fill="var(--color-ink, #29335c)" />
+      <path d={WORDMARK_HAYAO} fill="var(--color-ink, #29335c)" />
+      <path d={WORDMARK_JS} fill="var(--color-muted, #8b90a6)" />
+    </svg>
+  ) : (
+    <svg viewBox={LOGO_VIEWBOX} class={className} aria-hidden="true">
+      <path d={LOGO_CROWN} fill={mono ? "var(--color-ink, #29335c)" : LOGO_GOLD} />
+      <path d={LOGO_RULE} fill="var(--color-ink, #29335c)" />
+    </svg>
+  )
+}

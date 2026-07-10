@@ -1,32 +1,33 @@
 import { describe, it, expect } from 'vitest';
-import { makeSplash, MARK_CROWN, MARK_RULE, mixHex } from './splash';
+import { makeSplash, MARK_CROWN, MARK_RULE, WORD_HAYAO, WORD_JS, mixHex } from './splash';
 import type { GameDefinition } from './game';
 
-// The boot cover must show the exact site-nav logo (crown mark + "Hayao.js"
-// wordmark) and animate: fade/rise in, hold, then dissolve to the game ground.
-// These lock the commands so a refactor can't quietly drop the logo or the fade.
+// The boot cover must show the exact canonical logo — the crown mark plus the
+// OUTLINED "Hayao.js" wordmark (no font, no DOM) — and animate: staggered
+// entrance, hold, then dissolve to the game ground. These lock the commands so
+// a refactor can't quietly drop the logo, the outlines, or the fade.
 const def = { title: 'demo', background: '#102030' } as unknown as GameDefinition;
 const TOTAL = 900;
+
+type Cmd = { kind: string; d?: string; fill?: string; opacity?: number; transform: { a: number; e: number; f: number } };
 
 describe('boot splash', () => {
   const frame = makeSplash({}, def, 1280, 720);
 
-  it('draws the Hayao logo: crown + rule mark and a two-tone wordmark', () => {
-    const cmds = frame(TOTAL / 2, TOTAL); // mid-hold: everything fully visible
-    const kinds = cmds.map((c) => c.kind);
-    expect(kinds).toEqual(['rect', 'path', 'path', 'text', 'text']);
+  it('draws the Hayao logo: crown + rule mark and the outlined two-tone wordmark', () => {
+    const cmds = frame(TOTAL / 2, TOTAL) as unknown as Cmd[]; // mid-hold: fully visible
+    expect(cmds.map((c) => c.kind)).toEqual(['rect', 'path', 'path', 'path', 'path']);
 
-    const [, crown, rule, hayao, js] = cmds as [unknown, { d: string; fill: string }, { d: string; fill: string }, { text: string; fill: string }, { text: string; fill: string }];
-    // the exact mark paths from web/src/components/Logo.astro, in brand colours
+    const [, crown, rule, hayao, js] = cmds;
+    // the exact canonical paths (web/src/components/logo.ts + logo-wordmark.ts)
     expect(crown.d).toBe(MARK_CROWN);
     expect(crown.fill).toBe('#e59500'); // amber crown
     expect(rule.d).toBe(MARK_RULE);
     expect(rule.fill).toBe('#29335c'); // navy rule
-    // wordmark, ".js" muted just like the nav
-    expect(hayao.text).toBe('Hayao');
-    expect(hayao.fill).toBe('#29335c');
-    expect(js.text).toBe('.js');
-    expect(js.fill).toBe('#8b90a6');
+    expect(hayao.d).toBe(WORD_HAYAO);
+    expect(hayao.fill).toBe('#29335c'); // ink "Hayao"
+    expect(js.d).toBe(WORD_JS);
+    expect(js.fill).toBe('#8b90a6'); // muted ".js", just like the site
   });
 
   it('fades the logo in, holds, then out', () => {
@@ -42,15 +43,38 @@ describe('boot splash', () => {
     expect(bg(frame(TOTAL, TOTAL))).toBe('#102030'); //  fully dissolved to the game bg
   });
 
-  it('centres the mark+wordmark lockup horizontally', () => {
-    const cmds = frame(TOTAL / 2, TOTAL);
-    const crownT = (cmds[1] as { transform: { a: number; e: number } }).transform;
-    const js = cmds[4] as { x: number };
-    // the mark sits left of centre, the wordmark's tail right of it — a real lockup
+  it('centres the lockup horizontally', () => {
+    const cmds = frame(TOTAL / 2, TOTAL) as unknown as Cmd[];
+    const crownT = cmds[1].transform;
+    const wordT = cmds[3].transform;
     expect(crownT.a).toBeGreaterThan(0); // positive scale
-    const markLeft = crownT.e + 2 * crownT.a; // local (2,2) is the box origin
-    expect(markLeft).toBeLessThan(640); // mark starts left of pane centre
-    expect(js.x).toBeGreaterThan(640); // ".js" ends right of pane centre
+    const lockupLeft = crownT.e + 2 * crownT.a; //         lockup x=2 is the left edge
+    const lockupRight = wordT.e + 143.53 * wordT.a; //     lockup x=143.53 is the right
+    expect(lockupLeft).toBeLessThan(640); //   crown starts left of pane centre
+    expect(lockupRight).toBeGreaterThan(640); // wordmark ends right of it
+    expect(640 - lockupLeft).toBeCloseTo(lockupRight - 640, 5); // dead centre
+  });
+
+  it('locks the whole lockup into ONE coordinate space at rest', () => {
+    const cmds = frame(TOTAL / 2, TOTAL) as unknown as Cmd[];
+    const [, crown, rule, hayao, js] = cmds;
+    // at rest, crown, rule and both wordmark paths share the exact same transform —
+    // the canonical geometry (cap band y 2..22, baseline y 22) is baked into the
+    // path data, so alignment cannot drift
+    expect(crown.transform).toEqual(hayao.transform);
+    expect(rule.transform).toEqual(hayao.transform);
+    expect(js.transform).toEqual(hayao.transform);
+  });
+
+  it('staggers the entrance: crown pops in before the wordmark', () => {
+    const early = frame(60, TOTAL) as unknown as Cmd[];
+    const crown = early[1];
+    const word = early[3];
+    expect(crown.opacity ?? 1).toBeGreaterThan(0); // crown already arriving
+    expect(word.opacity ?? 1).toBe(0); //             wordmark not yet
+    // and the crown settles to exactly lockup scale by mid-hold (the pop resolves)
+    const rest = frame(TOTAL / 2, TOTAL)[1] as Cmd;
+    expect(crown.transform.a).toBeLessThan(rest.transform.a); // still growing early
   });
 });
 
