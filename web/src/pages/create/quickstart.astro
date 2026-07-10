@@ -1,0 +1,136 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
+import AgentPrompt from "../../components/AgentPrompt.astro";
+
+const PROMPT = `Set up the Hayao game engine and build me a 2D platformer in the default (Regalia) style.
+
+1. Scaffold a project:
+   npm create hayao@latest my-game && cd my-game && npm install
+2. Read AGENTS.md and docs/CONVENTIONS.md for the invariants.
+3. Build a small platformer from the batteries in the box:
+   - stepPlatformer + DEFAULT_PLATFORMER for movement
+     (coyote time, jump buffering, wall-jump — already tuned)
+   - DuotoneHero + REGALIA_SCHEMES for the character
+     (a rigged hero with authored idle/run/jump/fall/wallSlide/death/spawn clips)
+   - Particles, Shaker and FloatingText for feel; the audio bus for synth SFX
+4. Keep the rules pure and prove every level winnable: npm run verify
+5. Run it: npm run dev
+
+First ask me for a theme — scheme gold, meadow, dusk, rose or bark — then start.`;
+
+const steps = [
+  { n: "1", t: "Scaffold", d: "One command creates a solver-ready project with the engine wired in.", code: "npm create hayao@latest" },
+  { n: "2", t: "Paste the prompt", d: "Hand the prompt below to your coding agent. It reads the conventions and builds with the stock parts.", code: null },
+  { n: "3", t: "Play & prove", d: "npm run dev to play it; npm run verify to machine-prove every level is winnable.", code: "npm run verify" },
+];
+
+const box = [
+  {
+    t: "A rigged hero",
+    d: "A posed vector character with seven authored clips — idle, run, jump, fall, wall-slide, death, spawn — that maps straight onto the controller.",
+  },
+  {
+    t: "The Regalia palette",
+    d: "A curated, contrast-checked colour system with five duotone schemes: gold, meadow, dusk, rose and bark. The whole game inherits it.",
+  },
+  {
+    t: "A tuned platformer controller",
+    d: "Coyote time, jump buffering, variable jump height, dash, wall-jump, moving platforms — pure, deterministic, and pre-tuned to feel right.",
+  },
+  {
+    t: "The juice kit",
+    d: "Particle presets, trauma-based camera shake, floating text, easing curves, slow-mo — feel as small declarative recipes.",
+  },
+  {
+    t: "Synth audio",
+    d: "SFX and music are synthesised from parameters — no samples to source. A mixer with separate music and SFX buses is built in.",
+  },
+  {
+    t: "Proof tooling",
+    d: "A solver proves levels winnable; replay hashes prove refactors safe. The same checks your agent runs before showing you anything.",
+  },
+];
+---
+
+<Layout
+  title="Quickstart with default style — Hayao"
+  description="The fastest path from a prompt to a working game: start from Hayao's default Regalia style and let your agent assemble a platformer in minutes."
+>
+  <main class="flex flex-col items-center text-center">
+    <!-- hero -->
+    <section class="mx-auto flex w-full max-w-2xl flex-col items-center px-6 pt-28 pb-16 md:pt-36">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Create · The fast lane</p>
+      <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
+        A working game in minutes
+      </h1>
+      <p class="mt-6 max-w-[46ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
+        Skip the blank page. The engine ships a default style — a rigged hero, a palette, juice
+        and synth audio, all code — so your agent starts assembling, not sourcing.
+      </p>
+    </section>
+
+    <!-- steps -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-20">
+      <div class="grid gap-4 md:grid-cols-3">
+        {
+          steps.map((s) => (
+            <div class="flex flex-col rounded-3xl border border-hair bg-panel p-6 text-left">
+              <span class="flex size-8 items-center justify-center rounded-full bg-orange/10 font-display text-[0.95rem] font-semibold text-orange">{s.n}</span>
+              <h2 class="mt-4 font-display text-[1.05rem] font-semibold text-ink">{s.t}</h2>
+              <p class="mt-2 grow font-body text-[0.88rem] font-light leading-relaxed text-soft">{s.d}</p>
+              {s.code && (
+                <code class="mt-4 self-start rounded-lg bg-[#141a30] px-3 py-1.5 font-mono text-[0.75rem] text-[#eef1f9]">{s.code}</code>
+              )}
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- handoff -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-20">
+      <AgentPrompt prompt={PROMPT} />
+    </section>
+
+    <!-- what's in the box -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-20">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-green">What's in the box</p>
+      <h2 class="mx-auto max-w-[24ch] text-balance font-display text-[clamp(1.7rem,4vw,2.4rem)] font-semibold leading-[1.12] tracking-[-0.01em] text-ink">
+        Everything here is code your agent can read and rewrite
+      </h2>
+      <div class="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+        {
+          box.map((b) => (
+            <div class="rounded-3xl border border-hair bg-panel p-5 text-left">
+              <h3 class="font-display text-[0.98rem] font-semibold text-ink">{b.t}</h3>
+              <p class="mt-2 font-body text-[0.83rem] font-light leading-relaxed text-soft">{b.d}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- a default, not a wall -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-28">
+      <div class="rounded-[2.25rem] bg-navy px-6 py-14 md:px-14">
+        <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">A default, not a wall</p>
+        <h2 class="mx-auto max-w-[22ch] text-balance font-display text-[clamp(1.6rem,4vw,2.2rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-white">
+          Outgrow the style whenever you like
+        </h2>
+        <p class="mx-auto mt-5 max-w-[46ch] font-body text-[1rem] font-light leading-relaxed text-white/70">
+          Regalia gets you moving; it doesn't lock you in. Swap the scheme, redraw the hero,
+          replace any asset — it's all code in your project.
+        </p>
+        <a
+          href="/create/scratch"
+          class="mt-8 inline-flex items-center rounded-full bg-orange px-6 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:bg-green"
+        >
+          Or start from scratch
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

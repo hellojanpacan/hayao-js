@@ -1,0 +1,122 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
+import AgentPrompt from "../../components/AgentPrompt.astro";
+
+const PROMPT = `Set up the Hayao game engine and build me a 2D game — my own direction, no template.
+
+1. Scaffold a project:
+   npm create hayao@latest my-game && cd my-game && npm install
+2. Read AGENTS.md and docs/CONVENTIONS.md for the invariants.
+3. Ask me what we're building AND how it should look — the art direction
+   is mine. Define a palette and draw every asset as code: vectors for
+   art, synthesis for sound.
+4. Keep the rules pure, with a solver proof for every level; the scene
+   tree is only the view.
+5. Prove it works: npm run verify  (deterministic + every level winnable)
+6. Run it: npm run dev
+
+Start now.`;
+
+const contract = [
+  {
+    t: "Deterministic, always",
+    d: "All randomness flows through one seeded RNG. No wall-clock, no hidden state — same inputs, same game, on any machine.",
+  },
+  {
+    t: "Pure rules, machine proofs",
+    d: "The game's logic is a pure state transition, so a solver can search every level to the end and prove it winnable.",
+  },
+  {
+    t: "The scene tree is the view",
+    d: "Canonical state is plain data; nodes that only display it are marked cosmetic and never pollute the hash.",
+  },
+  {
+    t: "Verify before you present",
+    d: "npm run verify replays inputs and compares hashes. Your agent proves the game works before showing it to you.",
+  },
+];
+
+const links = [
+  { t: "Quickstart guide", d: "A complete, runnable game in ~40 lines", h: "https://github.com/hellojanpacan/hayao-js/blob/main/docs/QUICKSTART.md" },
+  { t: "Documentation", d: "Guides, API & conventions", h: "https://hayao.js.org" },
+  { t: "Example source", d: "Finished games, each with its proof", h: "/play" },
+];
+---
+
+<Layout
+  title="Start from scratch — Hayao"
+  description="An empty, solver-ready Hayao project — no house style, no template. Bring your own art direction; keep the determinism and the proofs."
+>
+  <main class="flex flex-col items-center text-center">
+    <!-- hero -->
+    <section class="mx-auto flex w-full max-w-2xl flex-col items-center px-6 pt-28 pb-16 md:pt-36">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-blue">Create · From zero</p>
+      <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
+        Start from scratch
+      </h1>
+      <p class="mt-6 max-w-[46ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
+        No house style, no template — an empty, solver-ready project. Since every asset is code,
+        "bring your own" means writing vectors, palettes and synthesis, not sourcing files.
+      </p>
+      <div class="mt-10 inline-flex items-center gap-4 rounded-2xl border border-[#303a63] bg-[#141a30] py-2.5 px-5">
+        <code class="font-mono text-[0.95rem] tracking-tight text-[#eef1f9]"
+          ><span class="select-none text-orange">&gt;</span> npm create hayao@latest</code
+        >
+      </div>
+    </section>
+
+    <!-- the contract -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-20">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-green">What stays, whatever you build</p>
+      <h2 class="mx-auto max-w-[24ch] text-balance font-display text-[clamp(1.7rem,4vw,2.4rem)] font-semibold leading-[1.12] tracking-[-0.01em] text-ink">
+        The look is yours. The contract isn't.
+      </h2>
+      <p class="mx-auto mt-5 max-w-[48ch] font-body text-[1.05rem] font-light leading-relaxed text-soft">
+        Scratch drops the style, not the guarantees. Four invariants make a Hayao game something
+        an agent can build and prove, whatever it looks like:
+      </p>
+      <div class="mt-10 grid gap-4 sm:grid-cols-2">
+        {
+          contract.map((c) => (
+            <div class="rounded-3xl border border-hair bg-panel p-6 text-left">
+              <h3 class="font-display text-[1rem] font-semibold text-ink">{c.t}</h3>
+              <p class="mt-2 font-body text-[0.88rem] font-light leading-relaxed text-soft">{c.d}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- handoff -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-20">
+      <AgentPrompt prompt={PROMPT} />
+    </section>
+
+    <!-- go deeper -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-28">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Prefer to read first?</p>
+      <div class="grid gap-4 sm:grid-cols-3">
+        {
+          links.map((l) => (
+            <a
+              href={l.h}
+              {...(l.h.startsWith("http") ? { target: "_blank", rel: "noreferrer" } : {})}
+              class="group rounded-3xl border border-hair bg-panel p-5 text-left no-underline transition-colors hover:border-orange/50 hover:bg-orange/5"
+            >
+              <h3 class="font-display text-[0.95rem] font-semibold text-ink transition-colors group-hover:text-orange">{l.t}</h3>
+              <p class="mt-1 font-body text-[0.82rem] font-light leading-relaxed text-muted">{l.d}</p>
+            </a>
+          ))
+        }
+      </div>
+      <p class="mt-8 font-body text-[0.9rem] font-light text-muted">
+        Want a running start instead?
+        <a href="/create/quickstart" class="font-semibold text-ink no-underline transition-colors hover:text-orange">Quickstart with the default style</a>
+        — it's a default, not a wall.
+      </p>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

@@ -5,8 +5,8 @@ import {
   Gamepad2,
   Swords,
   Puzzle,
+  Zap,
   Sparkles,
-  LayoutTemplate,
   FileCode2,
   BookOpen,
   FlaskConical,
@@ -46,9 +46,9 @@ const PLAY: Item[] = [
   { icon: Puzzle, title: "Mobile Puzzle", desc: "Solver-proven, one-thumb play", href: "/play/puzzle" },
 ];
 const CREATE: Item[] = [
-  { icon: Sparkles, title: "Generate a concept", desc: "Compose a design across genres, sizes & twists", href: "/create/generate" },
-  { icon: LayoutTemplate, title: "Start from a template", desc: "A proven, verified starting point", href: "/create/template" },
-  { icon: FileCode2, title: "Start from scratch", desc: "An empty, solver-ready project", href: "/create/scratch" },
+  { icon: Zap, title: "Quickstart with default style", desc: "Start with a library — a working prototype in minutes", href: "/create/quickstart" },
+  { icon: Sparkles, title: "Design an original concept", desc: "Start with the game design engine, then prototype in Regalia", href: "/create/concept" },
+  { icon: FileCode2, title: "Start from scratch", desc: "An empty, solver-ready project — fully your way", href: "/create/scratch" },
 ];
 const DOCS: Item[] = [
   { icon: BookOpen, title: "Documentation", desc: "Guides, API & conventions", href: "https://hayao.js.org", external: true },

@@ -1,0 +1,81 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
+
+const doors = [
+  {
+    step: "01",
+    time: "Minutes",
+    title: "Quickstart with default style",
+    desc: "Start with the batteries in the box — a rigged hero, the Regalia palette, juice and synth audio. Your agent assembles a working game fast.",
+    href: "/create/quickstart",
+    accent: "text-orange",
+    bar: "bg-orange",
+  },
+  {
+    step: "02",
+    time: "An evening",
+    title: "Design an original concept",
+    desc: "Compose a design from the codex — an anchor, a genre, systems and a twist — then prototype it in Regalia once the idea holds.",
+    href: "/create/concept",
+    accent: "text-green",
+    bar: "bg-green",
+  },
+  {
+    step: "03",
+    time: "No rails",
+    title: "Start from scratch",
+    desc: "An empty, solver-ready project. Bring your own style and draw every asset as code — the proofs stay, the look is yours.",
+    href: "/create/scratch",
+    accent: "text-blue",
+    bar: "bg-blue",
+  },
+];
+---
+
+<Layout
+  title="Create — Hayao"
+  description="Three ways to start a game with Hayao: quickstart with the default style, design an original concept first, or start from scratch."
+>
+  <main class="flex flex-col items-center text-center">
+    <section class="mx-auto flex w-full max-w-2xl flex-col items-center px-6 pt-28 pb-16 md:pt-36">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Create</p>
+      <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
+        Build fully your way —<br />or take a quicker on-ramp
+      </h1>
+      <p class="mt-6 max-w-[46ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
+        The workflow is part of the product. Every path ends the same way: a prompt you hand to
+        your coding agent, and a game it can prove works.
+      </p>
+    </section>
+
+    <section class="mx-auto w-full max-w-3xl px-6 pb-28">
+      <div class="grid gap-4 md:grid-cols-3">
+        {
+          doors.map((d) => (
+            <a
+              href={d.href}
+              class="group flex flex-col rounded-3xl border border-hair bg-panel p-6 text-left no-underline transition-colors hover:border-orange/50 hover:bg-orange/5"
+            >
+              <div class:list={["h-1 w-8 rounded-full", d.bar]} />
+              <p class="mt-4 font-body text-[0.72rem] uppercase tracking-[0.16em] text-muted">
+                {d.step} · <span class={d.accent}>{d.time}</span>
+              </p>
+              <h2 class="mt-2 font-display text-[1.15rem] font-semibold leading-snug text-ink">{d.title}</h2>
+              <p class="mt-2 grow font-body text-[0.88rem] font-light leading-relaxed text-soft">{d.desc}</p>
+              <span class="mt-4 inline-flex items-center gap-1 font-body text-[0.85rem] font-semibold text-ink transition-colors group-hover:text-orange">
+                Start here
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+              </span>
+            </a>
+          ))
+        }
+      </div>
+      <p class="mt-6 font-body text-[0.85rem] font-light text-muted">
+        Not sure? Take the quickstart — the style is a default, not a wall. You can swap it out later.
+      </p>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
