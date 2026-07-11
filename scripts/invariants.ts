@@ -117,12 +117,40 @@ for (const file of files) {
   });
 }
 
-// Structure contract: no half-scaffolded examples.
+// Structure contract: no half-scaffolded examples. Two lawful shapes
+// (docs/CONVENTIONS.md → project anatomy):
+//   • a GAME — the full contract below, no exceptions;
+//   • a SEED-STAGE project — TIMELINE.md + atoms/ and NO game.ts yet: held to
+//     the lighter layer (a page, an entry, at least one atom). A dir with
+//     game.ts is a game no matter what else it carries.
 const examplesDir = join(root, 'examples');
 for (const entry of readdirSync(examplesDir, { withFileTypes: true })) {
   if (!entry.isDirectory()) continue;
   const slug = entry.name;
   const dir = join(examplesDir, slug);
+  const seedStage = !existsSync(join(dir, 'game.ts')) && existsSync(join(dir, 'TIMELINE.md'));
+  if (seedStage) {
+    for (const required of ['index.html', 'main.ts']) {
+      if (!existsSync(join(dir, required))) {
+        violations.push({
+          file: join('examples', slug),
+          line: 0,
+          rule: `structure(seed): missing ${required}`,
+          excerpt: 'a seed-stage project still needs a page the Workshop can open',
+        });
+      }
+    }
+    const atomsDir = join(dir, 'atoms');
+    if (!existsSync(atomsDir) || !readdirSync(atomsDir).some((f) => f.endsWith('.ts'))) {
+      violations.push({
+        file: join('examples', slug),
+        line: 0,
+        rule: 'structure(seed): no atoms',
+        excerpt: 'a seed with no atoms is a pitch — author something or archive it',
+      });
+    }
+    continue;
+  }
   for (const required of ['index.html', 'main.ts', 'game.ts', 'verify.ts']) {
     if (!existsSync(join(dir, required))) {
       violations.push({
