@@ -1,0 +1,17 @@
+{
+  "name": "hayao",
+  "owner": { "name": "Jan Pacan", "url": "https://hayao.dev" },
+  "metadata": {
+    "description": "Official plugin marketplace for the hayao game engine.",
+    "version": "0.1.0"
+  },
+  "plugins": [
+    {
+      "name": "hayao",
+      "source": "./plugin",
+      "description": "AI-native game authoring for the hayao engine: inspect-first API discovery, design-from-the-mechanic authoring, and a hook-enforced determinism gate.",
+      "category": "development",
+      "keywords": ["game-engine", "deterministic", "headless", "verification"]
+    }
+  ]
+}
