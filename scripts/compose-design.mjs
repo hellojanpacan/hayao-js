@@ -66,6 +66,7 @@ function show(id) {
   console.log(`kind      : ${m.kind}`);
   console.log(`tags      : ${(m.tags || []).join(', ')}`);
   console.log(`summary   : ${m.summary}`);
+  if (m.spine) console.log(`spine     : ${m.spine}`);
   console.log(`use-when  : ${m['use-when']}`);
   console.log(`verify    : ${m['verify-with'] || 'none'}`);
   console.log(`file      : ${m.file}`);
@@ -121,6 +122,37 @@ function spark() {
   line(`  Then check it against 70-antipatterns/ before you hand off to design/FUN.md.`);
 }
 
+function spine() {
+  const seed = Number(flag('seed', randomInt(1, 1e9)));
+  const rng = mulberry32(seed);
+  const n = Math.max(2, Math.min(5, Number(flag('n', 3))));
+  const anchors = byKind('anchor'), genres = byKind('genre'), systems = byKind('system'), mechanics = byKind('mechanic');
+  const genre = byId.get(flag('genre')) || pick(rng, genres);
+  const verb = byId.get(flag('verb')) || (mechanics.length ? pick(rng, mechanics) : null);
+  const anchor = byId.get(flag('anchor')) || pick(rng, anchors);
+  const preferred = (genre['composes-with'] || []).filter(id => byId.get(id)?.kind === 'system');
+  const chosen = [...new Set([...preferred, ...sample(rng, systems.map(s => s.id), systems.length)])].slice(0, n);
+
+  const line = s => console.log(s);
+  line(`# Spine  (seed ${seed} — pass --seed ${seed} to reproduce)\n`);
+  line(`  A tension-first seed. Unlike \`spark\`, this hands you a loop to DERIVE, not a`);
+  line(`  pitch to assemble. The tool names the objective + one verb; YOU find the`);
+  line(`  scarcity, run the gate, and couple the rest. See process-the-spine.\n`);
+  line(`  Objective  : ${genre.title.padEnd(22)} ${genre.summary}`);
+  if (verb) line(`  Superpower : ${verb.title.padEnd(22)} ${verb.summary}`);
+  line(`  Anchor     : ${anchor.title.padEnd(22)} ${anchor.summary}`);
+  line(`\n  Derive the spine (the tool refuses to do this for you):`);
+  line(`  1. SCARCITY — what does ${verb ? verb.title.toLowerCase() : 'the verb'} SPEND? If nothing, invent the cost — that's the design move.`);
+  line(`  2. GATE     — make the superpower create its own obstacle. Does using it WELL cause your next problem?`);
+  line(`  3. RENEWAL  — what re-poses the tension each beat? (geometry / adaptive foe / economy / draw / recombination)`);
+  line(`  4. COUPLE   — derive setting, theme, feel, and death-handling as expressions of that tension.`);
+  line(`  5. TABLE    — fill the resonance table. Empty row = decoration (cut) or dissonance (redesign).`);
+  line(`\n  Pull: ${chosen.map(id => `[[${id}]]`).join(', ')}.`);
+  line(`\n  Pipeline: process-the-spine → process-pillars → process-core-loop → process-refine-and-handoff.`);
+  line(`  Audit against 70-antipatterns/decoration + dissonance before design/FUN.md.`);
+  line(`  Worked exemplars: recipe-emberfall (committal-movement), recipe-waterline (deferred-scarcity).`);
+}
+
 function notFound(id) {
   console.error(`No module '${id}'. Try: node scripts/compose-design.mjs list`);
   process.exit(1);
@@ -132,11 +164,14 @@ switch (cmd) {
   case 'show': show(arg); break;
   case 'graph': graph(arg); break;
   case 'spark': spark(); break;
+  case 'spine': spine(); break;
   default:
     console.log(`compose-design — the generative layer over the Design Codex (${modules.length} modules).\n`);
     console.log('  list [kind] [--tag t]      list modules (optionally by kind/tag)');
     console.log('  show  <id>                 show a module and what it composes with');
     console.log('  graph <id>                 show inbound + outbound links for a module');
+    console.log('  spine [--seed N] [--genre id] [--verb id] [--anchor id] [--n 3]');
+    console.log('                             seed a tension-first LOOP to derive (the primary generator)');
     console.log('  spark [--seed N] [--anchor id] [--genre id] [--n 3]');
-    console.log('                             sample a fresh "X but Y" brief to design from');
+    console.log('                             sample an "X but Y" PITCH to assemble (the twist sub-tool)');
 }

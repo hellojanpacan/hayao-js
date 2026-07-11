@@ -5,8 +5,9 @@ kind: recipe
 tags: [reigns, city-builder, stewardship, recipe, meters]
 summary: Reigns' swipe-choice stewardship fused with a city-builder — each yes/no card also nudges a settlement you watch grow.
 use-when: You want lightweight narrative choice with visible systemic consequence.
-composes-with: [anchor-reigns, genre-city-builder, genre-narrative-decisions, pattern-feedback-loops]
+composes-with: [anchor-reigns, genre-city-builder, genre-narrative-decisions, pattern-feedback-loops, process-the-spine]
 anchors: [anchor-reigns]
+spine: "Every binary swipe grows one of four systems while starving another, so the same gesture that raises your skyline is the one that tips a meter toward the ditch that ends the reign."
 verify-with: design/FUN.md#21-·-narrative-decisions-reigns-like
 ---
 
@@ -26,6 +27,38 @@ is a skyline; a bad one is a ruin you built one careless swipe at a time.
 
 > **Reigns but your choices build a city** — twist vector: **mechanic-swap**.
 > Keep the swipe; swap the invisible faction bars for a settlement you can see.
+
+## The spine
+
+*Every binary swipe grows one of four systems while starving another, so the same
+gesture that raises your skyline is the one that tips a meter toward the ditch that
+ends the reign.*
+
+| Part | This game |
+|---|---|
+| **Objective** | Keep the reign alive — steer the settlement through card after card without any meter reaching a ditch |
+| **Superpower** | The **binary swipe** — one gesture (left / right) that commits to a card and moves the four meters |
+| **Scarcity** | The **four meters, two ditches each**: you can't raise all at once, so every point poured into one system is drained out of another (a zero-sum-ish web) |
+| **Obstacle** | The deck's demands — each card is a fork that shoves a meter hard toward an edge; feed one faction and its rival seethes |
+| **Renewal** | Each new card re-poses the same balancing act against a fresh demand; a deck drawn from the city's own state closes the loop into itself |
+
+## Resonance
+
+Every element traces to the spine — the coherence proof (see [[process-the-spine]]).
+
+| Element | Arrow back to the spine |
+|---|---|
+| Verb: the binary swipe | The single agency; every choice is one gesture that commits and moves the meters — [[genre-narrative-decisions]] |
+| **Power creates the problem** | Every swipe that raises one meter drains another, so building your city is the same act that courts a meter's collapse → growth *is* the doom engine *(passes the gate)* |
+| Scarcity: four meters, two ditches each | You can't lift all four at once; each swipe robs a Peter to pay a Paul, so it's a *trade*, never a free gain — the [[pattern-feedback-loops]] web |
+| Renewal: the card deck | Each card re-poses the same balance against a fresh demand; a deck authored by the city's state renews the tension from within |
+| Death-handling: any meter to an edge ends the reign | Spine is *impossible stewardship under scarcity*; a reign that couldn't end would defuse the ditches, so the loss must land ([[antipattern-dissonance]] if softened) |
+| Setting: the settlement is the meter | The scarcity made physical and legible — you read the danger off the skyline, not a bar ([[pattern-readability]], [[anchor-frostpunk]]) |
+| Theme: the harried steward who can't please everyone | The mechanic (raise one, starve another) is the metaphor — no ruler satisfies every faction at once |
+| Feel: the town reacts within the same beat | Makes the trade *seen* the instant you commit; the skyline is the telegraph, so the cost is legible on every swipe ([[world-narrative-delivery]]) |
+
+No row is decoration; no row fights the spine. The gate holds: **the swipe that
+builds your city is the same swipe that starves it.**
 
 ## Anchors
 

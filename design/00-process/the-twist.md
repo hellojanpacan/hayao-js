@@ -4,12 +4,18 @@ title: The Twist — "X but Y"
 kind: process
 tags: [twist, composition, creativity, hook, differentiation, novelty, remix]
 summary: The "X but Y" formula — anchor to a proven game, then bend it along one of six twist vectors so it's yours, not a clone.
-use-when: You have a genre/anchor and need the creative bend that makes the design worth building.
-composes-with: [process-composition, process-pillars, process-intent-to-brief]
+use-when: You have a spine (or a genre/anchor) and need the creative bend that gives it a fresh face — or you're using a bend to discover a spine.
+composes-with: [process-the-spine, process-composition, process-pillars, process-intent-to-brief]
 verify-with: none
 ---
 
 # The Twist — "X but Y"
+
+> **This is a sub-tool of [[process-the-spine]].** The twist gives a design its
+> *face* — a memorable pitch and a fresh surface. It does **not**, on its own, give
+> it a *loop*; a novel "X but Y" can still play like a corridor. Use the spine to
+> find the tension first, then use the twist to give that tension a face — or bend a
+> proven game here precisely to *discover* a new spine. Spine first, twist second.
 
 **What it is.** Almost every good game is a *known thing, bent*. You don't invent a
 genre from nothing; you take a proven core (the **X** — an [anchor](../10-anchors/)

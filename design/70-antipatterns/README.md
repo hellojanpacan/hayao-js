@@ -17,6 +17,17 @@ failures (it crashes, it desyncs, it's unreadable) live in
 
 Cross-link with `[[antipattern-id]]`; follow `composes-with`.
 
+## Coherence — the spine audit
+
+The two failures the [`process-the-spine`](../00-process/the-spine.md) resonance
+table catches: an element with **no** arrow to the spine, or one with a **backward**
+arrow. Check both before handoff.
+
+| id | title | the smell |
+|---|---|---|
+| [[antipattern-decoration]] | Decoration | An element with no arrow to the spine — weight, not depth |
+| [[antipattern-dissonance]] | Dissonance | An element that fights the spine — it relieves the tension the game is building |
+
 ## Scope & focus
 
 | id | title | the smell |
