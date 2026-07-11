@@ -6,7 +6,7 @@
 // spec always yields the same samples — hashable and verifiable in Node.
 
 import { TAU } from '../core/math';
-import { dsin, dexp2, dpow } from '../core/dmath';
+import { dsin, dexp, dexp2, dpow } from '../core/dmath';
 import { Rng } from '../core/rng';
 import { SAMPLE_RATE, type Samples } from './pcm';
 
@@ -31,6 +31,14 @@ export interface SoundSpec {
   sustain?: number; // hold time at sustainLevel
   release?: number;
   sustainLevel?: number; // 0..1 level after decay
+  /**
+   * Envelope curve for the decay and release segments. 0 = linear (the default,
+   * bit-identical to before). Higher values bend toward an exponential fall —
+   * a fast initial drop that eases into a long tail, the way struck/plucked/
+   * bell voices actually decay. ~2–4 reads as a natural piano/mallet; the amp
+   * envelope only, so it never affects pitch. Attack stays linear.
+   */
+  envCurve?: number;
   /** Percussive volume spike at onset (jsfxr "punch"), 0..1. */
   punch?: number;
   /** Overall output gain. */
@@ -67,6 +75,17 @@ export interface SoundSpec {
   // ── filters (one-pole), Hz cutoff (0 = bypass) ──
   lowpass?: number;
   highpass?: number;
+  /**
+   * Lowpass filter envelope — sweeps the `lowpass` cutoff over the note (needs
+   * lowpass > 0). Depth in OCTAVES of offset at onset, decaying to the base
+   * cutoff over `filterEnvTime`: positive = a bright attack that closes down (a
+   * plucked/struck "wow"), negative = a filter that opens up from dark (a pad
+   * bloom). 0 = static filter (default, bit-identical to before). Cutoff only,
+   * never pitch.
+   */
+  filterEnv?: number;
+  /** Time constant (seconds) of the filter-envelope sweep (default 0.1). */
+  filterEnvTime?: number;
 
   // ── echo ──
   delay?: number; // echo time, seconds
@@ -82,6 +101,7 @@ interface Resolved {
   sustain: number;
   release: number;
   sustainLevel: number;
+  envCurve: number;
   punch: number;
   volume: number;
   slide: number;
@@ -102,6 +122,8 @@ interface Resolved {
   bitCrush: number;
   lowpass: number;
   highpass: number;
+  filterEnv: number;
+  filterEnvTime: number;
   delay: number;
   delayFeedback: number;
 }
@@ -116,6 +138,7 @@ function resolve(s: SoundSpec): Resolved {
     sustain: Math.max(0, s.sustain ?? 0.08),
     release: Math.max(0, s.release ?? 0.1),
     sustainLevel: s.sustainLevel ?? 1,
+    envCurve: Math.max(0, s.envCurve ?? 0),
     punch: s.punch ?? 0,
     volume: s.volume ?? 0.5,
     slide: s.slide ?? 0,
@@ -136,6 +159,8 @@ function resolve(s: SoundSpec): Resolved {
     bitCrush: Math.max(0, Math.floor(s.bitCrush ?? 0)),
     lowpass: s.lowpass ?? 0,
     highpass: s.highpass ?? 0,
+    filterEnv: s.filterEnv ?? 0,
+    filterEnvTime: Math.max(1e-4, s.filterEnvTime ?? 0.1),
     delay: Math.max(0, s.delay ?? 0),
     delayFeedback: Math.min(0.95, Math.max(0, s.delayFeedback ?? 0)),
   };
@@ -252,11 +277,26 @@ export function renderSound(spec: SoundSpec, opts: { rng?: Rng; sampleRate?: num
     out[i] = s;
   }
 
-  // filters (post, so cutoff is stable across the whole sound)
+  // filters (post, so cutoff is stable across the whole sound). A non-zero
+  // filterEnv makes the lowpass cutoff sweep: it starts `filterEnv` octaves off
+  // the base and settles to it over `filterEnvTime` — the classic filter "wow"
+  // (pad bloom / pluck close). filterEnv 0 uses the static coefficient (bit-
+  // identical to the pre-envelope renderer).
   if (r.lowpass > 0) {
-    for (let i = 0; i < n; i++) {
-      lpY += lpA * (out[i] - lpY);
-      out[i] = lpY;
+    if (r.filterEnv !== 0) {
+      const tau = r.filterEnvTime;
+      const maxFc = nyquist * 0.99;
+      for (let i = 0; i < n; i++) {
+        const fc = r.lowpass * dexp2(r.filterEnv * dexp(-i * dt / tau));
+        const a = cutoffCoeff(fc < 1 ? 1 : fc > maxFc ? maxFc : fc, sr);
+        lpY += a * (out[i] - lpY);
+        out[i] = lpY;
+      }
+    } else {
+      for (let i = 0; i < n; i++) {
+        lpY += lpA * (out[i] - lpY);
+        out[i] = lpY;
+      }
     }
   }
   if (r.highpass > 0) {
@@ -282,16 +322,31 @@ function cutoffCoeff(fc: number, sr: number): number {
   return x / (x + 1);
 }
 
-/** Linear ADSR envelope value at time t. */
+/**
+ * Map a linear segment progress p∈[0,1] to an exponentially front-loaded
+ * progress (rises fast, then eases), so the segment's *value* falls quickly and
+ * tails off — the natural decay of a struck/plucked string or bell. `c=0`
+ * returns p unchanged (linear); larger c is a sharper exponential. Normalized so
+ * the endpoints stay exactly 0 and 1 (no click, no residual level).
+ */
+function expShape(p: number, c: number): number {
+  if (c <= 0) return p;
+  return (1 - dexp(-c * p)) / (1 - dexp(-c));
+}
+
+/**
+ * ADSR envelope value at time t. Attack is linear; decay and release follow
+ * `envCurve` (0 = linear, bit-identical to the original; >0 bends exponential).
+ */
 function adsr(t: number, r: Resolved): number {
   const a = r.attack;
   const d = r.decay;
   const s = r.sustain;
   const rel = r.release;
   if (t < a) return a > 0 ? t / a : 1;
-  if (t < a + d) return d > 0 ? 1 + (r.sustainLevel - 1) * ((t - a) / d) : r.sustainLevel;
+  if (t < a + d) return d > 0 ? 1 + (r.sustainLevel - 1) * expShape((t - a) / d, r.envCurve) : r.sustainLevel;
   if (t < a + d + s) return r.sustainLevel;
   const rt = t - a - d - s;
-  if (rt < rel) return rel > 0 ? r.sustainLevel * (1 - rt / rel) : 0;
+  if (rt < rel) return rel > 0 ? r.sustainLevel * (1 - expShape(rt / rel, r.envCurve)) : 0;
   return 0;
 }
