@@ -6,6 +6,7 @@
 // beat them. Revised after a producer critique — voice-leading, real swing,
 // velocity→brightness, sidechain pump, darker lo-fi, expressive piano space.
 
+import { dcos } from '../core/dmath';
 import { INSTRUMENTS, type Song, type Note, type Track } from './music';
 import { progression, voiceLead, openVoicing, scaleMidis, noteToMidi } from './theory';
 
@@ -278,7 +279,7 @@ function prologueRipple(pool: number[], phase: number, base = 0.36): Note[] {
   for (let i = 0; i < 8; i++) {
     const idx = (contour[i] + phase) % pool.length;
     const oct = Math.floor((contour[i] + phase) / pool.length) * 12;
-    const swell = 0.15 * Math.cos((i / 8) * Math.PI * 2);
+    const swell = 0.15 * dcos((i / 8) * Math.PI * 2);
     const accent = i % 4 === 0 ? 0.1 : 0;
     const vel = Math.max(0.16, Math.min(0.8, base + swell + accent - (i % 2) * 0.05));
     out.push(n(pool[idx] + oct, 0.5, vel));
