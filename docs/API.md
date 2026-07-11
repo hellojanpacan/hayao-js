@@ -979,7 +979,7 @@
 - `vdist`: (a: Vec2, b: Vec2) => number
 - `vdot`: (a: Vec2, b: Vec2) => number
 - `vec2`: (x?: number, y?: number) => Vec2
-- `VERSION`: "0.5.2"
+- `VERSION`: "0.5.3"
 - `vlen`: (a: Vec2) => number
 - `vscale`: (a: Vec2, s: number) => Vec2
 - `vsub`: (a: Vec2, b: Vec2) => Vec2
