@@ -8,7 +8,8 @@
 // buses as AudioBuffers, so the same specs that verify headlessly also sound.
 
 import { renderSound, type SoundSpec } from './synth';
-import { renderSong, songDuration, type Song } from './music';
+import { renderSongAsync, songDuration, type Song } from './music';
+import { SAMPLE_RATE } from './pcm';
 import { midiToFreq } from './theory';
 
 export interface Volumes {
@@ -28,6 +29,35 @@ export interface SampleHandle {
   setGain(v: number, rampSec?: number): void;
   /** False once ended or stopped. */
   playing: boolean;
+}
+
+/**
+ * A song rendered to raw stereo samples, ready to play cheaply and repeatedly.
+ * Rendering is the expensive part (see `renderSong`); a PreparedSong pays it
+ * ONCE — off the hot path — so state swaps and restarts just re-wire a buffer.
+ * Pure data: it can be built headlessly (before the AudioContext is unlocked),
+ * so a game can pre-render every cue at load and never render during play.
+ */
+export interface PreparedSong {
+  readonly left: Float32Array;
+  readonly right: Float32Array;
+  readonly sampleRate: number;
+  /** Musical body length (excl. ring-out tail) — the loop point for seamless looping. */
+  readonly loopEndSec: number;
+}
+
+/** A playing song instance (see AudioBus.playSong / playPrepared). */
+export interface SongHandle {
+  /** Fade out over `fadeSec` (default: cut immediately) and end the instance. */
+  stop(fadeSec?: number): void;
+  /** False once ended, stopped, or (for playSong) before playback has begun. */
+  playing: boolean;
+  /**
+   * Resolves once the song is rendered and playback has started — or earlier if
+   * the handle was stopped first. `playPrepared` resolves immediately; `playSong`
+   * resolves after its off-thread render. Await it only if you need that timing.
+   */
+  readonly ready: Promise<void>;
 }
 
 /** A single zzfx-ish tone spec. */
@@ -184,31 +214,93 @@ export class AudioBus {
   }
 
   /**
-   * Render a Song offline and play it on the music bus. Returns a stop handle.
-   * `loop` repeats the musical body (excluding the ring-out tail). No-op without
-   * an AudioContext.
+   * Render a Song to raw stereo samples OFF the hot path (cooperative,
+   * event-loop-yielding) and return a reusable {@link PreparedSong}. This is
+   * where the multi-second synthesis cost is paid — once — so `playPrepared` is
+   * cheap and re-loopable. Works headlessly: no AudioContext is required to
+   * render, so a game can `await audio.prepareSong(cue)` at load and hold the
+   * result. Rendered at the live context's rate when started (else 44.1 kHz; a
+   * rate mismatch is resampled transparently at playback).
    */
-  playSong(song: Song, opts: { loop?: boolean } = {}): () => void {
-    if (!this._ctx || !this.musicGain) return () => {};
-    const mix = renderSong(song, { sampleRate: this._ctx.sampleRate });
-    const buf = this._ctx.createBuffer(2, mix.left.length, this._ctx.sampleRate);
-    buf.copyToChannel(new Float32Array(mix.left), 0);
-    buf.copyToChannel(new Float32Array(mix.right), 1);
-    const src = this._ctx.createBufferSource();
+  async prepareSong(song: Song, opts: { sampleRate?: number; yieldEvery?: number } = {}): Promise<PreparedSong> {
+    const sampleRate = opts.sampleRate ?? this._ctx?.sampleRate ?? SAMPLE_RATE;
+    const mix = await renderSongAsync(song, { sampleRate, yieldEvery: opts.yieldEvery });
+    return { left: mix.left, right: mix.right, sampleRate, loopEndSec: songDuration(song) };
+  }
+
+  /**
+   * Play an already-rendered {@link PreparedSong} on the music bus. Cheap (just
+   * wires a buffer source — no synthesis) and re-callable, so looping swaps and
+   * restarts never re-render. `loop` repeats the musical body (excluding the
+   * ring-out tail). No-op without an AudioContext.
+   */
+  playPrepared(prepared: PreparedSong, opts: { loop?: boolean; gain?: number } = {}): SongHandle {
+    if (!this._ctx || !this.musicGain) return deadSong();
+    const ctx = this._ctx;
+    const buf = ctx.createBuffer(2, prepared.left.length, prepared.sampleRate);
+    buf.copyToChannel(new Float32Array(prepared.left), 0);
+    buf.copyToChannel(new Float32Array(prepared.right), 1);
+    const src = ctx.createBufferSource();
     src.buffer = buf;
     if (opts.loop) {
       src.loop = true;
       src.loopStart = 0;
-      src.loopEnd = songDuration(song); // loop the body, not the tail
+      src.loopEnd = prepared.loopEndSec; // loop the body, not the tail
     }
-    src.connect(this.musicGain);
+    const g = ctx.createGain();
+    g.gain.value = opts.gain ?? 1;
+    src.connect(g);
+    g.connect(this.musicGain);
     src.start();
-    return () => {
-      try {
-        src.stop();
-      } catch {
-        /* already stopped */
-      }
+    const handle: SongHandle = {
+      playing: true,
+      ready: Promise.resolve(),
+      stop(fadeSec = 0) {
+        if (!handle.playing) return;
+        handle.playing = false;
+        try {
+          if (fadeSec > 0) {
+            g.gain.setTargetAtTime(0, ctx.currentTime, fadeSec / 3);
+            src.stop(ctx.currentTime + fadeSec + 0.1);
+          } else src.stop();
+        } catch {
+          /* already stopped */
+        }
+      },
+    };
+    src.onended = () => (handle.playing = false);
+    return handle;
+  }
+
+  /**
+   * Play a Song on the music bus WITHOUT blocking. Returns a handle immediately;
+   * the render runs off the hot path (see {@link prepareSong}) and playback
+   * begins when it's ready. `stop()` works before or after that — if you stop
+   * early, playback never starts. `handle.ready` resolves once it's playing.
+   *
+   * For music that starts on a state swap (menu → play) or restarts often,
+   * prefer `prepareSong` at load + `playPrepared` on the swap: same non-blocking
+   * guarantee, and zero re-render. No-op without an AudioContext.
+   */
+  playSong(song: Song, opts: { loop?: boolean; gain?: number; yieldEvery?: number } = {}): SongHandle {
+    let stopped = false;
+    let inner: SongHandle | null = null;
+    let pendingFade: number | null = null;
+    const ready = this.prepareSong(song, { yieldEvery: opts.yieldEvery }).then((prepared) => {
+      if (stopped) return;
+      inner = this.playPrepared(prepared, { loop: opts.loop, gain: opts.gain });
+      if (pendingFade !== null) inner.stop(pendingFade);
+    });
+    return {
+      get playing() {
+        return inner ? inner.playing : !stopped;
+      },
+      ready,
+      stop(fadeSec = 0) {
+        stopped = true;
+        if (inner) inner.stop(fadeSec);
+        else pendingFade = fadeSec;
+      },
     };
   }
 
@@ -340,6 +432,11 @@ const BOOT_CHIME: ReadonlyArray<{ midi: number; type: OscillatorType; delay: num
   { midi: 57, type: 'sine', delay: 0.18, duration: 0.65, gain: 0.12, pan: 0.1 }, //  A3
   { midi: 60, type: 'sine', delay: 0.27, duration: 1.05, gain: 0.12, pan: 0.28 }, // C4 — soft landing
 ];
+
+/** A no-op song handle for headless/unstarted buses (already ended, nothing to stop). */
+function deadSong(): SongHandle {
+  return { stop() {}, playing: false, ready: Promise.resolve() };
+}
 
 /** The boot chime as a pure, deterministic list of tones (a4 defaults to 440). */
 export function bootChimeScore(a4 = 440): Tone[] {
