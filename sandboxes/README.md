@@ -29,6 +29,7 @@ imitation — is what gets learned.
 | `synth-lab` | `audio` bus + zzfx-style tones | pitch, wave, envelope, play |
 | `anim-lab` | `Bone2D` rig + `ClipPlayer` + `Blend1D` + `IkTarget` + `SkeletonDebug` | blend idle↔wave, reach pointer (IK), skeleton overlay, playback speed |
 | `webgl-lab` | `WebGL2Renderer` + `WEBGL_EFFECTS` + `BLOOM_PIPELINE` | cycle 8 post-process effects, adjust per-effect param, particle burst, storm stress |
+| `card-lab` | `makeCard` slot stack + `resourceGlyph` (the card kit) | four card anatomies side by side, day↔night theme |
 
 ## The sandbox contract
 
