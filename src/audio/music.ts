@@ -84,6 +84,62 @@ export interface Song {
   master?: { lowCut?: number; presence?: number; air?: number; compress?: number };
 }
 
+/** Knobs for {@link stepPattern}. */
+export interface StepGridOptions {
+  /** Beats per step (default 0.25 — a 16th note). */
+  stepBeats?: number;
+  /** Velocity for `X` accents (default 1). */
+  accentVel?: number;
+  /** Velocity for `x` hits (default 0.7). */
+  hitVel?: number;
+}
+
+/**
+ * Author a drum/percussion lane as the tracker-style STEP GRID a drummer
+ * actually thinks in, instead of a hand-built `Note[]` of hits and rests. Each
+ * character is one step of `stepBeats` beats; consecutive rests coalesce into a
+ * single rest note. Pure and deterministic — same string, same notes.
+ *
+ * Symbols:
+ * - `X` — accent (velocity `accentVel`, default 1)
+ * - `x` — normal hit (velocity `hitVel`, default 0.7)
+ * - `1`–`9` — graded velocity `d/9` (so `2` ≈ a ghost note, `9` ≈ a hard hit)
+ * - `.` `-` `_` `0` — a rest step
+ * - `|` and whitespace — ignored, so you can bar-group for readability
+ *
+ * Every hit plays the same `pitch` (drum voices are one-note). Example — a funk
+ * backbeat with ghost notes: `stepPattern('..2.X..23...X.2.', 'D4')`.
+ */
+export function stepPattern(grid: string, pitch: Pitch, opts: StepGridOptions = {}): Note[] {
+  const stepBeats = opts.stepBeats ?? 0.25;
+  const accentVel = opts.accentVel ?? 1;
+  const hitVel = opts.hitVel ?? 0.7;
+  const out: Note[] = [];
+  let restBeats = 0;
+  const flushRest = (): void => {
+    if (restBeats > 0) {
+      out.push({ pitch: null, beats: restBeats });
+      restBeats = 0;
+    }
+  };
+  for (const ch of grid) {
+    if (ch === '|' || ch === ' ' || ch === '\n' || ch === '\t' || ch === '\r') continue;
+    let vel: number | null;
+    if (ch === 'X') vel = accentVel;
+    else if (ch === 'x') vel = hitVel;
+    else if (ch >= '1' && ch <= '9') vel = (ch.charCodeAt(0) - 48) / 9;
+    else vel = null; // '.', '-', '_', '0', or any other glyph → rest
+    if (vel === null) {
+      restBeats += stepBeats;
+    } else {
+      flushRest();
+      out.push({ pitch, beats: stepBeats, vel });
+    }
+  }
+  flushRest();
+  return out;
+}
+
 function patternBeats(pattern: Note[]): number {
   let b = 0;
   for (const n of pattern) b += n.beats;
@@ -409,10 +465,24 @@ export const INSTRUMENTS: Record<string, Instrument> = {
   horns: { wave: 'saw', attack: 0.02, decay: 0.08, sustainLevel: 0.7, release: 0.12, volume: 0.3, lowpass: 3600, detune: 10, punch: 0.4 },
   // ── bass ──
   bass: { wave: 'saw', attack: 0.006, release: 0.06, volume: 0.5, lowpass: 900, detune: 6, sub: 0.3 },
+  // smooth fingered electric bass (neo-soul / silky funk): a round TRIANGLE, not
+  // a buzzy saw, kept dark (low lowpass) so it's all fundamental and no synth
+  // fizz; a soft attack (no plucky click), a high sustain and long release so
+  // notes flow legato into each other, and a little sub for warm weight.
+  smoothBass: { wave: 'triangle', attack: 0.014, decay: 0.2, sustainLevel: 0.72, release: 0.2, volume: 0.5, lowpass: 820, sub: 0.34, detune: 2 },
   subBass: { wave: 'sine', attack: 0.004, release: 0.08, volume: 0.6, lowpass: 400, sub: 0.5, punch: 0.2 },
   // ── drums ──
   kick: { wave: 'sine', attack: 0.001, decay: 0.06, sustainLevel: 0, release: 0.08, slide: -24, volume: 0.7, sub: 0.3 },
   snare: { wave: 'noise', attack: 0.001, decay: 0.05, sustainLevel: 0.2, release: 0.12, highpass: 1200, volume: 0.5 },
+  // A REAL snare is two layers — play both tracks on the same steps and it stops
+  // sounding like filtered noise and starts sounding like a struck drum:
+  //   snareBody — the head/shell being hit: a pitched triangle with a hard
+  //   transient and a fast downward "thwack". Tune it around G3–D4 (the drum's
+  //   fundamental); the pitch drop is what your ear reads as a drumhead.
+  snareBody: { wave: 'triangle', attack: 0.001, decay: 0.085, sustainLevel: 0, release: 0.05, slide: -4, punch: 0.45, noise: 0.12, highpass: 140, lowpass: 3400, volume: 0.5 },
+  //   snareWires — the snare wires buzzing against the bottom head: a bright,
+  //   short noise tail layered on top. Pitch is irrelevant (it's noise).
+  snareWires: { wave: 'noise', attack: 0.001, decay: 0.06, sustainLevel: 0.16, release: 0.13, highpass: 2200, lowpass: 9000, volume: 0.34 },
   hat: { wave: 'noise', attack: 0.001, release: 0.04, highpass: 6000, volume: 0.28 },
   rimshot: { wave: 'noise', attack: 0.001, release: 0.03, highpass: 3000, lowpass: 7000, volume: 0.3 },
   // ride cymbal: a clear "ping" with a short decaying wash — body, not sizzle

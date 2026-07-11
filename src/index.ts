@@ -103,11 +103,14 @@ export * from './audio/music';
 export * from './audio/lint';
 export * from './audio/match';
 export * from './audio/adaptive';
+export * from './audio/loopdeck';
+export * from './audio/hayabox';
 export * from './audio/quality';
 export * from './audio/genres';
 export * from './audio/zzfx';
 export * from './audio/album';
 export * from './audio/soundtrack';
+export * from './audio/loops';
 
 // ── ui: DOM overlays + shell + settings ─────────────────────────
 export * from './ui/overlay';
@@ -133,6 +136,7 @@ export * from './verify/gates';
 export * from './verify/ramp';
 export * from './verify/filmstrip';
 export * from './verify/audioFilmstrip';
+export * from './verify/audioCard';
 export * from './verify/ethnography';
 export * from './verify/dom';
 
