@@ -402,8 +402,8 @@ excluded.
 
 The first real playtest of the campaign found every defect in the one layer
 sim proofs cannot see. These rules close that gap; the machine-checkable ones
-are enforced by `layoutIssues()` / `missingControlHints()` from `@hayao`,
-which every verify suite must run on its representative screens.
+are enforced by `layoutIssues()` / `missingControlHints()` / `safeAreaIssues()`
+from `@hayao`, which every verify suite must run on its representative screens.
 
 - **Text is sacred.** A shape either fully CONTAINS a text's box (it is a
   panel/scrim) or stays fully clear of it — partial overlap is a collision.
@@ -425,6 +425,11 @@ which every verify suite must run on its representative screens.
   Bots demonstrate the intended line; this proves there's no cheaper one.
 - **The screen arrives intact.** Renderers letterbox (never stretch or crop);
   sim clamps include sprite EXTENTS so nothing sinks out of view at the rim.
+- **Gameplay lives in the safe box.** The authored `width×height` is the fair,
+  shared play-field every device is guaranteed to see. Keep all gameplay, text,
+  and controls inside it (`safeAreaIssues(world.render(), { width, height })` =
+  []); only cosmetic scenery may spill into the margin `fit: 'bleed'` reveals.
+  See "Responsive fit" in [EMBED.md](EMBED.md).
 
 ## Pure-sim separation (turn-based / puzzle games: mandatory)
 

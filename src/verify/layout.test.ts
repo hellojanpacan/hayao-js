@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { IDENTITY } from '../core/math';
-import { layoutIssues, textBox, keyMentions } from './layout';
+import { layoutIssues, safeAreaIssues, textBox, keyMentions } from './layout';
 import type { DrawCommand } from '../render/commands';
 
 const T = (text: string, x: number, y: number, z = 5, size = 20): DrawCommand => ({ kind: 'text', text, x: 0, y: 0, size, align: 'center', transform: { ...IDENTITY, e: x, f: y }, z });
@@ -81,5 +81,46 @@ describe('keyMentions', () => {
     expect(keyMentions('KeyM')).toContain('m');
     expect(keyMentions('ArrowLeft')).toContain('arrow');
     expect(keyMentions('Space')).toContain('space');
+  });
+});
+
+describe('safeAreaIssues', () => {
+  const box = { width: 900, height: 520 };
+
+  it('passes text comfortably inside the safe box', () => {
+    expect(safeAreaIssues([T('SCORE 1200', 450, 40), T('ready', 450, 260)], box)).toEqual([]);
+  });
+
+  it('flags a label hard-coded past the design width (the off-ratio bug)', () => {
+    const issues = safeAreaIssues([T('paused', 1180, 40)], box); // authored for a 1280-wide canvas
+    expect(issues.length).toBe(1);
+    expect(issues[0]).toContain('safe box');
+  });
+
+  it('flags text stranded above the top edge (negative coords)', () => {
+    expect(safeAreaIssues([T('title', 450, -30)], box).length).toBe(1);
+  });
+
+  it('forgives a bottom HUD label whose baseline math pokes 1px past the edge (epsilon slack)', () => {
+    // size-16 text at baseline 517 → box bottom ≈ 521, just 1px past height 520.
+    expect(safeAreaIssues([T('x', 450, 517, 5, 16)], box)).toEqual([]);
+  });
+
+  it('ignores shapes by default (scenery may bleed into the margin) but flags them with includeShapes', () => {
+    const scenery = R(-40, 260, 200, 200, 3); // a mural spilling left of the box
+    expect(safeAreaIssues([scenery], box)).toEqual([]);
+    expect(safeAreaIssues([scenery], { ...box, includeShapes: true }).length).toBe(1);
+  });
+
+  it('skips transient chrome', () => {
+    const popup: DrawCommand = { ...(T('+10', 1200, 40) as DrawCommand), transient: true };
+    expect(safeAreaIssues([popup], box)).toEqual([]);
+  });
+
+  it('honors a margin inset', () => {
+    // A label 30px from the right edge passes with margin 0 but fails a 60px margin.
+    const near = T('hp', 855, 260, 5, 16);
+    expect(safeAreaIssues([near], box)).toEqual([]);
+    expect(safeAreaIssues([near], { ...box, margin: 60 }).length).toBe(1);
   });
 });
