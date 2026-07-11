@@ -16,6 +16,16 @@ npm i hayao
 from a default CommonJS project fails with a cryptic
 `ERR_PACKAGE_PATH_NOT_EXPORTED`; that error means "switch to ESM," nothing more.
 
+**Using Claude Code?** Install the hayao plugin — it packages this guide's
+workflow as skills and commands (`/hayao:new-game`, `/hayao:verify`,
+`/hayao:inspect-api`) and adds a hook-enforced determinism gate that blocks
+the agent from finishing until the proof harness passes:
+
+```
+/plugin marketplace add hellojanpacan/hayao-js
+/plugin install hayao@hayao
+```
+
 ## The one idea
 
 A hayao game is a **pure, deterministic function of its inputs**. Rendering,

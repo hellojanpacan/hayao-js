@@ -6,9 +6,10 @@ import { signalHash, peak } from './pcm';
 import { features } from './analysis';
 
 describe('genre songbook', () => {
-  it('exposes five named genres', () => {
-    expect(GENRES.map((g) => g.id).sort()).toEqual(['electronic', 'jazzfunk', 'lofi', 'orchestral', 'piano']);
+  it('exposes six named genres', () => {
+    expect(GENRES.map((g) => g.id).sort()).toEqual(['ambient', 'electronic', 'jazzfunk', 'lofi', 'orchestral', 'piano']);
     expect(genre('lofi')?.name).toBe('Lo-fi Beats');
+    expect(genre('ambient')?.name).toBe('Ambient Prologue');
   });
 
   for (const g of GENRES) {
@@ -38,5 +39,7 @@ describe('genre songbook', () => {
     expect(piano.centroidHz).toBeLessThan(electronic.centroidHz);
     // lo-fi is warmer/darker than electronic (dusty, filtered) — its identity
     expect(lofi.centroidHz).toBeLessThan(electronic.centroidHz);
+    // the ambient prologue is the darkest of all — a soft, low-centred bed
+    expect(feat('ambient').centroidHz).toBeLessThan(piano.centroidHz);
   });
 });

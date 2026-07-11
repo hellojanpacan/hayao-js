@@ -297,7 +297,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
       pointer.sample(world.input); // pointer.x/y/down into axes before the step reads them
       for (const s of extraSources) s.sample(world.input);
       const actions = input.currentActions();
-      const steps = world.advance(dtMs, actions);
+      const steps = world.advance(dtMs, actions, undefined, { realtime: true });
       if (steps > 0) {
         input.clearPressed(); // virtual taps held until sampled
         opts.onAdvance?.(world, steps, actions);
@@ -348,6 +348,9 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
     }
   };
   const onVisibility = () => {
+    // Don't bill the hidden gap to the next frame — the clamp would eat most of
+    // it anyway, and re-priming removes the resume lurch in realtime games.
+    if (!document.hidden) last = performance.now();
     const cb = pendingCb;
     if (cb === null) return; // mid-frame or stopped; the next schedule() re-reads hidden
     clearScheduled();
@@ -355,6 +358,22 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
     schedule(cb);
   };
   document.addEventListener('visibilitychange', onVisibility);
+
+  // In-page occlusion (canvas scrolled offscreen, rAF throttled by the browser)
+  // fires no visibilitychange — re-prime `last` when the mount re-enters view.
+  // Inside an iframe this roots against the iframe viewport, so a parent page
+  // scrolling the whole iframe away is not caught; the advance() clamp remains
+  // the silent backstop there.
+  let occlusionObserver: IntersectionObserver | undefined;
+  if (typeof IntersectionObserver !== 'undefined') {
+    occlusionObserver = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) last = performance.now();
+      },
+      { threshold: 0 },
+    );
+    occlusionObserver.observe(mount);
+  }
 
   const loop = (now: number) => {
     if (booting) {
@@ -419,6 +438,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
         window.removeEventListener('orientationchange', scheduleBleed);
       }
       document.removeEventListener('visibilitychange', onVisibility);
+      occlusionObserver?.disconnect();
       input.dispose();
       pointer.dispose();
       for (const s of extraSources) s.dispose?.();

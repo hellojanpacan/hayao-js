@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Footer from "../../components/Footer.astro";
 import AgentPrompt from "../../components/AgentPrompt.astro";
+import PluginCallout from "../../components/PluginCallout.astro";
 import BoxLive from "../../components/BoxLive.tsx";
 
 const PROMPT = `Set up the Hayao game engine and build me a 2D platformer in the default (Regalia) style.
@@ -66,6 +67,7 @@ const steps = [
     <!-- handoff -->
     <section class="mx-auto w-full max-w-3xl px-6 pb-20">
       <AgentPrompt prompt={PROMPT} />
+      <PluginCallout class="mt-4" />
     </section>
 
     <!-- what's in the box -->

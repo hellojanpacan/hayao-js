@@ -8,6 +8,8 @@
 
 import { INSTRUMENTS, type Song, type Note, type Track } from './music';
 import { progression, voiceLead, openVoicing, scaleMidis, noteToMidi } from './theory';
+import { dcos } from '../core/dmath';
+import { TAU } from '../core/math';
 
 const n = (pitch: Note['pitch'], beats: number, vel = 1): Note => ({ pitch, beats, vel });
 const rest = (beats: number): Note => ({ pitch: null, beats });
@@ -238,6 +240,118 @@ function jazzFunk(): Song {
   return { bpm: 116, tracks: [bass, rhodes, stab, kick, snare, ride], swing: 0.66, humanize: 0.35, velBrightness: 0.6, reverb: { wet: 0.16, roomSize: 0.55, damp: 0.5 }, master: { lowCut: 0.5, presence: 0.18, air: 0.07 } };
 }
 
+// ── 6. Ambient prologue (Celeste / Lena Raine idiom) ───────────────────
+// Soft synthesis, not chiptune: a rippling synth-piano arpeggio over a warm pad
+// drone and a clean sub, with a wistful lead that enters late and leans on the
+// b7. Mode: E Mixolydian (E F# G# A B C# D); loop E(add9)·C#m7·A(add9)·Bm7 —
+// I–vi–IV–v(min). The minor-v's D natural (the b7) is the whole bittersweet
+// colour, and the lead deliberately lands on it. Not a cover of any Celeste
+// track — it borrows the grammar (rolling ostinato + drone + late melody),
+// grounded in the published "First Steps" analysis (E Mixolydian, ~90bpm).
+const PROLOGUE_VOICES = {
+  // synth-piano ripple: triangle body + a whisper of FM, short ring so the
+  // overlapping 8ths read as distinct droplets, not a wash. `envCurve` gives it
+  // a struck-string decay (sharp onset, exponential tail) instead of a synthetic
+  // linear fade — the difference between "plucked" and "faded out".
+  ripple: { wave: 'triangle' as const, attack: 0.004, decay: 0.34, sustainLevel: 0, release: 0.16, envCurve: 3.5, volume: 0.34, lowpass: 3700, detune: 7, fm: 0.8, fmFreq: 6 },
+  // a high glint answering across the stereo field; rounded so it shimmers, not pierces.
+  glint: { wave: 'sine' as const, attack: 0.006, decay: 0.5, sustainLevel: 0, release: 0.34, envCurve: 3, volume: 0.21, lowpass: 3400, fm: 1.6, fmFreq: 1300 },
+  // airy pad — a high wash (the low end is the sub's job; a low pad only muds).
+  // `filterEnv` opens the lowpass from ~1.6 octaves down as the pad swells in, so
+  // each chord blooms brighter instead of arriving flat — the Celeste pad move.
+  pad: { wave: 'triangle' as const, attack: 0.7, decay: 0.3, sustainLevel: 0.85, release: 1.4, volume: 0.09, lowpass: 2100, filterEnv: -1.6, filterEnvTime: 0.7, detune: 12, vibrato: 0.05, vibratoFreq: 3.2 },
+  // round sub — holds roots, owns the low band alone so it stays clean.
+  sub: { wave: 'sine' as const, attack: 0.03, decay: 0.5, sustainLevel: 0.55, release: 0.6, volume: 0.36, lowpass: 440, sub: 0.4 },
+  // wistful lead — sine + light FM tine + slow vibrato; a gentle exponential
+  // release so held notes taper naturally instead of cutting on a ramp.
+  lead: { wave: 'sine' as const, attack: 0.03, decay: 0.5, sustainLevel: 0.45, release: 0.85, envCurve: 2, volume: 0.3, lowpass: 2300, detune: 5, fm: 1.1, fmFreq: 5, vibrato: 0.035, vibratoFreq: 5 },
+};
+
+// Each change: a mid-register tone pool (for the ripple) + a pad voicing + a root.
+const PROLOGUE_CHANGES: { pool: number[]; pad: number[]; bass: number }[] = [
+  { pool: ['E4', 'F#4', 'G#4', 'B4', 'E5', 'F#5'].map(noteToMidi), pad: ['G#4', 'B4', 'E5'].map(noteToMidi), bass: noteToMidi('E2') },
+  { pool: ['E4', 'G#4', 'B4', 'C#5', 'E5', 'G#5'].map(noteToMidi), pad: ['E4', 'G#4', 'C#5'].map(noteToMidi), bass: noteToMidi('C#2') },
+  { pool: ['C#4', 'E4', 'A4', 'B4', 'C#5', 'E5'].map(noteToMidi), pad: ['C#4', 'E4', 'A4'].map(noteToMidi), bass: noteToMidi('A1') },
+  { pool: ['D4', 'F#4', 'A4', 'B4', 'D5', 'F#5'].map(noteToMidi), pad: ['D4', 'F#4', 'B4'].map(noteToMidi), bass: noteToMidi('B1') },
+];
+
+// An unhurried 8th-note undulating contour over a chord's pool that climbs and
+// settles rather than looping a flat arpeggio. It SWELLS (soft cosine + downbeat
+// accents) so it phrases, and `phase` rotates it per bar so no two bars are the
+// same — the single biggest cure for the "procedural arp" tell.
+function prologueRipple(pool: number[], phase: number, base = 0.36): Note[] {
+  const contour = [0, 2, 4, 3, 1, 4, 2, 5];
+  const out: Note[] = [];
+  for (let i = 0; i < 8; i++) {
+    const idx = (contour[i] + phase) % pool.length;
+    const oct = Math.floor((contour[i] + phase) / pool.length) * 12;
+    const swell = 0.15 * dcos((i / 8) * TAU);
+    const accent = i % 4 === 0 ? 0.1 : 0;
+    const vel = Math.max(0.16, Math.min(0.8, base + swell + accent - (i % 2) * 0.05));
+    out.push(n(pool[idx] + oct, 0.5, vel));
+  }
+  return out;
+}
+
+// A sparse counter-ripple: a couple of high glints per bar, interlocking with
+// the main ripple across the stereo field.
+function prologueGlints(pool: number[], phase: number): Note[] {
+  const top = pool[pool.length - 1] + 12;
+  const mid = pool[Math.floor(pool.length / 2)] + 12;
+  const a = phase % 2 === 0 ? top : mid;
+  const b = phase % 2 === 0 ? mid : top;
+  return [rest(1.5), n(a, 0.25, 0.3), rest(0.75), n(b, 0.25, 0.26), rest(1.25)];
+}
+
+function ambientPrologue(): Song {
+  const V = PROLOGUE_VOICES;
+  const C = PROLOGUE_CHANGES;
+  const seq = [0, 1, 2, 3, 0, 1, 2, 3];
+  // NB: this cue uses a whole-mix room (see `reverb` below), not per-track sends
+  // — for a lush ambient wash the whole-mix reverb is wider and more enveloping
+  // (sends keep the dry mix dry, which is drier/narrower than this style wants).
+  // reverbSends are the right tool for mixes where a bass must stay dry; see the
+  // engine feature + its test. Left here as the deliberate, measured choice.
+  const ripple: Track = {
+    name: 'ripple', instrument: V.ripple, gain: 0.62, pan: -0.24,
+    patterns: C.map((c, i) => prologueRipple(c.pool, i)), sequence: seq,
+  };
+  // glints sit out the first two bars so the texture opens gradually
+  const glint: Track = {
+    name: 'glint', instrument: V.glint, gain: 0.34, pan: 0.28,
+    patterns: [[rest(4)], ...C.map((c, i) => prologueGlints(c.pool, i))],
+    sequence: [0, 0, 1, 2, 3, 1, 2, 3],
+  };
+  const pad: Track = {
+    name: 'pad', instrument: V.pad, gain: 0.6, pan: 0.04,
+    patterns: C.map((c) => [n(c.pad, 4, 0.6)]), sequence: seq,
+  };
+  // sub enters after 1 bar — the floating low end
+  const sub: Track = {
+    name: 'sub', instrument: V.sub, gain: 0.6,
+    patterns: [[rest(4)], ...C.map((c) => [n(c.bass, 3, 0.7), rest(1)])],
+    sequence: [0, 1, 2, 3, 0, 1, 2, 3],
+  };
+  // lead enters on the second pass (bar 5), arcs up over the IV, leans on the b7
+  const lead: Track = {
+    name: 'lead', instrument: V.lead, gain: 0.44, pan: 0.1,
+    patterns: [
+      [rest(4)],
+      [rest(1), n('F#5', 0.5, 0.58), n('G#5', 0.5, 0.64), n('B5', 2, 0.7)], // E: rise to the 5th
+      [n('C#6', 1.5, 0.72), n('B5', 0.5, 0.58), n('G#5', 2, 0.58)], // C#m7: reach & fall
+      [n('A5', 1, 0.64), n('B5', 1, 0.68), n('C#6', 2, 0.74)], // A: the warm lift
+      [n('D6', 1.5, 0.7), n('C#6', 0.5, 0.58), n('B5', 2, 0.6)], // Bm7: the b7 → settle
+    ],
+    sequence: [0, 0, 0, 0, 1, 2, 3, 4],
+  };
+  return {
+    bpm: 92, tracks: [sub, pad, ripple, glint, lead], tailSec: 3,
+    humanize: 0.16, velBrightness: 0.6,
+    reverb: { wet: 0.34, roomSize: 0.86, damp: 0.44 },
+    master: { lowCut: 0.36, presence: 0.16, air: 0.08, compress: 0.2 },
+  };
+}
+
 /** The genre songbook — the demo set. */
 export const GENRES: GenreTrack[] = [
   { id: 'electronic', name: 'Minimal Electronic', description: 'Bass-driven four-on-the-floor in A minor — pulsing sidechained sub, offbeat hats, a synth hook.', make: minimalElectronic },
@@ -245,6 +359,7 @@ export const GENRES: GenreTrack[] = [
   { id: 'piano', name: 'Melancholic Piano', description: 'Slow, sad A-minor piano with space and rubato over a string bed in a big room.', make: melancholicPiano },
   { id: 'orchestral', name: 'Epic Orchestral', description: 'Uplifting D-minor with a soaring brass theme, arpeggiated strings, choir, timpani and glockenspiel.', make: epicOrchestral },
   { id: 'jazzfunk', name: 'Jazz Funk', description: 'Swung ii–V–I with a walking bass that chromatically approaches each chord, Rhodes comping and brass stabs.', make: jazzFunk },
+  { id: 'ambient', name: 'Ambient Prologue', description: 'A Celeste-idiom prologue in E Mixolydian — a rippling synth-piano arpeggio over a warm pad and clean sub, with a wistful lead that leans on the b7.', make: ambientPrologue },
 ];
 
 /** Look up a genre by id. */

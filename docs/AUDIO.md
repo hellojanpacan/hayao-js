@@ -34,7 +34,7 @@ SoundFont of specs and lose nothing structural (`docs/ASSETS.md`).
 | **Match** | `src/audio/match.ts` | `featureDistance` / `matchReport` — compare a rendered track to a reference's feature vector. The engine of the AI-led improvement loop. |
 | **Adaptive/spatial** | `src/audio/adaptive.ts` | Pure RTPC curves, Web-Audio-exact distance-attenuation models, vertical-layer gains. FMOD/Wwise-in-miniature, deterministic. |
 | **Reverb** | `src/audio/reverb.ts` | Deterministic Freeverb (parallel combs → series allpass). Dry synths bloom into a room. |
-| **Genre songbook** | `src/audio/genres.ts` | Five hand-composed reference tracks (electronic, lo-fi, piano, orchestral, jazz-funk) — a demo *and* a test fixture. |
+| **Genre songbook** | `src/audio/genres.ts` | Six hand-composed reference tracks (electronic, lo-fi, piano, orchestral, jazz-funk, ambient-prologue) — a demo *and* a test fixture. |
 | **Concept album** | `src/audio/album.ts` | "Neon Precinct" — a six-cue authored jazz-funk record, mixed front-and-centre. A *listening* deliverable. |
 | **Game soundtrack** | `src/audio/soundtrack.ts` | "Palace Hours" — a four-cue funky/jazzy score (`SOUNDTRACK`), one loop per game state, engineered **background-first**: it carves a spectral + dynamic pocket so SFX cut through. Its own `BACKGROUND_PROFILE` scoring window; the "leaves room for SFX" promise is *proven* (dark centroid + healthy crest gates in `soundtrack.test.ts`). `npm run soundtrack` renders + scores it. |
 | **Quality scorer** | `src/audio/quality.ts` | Objective 0–100 mix scoring vs genre-target windows: loudness, headroom, dynamics (crest), stereo width, spectral balance (mud/harshness/low-end), genre-fit. The hard gate for "is this good?" — proven to score good tracks high and bad mixes low. `npm run audio` prints it. |
@@ -44,13 +44,24 @@ SoundFont of specs and lose nothing structural (`docs/ASSETS.md`).
 ### Expressive / arrangement features (what lifts it above a MIDI demo)
 
 The synth grew a **detuned 2nd oscillator** (`detune`, cents) and **sub-oscillator**
-(`sub`) for warmth/weight. `renderSong` grew, all deterministic:
+(`sub`) for warmth/weight, then two shape controls that kill the "synthetic" tell:
+- **`envCurve`** — bends the amp decay/release from linear toward **exponential**
+  (fast onset drop, long tail), the way struck/plucked/bell voices actually decay.
+  0 = linear (bit-identical default); ~2–4 reads as natural piano/mallet.
+- **`filterEnv`** — a **lowpass envelope** (octaves of cutoff offset at onset,
+  settling to the base over `filterEnvTime`): positive = a bright-attack pluck
+  that closes down, negative = a pad that blooms open from dark. 0 = static.
+
+`renderSong` grew, all deterministic:
 - **`swing`** — delays off-beat 8ths toward the triplet grid (lo-fi, jazz).
 - **`humanize`** — seeded micro timing/velocity jitter so it breathes.
 - **`velBrightness`** — velocity scales each voice's lowpass, so a velocity map
   reads as *phrasing* (soft = darker), not just loudness.
 - **`sidechain`** — a beat-synced ducking pump (the breath of electronic music).
-- **`reverb`** — per-song room.
+- **`reverb`** — a per-song room, or (when any track sets **`reverbSend`**) a
+  shared **send bus** on the mixing-desk model: the dry mix stays dry and only
+  the sends bloom, so a bone-dry bass and a washed lead coexist (front-to-back
+  depth a single whole-mix reverb can't give).
 And theory grew **`voiceLead`** / **`openVoicing`** so progressions move by small
 steps instead of leaping in parallel root position — the biggest single cure for
 the "procedural" sound. These were driven by adversarial music-producer critics

@@ -43,6 +43,10 @@ export const GENRE_PROFILES: Record<string, GenreProfile> = {
   piano: { tempo: [58, 100], centroid: [700, 2100], onsets: [3, 11], rms: [0.1, 0.22], crestDb: [9, 22], width: [0.04, 0.7], maxMud: 0.42 },
   orchestral: { tempo: [80, 96], centroid: [1100, 3000], onsets: [4, 12], rms: [0.11, 0.22], crestDb: [8, 21], width: [0.05, 0.7], maxMud: 0.4 },
   jazzfunk: { tempo: [106, 126], centroid: [2200, 5600], onsets: [6, 16], rms: [0.13, 0.25], crestDb: [7, 18], width: [0.04, 0.6], maxMud: 0.4 },
+  // ambient / cinematic: a soft, dark bed — an arpeggio ostinato (so onset
+  // density runs high, like a piano tremolo) with the spectral centre kept low
+  // and a wide, dynamic mix. None of the above windows fit this job.
+  ambient: { tempo: [70, 112], centroid: [450, 1600], onsets: [8, 20], rms: [0.08, 0.2], crestDb: [10, 22], width: [0.05, 0.72], maxMud: 0.5 },
 };
 
 /** 1.0 inside [lo,hi]; ramps linearly to 0 across `margin` (relative) outside. */

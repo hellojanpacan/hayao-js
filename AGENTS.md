@@ -73,6 +73,16 @@ scaffolds a runnable game whose starter already generates a solver-proven campai
 - `/retro` — end-of-session: log process friction to `docs/FRICTION.md` and
   land the doc/check fix that prevents a recurrence.
 
+## The Claude Code plugin (`plugin/`)
+For working on hayao games from ANY project (not just this repo), the repo
+ships a Claude Code plugin — skills (author-game, verify-determinism),
+commands (`/hayao:new-game`, `:verify`, `:inspect-api`, `:sprite`), build +
+verify subagents, and a Stop-hook **determinism gate** that runs the verify
+harness whenever a session changed hayao source and blocks until it passes.
+Install: `/plugin marketplace add hellojanpacan/hayao-js`. The plugin teaches
+workflow only and hardcodes no API shapes — the installed `.d.ts` /
+`docs/API.md` stays the reference. See `plugin/README.md`.
+
 ## Design from the mechanic, not from the corpus
 The examples exist to **prove the engine** and to **show conventions** — they are
 proof fixtures, not a catalogue of what a hayao game may be. They were built fast
@@ -193,7 +203,8 @@ header derives its count live from the cards; elsewhere phrase it count-free
 
 ## The site
 The public marketing site is the Astro app under `web/` → **hayao.dev** (Vercel
-project `hayao-web`); developer docs live at **hayao.js.org**. The root static
+project `hayao-web`); developer docs render at **hayao.dev/docs** straight from
+this repo (hayao.js.org is retired). The root static
 pages (`index.html` + the auto-discovered `examples/`/`sandboxes/` pages) are the
 **local `npm run dev` hub** — a lean Regalia index for running example games and
 labs, not a deployed marketing surface. Current examples: `lumen`, `small-flame`,

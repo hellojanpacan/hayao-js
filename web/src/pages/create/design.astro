@@ -1,0 +1,196 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
+import AgentPrompt from "../../components/AgentPrompt.astro";
+import PluginCallout from "../../components/PluginCallout.astro";
+import SparkWidget from "../../components/SparkWidget.tsx";
+import modules from "../../../../design/index.json";
+
+// Live codex data — counts and samples come from design/index.json at build
+// time, so this page can never drift from the shelf it advertises.
+type Mod = {
+  id: string;
+  title: string;
+  kind: string;
+  summary: string;
+  "use-when"?: string;
+  "composes-with"?: string[];
+};
+const mods = modules as Mod[];
+const count = (k: string) => mods.filter((m) => m.kind === k).length;
+const total = mods.length;
+
+// slim payloads for the spark island (order preserved — seeds must match the CLI)
+const slim = (k: string) => mods.filter((m) => m.kind === k).map(({ id, title, summary }) => ({ id, title, summary }));
+const genresSlim = mods
+  .filter((m) => m.kind === "genre")
+  .map((m) => ({
+    id: m.id,
+    title: m.title,
+    summary: m.summary,
+    sys: (m["composes-with"] ?? []).filter((id) => mods.find((x) => x.id === id)?.kind === "system"),
+  }));
+
+const shelves = [
+  { n: count("anchor"), t: "Anchors", d: "Reference-game DNA — what makes each proven game tick, stated so you can borrow it." },
+  { n: count("genre"), t: "Genres", d: "Templates with their loops, verify patterns and scope expectations spelled out." },
+  { n: count("system"), t: "Systems", d: "Modular organs — economy, grace, mastery, factions — that snap together." },
+  { n: count("mechanic"), t: "Mechanics", d: "The verb library: dash, parry, rewind, merge, grapple and friends." },
+  { n: count("antipattern"), t: "Antipatterns", d: "Named failure modes, so a design review can point at the trap by name." },
+  { n: count("recipe"), t: "Recipes", d: "Worked “X but Y” designs — proof the composition method holds end to end." },
+];
+
+// three real modules, one per load-bearing shelf, rendered as they are in the repo
+const featured = ["process-the-spine", "anchor-celeste", "antipattern-decoration"]
+  .map((id) => mods.find((m) => m.id === id))
+  .filter((m): m is Mod => Boolean(m));
+const KIND_TINT: Record<string, string> = { process: "text-orange", anchor: "text-blue", antipattern: "text-rose" };
+
+const PROMPT = `Help me design an original game with the Hayao Design Codex, then prototype it.
+
+1. Read the codex index — ${total} composable design modules:
+   https://github.com/hellojanpacan/hayao-js/tree/main/design
+   (start with design/INDEX.md, then design/00-process/the-spine.md)
+2. Interview me. Turn my intent into a one-page brief:
+   player fantasy, scope, constraints, pillars.
+3. Find the spine first — the tension the whole game hangs on —
+   then compose: an anchor + a genre template + the systems they
+   imply, and one twist ("X but Y").
+   Check design/70-antipatterns/ before locking anything in.
+4. Show me the brief. Iterate until I sign off — the concept is mine,
+   the composition is yours.
+5. Then prototype it in the default Regalia style:
+   npm create hayao@latest my-game && cd my-game && npm install
+   Read AGENTS.md and docs/CONVENTIONS.md, build the core loop first.
+6. Prove it works: npm run verify. Run it: npm run dev.
+
+Start with the interview.`;
+---
+
+<Layout
+  title="Design with the Codex — Hayao"
+  description={`Design the game before you build it: compose an original concept from the Hayao Design Codex — ${total} cross-linked modules — spark one live, then prototype it in Regalia.`}
+>
+  <main class="flex flex-col items-center text-center">
+    <!-- hero -->
+    <section class="mx-auto flex w-full max-w-2xl flex-col items-center px-6 pt-28 pb-16 md:pt-36">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-green">Create · Design first</p>
+      <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
+        Design the game before you build it
+      </h1>
+      <p class="mt-6 max-w-[46ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
+        “Make it fun” is not a spec. The Design Codex turns a vague idea into a coherent,
+        buildable concept — composed from parts that are known to work, twisted until it's yours.
+      </p>
+    </section>
+
+    <!-- spark it live -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-8">
+      <SparkWidget client:visible anchors={slim("anchor")} genres={genresSlim} mechanics={slim("mechanic")} systems={slim("system")} />
+      <p class="mt-4 font-body text-[0.85rem] font-light leading-relaxed text-muted">
+        That's the codex composing, live — a real anchor, genre, verb and twist sampled from the
+        shelves below. A spark is a starting point to bend, never a design to obey.
+      </p>
+    </section>
+
+    <!-- the spine -->
+    <section class="mx-auto w-full max-w-2xl px-6 py-16">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Tension first</p>
+      <h2 class="mx-auto max-w-[22ch] text-balance font-display text-[clamp(1.7rem,4vw,2.4rem)] font-semibold leading-[1.12] tracking-[-0.01em] text-ink">
+        Every design hangs on a spine
+      </h2>
+      <p class="mx-auto mt-5 max-w-[48ch] font-body text-[1.05rem] font-light leading-relaxed text-soft">
+        Before shelves and twists, the codex asks one question: <em>what tension does the player
+        live inside?</em> One objective, one scarcity, one verb that spends the scarce thing —
+        find that loop and every other module has something to hold onto. The engine can even
+        prove the coupling is load-bearing: remove a system and
+        <a href="/docs/verification" class="text-ink underline decoration-hair underline-offset-4 transition-colors hover:text-orange">the ablation gate</a>
+        checks the game actually gets worse.
+      </p>
+      <div class="mx-auto mt-8 flex flex-wrap items-center justify-center gap-2">
+        {["Intent", "Spine", "Anchor", "Compose", "Twist", "Shape", "Handoff"].map((p, i, arr) => (
+          <>
+            <span class="rounded-full border border-hair bg-panel px-4 py-2 font-body text-[0.82rem] font-semibold uppercase tracking-[0.08em] text-ink">{p}</span>
+            {i < arr.length - 1 && <span class="font-body text-muted" aria-hidden="true">→</span>}
+          </>
+        ))}
+      </div>
+    </section>
+
+    <!-- the shelves -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-16">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-blue">The Design Codex</p>
+      <h2 class="mx-auto max-w-[24ch] text-balance font-display text-[clamp(1.7rem,4vw,2.4rem)] font-semibold leading-[1.12] tracking-[-0.01em] text-ink">
+        {total} composable modules, indexed for machines
+      </h2>
+      <p class="mx-auto mt-5 max-w-[48ch] font-body text-[1.05rem] font-light leading-relaxed text-soft">
+        Not a book of advice — a parts bin. Every module carries tags, “use when” guidance and a
+        list of what it composes with, so an agent can actually assemble a design from it.
+      </p>
+      <div class="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+        {shelves.map((s) => (
+          <a href="/docs/codex" class="rounded-3xl border border-hair bg-panel p-5 text-left no-underline transition-colors hover:border-orange/50 hover:bg-orange/5">
+            <p class="font-display text-[1.6rem] font-semibold text-orange">{s.n}</p>
+            <h3 class="mt-1 font-display text-[0.98rem] font-semibold text-ink">{s.t}</h3>
+            <p class="mt-2 font-body text-[0.83rem] font-light leading-relaxed text-soft">{s.d}</p>
+          </a>
+        ))}
+      </div>
+      <a
+        href="/docs/codex"
+        class="mt-6 inline-flex items-center gap-1.5 font-body text-[0.9rem] font-semibold text-ink no-underline transition-colors hover:text-orange"
+      >
+        Browse every module
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+      </a>
+    </section>
+
+    <!-- three real modules -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-20">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Straight off the shelf</p>
+      <h2 class="mx-auto max-w-[24ch] text-balance font-display text-[clamp(1.7rem,4vw,2.4rem)] font-semibold leading-[1.12] tracking-[-0.01em] text-ink">
+        What a module actually looks like
+      </h2>
+      <div class="mt-10 grid gap-4 md:grid-cols-3">
+        {featured.map((m) => (
+          <a
+            href={`/docs/codex/${m.id}`}
+            class="group flex flex-col rounded-3xl border border-hair bg-panel p-6 text-left no-underline transition-colors hover:border-orange/50 hover:bg-orange/5"
+          >
+            <p class:list={["font-body text-[0.68rem] font-semibold uppercase tracking-[0.14em]", KIND_TINT[m.kind] ?? "text-muted"]}>{m.kind}</p>
+            <h3 class="mt-1.5 font-display text-[1.05rem] font-semibold text-ink">{m.title}</h3>
+            <p class="mt-2 grow font-body text-[0.84rem] font-light leading-relaxed text-soft">{m.summary}</p>
+            {m["use-when"] && (
+              <p class="mt-3 border-t border-hair pt-3 font-body text-[0.78rem] font-light leading-snug text-muted">
+                <span class="font-semibold text-green">Use when · </span>{m["use-when"]}
+              </p>
+            )}
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- handoff -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-20">
+      <AgentPrompt
+        prompt={PROMPT}
+        blurb="Paste this into Claude Code, Cursor, or any coding agent. It interviews you first — the building comes after the brief."
+      />
+      <PluginCallout class="mt-4" />
+    </section>
+
+    <!-- next door -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-28">
+      <p class="font-body text-[0.9rem] font-light text-muted">
+        Concept already clear in your head?
+        <a href="/create/quickstart" class="font-semibold text-ink no-underline transition-colors hover:text-orange">Take the quickstart</a>
+        — go
+        <a href="/create/scratch" class="font-semibold text-ink no-underline transition-colors hover:text-orange">fully from scratch</a>
+        — or, if all you have is something you made and can't put down,
+        <a href="/create/seed" class="font-semibold text-ink no-underline transition-colors hover:text-orange">start from a spark</a>.
+      </p>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
