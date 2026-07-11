@@ -85,6 +85,15 @@ main.panes {
 .pane:last-child {
   border-right: none;
 }
+/* The tuning panel docked as a layout column — it must never cover the game. */
+aside.knob-dock {
+  width: 324px;
+  min-width: 324px;
+  overflow-y: auto;
+  border-left: 1px solid var(--line);
+  background: var(--washi-2);
+  padding: 8px;
+}
 .pane .pane-head {
   display: flex;
   align-items: center;
