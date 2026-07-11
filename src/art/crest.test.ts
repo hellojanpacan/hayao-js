@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readCrest, crestSvg } from './crest';
+import { readCrest, crestSvg, canonicalHandle, blazon } from './crest';
 
 describe('crest', () => {
   it('is a pure function of the handle', () => {
@@ -31,5 +31,38 @@ describe('crest', () => {
     expect(svg.startsWith('<svg')).toBe(true);
     expect(svg).toContain('<title>Arms of @wren</title>');
     expect(svg).toContain('role="img"');
+  });
+
+  it('locks the handle to a single leading @', () => {
+    expect(canonicalHandle('wren')).toBe('@wren');
+    expect(canonicalHandle('@Wren')).toBe('@wren');
+    expect(canonicalHandle('  @@wren ')).toBe('@wren');
+    // the bare and @-prefixed forms now blazon identical arms and title
+    expect(crestSvg('wren')).toBe(crestSvg('@wren'));
+    expect(readCrest('hellojanpacan').handle).toBe('@hellojanpacan');
+  });
+
+  it('keeps collisions negligible across a corpus (grammar validation)', () => {
+    const seen = new Set<string>();
+    let n = 0;
+    for (const stem of ['wren', 'aldric', 'juniper', 'bram', 'sable', 'cael', 'rowan', 'thorn', 'quill', 'fen', 'morrow', 'ash', 'vesper', 'larch', 'corvid', 'marlowe', 'onyx', 'perch', 'ember', 'flint', 'harlow', 'iris', 'jetty', 'kestrel', 'lumen', 'mica', 'nyx', 'opal', 'pike', 'quince', 'rook', 'slate', 'tansy', 'umber', 'vale', 'wisp', 'yarrow', 'zephyr', 'bracken', 'cinder']) {
+      seen.add(blazon(readCrest('@' + stem)));
+      n++;
+    }
+    expect(seen.size).toBe(n); // zero collisions across 40 distinct handles
+  });
+
+  it("draws representational charges single (a fox ×3 is mush)", () => {
+    const beasts = new Set(["tower", "key", "oak", "acorn", "bell", "anchor", "fish", "owl", "mountain", "crown"]);
+    let sawOne = false;
+    for (let i = 0; i < 400; i++) {
+      const c = readCrest("@t" + i);
+      if (beasts.has(c.charge)) {
+        sawOne = true;
+        expect(c.arrangement).toBe("single");
+        expect(c.points).toBe(0);
+      }
+    }
+    expect(sawOne).toBe(true); // the corpus actually exercises the bestiary
   });
 });
