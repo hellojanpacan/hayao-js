@@ -5,8 +5,9 @@ kind: recipe
 tags: [boss-rush, one-button, constraint, recipe, accessible]
 summary: Cuphead's pattern-mastery bosses reduced to a single input — all depth in timing, none in the controller.
 use-when: You want maximal challenge/spectacle from minimal input (accessibility or js13k).
-composes-with: [anchor-cuphead, system-boss-design, system-telegraphs, process-the-twist]
+composes-with: [anchor-cuphead, system-boss-design, system-telegraphs, process-the-twist, process-the-spine]
 anchors: [anchor-cuphead, anchor-peggle]
+spine: "One button is your whole vocabulary against a boss that telegraphs, so every press commits you out of the answer the next attack demands — timing is the only resource."
 verify-with: design/FUN.md#7-·-bullet-hell
 ---
 
@@ -17,6 +18,40 @@ verify-with: design/FUN.md#7-·-bullet-hell
 ## The brief
 
 **Cuphead but one button** (constraint twist). Strip the input surface to the bone and force all the difficulty into telegraph-reading and timing. The spectacle stays; the dexterity tax disappears.
+
+## The spine
+
+*One button is your whole vocabulary against a boss that telegraphs, so every press
+commits you out of the answer the next attack demands — timing is the only resource.*
+
+| Part | This game |
+|---|---|
+| **Objective** | Survive and beat a 3-phase boss — read every attack, answer each one right |
+| **Superpower** | The **one honest button**: tap = dodge the current window, hold-and-release = charge the riposte |
+| **Scarcity** | The **single action-channel** — one button, one thing at a time — plus the **commitment window** each press locks you into (a launched dodge or a charging hold can't be recalled) |
+| **Obstacle** | The boss's telegraphed attacks on a learnable clock — and its *counter*, provoked by the very riposte you just committed |
+| **Renewal** | Each phase adds one attack or speeds the clock; each boss in the rush re-poses the read against a new pattern set |
+
+## Resonance
+
+Every element traces to the spine — the coherence proof (see [[process-the-spine]]).
+Note the death-handling is [[recipe-emberfall]]'s retry-mastery answer, not
+[[recipe-waterline]]'s stinging loss: the spine *derives* it.
+
+| Element | Arrow back to the spine |
+|---|---|
+| Verb: one context-sensitive button (tap / hold) | The single agency; two meanings, but only ever *one press at a time* — the whole scarcity |
+| **Power creates the problem** | Pressing to attack spends the same button you'd need to dodge the counter your riposte just provoked → answering one threat commits you out of the next *(passes the gate)* |
+| Scarcity: single action-channel + commitment window | With one channel and no cancel, *when* to spend the press is the entire decision — the toy becomes a trade ([[pattern-meaningful-choice]]) |
+| Telegraphs on a fixed, learnable clock | The tell is what makes one-button timing *fair* — read the wind-up or the single press is a coin-flip ([[system-telegraphs]], [[pattern-readability]]) |
+| Renewal: 3-phase escalation, then a rush of bosses | Re-poses "read and commit in one channel" against a fresh pattern every beat ([[system-boss-design]], [[pattern-escalation-and-payoff]]) |
+| Death-handling: instant retry to phase / fight start | Spine is *retry-mastery*; a slow or punishing retry would be **dissonant** ([[antipattern-dissonance]], [[antipattern-fail-loop-tax]]) |
+| Theme / fantasy: "I beat that with one button" | The mechanic (all depth in timing, none in the controller) *is* the meaning — legible mastery, not finger gymnastics |
+| Accessibility: one button as a first-class input mode | The constraint is the spine made a feature — the scarcity that creates the tension is also what opens the door ([[system-accessibility]]) |
+| Feel: juice choreographed to *serve* the read | Mastery demands the death be *yours*; the telegraph must survive the fireworks, or the fairness the spine rests on breaks ([[antipattern-unreadable-juice]], [[pattern-juice-choreography]]) |
+
+No row is decoration; no row fights the spine. The gate holds: **the press that
+answers this attack is the press you no longer have for the counter it provokes.**
 
 ## Anchors
 

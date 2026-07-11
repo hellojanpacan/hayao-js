@@ -5,8 +5,9 @@ kind: recipe
 tags: [colony-sim, nemesis, emergent, recipe, rimworld]
 summary: RimWorld's story-generator colony with Shadow of Mordor's memory — rivals who remember what you did and come back for it.
 use-when: You want emergent personal drama in a management sim.
-composes-with: [anchor-rimworld, anchor-shadow-of-mordor, system-emergent-systems, genre-management-tycoon]
+composes-with: [anchor-rimworld, anchor-shadow-of-mordor, system-emergent-systems, genre-management-tycoon, process-the-spine]
 anchors: [anchor-rimworld, anchor-shadow-of-mordor]
+spine: "A raid is a grudge, not a wave — the enemy remembers, so every raid you survive without ending the rival is written into a ledger that authors a deadlier, more personal return."
 verify-with: docs/VERIFICATION.md
 ---
 
@@ -24,6 +25,48 @@ you'll hate on sight. Drama becomes personal on both sides of the wall.
 ## The brief
 
 **RimWorld but the raiders remember** — the raid isn't a wave, it's a **grudge**.
+
+## The spine
+
+*A raid is a grudge, not a wave — the enemy **remembers**, so every raid you survive
+without ending the rival is written into a ledger that authors a deadlier, more
+personal return.*
+
+| Part | This game |
+|---|---|
+| **Objective** | Sustain the colony through escalating raids — keep your named colonists alive |
+| **Superpower** | **Repel the raid** — defend, and wound / rout / humiliate the rival who leads it |
+| **Scarcity** | Your **losable colonists** (each a named character with a history) **+ the memory ledger itself** — every raider who survives writes down what you did, so a raid *ended short of killing the rival* is spent into a debt that compounds |
+| **Obstacle** | The **named nemesis** — returning *in character* per their memory, stronger, citing the last fight; grudges metastasizing into faction wars |
+| **Renewal** | The **storyteller-director** reads the ledger and casts the next chapter — *which* rival returns, at what strength, carrying which grudge — so the pressure is a live author, never a table |
+
+## Resonance
+
+Every element traces to the spine — the coherence proof (see [[process-the-spine]]).
+Note that death-handling here sits with [[recipe-waterline]]'s survival stance, not
+[[recipe-emberfall]]'s retry-mastery: the spine *derives* it, because a loss the
+enemy remembers only means something if it is a loss you keep.
+
+| Element | Arrow back to the spine |
+|---|---|
+| Verb: repel the raid | The single agency — the only way to keep the colony standing is to win the fight in front of you |
+| Scarcity: losable named colonists | The stake that makes a grudge *hurt* — the enemy authors its return around who you can't afford to lose |
+| Scarcity: the memory ledger accumulates | The load-bearing spend — surviving a raid *short of ending the rival* is written down, so mercy and half-victories are paid for in the next attack |
+| **Power creates the problem** | Winning the raid without killing the rival is exactly what breeds a stronger, angrier, better-armed nemesis next season → every defense you survive authors a deadlier one *(passes the gate)* |
+| Renewal: the storyteller casts from the ledger ([[system-spawn-directors]]) | Re-poses the same tension each visit — the director doesn't pick "3 tribals," it reads your history and returns the chapter you earned |
+| Death-handling: lost colonists stay lost; the rival who beat you swaggers back | Loss must *stick*, or the ledger is a lie — a cheap undo would relieve the grudge and be **dissonant** ([[antipattern-dissonance]]) |
+| Setting: a fixed fortress the nemesis comes *to* (Mordor inverted) | Makes the tension physical — you can't stalk the hierarchy away; it walks to your gate carrying its memory |
+| Theme: systemic story — drama as sim × memory | The mechanic (the enemy remembers) *is* the meaning (feuds become personal history no one wrote) |
+| Feel: recognition-and-dread on the rival's second arrival | The felt payload of the spine — "oh no, it's *them*" is what a remembered raid buys over an anonymous wave |
+| Show: scar sprite + arrival taunt citing the real event | Makes the ledger *legible* — memory the player can't perceive is [[antipattern-false-depth]], and an inert grudge would be [[antipattern-decoration]] |
+| [[system-emergent-systems]] | The engine of the whole spine — the story is the *output* of a legible sim colliding with the memory ledger, not authored scenes |
+| [[system-enemy-ai]]: raiders act in character per memory | The nemesis's memory *changes play* — the one you humiliated fights cautious, the one who beat you swaggers — so the grudge is felt, not displayed |
+| [[system-faction-asymmetry]]: disposition shifts with history | Lets a single grudge *metastasize* — the ledger scales the obstacle from one rival into a war, renewing the tension at a larger grain |
+| [[pattern-emergence]] | Names what the spine farms — small remembered facts compounding into stories, the tension's renewal source generalized |
+
+No row is decoration and none is dissonant; the gate holds: **the only way to end
+this raid is to win it, and winning it without ending the rival is what writes the
+next, worse one.**
 
 ## Anchors
 
