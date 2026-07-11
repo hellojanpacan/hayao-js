@@ -66,10 +66,10 @@ a new tool that reframes every room you've seen.
   inside; the item you find is the intended key. Prove door gates open only when
   their key is held (both ways).
 
-Reference wiring: [`examples/gleamvale`](../../examples/gleamvale) — the top-down
-steering + hunt-and-slash combat bot (walk, fight, telemetry: win time, hp floor,
-0 deaths). Grep [`docs/API.md`](../../docs/API.md) for the hit-stop / i-frame /
-particle primitives before citing them.
+Reference wiring: a top-down steering + hunt-and-slash build proves the loop with a
+combat bot (walk, fight, telemetry: win time, hp floor, 0 deaths). Grep
+[`docs/API.md`](../../docs/API.md) for the hit-stop / i-frame / particle primitives
+before citing them.
 
 ## Signature-mechanic seeds
 
@@ -122,5 +122,4 @@ Design the readable fight here; prove it fair there.
 
 ## See also
 
-- [`examples/gleamvale`](../../examples/gleamvale) — the top-down combat bot + feel.
 - [`design/FUN.md §4`](../FUN.md#4--top-down-action-adventure-zelda-like) — the proof playbook.

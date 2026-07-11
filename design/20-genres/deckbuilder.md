@@ -75,8 +75,8 @@ commitment, synergies compound, and a deck clicking into a combo is the payoff.
   cast cards arm the boss; deck-thinning becomes a defensive art.
 - **Deckbuilder but one card, played, is gone forever** *(constraint)* — a
   scarcity deckbuilder; every play is a spend, hoarding stalls you.
-- **Deckbuilder but cards are inked and fade** *(theme + tonal)* — Kentō
-  woodblock cards that wear with use; the deck is a weathering artifact.
+- **Deckbuilder but cards are inked and fade** *(theme + tonal)* — inked
+  duotone cards that wear with use; the deck is a weathering artifact.
 - **Deckbuilder but two players share one deck** *(perspective + coop)* —
   alternating draws, one strategy; drafting is negotiation. Pairs
   [[system-coop-and-competition]].

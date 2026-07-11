@@ -36,7 +36,7 @@ library. Read this + [`_TEMPLATE.md`](_TEMPLATE.md) before writing a module.
   *Tuning levers* · *How it wires to Hayao* (real primitives / sandbox pointer) ·
   *Fails when…* · *Verify*.
 - **worldbuilding** → *The kit* · *Vectors/options* · *Method* (numbered) ·
-  *Aesthetic hook* (Kentō palette / JUDGE) · *Traps*.
+  *Aesthetic hook* (Regalia palette / JUDGE) · *Traps*.
 - **pattern** → *The principle* · *Why it works* · *Levers* · *Applied across
   genres* (table) · *Overdone when…* · *Verify/feel-gate link*.
 - **mechanic** → *The verb* (what the player does, in one line) · *How it feels /
@@ -179,8 +179,8 @@ Filenames are relative to the section dir. IDs are final — link to them freely
 | world-theme-vectors | theme-vectors.md | Choosing a setting/theme space; theme as a twist vector |
 | world-worldbuilding-scaffold | worldbuilding-scaffold.md | From a setting to a coherent world with rules & stakes |
 | world-faction-identity | faction-identity.md | Making factions feel distinct in fiction (pairs with system-faction-asymmetry) |
-| world-naming-and-tone | naming-and-tone.md | Names, voice, register; the Kentō house restraint |
-| world-aesthetic-direction | aesthetic-direction.md | Art direction; the Kentō woodblock palette; JUDGE hook |
+| world-naming-and-tone | naming-and-tone.md | Names, voice, register; the house restraint |
+| world-aesthetic-direction | aesthetic-direction.md | Art direction; the Regalia palette; JUDGE hook |
 | world-narrative-delivery | narrative-delivery.md | Environmental / systemic / embedded storytelling with little text |
 
 ### 50-patterns/ — `pattern-*` (also write README.md)

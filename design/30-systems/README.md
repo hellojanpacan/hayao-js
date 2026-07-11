@@ -64,6 +64,7 @@ tables. The Hayao way is to **generate and prove** it, not to hand-write forty
 balanced rooms and hope. Point your progression/economy/loop pacing at
 [`src/content/`](../../src/content/) — `generateLevels` (solver-verified,
 in-band levels), `composeCampaign` (acts that ramp), `assertRamp`/`rampIssues`
-(the curve has no deserts, no walls). The 42-level generated reference is
-[`examples/lanternfold/`](../../examples/lanternfold/). Design the *shape* here;
-let the generator fill it and the verify suite prove it.
+(the curve has no deserts, no walls). The living generate-and-prove reference is
+[`examples/lumen/`](../../examples/lumen/) — every served board is solver-proven
+winnable before a player sees it. Design the *shape* here; let the generator fill
+it and the verify suite prove it.

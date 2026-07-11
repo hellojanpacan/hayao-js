@@ -49,8 +49,8 @@ your input like it *heard* you.
 | **Procedural SFX** | `audio.tone/blip/play/success` | pitch-rising combo; the second sense, cheaply |
 
 *(Grep [`docs/API.md`](../../docs/API.md) before citing — all of the above are real;
-[`examples/updrift`](../../examples/updrift) wires every one and passes all four feel
-gates.)*
+[`examples/small-flame`](../../examples/small-flame) wires this kit and passes its
+feel gates.)*
 
 ## Applied across genres
 
@@ -118,7 +118,7 @@ the *event* not read-back state. Delete the whole view and the sim hash is ident
 ## See also
 
 - [`design/JUICE.md`](../JUICE.md) — the full cookbook; **the** reference for
-  this pattern. Copy from [`examples/updrift`](../../examples/updrift).
+  this pattern. Copy from [`examples/small-flame`](../../examples/small-flame).
 - [`design/FUN.md`](../FUN.md) law 6 — the cosmetic-view rule that makes juice
   free.
 - [`sandboxes/juice-lab`](../../sandboxes/juice-lab) — the juice primitives in isolation.

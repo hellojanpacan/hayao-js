@@ -76,7 +76,7 @@ is *found*, not *rolled*, and a clean multi-enemy redirect is pure satisfaction.
 - **Tactics but one push ripples through a chain** *(mechanic-swap)* — dominoes:
   every shove can cascade, turning the board into a physics puzzle.
 - **Tactics but you protect a city that remembers** *(theme + structure)* —
-  Kentō town rebuilt between missions; buildings saved persist as bonuses.
+  a town rebuilt between missions; buildings saved persist as bonuses.
 - **Tactics but the future is shown only for one turn** *(constraint)* — a memory
   variant; you plan several moves against a telegraph you can no longer see.
 

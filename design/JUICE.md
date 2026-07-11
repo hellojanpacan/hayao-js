@@ -8,8 +8,9 @@ that examples historically left it on the shelf (an audit found the art toolkit
 used in 0 of 26 games). Every technique below is cosmetic by construction — its own
 Rng, out of `world.hash()` — so you can lean into it with zero risk to the sim.
 
-**Reference instance:** [`examples/updrift`](../examples/updrift) uses every recipe
-here and passes all four feel gates. Copy from it; read here for the why.
+**Reference instance:** the precision platformer
+[`examples/small-flame`](../examples/small-flame) leans on this kit and passes its
+feel gates. Copy from it; read here for the why.
 
 ---
 
@@ -44,8 +45,8 @@ Juice without restraint is noise. The envelopes that read as *professional*:
 - **Every event answers on ≥ 2 senses** within the frame: sfx + particles, or sfx +
   flash + shake. One channel reads as cheap. This is the feedback contract (Part 3).
 - **Readability first:** the avatar is the brightest, highest-contrast thing on
-  screen. Pick a bright avatar token over a low-key ground (updrift: ochre lantern
-  on a twilight cliff). The salience gate proves it.
+  screen. Pick a bright avatar token over a low-key ground (small-flame: a gold
+  flame on a dim night shaft). The salience gate proves it.
 
 ## Part 3 — Make the feel checkable (Channel 4 gates)
 
@@ -71,7 +72,7 @@ A gate that fails is a design regression that used to ship silently. That is the
 whole point: "green tests, dead game" is the trap — Channel 4 turns more of *feel*
 green so a game can't pass every proof and still play like a physics demo.
 
-## Part 4 — Wiring order gotchas (paid for in updrift)
+## Part 4 — Wiring order gotchas (paid for in a platformer build)
 
 - **A tapped jump is cut to 40%.** Variable jump height cuts the rise the instant
   jump is released — so a single-frame tap barely hops. Bots (and jittery players)

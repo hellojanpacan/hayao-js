@@ -41,7 +41,12 @@ Tiebreakers this settles:
 
 The precise rules for bringing ANY outside asset (art, sound, fonts) as a
 first-class citizen are the four clauses of `docs/ASSETS.md` — the asset
-contract.
+contract. `docs/AUDIO.md` is the same promise for sound: how the deterministic
+synth, theory, composition, and analysis layers make audio a *verifiable*
+subsystem, and how the soft-synthesis house voices sit on that neutral surface.
+`docs/STYLE.md` is the reproducible visual house style — the Regalia palette and
+the duotone "draw anything in five rules" recipe — so art lands in-house by
+default without surveying the corpus.
 
 ## Commands
 - `npm run dev` — dev server (hub + all examples; MPA, honest 404s)
@@ -163,10 +168,12 @@ header derives its count live from the cards; elsewhere phrase it count-free
 ("browse the full store", "a growing portfolio"). Per-game facts (Kintsugi's
 30 rooms, lanternfold's 42 levels) are fixed and fine.
 
-## The site (three doors)
-The website is split by audience: `index.html` is the marketing landing
-(hayao.dev), `play/index.html` is the example store, `roadmap/index.html` is the
-public roadmap + js13k benchmark ladder, and developer docs live at hayao.js.org.
-Art-finished flagships (currently `lanternway`, `rootward`, `tarnholm`) get a
-still-frame thumbnail under `public/shots/<slug>.svg`; regenerate them with
-`npm run thumbs` after changing their art.
+## The site
+The public marketing site is the Astro app under `web/` → **hayao.dev** (Vercel
+project `hayao-web`); developer docs live at **hayao.js.org**. The root static
+pages (`index.html` + the auto-discovered `examples/`/`sandboxes/` pages) are the
+**local `npm run dev` hub** — a lean Regalia index for running example games and
+labs, not a deployed marketing surface. Current examples: `lumen`, `small-flame`,
+`sokoban`. Art-finished games can get a still-frame thumbnail under
+`public/shots/<slug>.svg`; regenerate them with `npm run thumbs` after changing
+their art.

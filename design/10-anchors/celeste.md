@@ -129,7 +129,7 @@ dial, not a wall.
 ## See also
 
 - [[genre-precision-platformer]] · [[system-grace]] · [[system-accessibility]]
-- `examples/updrift/` — the golden platformer reference; grace canon wired
+- `examples/small-flame/` — the precision-platformer reference; grace canon wired
   end-to-end.
 - `design/FUN.md#2-·-precision-platformer-celeste-like` — the movement-trust
   verify pattern.

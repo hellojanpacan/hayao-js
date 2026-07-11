@@ -51,7 +51,7 @@ The motif must be **legible before it's meaningful** — the player registers th
 
 ## Aesthetic hook
 
-The Kentō woodblock palette makes motifs *cheap to recur* — a constrained hue set means one accent color can carry a symbol across every screen without a bespoke asset. Register the motif as a **shape** and a **color**, not a texture; woodblock silhouette reads instantly and stays deterministic and cosmetic. A recurring symbol that survives being a flat two-tone stamp is a strong symbol. JUDGE looks for exactly this from a headless SVG: does the frame *rhyme* with itself? See [[world-aesthetic-direction]] and prove cohesion via design/JUDGE.md.
+The Regalia palette makes motifs *cheap to recur* — a constrained hue set means one accent color can carry a symbol across every screen without a bespoke asset. Register the motif as a **shape** and a **color**, not a texture; a duotone silhouette reads instantly and stays deterministic and cosmetic. A recurring symbol that survives being a flat two-tone stamp is a strong symbol. JUDGE looks for exactly this from a headless SVG: does the frame *rhyme* with itself? See [[world-aesthetic-direction]] and prove cohesion via design/JUDGE.md.
 
 ## Traps
 

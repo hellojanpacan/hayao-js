@@ -121,7 +121,7 @@ this fight will do.
   [[system-telegraphs]]
 - `design/FUN.md#11-·-roguelike-deckbuilder` — win-rate window + draft-delta +
   intent audit.
-- `examples/lanternfold/` — generated, all-channels reference (drafted content
-  pipeline).
+- `examples/lumen/` — generate-and-prove content: every board solver-verified
+  before it's served.
 - `sandboxes/procgen-lab/` — `Rng`/`pickEntry` for weighted card & map
   generation.

@@ -1,287 +1,94 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>hayao.js — the AI-first game engine</title>
-    <meta name="description" content="An AI-first, open-source 2D game engine. Point your coding agent at it — say “make a game with hayao” — and get a deterministic, machine-verified game you can play in the browser." />
-    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Crect width='120' height='120' fill='%23f1ebdd'/%3E%3Crect x='32' y='30' width='58' height='58' fill='none' stroke='%23242019' stroke-width='3' opacity='.32'/%3E%3Cpath d='M32 88 h24 M32 88 v-24' fill='none' stroke='%23b5442d' stroke-width='10'/%3E%3Cpath d='M66 88 h20' fill='none' stroke='%23b5442d' stroke-width='10'/%3E%3C/svg%3E" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700&display=swap" rel="stylesheet" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>hayao.js — local dev hub</title>
     <style>
       :root {
-        --washi: #f1ebdd; --washi-2: #f8f3e9; --sumi: #242019; --sumi-soft: #4f473b;
-        --stone: #6f6555; --ai: #2b4257; --ai-2: #5a7994; --shu: #b5442d; --matsu: #4a7a3a; --line: #ddd3bf;
-        --mincho: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", Georgia, serif;
-        --body: "Iowan Old Style", Palatino, "Palatino Linotype", Georgia, serif;
-        --mono: ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-        color-scheme: light;
+        /* Regalia — core of four, grown by the job (docs/STYLE.md) */
+        --paper: #ffffff; --mist: #f4f6fb; --cloud: #eef1f6; --hair: #e7e8ee;
+        --ink: #29335c; --soft: #5a6072; --muted: #8b90a6;
+        --gold: #e59500; --green: #337357; --blue: #669bbc; --rose: #c65b5b; --bark: #7a4f34;
+        --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+        --body: "Overpass", system-ui, -apple-system, Segoe UI, sans-serif;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root { --paper: #141a30; --mist: #1d2542; --cloud: #273053; --hair: #303a63;
+          --ink: #eef1f9; --soft: #b3bbd4; --muted: #727b9c; }
       }
       * { box-sizing: border-box; }
-      html, body { margin: 0; min-height: 100%; background: var(--washi); color: var(--sumi);
-        font-family: var(--body); line-height: 1.7; -webkit-font-smoothing: antialiased; }
-      .wrap { max-width: 980px; margin: 0 auto; padding: 0 40px; }
-      a { color: var(--ai); text-decoration: none; border-bottom: 1px solid var(--line); }
-      a:hover { border-bottom-color: var(--ai-2); }
-      .lab { font-variant: small-caps; font-size: 14px; letter-spacing: .14em; color: var(--stone); }
-
-      /* nav */
-      nav { border-bottom: 1px solid var(--line); }
-      nav .wrap { display: flex; align-items: center; gap: 26px; padding-top: 18px; padding-bottom: 18px; }
-      nav .brand { font-family: var(--mincho); font-weight: 700; font-size: 22px; border: none; color: var(--sumi); }
-      nav .brand .js { font-size: 13px; color: var(--stone); font-weight: 500; }
-      nav .spacer { flex: 1; }
-      nav .links { display: flex; gap: 22px; font-size: 15px; }
-      nav .links a { border: none; color: var(--sumi-soft); }
-      nav .links a:hover { color: var(--ai); }
-      nav .links a.ext::after { content: " ↗"; color: var(--stone); font-size: 12px; }
-
-      /* hero */
-      .hero { padding: 62px 0 26px; display: grid; grid-template-columns: 1fr; gap: 8px; }
-      .logo { font-family: var(--mincho); font-weight: 700; font-size: 72px; line-height: .95; letter-spacing: .004em; }
-      .logo .js { font-size: 26px; color: var(--stone); font-weight: 500; }
-      .claim { font-family: var(--mincho); font-weight: 600; font-size: 27px; margin: 16px 0 12px; letter-spacing: .005em; line-height: 1.32; max-width: 24ch; }
-      .pitch { margin: 0; font-size: 18px; color: var(--sumi-soft); max-width: 60ch; }
-
-      /* the cashable prompt */
-      .prompt { margin: 26px 0 6px; max-width: 62ch; }
-      .prompt .term { background: var(--sumi); color: #f4eede; border-radius: 8px; padding: 14px 16px; font-family: var(--mono);
-        font-size: 14.5px; line-height: 1.6; display: flex; align-items: flex-start; gap: 12px; box-shadow: 0 1px 0 #cfc4a9; }
-      .prompt .term .dollar { color: var(--ai-2); user-select: none; }
-      .prompt .term code { color: #f4eede; }
-      .prompt .term .hl { color: #e3c054; }
-      .prompt .copy { margin-left: auto; background: #3a352b; color: #cdbf9d; border: 1px solid #55503f; border-radius: 5px;
-        font-family: var(--mono); font-size: 12px; padding: 4px 9px; cursor: pointer; white-space: nowrap; }
-      .prompt .copy:hover { color: #f4eede; border-color: #7a725a; }
-      .prompt .note { margin: 8px 2px 0; font-size: 13.5px; color: var(--stone); }
-
-      .cta { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; margin-top: 20px; }
-      .btn { font-family: var(--body); font-size: 16px; border-radius: 6px; padding: 10px 18px; cursor: pointer; border: 1px solid var(--line); background: var(--washi-2); color: var(--sumi); }
-      .btn:hover { border-color: var(--ai-2); background: #fbf7ee; }
-      .btn-primary { background: var(--sumi); color: #f4eede; border-color: var(--sumi); }
-      .btn-primary:hover { background: #332e25; color: #fff; }
-      .install { font-family: var(--mono); font-size: 15px; background: var(--washi-2); border: 1px solid var(--line); border-radius: 6px; padding: 9px 15px; color: var(--sumi); }
-
-      /* fun on top: the live flagship screen */
-      .stage { margin: 40px 0 8px; }
-      .screen { position: relative; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #e4d8bd;
-        aspect-ratio: 16 / 9; box-shadow: 0 2px 0 #d8ccb0, 0 18px 40px -28px rgba(36,32,25,.5); }
-      .screen > img { display: block; width: 100%; height: 100%; object-fit: cover; }
-      .screen > iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
-      .screen .play { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; flex-direction: column; gap: 12px;
-        background: linear-gradient(0deg, rgba(36,32,25,.32), rgba(36,32,25,.06)); cursor: pointer; border: 0; color: #fff; font-family: var(--mincho); }
-      .screen .play .disc { width: 74px; height: 74px; border-radius: 50%; background: rgba(244,238,222,.92); color: var(--sumi);
-        display: flex; align-items: center; justify-content: center; font-size: 30px; padding-left: 6px; box-shadow: 0 6px 24px -6px rgba(0,0,0,.5); }
-      .screen .play span { font-size: 16px; text-shadow: 0 1px 8px rgba(0,0,0,.6); letter-spacing: .02em; }
-      .cap { margin: 10px 2px 0; font-size: 13.5px; color: var(--stone); display: flex; gap: 10px; flex-wrap: wrap; align-items: baseline; }
-      .cap .lab { color: var(--stone); }
-
-      /* receipts trust-drawer */
-      .proofbar { margin: 26px 0 4px; border: 1px solid var(--line); border-radius: 10px; background: var(--washi-2);
-        display: grid; grid-template-columns: repeat(5, 1fr); }
-      .proofbar div { padding: 16px 14px; border-left: 1px solid var(--line); }
-      .proofbar div:first-child { border-left: 0; }
-      .proofbar .n { font-family: var(--mincho); font-weight: 700; font-size: 24px; display: block; line-height: 1.1; }
-      .proofbar .k { font-size: 12.5px; color: var(--stone); letter-spacing: .02em; }
-      .proofbar-note { margin: 10px 2px 0; font-size: 13px; color: var(--stone); }
-
-      /* generic section + prose */
-      section.band { border-top: 1px solid var(--line); margin-top: 48px; padding-top: 46px; }
-      section.band h2 { font-family: var(--mincho); font-weight: 600; font-size: 27px; margin: 8px 0 12px; }
-      section.band p { color: var(--sumi-soft); font-size: 17px; max-width: 64ch; margin: 0 0 14px; }
-      section.band code { font-family: var(--mono); background: var(--washi-2); border: 1px solid var(--line); padding: 1px 7px; border-radius: 4px; font-size: 13.5px; }
-      .idea { border-left: 3px solid var(--shu); padding: 6px 0 6px 18px; margin: 18px 0; font-family: var(--mincho); font-size: 20px; color: var(--sumi); max-width: 60ch; line-height: 1.5; }
-
-      /* featured trio preview */
-      .trio { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px; margin-top: 22px; }
-      .fcard { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--washi-2); display: flex; flex-direction: column; }
-      .fcard:hover { border-color: var(--ai-2); }
-      .fcard .thumb { aspect-ratio: 16/9; background: #e4d8bd; border-bottom: 1px solid var(--line); overflow: hidden; }
-      .fcard .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-      .fcard .body { padding: 13px 15px 15px; }
-      .fcard h3 { margin: 0 0 3px; font-family: var(--mincho); font-weight: 600; font-size: 17px; }
-      .fcard .genre { font-family: var(--mono); font-size: 10.5px; color: var(--stone); letter-spacing: .05em; text-transform: uppercase; }
-      .fcard p { margin: 8px 0 0; font-size: 13px; color: var(--sumi-soft); line-height: 1.5; }
-      .more { margin-top: 20px; font-size: 16px; }
-
-      footer { border-top: 1px solid var(--line); margin-top: 52px; padding: 34px 0 72px; color: var(--stone); font-size: 13px; line-height: 1.8; }
-      footer a { color: var(--ai); }
-
-      @media (max-width: 780px) {
-        .wrap { padding: 0 22px; }
-        nav .links { gap: 14px; font-size: 14px; }
-        .hero { padding: 40px 0 18px; }
-        .logo { font-size: 52px; }
-        .claim { font-size: 22px; }
-        .proofbar { grid-template-columns: 1fr 1fr; }
-        .proofbar div:nth-child(odd) { border-left: 0; }
-        .trio { grid-template-columns: 1fr; }
-      }
+      html, body { margin: 0; background: var(--paper); color: var(--ink);
+        font-family: var(--body); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+      a { color: var(--ink); text-decoration: none; }
+      .wrap { max-width: 860px; margin: 0 auto; padding: 40px 22px 80px; }
+      header { display: flex; align-items: center; gap: 12px; margin-bottom: 6px; }
+      .crown { width: 34px; height: 34px; }
+      .brand { font-weight: 700; font-size: 26px; letter-spacing: -.01em; }
+      .brand .js { color: var(--muted); font-weight: 600; font-size: 15px; }
+      .note { display: inline-block; font-family: var(--mono); font-size: 11.5px; color: var(--gold);
+        border: 1px solid var(--hair); border-radius: 999px; padding: 3px 10px; margin: 10px 0 4px; }
+      .lede { color: var(--soft); font-size: 16px; max-width: 60ch; margin: 8px 0 4px; }
+      .lede a { color: var(--gold); border-bottom: 1px solid color-mix(in srgb, var(--gold) 35%, transparent); }
+      h2 { font-size: 12px; letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
+        margin: 40px 0 14px; font-weight: 700; }
+      .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+      .card { display: block; border: 1px solid var(--hair); border-radius: 14px; padding: 15px 16px;
+        background: var(--mist); transition: transform .14s ease, border-color .14s ease; }
+      .card:hover { transform: translateY(-3px); border-color: color-mix(in srgb, var(--gold) 45%, var(--hair)); }
+      .card .t { font-weight: 600; font-size: 15px; }
+      .card .d { color: var(--muted); font-size: 12.5px; margin-top: 3px; font-family: var(--mono); }
+      footer { margin-top: 54px; padding-top: 20px; border-top: 1px solid var(--hair);
+        color: var(--muted); font-size: 13px; }
+      footer a { color: var(--soft); border-bottom: 1px solid var(--hair); }
     </style>
   </head>
   <body>
-    <nav>
-      <div class="wrap">
-        <a class="brand" href="./">hayao<span class="js">.js</span></a>
-        <div class="spacer"></div>
-        <div class="links">
-          <a href="./play/">Play</a>
-          <a href="./sound/">Sound</a>
-          <a href="./roadmap/">Roadmap</a>
-          <a class="ext" href="https://hayao.js.org/">Docs</a>
-          <a class="ext" href="https://github.com/hellojanpacan/hayao-js">GitHub</a>
-        </div>
-      </div>
-    </nav>
-
     <div class="wrap">
-      <header class="hero">
-        <div class="lab">AI-first · open-source · deterministic</div>
-        <div class="logo">hayao<span class="js">.js</span></div>
-        <h1 class="claim">Point your coding agent at a game engine.</h1>
-        <p class="pitch">Hayao is an open-source 2D engine built for the age of coding agents. Tell Claude or
-          Codex what to make, and get back a real game — one that runs the same every time, proves its own
-          levels winnable, and plays in your browser. The next Godot, authored by an AI instead of a GUI.</p>
-
-        <div class="prompt">
-          <div class="term">
-            <span class="dollar">›</span>
-            <code id="promptText">Make a <span class="hl">Sokoban with 20 solver-proven levels</span>. Build with the npm package <span class="hl">hayao</span>.</code>
-            <button class="copy" id="copyBtn" aria-label="Copy prompt">copy</button>
-          </div>
-          <p class="note">Paste it into your agent. Everything on this page was authored this way — no engine GUI, no binary scenes.</p>
-        </div>
-
-        <div class="cta">
-          <span class="install">npm i hayao</span>
-          <a class="btn btn-primary" href="./play/">Play the games →</a>
-          <a class="btn" href="https://hayao.js.org/">Read the docs ↗</a>
-        </div>
+      <header>
+        <svg class="crown" viewBox="0 0 24 24" aria-hidden="true"><path fill="var(--gold)" d="m21.8382 11.1263 -0.2292 2.4353c-0.3777 4.0126 -0.5665 6.0189 -1.7491 7.2286C18.6773 22 16.9048 22 13.3599 22h-2.7198c-3.54493 0 -5.31739 0 -6.50001 -1.2098 -1.18261 -1.2097 -1.37144 -3.216 -1.74909 -7.2286l-0.22919 -2.4353c-0.18001 -1.9126 -0.27001 -2.86891 0.05718 -3.26423 0.17699 -0.21384 0.41767 -0.34487 0.675 -0.36747 0.47569 -0.04178 1.07309 0.6383 2.26788 1.99847 0.6179 0.70343 0.92685 1.05513 1.2715 1.10963 0.19097 0.0301 0.38555 -0.0009 0.56189 -0.0896 0.31825 -0.1602 0.53044 -0.59498 0.95481 -1.46458l2.23683 -4.58366C10.9888 2.82162 11.3898 2 12 2c0.6102 0 1.0112 0.82162 1.8131 2.46485l2.2368 4.58366c0.4244 0.86961 0.6366 1.30439 0.9548 1.46459 0.1764 0.0887 0.371 0.1197 0.5619 0.0896 0.3447 -0.0545 0.6536 -0.4062 1.2715 -1.10963 1.1948 -1.36017 1.7922 -2.04025 2.2679 -1.99847 0.2573 0.0226 0.498 0.15363 0.675 0.36747 0.3272 0.39532 0.2372 1.35163 0.0572 3.26423Z"/><path fill="var(--ink)" d="M8.25 18c0 -0.4142 0.33579 -0.75 0.75 -0.75h6c0.4142 0 0.75 0.3358 0.75 0.75s-0.3358 0.75 -0.75 0.75H9c-0.41421 0 -0.75 -0.3358 -0.75 -0.75Z"/></svg>
+        <span class="brand">hayao<span class="js">.js</span></span>
       </header>
+      <span class="note">local dev hub · npm run dev</span>
+      <p class="lede">The AI-first game engine — deterministic, headless-native, verifiable.
+        This page is the local development index. The public site is
+        <a href="https://hayao.dev/">hayao.dev</a>; the docs live at
+        <a href="https://hayao.js.org/">hayao.js.org</a>.</p>
 
-      <!-- Fun on top: a real, live hayao game -->
-      <div class="stage">
-        <div class="screen" id="screen">
-          <img src="./shots/lanternway.svg" alt="Lanternway — a hayao example game" />
-          <button class="play" id="playBtn" aria-label="Play Lanternway in the browser">
-            <span class="disc">▶</span>
-            <span>Play a hayao game — right here</span>
-          </button>
-        </div>
-        <div class="cap">
-          <span class="lab">now playing</span>
-          <span><b>Lanternway</b> — a camera decoupled from the screen; walk the bearer across a world far larger than the viewport. Arrow keys.</span>
-        </div>
+      <h2>Example games</h2>
+      <div class="grid">
+        <a class="card" href="./examples/sokoban/index.html"><div class="t">Sokoban</div><div class="d">logic/view reference</div></a>
+        <a class="card" href="./examples/lumen/index.html"><div class="t">Lumen</div><div class="d">example</div></a>
+        <a class="card" href="./examples/small-flame/index.html"><div class="t">Small Flame</div><div class="d">precision platformer</div></a>
       </div>
 
-      <!-- Receipts: how we know it isn't slop -->
-      <div class="proofbar" role="group" aria-label="Engine proof metrics">
-        <div><span class="n" id="game-count-home">—</span><span class="k">machine-verified games</span></div>
-        <div><span class="n">all</span><span class="k">tests, green in CI</span></div>
-        <div><span class="n">100%</span><span class="k">levels solver/bot-proven</span></div>
-        <div><span class="n">bit-exact</span><span class="k">replay hashes</span></div>
-        <div><span class="n">WCAG-AA</span><span class="k">palette-gated art</span></div>
+      <h2>Sandboxes · single-mechanic labs</h2>
+      <div class="grid">
+        <a class="card" href="./sandboxes/anim-lab/index.html"><div class="t">anim-lab</div><div class="d">authored animation</div></a>
+        <a class="card" href="./sandboxes/camera-lab/index.html"><div class="t">camera-lab</div><div class="d">camera</div></a>
+        <a class="card" href="./sandboxes/hero-lab/index.html"><div class="t">hero-lab</div><div class="d">duotone hero rig</div></a>
+        <a class="card" href="./sandboxes/juice-lab/index.html"><div class="t">juice-lab</div><div class="d">game feel</div></a>
+        <a class="card" href="./sandboxes/light-lab/index.html"><div class="t">light-lab</div><div class="d">2D lighting</div></a>
+        <a class="card" href="./sandboxes/particle-workshop/index.html"><div class="t">particle-workshop</div><div class="d">particles</div></a>
+        <a class="card" href="./sandboxes/pathfinding-demo/index.html"><div class="t">pathfinding-demo</div><div class="d">pathfinding</div></a>
+        <a class="card" href="./sandboxes/physics-lab/index.html"><div class="t">physics-lab</div><div class="d">physics</div></a>
+        <a class="card" href="./sandboxes/procgen-lab/index.html"><div class="t">procgen-lab</div><div class="d">procgen</div></a>
+        <a class="card" href="./sandboxes/synth-lab/index.html"><div class="t">synth-lab</div><div class="d">audio synthesis</div></a>
+        <a class="card" href="./sandboxes/webgl-lab/index.html"><div class="t">webgl-lab</div><div class="d">WebGL renderer</div></a>
       </div>
-      <p class="proofbar-note">Determinism is the trick that makes an AI author trustworthy: the game is a pure function of its inputs,
-        so a solver can <i>prove</i> a level winnable and a replay can <i>prove</i> a refactor changed nothing. <a href="./roadmap/">See the receipts &amp; roadmap →</a></p>
 
-      <section class="band">
-        <div class="lab">the one idea</div>
-        <h2>The game is a pure function. The browser only watches.</h2>
-        <p class="idea">state₀ → step(inputs) → state₁ → step(inputs) → state₂ → …<br />Rendering, audio, and the DOM are observer plugins. They paint what the function produces; they can never change its result.</p>
-        <p>Hold that invariant and every hard problem for an AI author collapses. <b>”Does it work?”</b> — <code>world.step()</code> runs in
-          Node; assert on state, no pixels. <b>”Is this level winnable?”</b> — the transition is pure, so a search <i>proves</i> it. <b>”Did my
-          refactor break anything?”</b> — replay the inputs, compare <code>world.hash()</code>. Godot's authoring model is excellent, so hayao
-          borrows it wholesale — nodes, scenes, cameras, tweens, audio — but makes every part text, typed, greppable, and headlessly verifiable, so an
-          agent can drive it.</p>
-      </section>
-
-      <section class="band">
-        <div class="lab">the store</div>
-        <h2>A whole portfolio of machine-verified games — start with five finished ones.</h2>
-        <p>Most engines demo a slice — some particles, a physics box. Hayao ships whole games, because a whole game is the proof the engine is
-          complete. These five are art-finished in the house woodblock style; the rest are playable engine slices you can read and fork.</p>
-        <div class="trio">
-          <a class="fcard" href="./examples/lanternway/index.html">
-            <div class="thumb"><img src="./shots/lanternway.svg" alt="Lanternway" /></div>
-            <div class="body"><span class="genre">scrolling traversal</span><h3>Lanternway</h3><p>A Camera2D follows the bearer across a world that dwarfs the screen — the smooth follow is cosmetic, so it never touches the hash.</p></div>
-          </a>
-          <a class="fcard" href="./examples/rootward/index.html">
-            <div class="thumb"><img src="./shots/rootward.svg" alt="Rootward" /></div>
-            <div class="body"><span class="genre">tower defense</span><h3>Rootward</h3><p>Three counter-typed towers on a sunlit lane, ten ramping waves — the winning build is proven, and arrow-spam is proven to lose to tanks.</p></div>
-          </a>
-          <a class="fcard" href="./examples/tarnholm/index.html">
-            <div class="thumb"><img src="./shots/tarnholm.svg" alt="Tarnholm" /></div>
-            <div class="body"><span class="genre">island town builder</span><h3>Tarnholm</h3><p>Every roof scores by its neighbours, live under the cursor — placement skill is proven to nearly double random play.</p></div>
-          </a>
-          <a class="fcard" href="./examples/driftlight/index.html">
-            <div class="thumb"><img src="./shots/driftlight.svg" alt="Driftlight" /></div>
-            <div class="body"><span class="genre">atmospheric drift</span><h3>Driftlight</h3><p>A paper lantern drifts a night river to the dawn sea — the renderer's gradient, glow, and parallax leap, cosmetic so the lush view never touches the hash.</p></div>
-          </a>
-          <a class="fcard" href="./examples/fernrow/index.html">
-            <div class="thumb"><img src="./shots/fernrow.svg" alt="Fernrow" /></div>
-            <div class="body"><span class="genre">farming sim</span><h3>Fernrow</h3><p>A sunlit smallholding — tilled furrows, watered soil, crops that swell to ripe, a straw-hatted farmer. The festival goal is proven reachable; reinvestment compounds.</p></div>
-          </a>
-        </div>
-        <p class="more"><a href="./play/">Browse the full store →</a></p>
-      </section>
-
-      <section class="band">
-        <div class="lab">build one</div>
-        <h2>What your agent actually writes.</h2>
-        <p>A game is one folder under <code>examples/&lt;slug&gt;/</code> that imports only from <code>@hayao</code> and calls
-          <code>defineGame()</code>. Turn-based rules live in a pure module a solver can prove; the scene tree is just the view. Your agent copies
-          <code>examples/sokoban/</code>, follows <a href="https://hayao.js.org/">the docs</a> and
-          <a href="https://github.com/hellojanpacan/hayao-js/blob/main/AGENTS.md">AGENTS.md</a>, and runs <code>npm test</code> — headless, in Node —
-          to know it works before a browser ever opens. Honest about today: the five art-finished showcases plus the flagship metroidvania above are the current art bar; an
-          agent-composed, hour-long polished experience out of the box is on the <a href="./roadmap/">roadmap</a>, not yet in the box.</p>
-      </section>
+      <h2>Tools</h2>
+      <div class="grid">
+        <a class="card" href="./sound/index.html"><div class="t">Sound Workshop</div><div class="d">/sound · audio genres</div></a>
+        <a class="card" href="./workshop/index.html"><div class="t">Workshop</div><div class="d">/workshop · playtest</div></a>
+      </div>
 
       <footer>
-        hayao.js · MIT · <a href="https://github.com/hellojanpacan/hayao-js">github.com/hellojanpacan/hayao-js</a> ·
-        <a href="https://hayao.js.org/">docs</a> · <a href="./play/">play</a> · <a href="./sound/">sound</a> · <a href="./roadmap/">roadmap</a><br />
-        The mark is a kentō (見当) — the registration mark ukiyo-e printers cut so every impression lands
-        in the same place. This identity credits that craft and claims no authenticity it hasn't earned.
+        hayao.js · MIT ·
+        <a href="https://github.com/hellojanpacan/hayao-js">github</a> ·
+        <a href="https://hayao.dev/">hayao.dev</a> ·
+        <a href="https://hayao.js.org/">docs</a>
       </footer>
     </div>
-
-    <script>
-      // Derive game count from the play page so the proofbar never goes stale.
-      (async function() {
-        try {
-          const html = await fetch('./play/').then(r => r.text());
-          const doc = new DOMParser().parseFromString(html, 'text/html');
-          const slugs = {};
-          doc.querySelectorAll('a[href*="../examples/"]').forEach(function(a) {
-            var m = a.getAttribute('href').match(/\.\.\/examples\/([a-z0-9-]+)\//);
-            if (m) slugs[m[1]] = true;
-          });
-          var n = Object.keys(slugs).length;
-          var el = document.getElementById('game-count-home');
-          if (el && n) el.textContent = n;
-        } catch(e) {}
-      })();
-      // Copy the cashable prompt (the one metric that matters: prompt → install).
-      const copyBtn = document.getElementById('copyBtn');
-      copyBtn?.addEventListener('click', async () => {
-        const text = document.getElementById('promptText').innerText.trim();
-        try { await navigator.clipboard.writeText(text); copyBtn.textContent = 'copied ✓'; }
-        catch { copyBtn.textContent = 'copy failed'; }
-        setTimeout(() => (copyBtn.textContent = 'copy'), 1600);
-      });
-      // Lazy-load the live game only when the visitor asks (fast first paint, no idle churn).
-      const playBtn = document.getElementById('playBtn');
-      playBtn?.addEventListener('click', () => {
-        const screen = document.getElementById('screen');
-        const frame = document.createElement('iframe');
-        frame.src = './examples/lanternway/index.html';
-        frame.title = 'Lanternway — live';
-        frame.allow = 'autoplay';
-        screen.innerHTML = '';
-        screen.appendChild(frame);
-        frame.focus();
-      });
-    </script>
   </body>
 </html>

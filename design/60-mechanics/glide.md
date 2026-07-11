@@ -93,9 +93,9 @@ clamp on downward velocity plus opened lateral input, gated by a resource counte
 all in `world.probe()`-visible sim state, all driven through the deterministic RNG
 if anything varies. Build the arc and the fall-rate clamp in the `sandboxes/physics-lab`
 (gravity, terminal velocity, integration) before it touches a level. Steer-during-air
-and the land-target framing belong to the `sandboxes/camera-lab`. The golden
-platformer reference [`examples/updrift`](../../examples/updrift/) already owns the
-honest-air-control floor — study its feel before you tune yours. The float animation
+and the land-target framing belong to the `sandboxes/camera-lab`. The precision
+platformer reference [`examples/small-flame`](../../examples/small-flame/) already
+owns the honest-air-control floor — study its feel before you tune yours. The float animation
 and any trail are pure view: set them `cosmetic = true` so they stay out of
 `world.hash()`. Feel and blockability get *proven* at the pointer in the frontmatter,
 not restated here.
@@ -127,7 +127,7 @@ not restated here.
   ledge; the descent is an elected gamble.
 - [[system-mastery-curve]] · [[system-progression]] — the soft-floor / high-ceiling
   verb, and glide-as-unlock in a metroidvania gate.
-- [`examples/updrift`](../../examples/updrift/) — the honest air-control platformer
-  floor. `sandboxes/physics-lab` · `sandboxes/light-lab` · `sandboxes/camera-lab` —
+- [`examples/small-flame`](../../examples/small-flame/) — the honest air-control
+  platformer floor. `sandboxes/physics-lab` · `sandboxes/light-lab` · `sandboxes/camera-lab` —
   the parts.
 - [`design/FUN.md`](../FUN.md) §19 — where the arc and its feel get proven.

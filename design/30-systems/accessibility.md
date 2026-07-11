@@ -57,7 +57,7 @@ game reachable. The pull is dignity: the game meets the player where they are.
 
 - **Contrast is measurable.** `contrastRatio(a, b)` (grep `docs/API.md`) gives the
   WCAG-style ratio for any two hex colours — gate avatar-vs-field and text-vs-bg
-  against a threshold. The Kentō palette is *already* AA-gated
+  against a threshold. The Regalia palette is *already* AA-gated
   ([[world-aesthetic-direction]], `npm run palette`), so build on it.
 - **Redundant cues ride readability.** The `src/verify/gates.ts` readability gate
   checks the avatar out-contrasts its surroundings and threats telegraph — that
@@ -87,7 +87,7 @@ game reachable. The pull is dignity: the game meets the player where they are.
 ## Verify
 
 - **Contrast gate:** `contrastRatio(avatar, field)` and text-vs-bg pass a threshold
-  (build on the AA-gated Kentō palette, `npm run palette`).
+  (build on the AA-gated Regalia palette, `npm run palette`).
 - **Readability floor:** avatar out-contrasts surroundings, threats telegraph —
   [`src/verify/gates.ts`](../../src/verify/gates.ts) + [JUDGE.md](../JUDGE.md)
   (the headless SVG look).
@@ -100,7 +100,7 @@ game reachable. The pull is dignity: the game meets the player where they are.
 
 - [[system-difficulty-and-dda]] — assist modes are difficulty's accessible face.
 - [[pattern-readability]] — the salience floor accessibility depends on.
-- [[world-aesthetic-direction]] — the AA-gated Kentō palette is your contrast head-start.
+- [[world-aesthetic-direction]] — the AA-gated Regalia palette is your contrast head-start.
 - [[system-onboarding]] — a readable first ten minutes is an accessibility win.
 
 ## See also

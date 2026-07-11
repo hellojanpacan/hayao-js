@@ -12,9 +12,9 @@
 </p>
 
 **Play the machine-verified example games at [hayao.dev/play](https://hayao.dev/play/).**
-Four are art-finished in the house woodblock style (Lanternway, Rootward,
-Tarnholm, Driftlight); the rest are playable engine slices. See where it's headed
-on the [roadmap](https://hayao.dev/roadmap/).
+Each one is machine-verified before it ships — games art-finished in the Regalia
+house style (`docs/STYLE.md`) alongside playable engine slices you can read and
+fork. See where it's headed on the [roadmap](https://hayao.dev/roadmap/).
 
 **An AI-first game engine.** A deterministic, headless-native simulation kernel
 with a Godot-style scene tree, pluggable renderers (SVG / Canvas / headless),

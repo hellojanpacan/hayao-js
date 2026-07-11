@@ -126,7 +126,7 @@ export function renderAudioFilmstrip(buf: StereoBuffer, opts: AudioFilmstripOpti
   );
 }
 
-/** Warm heat ramp (washi/ember palette) for spectrogram energy. */
+/** Warm heat ramp (paper→ember) for spectrogram energy. */
 function specColor(a: number): string {
   // dark → shu red → gold, keeping it on-brand and legible on dark
   const r = Math.round(40 + a * 200);

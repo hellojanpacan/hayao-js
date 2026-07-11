@@ -50,7 +50,7 @@ Match lore weight to session shape ([[system-session-structure]]):
 | Campaign / metroidvania | **Full five + a place-geography** | Regions with identity; a why-here for each gate |
 | Systemic / emergent | **Premise + rules that interact** | Lean lore; the *systems* author the stories ([[system-emergent-systems]]) |
 
-More world is not better world. *tarnholm* and *rootward* say almost nothing
+More world is not better world. A good one-word title says almost nothing
 explicitly — the premise is in the name and the mechanics carry the rest.
 
 ## Method
@@ -93,10 +93,10 @@ Anything more is a wiki.
 
 ## Aesthetic hook
 
-The **Kentō woodblock** register (`MEADOW`/`DUSK`; see
-[[world-aesthetic-direction]]) is quiet, weathered, and elegiac by construction —
+The **Regalia** register (`REGALIA_DAY`/`REGALIA_NIGHT`; see
+[[world-aesthetic-direction]]) is warm, weathered, and elegiac by construction —
 it rewards *small, human* stakes over cosmic ones. A world of one keeper and a
-drowning coast reads instantly in ink and washi; a galactic-empire premise fights
+drowning coast reads instantly in the ink line and a paper ground; a galactic-empire premise fights
 the intimacy the palette wants. Let the scaffold's *scale* match the look: the
 house lean is small worlds with big feelings. The premise line doubles as the
 title/first-screen invitation the JUDGE scores for "invites" (chrome & finish).
@@ -128,5 +128,5 @@ title/first-screen invitation the JUDGE scores for "invites" (chrome & finish).
 
 - [`design/JUDGE.md`](../JUDGE.md) — chrome & finish: does the first screen
   *invite*? The premise line is your invitation.
-- Example worlds *lanternway*, *rootward*, *tarnholm*, *kintsugi* — each is a
-  three-sentence world, not a wiki (reference the *restraint*, not the content).
+- The example corpus — each is a three-sentence world, not a wiki (reference the
+  *restraint*, not the content).
