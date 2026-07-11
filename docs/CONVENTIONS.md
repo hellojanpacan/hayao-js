@@ -21,6 +21,56 @@ where the two disagree, ARCHITECTURE wins.
   or root config from within a game task.
 - Register the game in the hub (`index.html`) so it appears in the example list.
 
+## Project anatomy — a project exists before its game does
+
+A hayao project is not born as a game; it is born as a **workspace** the
+Workshop can show, and grows into a game. From day zero it may carry:
+
+```
+<project>/                       # examples/<slug>/ here; the root in create-hayao
+  TIMELINE.md                    # the project's log (see below)
+  atoms/                         # authored components, each a defineAtom module
+    hero.ts  theme.ts  cards.ts
+  index.html  main.ts            # main.ts calls runProject() from day zero
+  game.ts  logic.ts  verify.ts   # OPTIONAL — appear when loop assembly begins
+```
+
+**TIMELINE.md** is a dated log, not a contract — it exists precisely to avoid
+the path-dependence a "GDD + roadmap" pair creates (anything pre-existing in a
+project reads as a commitment; a log reads as history). Three sections:
+
+- `## Future` — intentions, loosely held. Bullets.
+- `## Present` — one to three lines: what's being worked on NOW and what
+  feedback is awaited. The agent updates this when it starts or parks work;
+  the human glances at it to see where the project is.
+- `## Past` — dated entries, newest first. The **Original Concept** is the
+  first entry ever written (usually by the seed or intent module) and is never
+  edited — pivots, discoveries, and concept revisions are *appended* as new
+  entries. Staleness of old entries is a feature: they are records of past
+  belief, not standing orders.
+
+**atoms/** holds the project's authored components — each file exports a
+`defineAtom({...})`: a `kind` (`'visual' | 'scene' | 'audio'`), a `title`, an
+optional `radiates:` line (the seed hook — what game this atom suggests), knobs
+via the same tuning system games use, and a `build`/`cues` payload. Rules:
+
+- Atoms are **pure view + declared knobs**: everything they render is
+  `cosmetic`, all randomness through the world rng, deterministic like
+  everything else. Browser-clean, `@hayao` imports only.
+- The file's **header comment is the atom's iteration log** — what changed and
+  why, in the same essay-header voice as the engine's own modules.
+- An atom that stops radiating gets archived (delete the file, append a dated
+  note to the Timeline) — a dead seed costs a day; tending it costs the project.
+
+**Layered proof.** The definition of done at the bottom of this file describes
+a *game*. A project with no `game.ts` yet is not exempt from proof — it is held
+to the layer that exists: `npm run check`, the invariants, determinism of every
+atom world, plus the per-kind gate (vision judge for visual/scene atoms, the
+audio lint + quality gates for audio atoms, feel probes once a greybox verb
+exists). The full definition of done activates the day `game.ts` appears.
+`npm run eval` counts **games** — seed-stage projects are listed but never
+scored, so the verified-rate KPI stays honest.
+
 ## Bootstrap: `defineGame()`
 
 A game is a single `defineGame()` value — a plain, declarative description of
