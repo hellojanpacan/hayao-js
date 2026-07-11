@@ -100,6 +100,16 @@ function open(args) {
   return play(path);
 }
 
+// ── create : scaffold a fresh project (dispatch to the create-hayao bin) ──
+// One scaffold implementation lives in create-hayao.mjs; `hayao create` and the
+// (future) standalone `create-hayao` package both feed it. Args pass through, so
+// `hayao create my-game --seed` behaves exactly like `npx create-hayao my-game --seed`.
+function create(args) {
+  const scaffold = resolve(here, './create-hayao.mjs');
+  if (!existsSync(scaffold)) fail('hayao: create-hayao scaffolder not found');
+  process.exit(spawnSync(process.execPath, [scaffold, ...args], { stdio: 'inherit' }).status ?? 1);
+}
+
 // ── strike : dispatch to the tsx source (repo) or the built entry ──
 function strike(args) {
   const src = resolve(here, '../src/coin/strike.ts');
@@ -110,6 +120,9 @@ function strike(args) {
 }
 
 switch (cmd) {
+  case 'create':
+    create(rest);
+    break;
   case 'strike':
     strike(rest);
     break;
@@ -121,6 +134,6 @@ switch (cmd) {
     process.exit(2);
     break;
   default:
-    console.log('hayao — the court mint\n\n  hayao strike <entry> [--maker @handle] [-o out.coin.html]\n  hayao open <coin>            play it\n  hayao open --seal <coin>     print Heads / Tails\n  hayao open --assay <coin>    re-prove the Seal\n  hayao treasury               (coming soon)');
+    console.log('hayao — the court mint\n\n  hayao create <name> [--seed]  scaffold a fresh, runnable project\n  hayao strike <entry> [--maker @handle] [-o out.coin.html]\n  hayao open <coin>            play it\n  hayao open --seal <coin>     print Heads / Tails\n  hayao open --assay <coin>    re-prove the Seal\n  hayao treasury               (coming soon)');
     process.exit(cmd ? 1 : 0);
 }

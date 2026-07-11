@@ -129,5 +129,5 @@ so there is no `[hayao]` guard for it; the fix is project configuration:
 - If you use TypeScript, target ESM (`"module": "ESNext"`,
   `"moduleResolution": "Bundler"` or `"NodeNext"`).
 
-The scaffold from `npm create hayao@latest` is already configured this way — see
+The scaffold from `npx hayao@latest create` is already configured this way — see
 [QUICKSTART.md](QUICKSTART.md).

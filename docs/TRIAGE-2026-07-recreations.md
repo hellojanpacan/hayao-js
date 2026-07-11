@@ -146,7 +146,7 @@ triaged against repo HEAD. Verdicts:
 | 4 | IDENTITY-for-HUD undocumented | **CODE + DOCS** | `screenSpace` + draw contract docs. |
 | 5 | No nonlinear zoom curve | **DOCS** | Recipe: keep logical zoom in state, map to `cam.zoom` in one cosmetic place. Engine indirection would hide the real render scale that pointer math needs. |
 | 6 | No coroutine/async flow | **CODE** | `Coroutines` (generator-based, deterministic, concurrent). |
-| 7 | `npm create hayao` 404 | **FIXED@HEAD** | `create-hayao` exists in bin/ + publish config; needs the 0.4.0 npm release. |
+| 7 | `npm create hayao` 404 | **PARTIAL** | Was mis-marked fixed: a `create-hayao` *bin inside* `hayao` does NOT satisfy `npm create hayao` (npm resolves a standalone `create-hayao` package). Fixed for now via `npx hayao create <name>` (subcommand → same scaffolder); `npm create hayao` needs a standalone `create-hayao` package published (Option A, later). |
 | 8 | No seeded per-entity RNG for draw | **CODE** | `hashNoise(…values)` — stateless stable float, safe in `draw()`. |
 | 9 | rAF in preview | **CODE** | Built-in ticker (squad 1). |
 | 10 | No `pointer.justDown` | **CODE** | Pointer buttons feed the action pipeline (`mouse.left/right/middle` bindable in inputMap → `justPressed` works); axes stay for analog reads. |
