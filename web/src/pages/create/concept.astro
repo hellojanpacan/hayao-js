@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Footer from "../../components/Footer.astro";
 import AgentPrompt from "../../components/AgentPrompt.astro";
+import PluginCallout from "../../components/PluginCallout.astro";
 
 const PROMPT = `Help me design an original game with the Hayao Design Codex, then prototype it.
 
@@ -127,6 +128,7 @@ const sparks = [
         prompt={PROMPT}
         blurb="Paste this into Claude Code, Cursor, or any coding agent. It interviews you first — the building comes after the brief."
       />
+      <PluginCallout class="mt-4" />
     </section>
 
     <!-- next door -->

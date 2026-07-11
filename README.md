@@ -76,6 +76,25 @@ The scaffolded starter isn't a hello-world — it already **generates a solver-p
 ramped campaign**, so an AI author lands in a project that knows the invariants
 (`AGENTS.md`) and can prove its own output from the first commit.
 
+## The Claude Code plugin
+
+Any coding agent can build a hayao game — `AGENTS.md`, the docs, and
+`npm run verify` are agent-agnostic. Claude Code users get the workflow
+**packaged and enforced** as a plugin:
+
+```
+/plugin marketplace add hellojanpacan/hayao-js
+/plugin install hayao@hayao
+```
+
+It ships authoring skills (author-game, verify-determinism), commands
+(`/hayao:new-game`, `:verify`, `:inspect-api`, `:sprite`), build + verify
+subagents, and the differentiator: a **determinism gate** — a Stop hook that
+runs the proof harness whenever a session changed hayao source and blocks the
+agent from finishing until it passes. "No obvious bugs" stops being a model
+hope and becomes a gate it cannot ship past. See
+[plugin/README.md](https://github.com/hellojanpacan/hayao-js/blob/main/plugin/README.md).
+
 ## Generate an hour of proven content, don't hand-author it
 
 The hard part of "make me a whole game" was never one level — it was *forty* balanced
@@ -191,6 +210,7 @@ reasoning in [docs/ENGINE.md](https://github.com/hellojanpacan/hayao-js/blob/mai
 - [docs/LESSONS.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/LESSONS.md) — transferable lessons from real LLM-authored game builds.
 - [docs/FRICTION.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/FRICTION.md) — process-lesson log: what fought an AI session and what check/doc now prevents it.
 - [AGENTS.md](https://github.com/hellojanpacan/hayao-js/blob/main/AGENTS.md) — the operating manual for an AI author working in this repo.
+- [plugin/README.md](https://github.com/hellojanpacan/hayao-js/blob/main/plugin/README.md) — the Claude Code plugin: skills, `/hayao:*` commands, subagents, and the hook-enforced determinism gate.
 
 ## The site
 

@@ -331,6 +331,13 @@ quit context), \`inspect_moment\` (replay any tick → probe + screenshot),
 the human directs: propose fixes from the data, never auto-apply.
 Install \`@resvg/resvg-js\` as a devDependency to enable inspect_moment PNGs.
 
+## Claude Code plugin (optional, recommended)
+The engine ships a plugin that packages these conventions as skills and
+commands (\`/hayao:new-game\`, \`/hayao:verify\`, \`/hayao:inspect-api\`) plus a
+hook-enforced determinism gate — \`npm run verify\` must pass before the agent
+can finish a turn that changed source:
+\`/plugin marketplace add hellojanpacan/hayao-js\` then \`/plugin install hayao@hayao\`.
+
 Full docs & the greppable API digest: https://github.com/hellojanpacan/hayao-js
 `,
 
