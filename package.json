@@ -78,6 +78,7 @@
     "palette": "tsx scripts/palette-audit.ts",
     "audio": "tsx scripts/audio-render.ts",
     "soundtrack": "tsx scripts/soundtrack-render.ts",
+    "loops": "tsx scripts/loops-render.ts",
     "feel": "tsx scripts/feel.ts",
     "judge": "tsx scripts/judge.ts",
     "thumbs": "tsx scripts/site-thumbs.ts",
