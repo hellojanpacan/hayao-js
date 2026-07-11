@@ -1,0 +1,134 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
+
+// A real coin, struck from examples/sokoban by `hayao strike` and committed as
+// a static asset. Re-strike: npm run strike -- examples/sokoban/game.ts
+//   --maker @janpacan -o web/public/coin/sokoban.coin.html
+const COIN = "/coin/sokoban.coin.html";
+const SEAL = { seed: 1, steps: 120, hash: "982dcaec9376e67e", size: "183 KB" };
+---
+
+<Layout
+  title="Coin — Hayao"
+  description="A Hayao Coin is a whole game as one self-proving HTML file — engine, game, and a re-executable proof sealed together. Play one, download it, re-prove it."
+>
+  <main class="flex flex-col items-center text-center">
+    <!-- hero -->
+    <section class="mx-auto flex w-full max-w-2xl flex-col items-center px-6 pt-28 pb-10 md:pt-36">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Play · Sharing</p>
+      <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
+        A game you can hold
+      </h1>
+      <p class="mt-6 max-w-[48ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
+        A <strong class="font-semibold text-ink">Coin</strong> is one HTML file that <em>is</em> a whole game —
+        engine, game and a re-executable proof sealed inside. No install, no server, no link rot.
+        The one below is real: struck from the Sokoban example, {SEAL.size}, playing right here.
+      </p>
+    </section>
+
+    <!-- the live coin -->
+    <section class="mx-auto w-full max-w-xl px-6 pb-6">
+      <div class="overflow-hidden rounded-[1.5rem] border border-hair bg-[#141a30] shadow-[0_24px_60px_-24px_rgba(41,51,92,0.5)]">
+        <iframe
+          src={COIN}
+          title="Sokoban — a Hayao coin, playing from a single HTML file"
+          class="aspect-[4/3] w-full"
+          loading="lazy"
+        ></iframe>
+      </div>
+      <div class="mt-5 flex flex-wrap items-center justify-center gap-3">
+        <a
+          href={COIN}
+          download="sokoban.coin.html"
+          class="inline-flex items-center rounded-full bg-orange px-6 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:bg-green"
+        >
+          Download the coin · {SEAL.size}
+        </a>
+        <a
+          href={COIN}
+          target="_blank"
+          rel="noreferrer"
+          class="inline-flex items-center rounded-full border border-hair bg-panel px-6 py-3 font-body text-[0.95rem] font-semibold text-ink no-underline transition-colors hover:border-orange/60 hover:text-orange"
+        >
+          Open it raw
+        </a>
+      </div>
+      <p class="mx-auto mt-4 max-w-[44ch] font-body text-[0.85rem] font-light leading-relaxed text-muted">
+        Save it, mail it, drop it in a chat — double-click and it plays. The frozen engine
+        inside means it runs identically forever.
+      </p>
+    </section>
+
+    <!-- heads / tails -->
+    <section class="mx-auto w-full max-w-3xl px-6 py-16">
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="flex flex-col rounded-3xl border border-hair bg-panel p-7 text-left">
+          <p class="font-body text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-orange">Heads</p>
+          <h2 class="mt-2 font-display text-[1.2rem] font-semibold text-ink">The face</h2>
+          <p class="mt-2 grow font-body text-[0.9rem] font-light leading-relaxed text-soft">
+            Title, maker, and the maker's <em>arms</em> — a deterministic heraldic crest derived
+            from the handle. This one bears <span class="font-mono text-[0.82rem] text-ink">@janpacan</span>:
+            green field · bark leaf · triad · chief. Same handle, same arms, on every coin you strike.
+          </p>
+        </div>
+        <div class="flex flex-col rounded-3xl border border-hair bg-panel p-7 text-left">
+          <p class="font-body text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-blue">Tails</p>
+          <h2 class="mt-2 font-display text-[1.2rem] font-semibold text-ink">The Seal</h2>
+          <p class="mt-2 grow font-body text-[0.9rem] font-light leading-relaxed text-soft">
+            The proof: replay seed {SEAL.seed}, {SEAL.steps} steps, world hash
+            <span class="font-mono text-[0.82rem] text-ink"> {SEAL.hash}</span>. The coin carries a
+            headless copy of its own logic, so anyone can re-run the replay and check the hash —
+            with nothing but the file.
+          </p>
+        </div>
+      </div>
+
+      <!-- assay -->
+      <div class="mt-4 rounded-3xl border border-[#303a63] bg-[#141a30] p-6 text-left">
+        <p class="mb-3 font-body text-[0.72rem] uppercase tracking-[0.18em] text-orange">Re-prove it yourself</p>
+        <pre class="overflow-x-auto font-mono text-[0.82rem] leading-relaxed text-[#eef1f9]"><code>npx hayao open --assay sokoban.coin.html
+
+<span class="text-[#727b9c]">Sokoban — assay
+  determinism  replay seed {SEAL.seed} · {SEAL.steps} steps
+  stamped      {SEAL.hash}
+  re-derived   {SEAL.hash}</span>
+
+<span class="text-green">  ✓ SEAL HOLDS — the coin re-proves itself.</span></code></pre>
+      </div>
+    </section>
+
+    <!-- strike your own -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-28">
+      <div class="rounded-[2.25rem] bg-navy px-6 py-14 md:px-14">
+        <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">The mint is open</p>
+        <h2 class="mx-auto max-w-[20ch] text-balance font-display text-[clamp(1.6rem,4vw,2.2rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-white">
+          Strike your own
+        </h2>
+        <p class="mx-auto mt-5 max-w-[46ch] font-body text-[1rem] font-light leading-relaxed text-white/70">
+          One command turns any Hayao game into a coin — yours to keep in a folder, hand to a
+          friend, or post anywhere a file can go.
+        </p>
+        <div class="mx-auto mt-7 inline-block max-w-full overflow-x-auto rounded-2xl border border-white/15 bg-black/25 px-6 py-4 text-left">
+          <code class="font-mono text-[0.85rem] text-white/90">npx hayao strike my-game/game.ts --maker @you</code>
+        </div>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <a
+            href="/docs/coin"
+            class="inline-flex items-center rounded-full bg-orange px-6 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:bg-green"
+          >
+            Read the Coin doc
+          </a>
+          <a
+            href="/play"
+            class="inline-flex items-center rounded-full border border-white/25 px-6 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:border-white/60"
+          >
+            Back to the games
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

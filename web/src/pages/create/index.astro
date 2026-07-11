@@ -15,9 +15,9 @@ const doors = [
   {
     step: "02",
     time: "An evening",
-    title: "Design an original concept",
-    desc: "Compose a design from the codex — an anchor, a genre, systems and a twist — then prototype it in Regalia once the idea holds.",
-    href: "/create/concept",
+    title: "Design with the Codex",
+    desc: "Compose a design from 216 modules — an anchor, a genre, systems and a twist — then prototype it in Regalia once the idea holds.",
+    href: "/create/design",
     accent: "text-green",
     bar: "bg-green",
   },
@@ -74,6 +74,41 @@ const doors = [
       <p class="mt-6 font-body text-[0.85rem] font-light text-muted">
         Not sure? Take the quickstart — the style is a default, not a wall. You can swap it out later.
       </p>
+
+      <!-- the instruments — not doors in, but what you create WITH -->
+      <div class="mt-14">
+        <p class="mb-4 text-center font-body text-[0.72rem] uppercase tracking-[0.18em] text-muted">And the instruments you'll use along the way</p>
+        <div class="grid gap-4 md:grid-cols-2">
+          <a
+            href="/create/sound"
+            class="group flex flex-col rounded-3xl border border-hair bg-panel p-6 text-left no-underline transition-colors hover:border-orange/50 hover:bg-orange/5"
+          >
+            <h2 class="font-display text-[1.1rem] font-semibold text-ink">Sound, as code</h2>
+            <p class="mt-2 grow font-body text-[0.88rem] font-light leading-relaxed text-soft">
+              One-line SFX specs and whole composed scores, synthesised live — hear the engine play
+              on the page, no samples anywhere.
+            </p>
+            <span class="mt-4 inline-flex items-center gap-1 font-body text-[0.85rem] font-semibold text-ink transition-colors group-hover:text-orange">
+              Hear it
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+            </span>
+          </a>
+          <a
+            href="/create/workshop"
+            class="group flex flex-col rounded-3xl border border-hair bg-panel p-6 text-left no-underline transition-colors hover:border-orange/50 hover:bg-orange/5"
+          >
+            <h2 class="font-display text-[1.1rem] font-semibold text-ink">Workshop — the playtest loop</h2>
+            <p class="mt-2 grow font-body text-[0.88rem] font-light leading-relaxed text-soft">
+              Every human playtest becomes a replayable artifact your agent reads — live knobs,
+              session scrubbing, and accepted values written back to source.
+            </p>
+            <span class="mt-4 inline-flex items-center gap-1 font-body text-[0.85rem] font-semibold text-ink transition-colors group-hover:text-orange">
+              See the loop
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+            </span>
+          </a>
+        </div>
+      </div>
     </section>
   </main>
 

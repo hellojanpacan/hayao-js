@@ -1,0 +1,139 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
+
+// Every playable on the site, in one place. A card earns its spot by being the
+// real example running in the browser — never a video, never a mock.
+const games = [
+  {
+    href: "/play/platformer",
+    genre: "2D Platformer",
+    title: "Small Flame",
+    d: "Hold to rise on your fuel, drift the gusts, reach the lantern. Momentum, coyote time and a bot that beats every level before you see it.",
+    proof: "bot-beaten · deterministic",
+    bar: "bg-orange",
+    accent: "text-orange",
+  },
+  {
+    href: "/play/puzzle",
+    genre: "Mobile Puzzle",
+    title: "Lumen",
+    d: "Drag a spark, set off a chain reaction of light. Every board is generated, solver-proven winnable, and served on an Elo ladder that fits you.",
+    proof: "solver-proven · generated",
+    bar: "bg-blue",
+    accent: "text-blue",
+  },
+  {
+    href: "/play/sokoban",
+    genre: "The classic",
+    title: "Sokoban",
+    d: "The 1982 box-pusher as the repo's reference example — pure rules, snapshot undo, and the cleanest showing of the logic/view split.",
+    proof: "solver-proven · golden replay",
+    bar: "bg-green",
+    accent: "text-green",
+  },
+];
+---
+
+<Layout
+  title="Play — Hayao"
+  description="The Hayao playground: machine-verified games running live in the browser — a platformer, a puzzle, the Sokoban reference — plus a Coin you can take with you."
+>
+  <main class="mx-auto w-full max-w-3xl px-6">
+    <section class="flex flex-col items-center pt-28 pb-12 text-center md:pt-36">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Play</p>
+      <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
+        Real games, running right here
+      </h1>
+      <p class="mt-6 max-w-[48ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
+        Nothing on this page is a video. Each card is the actual example from the repo, running
+        on the engine in your browser — and each ships a verify suite that machine-proves its
+        claims before it's allowed here.
+      </p>
+    </section>
+
+    <!-- the games -->
+    <section class="pb-4">
+      <div class="grid gap-4 md:grid-cols-3">
+        {games.map((g) => (
+          <a
+            href={g.href}
+            class="group flex flex-col rounded-3xl border border-hair bg-panel p-6 text-left no-underline transition-colors hover:border-orange/50 hover:bg-orange/5"
+          >
+            <div class:list={["h-1 w-8 rounded-full", g.bar]}></div>
+            <p class:list={["mt-4 font-body text-[0.72rem] uppercase tracking-[0.16em]", g.accent]}>{g.genre}</p>
+            <h2 class="mt-1 font-display text-[1.25rem] font-semibold text-ink">{g.title}</h2>
+            <p class="mt-2 grow font-body text-[0.88rem] font-light leading-relaxed text-soft">{g.d}</p>
+            <p class="mt-4 font-mono text-[0.68rem] text-muted">{g.proof}</p>
+            <span class="mt-3 inline-flex items-center gap-1 font-body text-[0.85rem] font-semibold text-ink transition-colors group-hover:text-orange">
+              Play it
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+            </span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- coin + coming next -->
+    <section class="pb-14 pt-4">
+      <div class="grid gap-4 md:grid-cols-2">
+        <a
+          href="/play/coin"
+          class="group flex flex-col rounded-3xl border border-hair bg-panel p-6 text-left no-underline transition-colors hover:border-orange/50 hover:bg-orange/5"
+        >
+          <p class="font-body text-[0.72rem] uppercase tracking-[0.16em] text-orange">Take one with you</p>
+          <h2 class="mt-1 font-display text-[1.25rem] font-semibold text-ink">The Coin</h2>
+          <p class="mt-2 grow font-body text-[0.88rem] font-light leading-relaxed text-soft">
+            A whole game as one self-proving HTML file — play it here, download it, re-prove its
+            Seal with a single command. This is how Hayao games travel.
+          </p>
+          <span class="mt-4 inline-flex items-center gap-1 font-body text-[0.85rem] font-semibold text-ink transition-colors group-hover:text-orange">
+            Experience it
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+          </span>
+        </a>
+
+        <div class="flex flex-col rounded-3xl border border-dashed border-hair p-6 text-left">
+          <p class="font-body text-[0.72rem] uppercase tracking-[0.16em] text-muted">On the bench</p>
+          <h2 class="mt-1 font-display text-[1.25rem] font-semibold text-muted">Tiny RTS</h2>
+          <p class="mt-2 grow font-body text-[0.88rem] font-light leading-relaxed text-muted">
+            Faction asymmetry, wall-aware units, duel-proven counters — the third flagship is
+            being rebuilt on the Regalia kit. It ships when its proofs pass, not before.
+          </p>
+          <span class="mt-4 font-body text-[0.85rem] font-light text-muted">In the works</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- the honest gallery line -->
+    <section class="pb-24">
+      <div class="rounded-[2.25rem] bg-navy px-6 py-14 text-center md:px-14">
+        <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">The proof is the marketing</p>
+        <h2 class="mx-auto max-w-[26ch] text-balance font-display text-[clamp(1.6rem,4vw,2.2rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-white">
+          Not “trust me, an agent built this”
+        </h2>
+        <p class="mx-auto mt-5 max-w-[50ch] font-body text-[1rem] font-light leading-relaxed text-white/70">
+          An agent built these, a human directed them, and the machine proof that they work ships
+          in the repo: solvers that walk every level, golden replay hashes, bots that beat the
+          campaign. Run <code class="font-mono text-[0.85em] text-white">npm run verify</code> and check.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <a
+            href="/docs/gallery"
+            class="inline-flex items-center rounded-full bg-orange px-6 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:bg-green"
+          >
+            What “verified” means
+          </a>
+          <a
+            href="https://github.com/hellojanpacan/hayao-js/tree/main/examples"
+            class="inline-flex items-center rounded-full border border-white/25 px-6 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:border-white/60"
+          >
+            All example sources
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
