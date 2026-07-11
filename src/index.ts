@@ -116,6 +116,8 @@ export * from './ui/menuNav';
 
 // ── verify: the AI-first harness ────────────────────────────────
 export * from './verify/solver';
+export * from './verify/ablation';
+export * from './verify/agency';
 export * from './verify/determinism';
 export * from './verify/playthrough';
 export * from './verify/capture';

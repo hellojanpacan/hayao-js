@@ -9,9 +9,13 @@ judge ranks; `rank_gameplay` used as the fun proxy).
 
 > **Designing from a high-level intent?** FUN.md is the *verification* half — it
 > proves a genre is fair. For the *generative* half — turning "make an RTS with
-> faction asymmetry" into a concrete design (reference-game DNA, composable
-> systems, and the "X but Y" twist) — start in the **[Design Codex](README.md)**,
-> then return here to prove what you designed.
+> faction asymmetry" into a concrete design — start with the
+> **[spine](00-process/the-spine.md)**, the Codex's primary generator: name the one
+> *tension* (objective · superpower · scarcity · obstacle · renewal) and derive the
+> game from it, using the "X but Y" [twist](00-process/the-twist.md) only to give
+> that tension a face. The spine gives you a *loop*; the twist gives you a *pitch* —
+> lead with the loop. Then return here to prove what you designed — and note **law 8**
+> below is where the spine's central coupling becomes a mechanical proof.
 
 ## Part 1 — Universal laws
 
@@ -53,6 +57,21 @@ judge ranks; `rank_gameplay` used as the fun proxy).
    deck pilots), golden replay hashes, and save/load all free. Every sim
    doubles as its own planning model. *Test recipe: golden hash of a full
    scripted run; snapshot→restore→hash round-trip.*
+8. **Coupling is provable by ablation — the sharp form of law 2.** Law 2 proves
+   *some* tension exists; it can't say *where* it lives. A game can pass law 2
+   while its fun rides on one system and the rest is decoration
+   ([Design Codex](70-antipatterns/decoration.md)). Localize it: build the game
+   twice — once with its central coupling intact (`coupled`), once with that ONE
+   coupling neutralized (`ablated` — free light, infinite water, no stamina) — and
+   run the SAME skilled and lazy policies over both. A real spine
+   ([00-process/the-spine.md](00-process/the-spine.md)) makes the skill-gap
+   **collapse** under ablation (e.g. skilled 1.0/1.0, lazy 0.0→0.875: a 1.0 gap
+   falls to 0.125). A gap that *survives* ablation proves the coupling is
+   decoration — the fun comes from elsewhere and this system is unproven weight.
+   This is the "does using the superpower well create the next problem?" gate,
+   made mechanical. *Test recipe:
+   `assertLoadBearing({ coupling, coupled, ablated, skilled, lazy })` — from
+   `@hayao`; the gap must collapse (`ablation.ts`).*
 
 ## Part 2 — Per-genre cheat sheet
 
@@ -229,6 +248,9 @@ standing trap from the campaign:
 - [ ] **Null strategy loses** — the do-nothing/undefended/never-draft run is
       scripted and asserted to fail.
 - [ ] **Skill delta asserted** — intended play beats null play by a margin.
+- [ ] **Central coupling ablation-proven** — for the game's spine coupling, the
+      skilled-vs-lazy gap collapses when the coupling is removed
+      (`assertLoadBearing`); a gap that survives means the coupling is decoration.
 - [ ] **Grace windows specced in frames** — coyote/buffer/i-frames/mercy
       values chosen and tested edge-in/edge-out.
 - [ ] **Procgen connectivity gate first** — reachability sweep across seeds

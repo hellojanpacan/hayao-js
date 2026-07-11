@@ -5,8 +5,9 @@ kind: recipe
 tags: [tower-defense, roguelite, draft, meta, recipe]
 summary: Tower defense where towers are drafted each run and meta-progression persists — build decisions under roguelike variance.
 use-when: You want TD replayability via drafted builds and between-run unlocks.
-composes-with: [genre-tower-defense, system-meta-progression, system-build-diversity, process-the-twist]
+composes-with: [genre-tower-defense, system-meta-progression, system-build-diversity, process-the-twist, process-the-spine]
 anchors: [anchor-slay-the-spire, anchor-into-the-breach]
+spine: "You don't choose your towers — the run drafts them, and every tower you commit to seal one lane is the board, gold, and build identity you no longer have for the threat the next wave brings."
 verify-with: design/FUN.md#8-·-tower-defense
 ---
 
@@ -27,6 +28,45 @@ whose fundamentals you already trust.
 keep [[genre-tower-defense]]'s spatial fun intact and swap the container: instead
 of a fixed shop of all towers, each run hands you a small, semi-random toolkit,
 and a persistent tree decides what *can* be dealt.
+
+## The spine
+
+*You don't choose your towers — the run drafts them, and every tower you commit to
+seal one lane is the board, gold, and build identity you no longer have for the
+threat the next wave brings.*
+
+| Part | This game |
+|---|---|
+| **Objective** | Hold the map — keep every wave from leaking, run after run, and chase the build the meta tree keeps promising |
+| **Superpower** | **Place a drafted tower** — commit fixed map geometry to the hand this run dealt you, not the roster you'd have picked |
+| **Scarcity** | The **draft** (N-or-skip; you get *given* towers, not chosen ones) **+ the board** (each placement spends a cell and a firing arc you can't reuse) **+ the run economy** (gold buys this tower *or* the next) |
+| **Obstacle** | Waves whose archetype mix demands specific counters, arriving against fixed lanes — the enemies your drafted hand answers, or doesn't |
+| **Renewal** | Every run re-deals a seeded draft + wave mix (+ maybe lanes); within a run each wave re-asks whether your committed board covers what's coming; the meta tree re-authors what the *next* run can draw |
+
+## Resonance
+
+Every element traces to the spine — the coherence proof (see [[process-the-spine]]).
+Note the death-handling row: a roguelite ends the *run* yet advances the *tree*, and
+that split is **derived** from the spine, not defaulted.
+
+| Element | Arrow back to the spine |
+|---|---|
+| Verb: place a drafted tower | The single agency — you commit dealt tools to fixed geometry; every build is *this hand* reshaped onto *this map* |
+| Scarcity: a drafted hand, not a catalogue | You don't pick — the run deals N-or-skip ([[anchor-slay-the-spire]]); *which* towers you were given is the whole plan, so the fork is real, not a rename |
+| Scarcity: finite board & firing arcs | Each placement eats a cell and a coverage angle you can't reuse — sealing one lane is space *spent*, never free |
+| Scarcity: the run economy | Gold buys this tower *or* the next; covering now is income you won't have when the mix shifts under you |
+| **Power creates the problem** | The tower you place to seal one lane is the board, gold, and build identity you can't spend on the next — and how you spend this round's draft authors what next round deals *and* what it demands *(passes the gate)* |
+| Renewal: seeded per-run draft + wave mix (+ lanes) | Every run re-poses "cover *this* map with *this* hand" against a fresh draw ([[system-procgen-design]]) — one tension, endless faces |
+| Renewal: waves ramp → breathe → peak | Within a run, each wave re-asks whether your committed board answers what's actually coming — the spine re-posed at encounter scale |
+| The counter matrix the draft rides on | Near-*hard* [[system-counter-systems]] make *which* answers you drafted decide the run; without teeth the coverage puzzle would be [[antipattern-fake-choice]] |
+| Telegraphed wave intent | Variance is *shown*, never blind ([[anchor-into-the-breach]]); a leak is a legible build failure, which is exactly what makes a drafted hand *fair* |
+| Meta: persistent unlock tree | A lost run still advances *something* ([[anchor-hades]]) — and it unlocks *options* that re-author the next draft, not raw stats, keeping the spend-vs-cover decision alive ([[system-meta-progression]]) |
+| Death-handling: run ends, tree advances | Spine is *variance-run over a trusted loop*; the loss must sting *and* pull forward — a run that ended for nothing, or a loss with no pull, would be **dissonant** ([[antipattern-dissonance]]) |
+| Feel: range rings, placement feedback, finale crescendo | Makes coverage *legible* — you have to read what your committed board does and doesn't cover to spend the next draft well ([[pattern-readability]]) |
+
+No row is decoration; no row fights the spine. The gate holds: **the tower that
+seals this lane is the tower you can't place against the next — and this round's
+draft is authored by how the last one went.**
 
 ## Anchors
 

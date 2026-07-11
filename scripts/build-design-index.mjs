@@ -51,6 +51,7 @@ function parseFrontmatter(text, file) {
 const files = walk(DESIGN).sort();
 const modules = [];
 const errors = [];
+const warnings = [];
 const ids = new Map(); // id -> file
 
 for (const file of files) {
@@ -81,6 +82,20 @@ for (const m of modules) {
   for (const id of refs) if (!defined.has(id)) errors.push(`${m.file}: dangling link -> [[${id}]]`);
 }
 
+// Coherence gate (structural half): a spine-first recipe must carry a Resonance
+// table, and a Resonance table must declare a spine — a half-migrated design can't
+// ship pretending to be coupled. The *quality* half (arrows real, no dissonance)
+// is a judgment call for the agent + workshop; see design/00-process/the-spine.md.
+const hasResonance = body => /^#{2,}\s+Resonance\b/m.test(body || '');
+for (const m of modules) {
+  if (m.kind !== 'recipe') continue;
+  const spine = typeof m.spine === 'string' && m.spine.trim().length > 0;
+  const table = hasResonance(m.body);
+  if (spine && !table) errors.push(`${m.file}: declares 'spine' but has no '## Resonance' table (coherence gate — see process-the-spine)`);
+  else if (table && !spine) errors.push(`${m.file}: has a '## Resonance' table but declares no 'spine' frontmatter (coherence gate)`);
+  else if (!spine && !table) warnings.push(`${m.file}: legacy recipe — no spine/Resonance table; consider migrating via process-the-spine`);
+}
+
 modules.sort((a, b) => (KIND_ORDER.indexOf(a.kind) - KIND_ORDER.indexOf(b.kind)) || String(a.id).localeCompare(String(b.id)));
 
 // index.json — the machine-readable index.
@@ -106,6 +121,10 @@ for (const kind of KIND_ORDER) {
 writeFileSync(join(DESIGN, 'INDEX.md'), md);
 
 console.log(`Indexed ${modules.length} modules across ${new Set(modules.map(m => m.kind)).size} kinds.`);
+if (warnings.length) {
+  console.warn(`\n${warnings.length} warning(s) (non-blocking):`);
+  for (const w of warnings) console.warn('  - ' + w);
+}
 if (errors.length) {
   console.error(`\n${errors.length} issue(s):`);
   for (const e of errors) console.error('  - ' + e);

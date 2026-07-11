@@ -5,8 +5,9 @@ kind: recipe
 tags: [deckbuilder, cozy, no-fail, recipe, composition]
 summary: Slay-the-Spire's draft-and-build with the stakes removed — a gentle, no-death deckbuilder about tending, not surviving.
 use-when: You want deckbuilding depth in a calm, no-fail wrapper.
-composes-with: [anchor-slay-the-spire, genre-deckbuilder, genre-farming-sim, process-the-twist]
+composes-with: [anchor-slay-the-spire, genre-deckbuilder, genre-farming-sim, process-the-twist, process-the-spine]
 anchors: [anchor-slay-the-spire, anchor-stardew-valley]
+spine: "Grow a blooming engine before a gentle season closes — no death, but every hand is a turn you can't get back, so the calm scarcity is time itself."
 verify-with: design/FUN.md#11-·-deckbuilder
 ---
 
@@ -27,6 +28,57 @@ worst outcome is *slower*, never *dead*.
 **Slay the Spire but cozy.** Same draft-and-build spine — a weak starter deck that
 becomes a strategy one card at a time — bent so the pressure test is *tending*, not
 *surviving*. Cards feed a board that only ever improves.
+
+## The spine
+
+*Grow a blooming engine before a gentle season closes — no death, but every hand
+is a turn you can't get back, so the calm scarcity is time itself.*
+
+This is a **low-tension** spine, which makes naming it harder and more instructive:
+strip the death and the timer-that-fails, and the scarcity leaks out unless you find
+the honest soft one. It's here — the *season*. The garden only ever improves, but it
+does not improve *forever*: a season holds a finite number of hands, and a turn spent
+on a weak line is bloom you'll never bank. The tension is deck-engine growth racing a
+soft deadline, not combat lethality. See [[process-the-spine]].
+
+| Part | This game |
+|---|---|
+| **Objective** | Bring the garden to full bloom — fill the board before the season closes |
+| **Superpower** | **Draft-and-play** — take 1-of-3, spend a hand of cards to plant, tend, and grow the board |
+| **Scarcity** | **Hands per season** (a soft clock — finite turns, no punishment) **+ water/sun/soil** the cards spend each turn; a hand spent on a weak line is bloom you can't get back |
+| **Obstacle** | The garden's own soft goals — bloom *this* before *that*, plots that want a synergy you haven't drafted yet — resisting a lazy dominant line, never attacking you |
+| **Renewal** | Each hand re-poses "which line advances the most bloom now?"; a new draft-of-3, a filling board, and procgen'd garden layouts keep the trade fresh |
+
+## Resonance
+
+Every element traces to the spine — the coherence proof (see [[process-the-spine]]).
+The instructive case: a purely cozy element that relieved *all* pressure would be
+[[antipattern-dissonance]] — so watch that the soft clock keeps stakes present
+*without* punishing. Death-handling here is a third answer, different from both
+[[recipe-emberfall]] (cheap respawn) and [[recipe-waterline]] (loss that stings):
+the spine *derives* "no loss at all, only slower," and the season is what keeps that
+from going slack.
+
+| Element | Arrow back to the spine |
+|---|---|
+| Verb: draft-and-play a hand onto the garden | The single agency; every card targets the board you're racing to bloom, never an enemy |
+| **Power creates the problem** | Every hand you play *is* a hand off the season's finite clock and *is* the water/sun/soil spent — advancing one bloom line is exactly what defers the others → tending well is what makes "which line, now?" the standing decision *(passes the gate)* |
+| Scarcity: hands per season + water/sun/soil | The soft clock turns a no-death loop into a real trade — a turn spent is a turn you can't get back, so the draft still *costs* ([[system-resource-loops]]) |
+| Renewal: fresh draft-of-3, filling board, procgen'd layouts | Re-poses "advance the most bloom now" against a new hand and a new garden each beat ([[system-build-diversity]]) |
+| Death-handling: no fail state; floor is "slower," never "over" | Spine is *cozy growth under a soft deadline*; a punishing death or a run-wipe would be **dissonant** — it's derived *out*, and the season carries the stakes in its place ([[system-grace]]) |
+| The soft clock: a season that closes gently and banks progress | The honest cozy scarcity — it keeps every hand load-bearing *without* threatening the player; remove it and the spine goes slack ([[pattern-pacing-and-tension]]) |
+| Garden's soft goals (bloom *this* before *that*) | The obstacle that makes the draft trade off; without it a dominant line goes unpunished ([[antipattern-boring-optimal]], [[pattern-risk-reward]]) |
+| Setting: a garden as the target of every card | The objective made physical — growth numbers on a plot, not damage numbers on a monster; the bloom *is* the progress bar ([[system-progression]], [[pattern-readability]]) |
+| Theme: *"blooming because of me"* — tending, not surviving | The mechanic (spend hands to grow) is the metaphor (a place getting nicer by your hand), and the no-death floor is that meaning made mechanical |
+| Feel: legible growth beats, choreographed after every hand | Makes the soft scarcity *rewarding* rather than dreadful — the season's pressure reads as momentum, not threat ([[system-reward-schedules]], [[pattern-juice-choreography]]) |
+| System: [[genre-deckbuilder]] draft/deck-as-build | The engine you're growing; the 1-of-3 is where a hand's opportunity cost is chosen |
+| System: [[genre-farming-sim]] persistent, improving board | The calm register and the goal shape — a place, not a bar; keeps the clock *soft* |
+| System: [[system-collectibles]] cards, seeds, tiles | The pull to keep drafting *is* the pull to spend another finite hand — gathering feeds the race |
+
+No row is decoration; no row fights the spine. The gate holds: **every hand that
+grows the garden is a hand off the season you can't get back — tending well is what
+makes the next choice matter**, and the soft clock keeps that true without ever
+punishing.
 
 ## Anchors
 
