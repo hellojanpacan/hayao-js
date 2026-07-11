@@ -57,6 +57,55 @@ describe('renderSound', () => {
     expect(highCut).toBeLessThan(lowCut);
   });
 
+  it('envCurve 0 is bit-identical to omitting it (backward compatible)', () => {
+    const base: SoundSpec = { freq: 330, decay: 0.4, sustainLevel: 0.2, release: 0.3, sustain: 0.1 };
+    expect(signalHash(renderSound(base))).toBe(signalHash(renderSound({ ...base, envCurve: 0 })));
+  });
+
+  it('envCurve front-loads the decay — more energy early, less late', () => {
+    // A note that decays to silence: linear vs exponential. The exponential
+    // curve should drop faster, so its second half is quieter relative to its
+    // first half than the linear one.
+    const spec: SoundSpec = { freq: 220, wave: 'triangle', attack: 0.002, decay: 0.6, sustainLevel: 0, release: 0.01, sustain: 0 };
+    const frontBias = (sig: Float32Array) => {
+      const half = Math.floor(sig.length / 2);
+      return rms(sig.subarray(0, half)) / (rms(sig.subarray(half)) + 1e-9);
+    };
+    const lin = renderSound(spec);
+    const exp = renderSound({ ...spec, envCurve: 4 });
+    expect(signalHash(exp)).not.toBe(signalHash(lin));
+    expect(frontBias(exp)).toBeGreaterThan(frontBias(lin));
+  });
+
+  it('envCurve stays deterministic', () => {
+    const spec: SoundSpec = { freq: 440, decay: 0.5, sustainLevel: 0.1, release: 0.4, envCurve: 3 };
+    expect(signalHash(renderSound(spec))).toBe(signalHash(renderSound(spec)));
+  });
+
+  it('filterEnv 0 is bit-identical to omitting it (backward compatible)', () => {
+    const base: SoundSpec = { freq: 220, wave: 'saw', sustain: 0.3, lowpass: 1800 };
+    expect(signalHash(renderSound(base))).toBe(signalHash(renderSound({ ...base, filterEnv: 0 })));
+  });
+
+  it('a positive filterEnv brightens the attack then closes down', () => {
+    // Bright-attack pluck: cutoff starts high and settles to the base, so the
+    // note's first half is brighter than its second — and brighter up front than
+    // the static-filter version.
+    const spec: SoundSpec = { freq: 220, wave: 'saw', attack: 0.002, decay: 0, sustain: 0.5, release: 0.05, lowpass: 1200 };
+    const swept = renderSound({ ...spec, filterEnv: 2.5, filterEnvTime: 0.15 });
+    const stat = renderSound(spec);
+    expect(signalHash(swept)).not.toBe(signalHash(stat));
+    const firstHalf = (s: Float32Array) => spectralCentroid(s.subarray(0, Math.floor(s.length / 2)));
+    expect(firstHalf(swept)).toBeGreaterThan(firstHalf(stat)); // brighter onset
+    const secondHalf = (s: Float32Array) => spectralCentroid(s.subarray(Math.floor(s.length / 2)));
+    expect(firstHalf(swept)).toBeGreaterThan(secondHalf(swept)); // then closes
+  });
+
+  it('filterEnv stays deterministic', () => {
+    const spec: SoundSpec = { freq: 330, wave: 'saw', sustain: 0.4, lowpass: 1500, filterEnv: -2, filterEnvTime: 0.2 };
+    expect(signalHash(renderSound(spec))).toBe(signalHash(renderSound(spec)));
+  });
+
   it('deep FM stays finite and in-range (regression: freq could go negative)', () => {
     const sig = renderSound({ freq: 200, wave: 'sine', fm: 800, fmFreq: 40, sustain: 0.2 });
     for (let i = 0; i < sig.length; i++) {
