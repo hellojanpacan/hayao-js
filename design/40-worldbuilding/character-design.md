@@ -48,12 +48,12 @@ The order is the discipline. A gorgeous face on a same-shaped body loses; a crud
 6. **Encode the role in the look.** Attacker looks sharp, defender looks solid, support looks soft. Let the body promise the verb from step 1 — the twist seam above is this step turned up to eleven.
 7. **Stress-test the crowd.** Put the whole roster on one screen, in motion, at real density. If it turns to soup, you over-detailed. Return to step 3.
 
-## Aesthetic hook (Kentō woodblock / JUDGE)
+## Aesthetic hook (Regalia / JUDGE)
 
-The woodblock palette *rewards* this discipline. Flat fills and a limited hue set mean silhouette and one accent do nearly all the work — there's no gradient noise to hide behind.
+The Regalia palette *rewards* this discipline. Flat duotone fills and a small hue set mean silhouette and one accent do nearly all the work — there's no gradient noise to hide behind.
 
-- **Register per character.** In kentō, each color is a printed plate. Give each character one plate-accent from the palette; the shared inks bind them to the world, the accent separates them. This is faction-identity thinking at the individual scale — see [[world-faction-identity]].
-- **Ink-line silhouette.** A clean outline over flat fill *is* the readability test passing. If the woodblock cutout is ambiguous, the design is.
+- **Register per character.** Give each character one accent from the Regalia set; the shared ink binds them to the world, the accent separates them. This is faction-identity thinking at the individual scale — see [[world-faction-identity]].
+- **Ink-line silhouette.** A clean edge over a flat fill *is* the readability test passing. If the cutout is ambiguous, the design is.
 - **Static and deterministic.** Character variation is authored, not random — no per-frame jitter deciding who's who. Keep view-only flourishes cosmetic so identity lives in the stable, hashed state, not the paint.
 - **Motion as identity.** A gait or idle authored as a small tween reads before the sprite resolves. The `sandboxes/anim-lab` is where a single such motion lives in isolation — study one there before you animate a cast.
 

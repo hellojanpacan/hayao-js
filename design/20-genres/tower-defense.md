@@ -73,8 +73,8 @@ watched my machine hold the line."* The satisfaction is a plan surviving contact
   attack* for a rival lane and defend theirs. Pairs [[system-build-diversity]].
 - **TD but ammo is a shared resource that runs dry** *(constraint)* — towers
   compete for a finite magazine; over-building starves the finale.
-- **TD but towers age and crack** *(theme + tonal)* — Kentō stonework that
-  weathers each wave; repair vs expand becomes the economy tension.
+- **TD but towers age and crack** *(theme + tonal)* — weathered stonework that
+  ages each wave; repair vs expand becomes the economy tension.
 
 The strongest TD twist bends the *decision*, not the theme: change what the
 player builds against (a rival's drafted wave), what the towers cost (a shared

@@ -178,8 +178,8 @@ on it:
   change three tiles, see exactly three changes — not a rewritten `build()` only a
   human can eyeball.
 
-The reference instance is [`examples/updrift`](../examples/updrift): its whole
-ascent is generated as `LevelData`, proven climbable by `platformerReachable`, then
+The reference instance is [`examples/small-flame`](../examples/small-flame): its
+chamber is authored as `LevelData`, proven winnable by a 0-death waypoint bot, then
 skinned by a `cosmetic` view. Geometry-as-data is core; the *feel* laid over it is a
 recipe ([`recipes/platformer-feel.md`](../recipes/platformer-feel.md)).
 

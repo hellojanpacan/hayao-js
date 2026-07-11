@@ -1361,7 +1361,7 @@ list, so moving a `Camera2D` node scrolls the world and setting its `zoom`
 scales it. What was **missing was the ergonomic + proof layer**: nothing drove
 the camera, nothing converted screen→world, and no example exercised a world
 larger than the viewport. Filled that. New `scene/cameraController.ts` and two
-`World` methods; 10 new engine tests + the `examples/lanternway/` demo. Full
+`World` methods; 10 new engine tests + a scrolling-camera demo. Full
 portfolio `verify` unchanged (no golden drift on the other 26 games).
 
 **Gaps filled:**
@@ -1402,7 +1402,7 @@ portfolio `verify` unchanged (no golden drift on the other 26 games).
   deadzone (420px vs 180px here). The feel probe window has to come from a run
   you actually watched, or it fails on correct behaviour.
 
-### E7 · Atmospheric render — gradient/glow paint + parallax depth (driftlight) ✅
+### E7 · Atmospheric render — gradient/glow paint + parallax depth (atmospheric demo) ✅
 
 **What the engine lacked.** The `Paint` vocabulary was flat colour strings only:
 `fill`/`stroke` hex, nothing else. That is the ceiling between "flat woodblock"
@@ -1438,7 +1438,7 @@ divergence, never in normal play.
 
 **What transfers.** Every game gains gradients + glow for free — skies, water,
 health bars, lit projectiles, rim-light. Because paint is cosmetic data on
-cosmetic nodes it never enters `world.hash()`: driftlight recolours the sky every
+cosmetic nodes it never enters `world.hash()`: the atmospheric demo recolours the sky every
 frame and the golden replay hash is unchanged. The "looks judge sees only a
 static SVG" gate still binds — all richness is static per frame (the day arc is a
 function of downstream progress, not wall-clock), so the filmstrip reads true.
@@ -1521,7 +1521,7 @@ that seams are reciprocal (one-way drops exempted). The graph is the contract; t
 geometry can't silently contradict it.
 
 **What "publishable" took, layer by layer.** The Mender (procedural articulated
-figure, 7 poses, gold-seam kintsugi motif). Combat (swept hitbox, hit-stop,
+figure, 7 poses, gold-seam repair motif). Combat (swept hitbox, hit-stop,
 i-frames, FSM enemies) — reused from the proven kit. Four guardians (one multi-
 phase FSM escalating by HP, sealing its arena until slain). A per-biome adaptive
 `MusicDirector` (key/mode/mood + threat layers) built on the audio bus so it

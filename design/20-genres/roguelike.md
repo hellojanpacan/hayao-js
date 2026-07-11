@@ -78,7 +78,7 @@ seed always promises.
   [[system-emergent-systems]].
 - **Roguelike but you see the whole seed once, then it's dark** *(constraint)* —
   a memory/planning roguelike; the discovery is front-loaded.
-- **Roguelike but turns cost light** *(theme + constraint)* — a Kentō lantern
+- **Roguelike but turns cost light** *(theme + constraint)* — a lantern
   descent; every step spends a finite glow, making exploration a resource.
 - **Roguelike but two heroes on one seed, alternating turns** *(perspective)* —
   co-op descent; connectivity must serve two paths.

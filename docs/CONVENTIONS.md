@@ -508,17 +508,17 @@ style it replaces.
   outline the glyph (the outline lays UNDER the fill, so it frames rather than
   eats the letter) — the way to make a label read on both light and dark grounds.
   Don't stack offset copies to fake a halo; one `stroke` does it.
-- **Default palette is Kentō** (`import { KENTO, MEADOW, DUSK } from '@hayao'`).
-  It fuses the site's washi/sumi/ai/shu ink tokens with landscape hues loosely
-  drawn from Miyazaki-16 — eight named hues, each with a `Deep` tone for light
-  grounds and a bright tone for dark grounds, so `MEADOW` (light) and `DUSK`
-  (dark) share one identity. Pick hues by name (`KENTO.asagi`); reach for ~5–6
-  per game plus a ground. Alpha/tone variants via `withAlpha`/`mix` are welcome;
-  monospace/terminal defaults read as lazy and are discouraged. The engine stays
-  palette-agnostic — Kentō is a consistent starting point, never a restriction.
-  Every Kentō pairing is WCAG-AA verified: `npm run palette` is the gate.
-- **Pickups and interactables carry a dark ink outline** (`stroke: KENTO.sumi`
-  on light, `KENTO.gofun` rim on dark), plus a glow/pulse for emphasis. An
+- **Default palette is Regalia** (`import { REGALIA, REGALIA_DAY, REGALIA_NIGHT } from '@hayao'`).
+  A core of four — `gold` (primary/joy), `ink` (navy/structure), `green` (growth),
+  `blue` (calm) — grown by the job with `rose` (vitality) and `bark` (material), so
+  `REGALIA_DAY` (light) and `REGALIA_NIGHT` (dark) share one identity. Pick hues by
+  name (`REGALIA.blue`); reach for ~3–5 per game plus a ground. Alpha/tone variants
+  via `withAlpha`/`mix` are welcome; monospace/terminal defaults read as lazy and
+  are discouraged. The engine stays palette-agnostic — Regalia is a consistent
+  starting point, never a restriction. Every Regalia pairing is WCAG-AA verified:
+  `npm run palette` is the gate. See `docs/STYLE.md` for the full visual house style.
+- **Pickups and interactables carry a dark ink outline** (`stroke: REGALIA.ink`
+  on light, `REGALIA.paper` rim on dark), plus a glow/pulse for emphasis. An
   accent-colored shape flat on the floor vanishes the moment two hues share a
   family — contrast lives in the edge, not the fill. Judge contrast from a
   rendered SVG, never from hex values.

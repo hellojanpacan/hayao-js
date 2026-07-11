@@ -68,10 +68,11 @@ lesson you accept.
   inherited speed carries; a dash off a moving lift should feel like the lift gave
   it to you (FUN.md §2).
 
-Reference wiring: [`examples/updrift`](../../examples/updrift) — the golden
-platformer-feel reference; [`examples/kintsugi`](../../examples/kintsugi) — how
-five abilities extend the movement envelope; [`examples/shard-ascent`](../../examples/shard-ascent) —
-the reactive waypoint bot pattern that proves every room 0-deaths.
+Reference wiring: [`examples/small-flame`](../../examples/small-flame) — the
+precision platformer-feel reference, whose fuel-aware waypoint bot proves the
+chamber winnable 0-deaths and whose grace windows are feel-gated end to end.
+Extending the movement envelope with a suite of abilities (the metroidvania
+spine) is a design shape to compose here, not a shipped example.
 
 ## Signature-mechanic seeds
 
@@ -123,5 +124,5 @@ the trust there.
 ## See also
 
 - [`recipes/platformer-feel.md`](../../recipes/platformer-feel.md) — the movement-feel recipe.
-- [`examples/updrift`](../../examples/updrift) — the golden feel reference.
+- [`examples/small-flame`](../../examples/small-flame) — the precision feel reference.
 - [`design/FUN.md §2`](../FUN.md#2--precision-platformer-celeste-like) — the proof playbook.

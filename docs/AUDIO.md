@@ -12,6 +12,14 @@ Everything here is **zero-runtime-dependency, pure TypeScript, deterministic**
 designs are borrowed from proven OSS (ZzFX, Sonant/SoundBox, ZzFXM, tonal.js,
 Meyda, FMOD/Wwise) but reimplemented fresh to fit the determinism invariant.
 
+**Sound is the sixth Regalia pillar.** Regalia is the house design system —
+colour, type, UI, motion, and *sound* — not just a palette (`docs/STYLE.md` is its
+visual half). The audio house voice is **soft synthesis**: sine / triangle / noise,
+a small kit of warm voices mapped to Regalia's jobs (a bright lead for `gold`, a
+calm pad for `blue`, growth-green textures, an ink-navy bass), pentatonic-leaning
+and deterministic. Like the palette, it is a *default, not a wall* — bring your own
+SoundFont of specs and lose nothing structural (`docs/ASSETS.md`).
+
 ## The layers
 
 | Layer | File | What it is |

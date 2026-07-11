@@ -3376,19 +3376,19 @@
   },
   {
     "id": "world-aesthetic-direction",
-    "title": "Aesthetic Direction — briefing the Kentō woodblock look",
+    "title": "Aesthetic Direction — briefing the Regalia look",
     "kind": "worldbuilding",
     "tags": [
       "art-direction",
       "palette",
-      "kento",
-      "woodblock",
+      "regalia",
+      "duotone",
       "readability",
       "contrast",
       "look",
       "judge"
     ],
-    "summary": "Art direction — the Kentō woodblock palette and how to brief a look that passes the readability + JUDGE bars (findable avatar, depth, one-world colour).",
+    "summary": "Art direction — the Regalia palette and how to brief a look that passes the readability + JUDGE bars (findable avatar, depth, one-world colour).",
     "use-when": "You need to turn a theme into a concrete visual brief — palette, contrast, depth, silhouette — that survives the vision judge.",
     "composes-with": [
       "world-theme-vectors",
@@ -3515,7 +3515,7 @@
   },
   {
     "id": "world-naming-and-tone",
-    "title": "Naming & Tone — the Kentō house restraint",
+    "title": "Naming & Tone — the house restraint",
     "kind": "worldbuilding",
     "tags": [
       "naming",
@@ -3527,7 +3527,7 @@
       "evocative",
       "ux-text"
     ],
-    "summary": "Names, voice, and register — the Kentō house restraint of one-word evocative titles (lanternway, rootward, tarnholm, kintsugi) and text that trusts the player.",
+    "summary": "Names, voice, and register — the house restraint of one-word evocative titles (lumen, small-flame) and text that trusts the player.",
     "use-when": "You need to name the game, its places, factions, and mechanics — and set the voice for the little text a small game shows.",
     "composes-with": [
       "world-worldbuilding-scaffold",

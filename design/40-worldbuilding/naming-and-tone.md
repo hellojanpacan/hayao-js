@@ -1,26 +1,26 @@
 ---
 id: world-naming-and-tone
-title: Naming & Tone — the Kentō house restraint
+title: Naming & Tone — the house restraint
 kind: worldbuilding
 tags: [naming, tone, voice, register, restraint, copy, evocative, ux-text]
-summary: Names, voice, and register — the Kentō house restraint of one-word evocative titles (lanternway, rootward, tarnholm, kintsugi) and text that trusts the player.
+summary: Names, voice, and register — the house restraint of one-word evocative titles (lumen, small-flame) and text that trusts the player.
 use-when: You need to name the game, its places, factions, and mechanics — and set the voice for the little text a small game shows.
 composes-with: [world-worldbuilding-scaffold, world-faction-identity, world-narrative-delivery]
 verify-with: none
 ---
 
-# Naming & Tone — the Kentō house restraint
+# Naming & Tone — the house restraint
 
 **What it is.** The **name** is the smallest, most-seen piece of worldbuilding —
 the title on the first screen, the word on every place and mechanic. **Tone** is
 the register of every string the game shows. The house style is *restraint*: one
 evocative word over a compound sentence, an implied world over an explained one,
 text that trusts the player to feel it. The examples name themselves in a breath
-— *lanternway*, *rootward*, *tarnholm*, *kintsugi* — and say almost nothing else.
+— *lumen*, *small-flame* — and say almost nothing else.
 
 **Player fantasy / why it's fun.** A good name is a whole world compressed. Say
-*rootward* and the player already feels down, inward, growing. The name does the
-worldbuilding the text doesn't have to.
+*small-flame* and the player already feels something fragile they must tend and
+keep alight. The name does the worldbuilding the text doesn't have to.
 
 ## The house rule: one evocative word
 
@@ -30,10 +30,10 @@ without a subtitle.
 
 | Name | How it's built | What it implies at a glance |
 |---|---|---|
-| **lanternway** | lantern + way (a path) | a lit route through dark; keeping, walking |
-| **rootward** | root + -ward (toward) | descent, growth, inward, earth |
-| **tarnholm** | tarn (mountain lake) + holm (island) | a cold, small, isolated place |
-| **kintsugi** | the craft of gold-mending broken pottery | repair as beauty; breakage that heals |
+| **lumen** | Latin for light (word-loan) | a single glow; the thing itself, named plainly |
+| **small-flame** | small + flame | something fragile you tend and keep alight |
+| *emberway* | ember + way (a path) | a lit route through dark; keeping, walking |
+| *frostholm* | frost + holm (island) | a cold, small, isolated place |
 
 The technique: **fuse two small, concrete morphemes** (a thing + a direction, or
 a place + a place), or **borrow a real craft/place word** with the right weather
@@ -48,12 +48,12 @@ game-over line:
 |---|---|---|---|
 | **Weathered / folk** | old, worn, quiet | real archaic words; place-suffixes (-holm, -mere, -fen) | stewardship, seasonal, elegiac |
 | **Coined-compound** | crafted, precise | two morphemes fused (root+ward) | most house games; clean & ownable |
-| **Craft-loan** | elegant, specific | a real craft term (kintsugi, kentō) | Japanese-craft register; on-brand |
+| **Craft-loan** | elegant, specific | a real craft or trade term (lumen, tessera, mordant) | making, restoration, stewardship |
 | **Mythic** | grand, absolute | invented proper nouns, capitalised | large-scale, conqueror-agency worlds |
 | **Plain / wry** | modern, light | ordinary words, a little dry | cosy, comedic, or tonal-twist games |
 
 The house default sits in the first three. Mythic and wry are available but pull
-*away* from the Kentō register — use them deliberately, matched to the theme.
+*away* from the house register — use them deliberately, matched to the theme.
 
 ## Method
 
@@ -64,8 +64,8 @@ The house default sits in the first three. Mythic and wry are available but pull
    its direction, its place). Or borrow one weathered real word. Say it aloud.
 3. **Set one register** and write a *tone sheet* — 3–4 example strings (a title,
    a prompt, a win line, a loss line) that fix the voice. Everything else matches.
-4. **Name places and factions in the same grammar.** If the game is *lanternway*,
-   its places are *the Duskmere*, *the Last Lamp* — not *Region 3*. Factions
+4. **Name places and factions in the same grammar.** If the game is a lantern-lit
+   ascent, its places are *the Duskmere*, *the Last Lamp* — not *Region 3*. Factions
    inherit their value's register ([[world-faction-identity]]).
 5. **Name mechanics in-world where you can.** "Kindle," "mend," "ward" over
    "activate," "repair," "buff." An in-fiction verb teaches and immerses at once.
@@ -77,27 +77,27 @@ The house default sits in the first three. Mythic and wry are available but pull
 **World:** the drowned-coast keeper from [[world-worldbuilding-scaffold]].
 
 - **Title tries:** *saltway* (too plain), *The Last Keeper of Ys* (too much
-  subtitle), **lanternway** (fuse: lantern + way — a lit path; keeps the house
+  subtitle), **emberway** (fuse: ember + way — a lit path; keeps the house
   grammar). Ship the one-word fuse.
 - **Places:** *the Duskmere* (the drowning marsh), *the Far Lamp* (the last
   lantern). Not "Level 5."
 - **Mechanics:** *kindle* (light), *ward* (hold the dark). In-world verbs.
-- **Tone sheet:** title *"lanternway."* · prompt *"the path ahead is dark."* ·
+- **Tone sheet:** title *"emberway."* · prompt *"the path ahead is dark."* ·
   win *"the far lamp holds."* · loss *"the dark has the road."* Four strings,
   one weathered voice, no adjectives to spare.
 
 ## Aesthetic hook
 
-Tone is set by the **Kentō** register itself: the palette is *elegant Japanese
-craft* (the name *kentō* — 見当 — is the woodblock registration mark that aligns
-each colour pass), so the copy should share that restraint — spare, concrete,
-unhurried. Text is a **DOM overlay** in the house style, not `Text` nodes drawn
-into the scene (`docs/CONVENTIONS.md`), which frees the voice from HUD clutter:
-say less, and set it in the serif the JUDGE renders true (`design/JUDGE.md` fonts).
-A title screen with one word in ink on washi *invites* (JUDGE chrome axis) far
+Tone is set by the **Regalia** register itself: the palette is *bold, warm,
+hand-drawn craft* — one hue at two opacities, a confident ink line — so the copy
+should share that restraint — spare, concrete, unhurried. Text is a **DOM
+overlay** in the house style, not `Text` nodes drawn into the scene
+(`docs/CONVENTIONS.md`), which frees the voice from HUD clutter: say less, and set
+it in the serif the JUDGE renders true (`design/JUDGE.md` fonts). A title screen
+with one word set in the ink on a paper ground *invites* (JUDGE chrome axis) far
 better than a paragraph of lore. Match the naming register to the palette
-register: weathered names for the woodblock look; save the neon-mythic voice for
-a deliberately swapped palette.
+register: weathered names for the warm, earthen Regalia look; save the neon-mythic
+voice for a deliberately swapped palette.
 
 ## Traps
 
@@ -124,7 +124,7 @@ a deliberately swapped palette.
 
 - [`design/JUDGE.md`](../JUDGE.md) — chrome & finish: a spare, well-set
   title *invites*; a wall of lore doesn't.
-- `docs/CONVENTIONS.md` — menus/titles/HUD are DOM overlays; Kentō is the house
-  palette and *kentō* the registration-mark namesake.
-- Example titles *lanternway*, *rootward*, *tarnholm*, *kintsugi* — the restraint
-  in one word (reference the *technique*, not the words themselves).
+- `docs/CONVENTIONS.md` — menus/titles/HUD are DOM overlays; Regalia is the house
+  palette.
+- Example titles *lumen*, *small-flame* — the restraint in one word (reference the
+  *technique*, not the words themselves).

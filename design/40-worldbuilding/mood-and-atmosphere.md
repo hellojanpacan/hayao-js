@@ -52,9 +52,9 @@ The load-bearing move is **coherence**: a channel that disagrees reads as a bug,
 - **Mood but it shifts with the player's performance** *(structure)* — tone tracks the run. Chained kills warm and saturate the world; a death-spiral drains it grey and thins the music. *Hades* leans hotter as you press; horde-survival can dim as the swarm wins. Bind the shift to a value the player already reads — see [[system-difficulty-and-dda]], [[pattern-feedback-loops]].
 - **Atmosphere but built entirely from sound, no visuals** *(constraint)* — strip the picture and let the ear carry the room. Directional audio, breath, dripping, distance-as-reverb. Forces every mood decision into density and silence. The blind-audio game and *Papers, Please*'s off-screen dread both prove it — see [[world-soundscape]], [[system-accessibility]].
 
-## Aesthetic hook (Kentō)
+## Aesthetic hook (Regalia)
 
-The **Kentō woodblock** palette is a mood engine by constraint. A small, value-ordered set of inks means mood comes from *how you spend contrast*, not from adding colors. To shift tone, shift the ink you lean on — cool dusk for unease, warm meadow for rest — never widen the set. **Restraint is the atmosphere**: negative space and a limited palette read as intention, and the JUDGE gate rejects any frame that looks debug rather than composed. One held color does more than five competing ones.
+The **Regalia** palette is a mood engine by constraint. A small, value-ordered set of hues at two opacities means mood comes from *how you spend contrast*, not from adding colors. To shift tone, shift the hue you lean on — cool `blue`/`ink` night for unease, warm `gold` on `paper` for rest — never widen the set. **Restraint is the atmosphere**: negative space and a limited palette read as intention, and the JUDGE gate rejects any frame that looks debug rather than composed. One held color does more than five competing ones.
 
 ## Traps
 

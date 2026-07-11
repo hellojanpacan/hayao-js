@@ -70,10 +70,11 @@ was waiting for you.
   shortcut, or a secret — never an empty walk. Fast-travel or folded shortcuts
   respect the player's time once the geography is learned.
 
-Reference wiring: [`examples/sproutveil`](../../examples/sproutveil) — the
-room-connected exploration structure and the waypoint-bot pattern extended across
-rooms; [`examples/kintsugi`](../../examples/kintsugi) — the flagship whose five
-abilities each extend the movement envelope (the metroidvania spine).
+Reference wiring: no shipped example is a full metroidvania yet — compose the
+spine from the living parts. Model the gate-and-branch world graph as a proven
+pure structure the way [`examples/sokoban`](../../examples/sokoban) splits logic
+from view, and hold each ability to the movement-feel floor of
+[`examples/small-flame`](../../examples/small-flame).
 
 ## Signature-mechanic seeds
 
@@ -127,6 +128,8 @@ the lock-and-key world here; prove the doors there.
 
 ## See also
 
-- [`examples/kintsugi`](../../examples/kintsugi) — the flagship metroidvania spine.
-- [`examples/sproutveil`](../../examples/sproutveil) — room-connected structure.
+- [`examples/sokoban`](../../examples/sokoban) — logic/view split for a proven
+  gate-and-branch world graph.
+- [`examples/small-flame`](../../examples/small-flame) — the traversal-feel floor
+  under the exploration.
 - [`design/FUN.md §3`](../FUN.md#3--metroidvania) — the proof playbook.

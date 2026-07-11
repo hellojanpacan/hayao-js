@@ -79,8 +79,8 @@ leniency, and unbounded leniency is its own bug (accepting input *past* the wind
   reproduces the grace exactly.
 - **Pure state makes buffering testable.** Frame-pump the sim, apply the input N
   frames into the window, assert it took (FUN.md law 7).
-- Reference wiring: [`examples/updrift`](../../examples/updrift) (all forgiveness
-  fundamentals + the tapped-jump gotcha, JUICE Part 4); [`recipes/platformer-feel.md`]
+- Reference wiring: [`examples/small-flame`](../../examples/small-flame) (all
+  forgiveness fundamentals + the tapped-jump gotcha, JUICE Part 4); [`recipes/platformer-feel.md`]
   for the canon movement recipe. Grep [`docs/API.md`](../../docs/API.md) to confirm
   the gate names before citing.
 

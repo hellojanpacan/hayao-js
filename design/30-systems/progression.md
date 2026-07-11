@@ -76,8 +76,7 @@ build growth (**[[FUN.md §6]]**).
 - **The curve is content, not code.** Pace levels the way `src/content/`
   generates and ramps levels: express the difficulty series and feed it to
   `assertRamp`/`rampIssues` (grep `docs/API.md`) so "the curve has no deserts and
-  no walls" is a test, not a vibe. See the generated-campaign flagship
-  `examples/lanternfold/`.
+  no walls" is a test, not a vibe.
 - **Meta power persists** through `SaveManager` — see [[system-meta-progression]].
 
 ## Fails when…
@@ -100,7 +99,7 @@ build growth (**[[FUN.md §6]]**).
 - Power-vs-challenge as an asserted inequality: **[[FUN.md §6]]** (horde) and law
   3 (derive constraints).
 - Ramp shape as a test: `assertRamp`/`rampIssues` over the level/curve series —
-  the same instrument `examples/lanternfold/` uses.
+  the same instrument `src/content/` ships.
 - Skill-delta: intended play out-earns null play by a margin (universal law 2).
 
 ## Composes with
@@ -117,4 +116,5 @@ build growth (**[[FUN.md §6]]**).
 - [`design/FUN.md`](../FUN.md) §6, §14 — the pacing and challenge-gap proofs.
 - `src/content/generate.ts` · `campaign.ts` — generate-and-ramp content, don't
   hand-author the curve.
-- `examples/lanternfold/` — a 42-level generated, ramp-asserted campaign.
+- `examples/lumen/` — generated boards, each solver-proven winnable before it's
+  served.
