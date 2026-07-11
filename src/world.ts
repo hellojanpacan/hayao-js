@@ -196,10 +196,14 @@ export class World<TState extends Record<string, unknown> = Record<string, unkno
    * not 72. For headless tests/harnesses that want to fast-forward an exact
    * number of steps, use `runSteps(n)` or `step()` — never `advance` with a big ms.
    */
-  advance(realMs: number, actionsDown: Iterable<string> = [], axes?: AxisFrame): number {
-    if (realMs > this.clock.maxFrameMs && !this.warnedClamp) {
+  advance(realMs: number, actionsDown: Iterable<string> = [], axes?: AxisFrame, opts?: { realtime?: boolean }): number {
+    // The warning targets a harness author misusing advance(bigMs) as a
+    // fast-forward. A sanctioned realtime driver (runBrowser) legitimately sees
+    // big deltas — throttled tab, occluded iframe, GC hitch — so it declares
+    // { realtime: true } and gets the clamp silently.
+    if (!opts?.realtime && realMs > this.clock.maxFrameMs && !this.warnedClamp) {
       this.warnedClamp = true;
-      console.warn(`hayao: advance(${realMs}) exceeds maxFrameMs (${this.clock.maxFrameMs}) and is clamped — a realtime driver must never spiral. To fast-forward an exact number of steps, use runSteps(n).`);
+      console.warn(`hayao: advance(${realMs}) exceeds maxFrameMs (${this.clock.maxFrameMs}) and was clamped. In a realtime loop this is expected (throttled/janky frame) — drivers pass { realtime: true }. To fast-forward an exact number of steps in a harness, use runSteps(n).`);
     }
     const steps = this.clock.advance(realMs);
     for (let i = 0; i < steps; i++) this.step(actionsDown, axes);
