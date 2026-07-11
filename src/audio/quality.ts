@@ -33,6 +33,9 @@ export interface GenreProfile {
   width: Range;
   /** Max acceptable low-mid (250–800 Hz) fraction — warm genres tolerate more. */
   maxMud?: number;
+  /** Acceptable sub+bass energy fraction (default [0.12, 0.7]); kick-forward
+   * material (a drum loop) legitimately sits higher, a bright pad lower. */
+  lowEnd?: Range;
 }
 
 /** Target windows per genre — set to real genre norms for a balanced mix. */
@@ -47,6 +50,13 @@ export const GENRE_PROFILES: Record<string, GenreProfile> = {
   // density runs high, like a piano tremolo) with the spectral centre kept low
   // and a wide, dynamic mix. None of the above windows fit this job.
   ambient: { tempo: [70, 112], centroid: [450, 1600], onsets: [8, 20], rms: [0.08, 0.2], crestDb: [10, 22], width: [0.05, 0.72], maxMud: 0.5 },
+  // A drum loop (kick/snare/hats, optionally a bassline) scored on its OWN
+  // terms, not a full band's: the punch lives in the transients, so crest runs
+  // HIGH and RMS lower (sparse), the mix is near-mono and low-forward. A bare
+  // beat is bright (noisy snare/hats); add a bassline and the spectral centre
+  // drops and the low end fills — both legitimate, so the brightness floor and
+  // low-end ceiling are wide enough to cover a beat with OR without bass.
+  beat: { tempo: [82, 120], centroid: [2200, 9000], onsets: [1.5, 16], rms: [0.05, 0.18], crestDb: [9, 24], width: [0, 0.5], maxMud: 0.5, lowEnd: [0.2, 0.82] },
 };
 
 /** 1.0 inside [lo,hi]; ramps linearly to 0 across `margin` (relative) outside. */
@@ -87,7 +97,7 @@ export function scoreTrack(buf: StereoBuffer, profile: GenreProfile): QualitySco
     brightness: windowScore(f.centroidHz, profile.centroid),
     density: windowScore(f.onsetDensity, profile.onsets),
     tempo: windowScore(f.tempoBpm, profile.tempo),
-    lowEnd: windowScore(lowEnd, [0.12, 0.7]), // present but not boomy
+    lowEnd: windowScore(lowEnd, profile.lowEnd ?? [0.12, 0.7]), // present but not boomy
     clarity: windowScore(mud, [0, profile.maxMud ?? 0.34]), // not muddy (genre-aware)
     smoothness: windowScore(harsh, [0, 0.4]), // not harsh
   };
@@ -115,7 +125,7 @@ export function scoreTrack(buf: StereoBuffer, profile: GenreProfile): QualitySco
   say('brightness', `centroid ${Math.round(f.centroidHz)}Hz (target ${profile.centroid.join('–')})`);
   say('density', `onsets ${f.onsetDensity.toFixed(1)}/s (target ${profile.onsets.join('–')})`);
   say('tempo', `tempo ${Math.round(f.tempoBpm)} (target ${profile.tempo.join('–')})`);
-  say('lowEnd', `low-end fraction ${lowEnd.toFixed(2)} (want 0.12–0.62)`);
+  say('lowEnd', `low-end fraction ${lowEnd.toFixed(2)} (want ${(profile.lowEnd ?? [0.12, 0.7]).join('–')})`);
   say('clarity', `low-mid mud ${mud.toFixed(2)} (want ≤ ${(profile.maxMud ?? 0.34).toFixed(2)})`);
   say('smoothness', `high/air ${harsh.toFixed(2)} (want ≤ 0.40)`);
 

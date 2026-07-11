@@ -16,7 +16,7 @@
 // renderSong normalizes each render to full scale, so ensemble balance is
 // restored at playback via PreparedStem.gain (see audio.ts).
 
-import { INSTRUMENTS, type Instrument, type Note, type Song, type Track } from './music';
+import { INSTRUMENTS, stepPattern, type Instrument, type Note, type Song, type Track } from './music';
 import type { DeckSpec, LoopStem } from './loopdeck';
 
 const n = (pitch: Note['pitch'], beats: number, vel = 1): Note => ({ pitch, beats, vel });
@@ -120,6 +120,21 @@ function chancellorStroll(): Song {
   ]);
 }
 
+function chancellorSilk(): Song {
+  // OUR silky smoothBass — a round, dark, fingered voice playing long LEGATO
+  // notes. It still walks the court's A A C C D D A A roots (so it locks with
+  // the ensemble's changes), but glides between pentatonic neighbours and reaches
+  // the octave over the D bars — a softer, more melodic mood for the bass seat.
+  const silk: Instrument = { ...INSTRUMENTS.smoothBass, sub: 0.12, lowpass: 1200 };
+  const barA: Note[] = [n('A2', 1.5, 0.9), n('C3', 0.5, 0.66), n('A2', 1, 0.85), n('E3', 0.5, 0.66), n('D3', 0.5, 0.7)];
+  const barC: Note[] = [n('C3', 1.5, 0.9), n('E3', 0.5, 0.66), n('C3', 1, 0.85), n('G3', 0.5, 0.66), n('E3', 0.5, 0.7)];
+  const barD: Note[] = [n('D3', 1, 0.9), n('E3', 0.5, 0.72), n('G3', 0.5, 0.74), n('A3', 1, 0.82), n('G3', 0.5, 0.7), n('E3', 0.5, 0.68)];
+  const barTurn: Note[] = [n('A2', 1, 0.9), n('E3', 0.5, 0.72), n('D3', 0.5, 0.72), n('C3', 0.5, 0.7), n('D3', 0.5, 0.72), n('E3', 0.5, 0.74), n('G3', 0.5, 0.78)];
+  return stem([
+    { name: 'chancellor', instrument: silk, gain: 0.88, patterns: [barA, barC, barD, barTurn], sequence: [0, 0, 1, 1, 2, 2, 0, 3] },
+  ]);
+}
+
 function gardenerRain(): Song {
   const run = (ps: string[]): Note[] => ps.map((p, i) => n(p, 0.5, i % 2 === 0 ? 0.7 : 0.5));
   return stem([
@@ -189,51 +204,46 @@ function consolerSwell(): Song {
   ]);
 }
 
-function foolHeartbeat(): Song {
-  return stem([
-    {
-      name: 'kick',
-      instrument: { ...INSTRUMENTS.kick, volume: 0.6 },
-      gain: 0.8,
-      patterns: [[n('A2', 1, 0.9), rest(1), n('A2', 0.5, 0.55), rest(1.5)]],
-      sequence: Array(HAYABOX_BARS).fill(0),
-    },
-    {
-      name: 'hat',
-      instrument: { ...INSTRUMENTS.hat, volume: 0.2 },
-      gain: 0.5,
-      pan: 0.2,
-      patterns: [[rest(0.5), n('C6', 0.5, 0.5), rest(0.5), n('C6', 0.5, 0.4), rest(0.5), n('C6', 0.5, 0.5), rest(0.5), n('C6', 0.5, 0.4)]],
-      sequence: Array(HAYABOX_BARS).fill(0),
-    },
-  ]);
+// The Fool's kit — OUR kick and snare (this is the drum work we built, ported
+// into the box). A REAL layered snare (a pitched body + a wire-rattle noise
+// layer) instead of the old rimshot, every pitch inside the pentatonic pool
+// (kick A, snare body C, wires A — noise ignores pitch, but the DATA stays
+// in-key so the "zero out-of-key notes" proof holds even for the drums).
+const FOOL_KICK: Instrument = { ...INSTRUMENTS.kick, volume: 0.6, punch: 0.35, sub: 0.24 };
+
+/** Build the kick + layered-snare tracks from step grids (drummer's grid form). */
+function foolKit(kickGrids: string[], kickSeq: number[], snareGrids: string[], snareSeq: number[]): Track[] {
+  return [
+    { name: 'kick', instrument: FOOL_KICK, gain: 0.82, patterns: kickGrids.map((g) => stepPattern(g, 'A2')), sequence: kickSeq },
+    { name: 'snare-body', instrument: { ...INSTRUMENTS.snareBody }, gain: 0.7, patterns: snareGrids.map((g) => stepPattern(g, 'C4')), sequence: snareSeq },
+    { name: 'snare-wires', instrument: { ...INSTRUMENTS.snareWires }, gain: 0.54, patterns: snareGrids.map((g) => stepPattern(g, 'A4')), sequence: snareSeq },
+  ];
 }
 
-function foolParade(): Song {
-  return stem([
-    {
-      name: 'kick',
-      instrument: { ...INSTRUMENTS.kick, volume: 0.6 },
-      gain: 0.8,
-      patterns: [[n('A2', 1, 0.9), rest(1), n('A2', 1, 0.75), rest(1)]],
-      sequence: Array(HAYABOX_BARS).fill(0),
-    },
-    {
-      name: 'rim',
-      instrument: { ...INSTRUMENTS.rimshot, volume: 0.26 },
-      gain: 0.6,
-      patterns: [[rest(1), n('D4', 1, 0.6), rest(1), n('D4', 1, 0.65)]],
-      sequence: Array(HAYABOX_BARS).fill(0),
-    },
-    {
-      name: 'hat',
-      instrument: { ...INSTRUMENTS.hat, volume: 0.2 },
-      gain: 0.5,
-      pan: 0.2,
-      patterns: [Array.from({ length: 8 }, (_, i) => n('C6', 0.5, i % 2 === 0 ? 0.45 : 0.3))],
-      sequence: Array(HAYABOX_BARS).fill(0),
-    },
-  ]);
+function foolBackbeat(): Song {
+  // The developed eight-bar groove: kick on 1/3/&3, snare on the 2-and-4
+  // backbeat, ghost-note fills turning the four-bar corners, a bar-8 turnaround.
+  return stem(
+    foolKit(
+      ['X... .... X.X. ....', 'X... .... ..X. ....', 'X... .... X.X. X.XX'],
+      [0, 1, 0, 1, 0, 1, 0, 2],
+      ['.... X... .... X...', '.... X..2 .... X..2', '.... X... ..2. X.23', '.... X..2 2.2. X234'],
+      [0, 1, 0, 2, 0, 1, 0, 3],
+    ),
+  );
+}
+
+function foolBreak(): Song {
+  // The same seat leaning in: a driving syncopated kick and ghost-note "talk"
+  // on the snare, with a fill every four bars.
+  return stem(
+    foolKit(
+      ['X..X ..X. X.X. ..X.', 'X..X ..X. X.X. X.XX'],
+      [0, 0, 0, 1, 0, 0, 0, 1],
+      ['..2. X.2. ..2. X.2.', '..2. X.2. 2.2. X234'],
+      [0, 0, 0, 1, 0, 0, 0, 1],
+    ),
+  );
 }
 
 function foresterPath(): Song {
@@ -326,10 +336,11 @@ export const HAYABOX: {
       name: 'The Chancellor',
       job: 'ink',
       seat: 'bass',
-      blurb: 'Holds the floor. Root and fifth, bone dry — everything else stands on this.',
+      blurb: 'Holds the floor. Root and fifth bone dry, a two-feel walk, or a silky legato line — everything else stands on this.',
       moods: [
         { id: 'ground', name: 'Ground', note: 'long roots, few words', make: chancellorGround, mix: 0.95 },
         { id: 'stroll', name: 'Stroll', note: 'a two-feel walk through the halls', make: chancellorStroll, mix: 0.95 },
+        { id: 'silk', name: 'Silk', note: 'a smooth, legato fingered bass', make: chancellorSilk, mix: 0.9 },
       ],
     },
     {
@@ -359,10 +370,10 @@ export const HAYABOX: {
       name: 'The Fool',
       job: 'rose',
       seat: 'drums',
-      blurb: 'Keeps the pulse honest. A soft heartbeat, or the whole parade.',
+      blurb: 'Keeps the pulse honest. Kick and a real layered snare — a straight backbeat, or a busier break.',
       moods: [
-        { id: 'heartbeat', name: 'Heartbeat', note: 'kick and whispered hats', make: foolHeartbeat, mix: 0.75 },
-        { id: 'parade', name: 'Parade', note: 'backbeat, rim and eights', make: foolParade, mix: 0.75 },
+        { id: 'backbeat', name: 'Backbeat', note: 'kick and a real snare, straight', make: foolBackbeat, mix: 0.75 },
+        { id: 'break', name: 'Break', note: 'busier — a driving kick, ghost snares', make: foolBreak, mix: 0.75 },
       ],
     },
     {

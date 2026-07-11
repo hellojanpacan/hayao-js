@@ -79,15 +79,15 @@ export default function HayaboxPlay() {
     e.audio.start(); // inside the tap — the autoplay unlock
     setCourtiers(e.HAYABOX.courtiers);
 
-    // Synthesise all twelve stems (two moods per courtier), phase-locked ids
+    // Synthesise every stem (each courtier's moods), phase-locked ids
     // "<courtier>/<mood>". Cooperative renders, so the page stays alive.
     const stems: PreparedStem[] = [];
     let done = 0;
-    const total = e.HAYABOX.courtiers.length * 2;
+    const total = e.HAYABOX.courtiers.reduce((sum, c) => sum + c.moods.length, 0);
     for (const c of e.HAYABOX.courtiers) {
       for (const m of c.moods) {
         setLoading(`synthesising the court… ${done}/${total}`);
-        // 22.05 kHz halves synthesis time and buffer memory across twelve
+        // 22.05 kHz halves synthesis time and buffer memory across all the
         // stems; these soft voices carry nothing near that Nyquist anyway.
         const prepared = await e.audio.prepareSong(m.make(), { sampleRate: 22050 });
         stems.push({ id: `${c.id}/${m.id}`, prepared, gain: m.mix });
