@@ -193,6 +193,66 @@ export function layoutIssues(commands: DrawCommand[], opts: LayoutOptions = {}):
 const clip = (s: string): string => (s.length > 28 ? s.slice(0, 25) + '…' : s);
 const dedupe = (a: string[]): string[] => [...new Set(a)];
 
+export interface SafeAreaOptions {
+  /** The authored design width — the safe box is `0..width` horizontally. */
+  width: number;
+  /** The authored design height — the safe box is `0..height` vertically. */
+  height: number;
+  /** Shrink the safe box by this many design px on every side (default 0). */
+  margin?: number;
+  /**
+   * Also flag non-text shapes (default false). Off by default because scenery is
+   * SUPPOSED to live in the margin under `fit: 'bleed'`; text/controls are what
+   * must stay inside. Turn on for a single-screen game with no bleed scenery.
+   */
+  includeShapes?: boolean;
+}
+
+// A hair of slack so an edge-hugging HUD label (baseline math lands a pixel or two
+// past the border) isn't flagged; only real overflow trips the lint.
+const SAFE_EPS = 2;
+
+/**
+ * Safe-area lint: which commands stray outside the authored `width×height` box?
+ * That box is the fair, shared play-field every device is guaranteed to see —
+ * under `fit: 'contain'` the rest is letterbox, under `fit: 'bleed'` it is
+ * cosmetic scenery margin, and across `forms` a different device gets a different
+ * box. Anything gameplay-critical placed OUTSIDE it (a label hard-coded to a
+ * wider canvas, a control stranded past the edge) is clipped or invisible on
+ * off-ratio screens — exactly the class of bug the determinism/scoring proofs
+ * can't see. Text (and, with `includeShapes`, other marks) that partially or
+ * fully escapes the box is reported. Transient chrome (drifting popups/particles)
+ * is skipped, like the other layout lints.
+ */
+export function safeAreaIssues(commands: DrawCommand[], opts: SafeAreaOptions): string[] {
+  const margin = opts.margin ?? 0;
+  const minX = margin - SAFE_EPS;
+  const minY = margin - SAFE_EPS;
+  const maxX = opts.width - margin + SAFE_EPS;
+  const maxY = opts.height - margin + SAFE_EPS;
+  const outside = (b: { x: number; y: number; w: number; h: number }): boolean => b.x < minX || b.y < minY || b.x + b.w > maxX || b.y + b.h > maxY;
+  const issues: string[] = [];
+  for (const c of commands) {
+    if (isTransient(c)) continue;
+    let b: { x: number; y: number; w: number; h: number } | null = null;
+    let label = '';
+    if (c.kind === 'text') {
+      const t = c as TextCommand;
+      if (!t.text.trim().length) continue;
+      const tb = textBox(t);
+      b = { x: tb.x, y: tb.y, w: tb.w, h: tb.h };
+      label = `text "${clip(t.text)}"`;
+    } else if (opts.includeShapes) {
+      b = shapeBox(c);
+      label = c.kind;
+    }
+    if (!b) continue;
+    if (outside(b))
+      issues.push(`${label} at ~(${Math.round(b.x)},${Math.round(b.y)}) strays outside the ${opts.width}×${opts.height} safe box — clipped or stranded in the margin on off-ratio screens; keep gameplay inside the box (scenery may bleed out)`);
+  }
+  return dedupe(issues);
+}
+
 /** Friendly names a hint text may use to reference a key code. */
 export function keyMentions(code: string): string[] {
   if (code.startsWith('Digit')) return [code.slice(5)];

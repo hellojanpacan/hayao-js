@@ -24,10 +24,34 @@ export interface SplashConfig {
   minDurationMs?: number;
 }
 
+/**
+ * An alternate design sized for a specific device shape. A game declares one or
+ * more `forms` (e.g. a 16:9 landscape and a 9:16 portrait); `runBrowser` picks
+ * the form whose aspect ratio is closest to the container at boot, so a phone
+ * loads the portrait design and a laptop the landscape one — WITHOUT warping a
+ * single design across every ratio. The pure sim/`Puzzle` is shared; only the
+ * framing (and optionally a form-specific `build`) differs, so determinism and
+ * solver proofs are unaffected. Residual ratio slop within a form is handled by
+ * `fit` (letterbox or scenery bleed), not by another form.
+ */
+export interface FormFactor<TState extends Record<string, unknown> = Record<string, unknown>> {
+  width: number;
+  height: number;
+  /** Scene builder for this form (defaults to the game's `build`). */
+  build?(world: World<TState>): Node;
+  /** Human label for tooling/debug (e.g. 'portrait', 'tablet'). */
+  label?: string;
+}
+
 export interface GameDefinition<TState extends Record<string, unknown> = Record<string, unknown>> {
   title: string;
   width?: number;
   height?: number;
+  /**
+   * Alternate designs for other device shapes; `runBrowser` picks the closest to
+   * the container aspect at boot (the default `width×height` is always a candidate).
+   */
+  forms?: FormFactor<TState>[];
   seed?: number;
   background?: string;
   clock?: ClockConfig;
@@ -121,6 +145,45 @@ export function createWorld<TState extends Record<string, unknown> = Record<stri
 /** The input map a game uses (with defaults applied). */
 export function gameInputMap(def: GameDefinition): InputMap {
   return def.inputMap ?? DEFAULT_INPUT_MAP;
+}
+
+/** A resolved design choice: the safe-box dimensions plus the builder to use. */
+export interface ResolvedForm<TState extends Record<string, unknown> = Record<string, unknown>> {
+  width: number;
+  height: number;
+  build: (world: World<TState>) => Node;
+  label?: string;
+}
+
+/**
+ * Choose the design whose aspect ratio best matches `containerAspect` (width/height).
+ * The default `width×height` is always a candidate alongside every declared `form`.
+ * Distance is the symmetric ratio `max(a/t, t/a)` (≥1, minimized at an exact
+ * match) — scale-invariant, and transcendental-free so it can share code with the
+ * sim. Ties keep the earlier candidate, so the default design wins an exact tie.
+ */
+export function pickForm<TState extends Record<string, unknown> = Record<string, unknown>>(
+  def: GameDefinition<TState>,
+  containerAspect: number,
+): ResolvedForm<TState> {
+  const dw = def.width ?? 1280;
+  const dh = def.height ?? 720;
+  const candidates: ResolvedForm<TState>[] = [
+    { width: dw, height: dh, build: def.build, label: 'default' },
+    ...(def.forms ?? []).map((f) => ({ width: f.width, height: f.height, build: f.build ?? def.build, label: f.label })),
+  ];
+  const target = containerAspect > 0 && Number.isFinite(containerAspect) ? containerAspect : dw / dh;
+  let best = candidates[0];
+  let bestErr = Infinity;
+  for (const c of candidates) {
+    const ratio = c.width / c.height / target;
+    const err = Math.max(ratio, 1 / ratio); // symmetric distance, ≥1, min at exact match
+    if (err < bestErr) {
+      bestErr = err;
+      best = c;
+    }
+  }
+  return best;
 }
 
 export interface HeadlessResult<TState extends Record<string, unknown> = Record<string, unknown>> {

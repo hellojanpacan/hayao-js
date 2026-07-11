@@ -49,7 +49,7 @@ export interface TouchControlsLayout {
 
 const STYLE_ID = 'hayao-touch-style';
 const CSS = `
-.hy-touch{position:absolute;inset:0;z-index:40;pointer-events:none;touch-action:none;-webkit-user-select:none;user-select:none}
+.hy-touch{position:absolute;z-index:40;pointer-events:none;touch-action:none;-webkit-user-select:none;user-select:none}
 .hy-stick{position:absolute;bottom:6%;width:120px;height:120px;border-radius:50%;pointer-events:auto;background:rgba(20,16,10,.16);border:2px solid rgba(250,244,230,.35);box-shadow:inset 0 0 20px rgba(0,0,0,.12)}
 .hy-stick.left{left:5%}
 .hy-stick.right{right:5%}
@@ -94,6 +94,53 @@ export class TouchControls {
     if (left) this.addStick('left', left);
     if (right) this.addStick('right', right);
     if (layout.buttons?.length) this.addButtons(layout.buttons);
+
+    // Anchor the control layer to the SAFE-BOX rect (the drawn play-field), not
+    // the whole mount — so on an off-ratio screen the sticks/buttons sit over the
+    // game, never floating on the letterbox bars (or drifting into bleed scenery).
+    if (mount) this.installViewportAnchor(mount);
+  }
+
+  /** Keep the control layer pinned to the game's viewport() rect as it resizes. */
+  private installViewportAnchor(mount: HTMLElement): void {
+    let raf = 0;
+    const sync = () => {
+      raf = 0;
+      const vp = this.handle.viewport?.();
+      const s = this.root.style;
+      if (vp && vp.width > 0 && vp.height > 0) {
+        s.left = `${vp.x}px`;
+        s.top = `${vp.y}px`;
+        s.width = `${vp.width}px`;
+        s.height = `${vp.height}px`;
+      } else {
+        // No measurable viewport yet — fall back to covering the mount.
+        s.left = s.top = '0px';
+        s.width = s.height = '100%';
+      }
+    };
+    const schedule = () => {
+      if (raf !== 0 || typeof requestAnimationFrame === 'undefined') return;
+      raf = requestAnimationFrame(sync);
+    };
+    sync();
+    let ro: ResizeObserver | undefined;
+    if (typeof ResizeObserver !== 'undefined') {
+      ro = new ResizeObserver(schedule);
+      ro.observe(mount);
+    }
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', schedule);
+      window.addEventListener('orientationchange', schedule);
+    }
+    this.disposers.push(() => {
+      if (raf !== 0 && typeof cancelAnimationFrame !== 'undefined') cancelAnimationFrame(raf);
+      ro?.disconnect();
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', schedule);
+        window.removeEventListener('orientationchange', schedule);
+      }
+    });
   }
 
   private addStick(side: 'left' | 'right', spec: TouchStick): void {

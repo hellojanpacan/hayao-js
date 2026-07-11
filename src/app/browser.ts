@@ -4,7 +4,7 @@
 // input log, not wall time, so the sim stays deterministic.
 
 import type { CreateWorldOptions, GameDefinition } from './game';
-import { createWorld } from './game';
+import { createWorld, pickForm } from './game';
 import { makeSplash } from './splash';
 import { KeyboardSource, PointerSource, type InputSource } from '../input/source';
 import type { Vec2 } from '../core/math';
@@ -12,6 +12,7 @@ import { SvgRenderer } from '../render/svg';
 import { Canvas2DRenderer } from '../render/canvas';
 import { WebGL2Renderer } from '../render/webgl';
 import type { Renderer, Viewport } from '../render/renderer';
+import { bleedViewBox } from '../render/renderer';
 import { renderToSVGString } from '../render/svgString';
 import { audio } from '../audio/audio';
 import { settings } from '../ui/settings';
@@ -26,6 +27,17 @@ import type { World } from '../world';
 export interface RunOptions {
   /** Rendering backend. Default 'svg'. Use 'webgl' for post-processing effects. */
   renderer?: 'svg' | 'canvas' | 'webgl';
+  /**
+   * How the fixed design box meets an off-ratio container. Default `'contain'` —
+   * letterbox the authored box intact (every player sees exactly the same
+   * play-field; the classic console stance). `'bleed'` keeps that same safe box
+   * centered but grows the view in the deficient axis so its aspect matches the
+   * container, filling the bars with the game's own margins — put only cosmetic
+   * scenery there (the safe box stays the fair, shared play-field; see
+   * `safeAreaIssues` in verify/layout). Beyond a sane cap (`BLEED_MAX`) it
+   * letterboxes the remainder rather than stretch to a scenery desert.
+   */
+  fit?: 'contain' | 'bleed';
   /** Start the pause/settings shell (Esc). Default true. */
   shell?: boolean;
   /** Gamepad navigation of menu screens (d-pad/stick + Ⓐ/Ⓑ). Default true. */
@@ -124,11 +136,29 @@ export interface GameHandle {
 const BOOT_COLD_OPEN_MS = 900;
 
 export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOptions = {}): GameHandle {
-  const width = def.width ?? 1280;
-  const height = def.height ?? 720;
   const background = def.background ?? '#f3ecdb';
+  const fit = opts.fit ?? 'contain';
 
-  let world = createWorld(def, opts.world);
+  // Measure the container so we can pick the closest declared form (a phone loads
+  // the portrait design, a laptop the landscape one). Falls back to the window,
+  // then the design ratio, when the mount hasn't been laid out yet.
+  const measureAspect = (): number => {
+    const r = mount.getBoundingClientRect();
+    if (r.width > 0 && r.height > 0) return r.width / r.height;
+    if (typeof window !== 'undefined' && window.innerHeight > 0) return window.innerWidth / window.innerHeight;
+    return (def.width ?? 1280) / (def.height ?? 720);
+  };
+  // The active form is chosen ONCE, at boot — a game is authored for a device
+  // shape, and swapping the whole design mid-session would reset play. Live
+  // resizes within the form are absorbed by `fit` (letterbox or bleed), not by
+  // re-picking, so the game never resets under a window drag or rotation.
+  const form = pickForm(def, measureAspect());
+  const width = form.width;
+  const height = form.height;
+  // Run the chosen form's builder while keeping the rest of the definition.
+  const activeDef: GameDefinition = form.build === def.build ? { ...def, width, height } : { ...def, width, height, build: form.build };
+
+  let world = createWorld(activeDef, opts.world);
   const renderer: Renderer =
     opts.renderer === 'canvas'
       ? new Canvas2DRenderer({ width, height, background })
@@ -139,6 +169,33 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
   mount.style.position = mount.style.position || 'relative';
   renderer.mount?.(mount);
   setOverlayHost(mount);
+
+  // ── Bleed: keep the view box tracking the container so its aspect matches and
+  // the letterbox bars fill with the game's own scenery margins. Coalesced onto
+  // one rAF; the world is untouched (dims aren't hashed), so no determinism cost.
+  let bleedRaf = 0;
+  const applyBleed = () => {
+    bleedRaf = 0;
+    const r = mount.getBoundingClientRect();
+    if (r.width <= 0 || r.height <= 0) return;
+    renderer.setViewBox?.(bleedViewBox(r.width, r.height, width, height));
+  };
+  const scheduleBleed = () => {
+    if (fit !== 'bleed' || bleedRaf !== 0 || typeof requestAnimationFrame === 'undefined') return;
+    bleedRaf = requestAnimationFrame(applyBleed);
+  };
+  let resizeObserver: ResizeObserver | undefined;
+  if (fit === 'bleed') {
+    applyBleed(); // first frame renders already filled, no bars flash
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(scheduleBleed);
+      resizeObserver.observe(mount);
+    }
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', scheduleBleed);
+      window.addEventListener('orientationchange', scheduleBleed);
+    }
+  }
 
   const input = new KeyboardSource(def.inputMap ?? {}, opts.keyboardTarget ?? document);
   // keyboard wired in so mouse buttons enter the same deterministic action log
@@ -170,7 +227,7 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
     renderer.draw(dbg.length > 0 ? cmds.concat(dbg) : cmds);
   };
   const restart = () => {
-    world = createWorld(def, opts.world);
+    world = createWorld(activeDef, opts.world);
     declareInputs();
     renderFrame();
   };
@@ -355,6 +412,12 @@ export function runBrowser(def: GameDefinition, mount: HTMLElement, opts: RunOpt
       stopped = true;
       pendingCb = null;
       clearScheduled();
+      if (bleedRaf !== 0 && typeof cancelAnimationFrame !== 'undefined') cancelAnimationFrame(bleedRaf);
+      resizeObserver?.disconnect();
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', scheduleBleed);
+        window.removeEventListener('orientationchange', scheduleBleed);
+      }
       document.removeEventListener('visibilitychange', onVisibility);
       input.dispose();
       pointer.dispose();
