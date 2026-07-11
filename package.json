@@ -1,6 +1,6 @@
 {
   "name": "hayao",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "type": "module",
   "description": "An AI-first game engine: a deterministic, headless-native simulation kernel with a Godot-style scene tree, pluggable renderers (SVG/Canvas/headless), and a built-in verification harness — designed so an LLM can author, test, and prove correct a whole game without ever opening a browser.",
   "keywords": [
@@ -43,6 +43,7 @@
   },
   "files": [
     "dist",
+    "dist-workshop",
     "bin/create-hayao.mjs",
     "bin/hayao-mcp-cli.mjs",
     "bin/hayao.mjs",
@@ -65,6 +66,7 @@
     "build": "tsc --noEmit && vite build",
     "build:lib": "rm -rf dist && esbuild src/index.ts --bundle --format=esm --platform=neutral --target=es2022 --outfile=dist/index.js --sourcemap && esbuild src/index.ts --bundle --minify --format=esm --platform=neutral --target=es2022 --outfile=dist/index.min.js && esbuild src/index.ts --bundle --minify --format=iife --global-name=hayao --platform=neutral --target=es2022 --outfile=dist/hayao.global.js && esbuild src/workshop/mcpMain.ts --bundle --format=esm --platform=node --target=es2022 --outfile=dist/mcp.js --external:@resvg/resvg-js --external:hayao && esbuild src/workshop/vitePlugin.ts --bundle --format=esm --platform=node --target=es2022 --outfile=dist/workshop-plugin.js --external:vite && esbuild src/coin/strike.ts --bundle --format=esm --platform=node --target=es2022 --outfile=dist/strike.js --external:esbuild && cp scripts/rasterize-worker-lite.mjs dist/rasterize-worker-lite.mjs && tsc -p tsconfig.build.json",
     "build:workshop": "vite build -c vite.workshop.config.ts",
+    "pack:check": "npm run build:workshop && node scripts/assert-pack-contents.mjs",
     "check": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",

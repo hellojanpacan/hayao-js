@@ -25,3 +25,20 @@ jobs:
         run: npm test
       - name: invariants + verify suites
         run: npm run verify
+
+  pack:
+    # Guard the published tarball: the prebuilt Workshop UI (dist-workshop/) is a
+    # separate build artifact, and an allowlist slip once dropped it silently so
+    # installs served "no prebuilt Workshop UI". Build it, then ask npm what it
+    # would pack and assert the entry is there — every push/PR, so it can't
+    # regress unnoticed.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: tarball contains prebuilt Workshop UI
+        run: npm run pack:check
