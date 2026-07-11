@@ -76,6 +76,25 @@ The scaffolded starter isn't a hello-world — it already **generates a solver-p
 ramped campaign**, so an AI author lands in a project that knows the invariants
 (`AGENTS.md`) and can prove its own output from the first commit.
 
+## The Claude Code plugin
+
+Any coding agent can build a hayao game — `AGENTS.md`, the docs, and
+`npm run verify` are agent-agnostic. Claude Code users get the workflow
+**packaged and enforced** as a plugin:
+
+```
+/plugin marketplace add hellojanpacan/hayao-js
+/plugin install hayao@hayao
+```
+
+It ships authoring skills (author-game, verify-determinism), commands
+(`/hayao:new-game`, `:verify`, `:inspect-api`, `:sprite`), build + verify
+subagents, and the differentiator: a **determinism gate** — a Stop hook that
+runs the proof harness whenever a session changed hayao source and blocks the
+agent from finishing until it passes. "No obvious bugs" stops being a model
+hope and becomes a gate it cannot ship past. See
+[plugin/README.md](https://github.com/hellojanpacan/hayao-js/blob/main/plugin/README.md).
+
 ## Generate an hour of proven content, don't hand-author it
 
 The hard part of "make me a whole game" was never one level — it was *forty* balanced
@@ -191,15 +210,21 @@ reasoning in [docs/ENGINE.md](https://github.com/hellojanpacan/hayao-js/blob/mai
 - [docs/LESSONS.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/LESSONS.md) — transferable lessons from real LLM-authored game builds.
 - [docs/FRICTION.md](https://github.com/hellojanpacan/hayao-js/blob/main/docs/FRICTION.md) — process-lesson log: what fought an AI session and what check/doc now prevents it.
 - [AGENTS.md](https://github.com/hellojanpacan/hayao-js/blob/main/AGENTS.md) — the operating manual for an AI author working in this repo.
+- [plugin/README.md](https://github.com/hellojanpacan/hayao-js/blob/main/plugin/README.md) — the Claude Code plugin: skills, `/hayao:*` commands, subagents, and the hook-enforced determinism gate.
 
 ## The site
 
-Three doors, split by audience: [hayao.dev](https://hayao.dev/) is the marketing
-landing (`index.html`), [hayao.dev/play](https://hayao.dev/play/) is the example
-store (`play/index.html`), [hayao.dev/roadmap](https://hayao.dev/roadmap/) is the
-public roadmap + js13k benchmark ladder (`roadmap/index.html`), and developer docs
-live at [hayao.js.org](https://hayao.js.org/). Featured-game thumbnails are
-regenerated with `npm run thumbs`.
+[hayao.dev](https://hayao.dev/) is the Astro site in [`web/`](web/) — and it is
+deliberately monorepo-native: the live demos import the engine from `../src` and
+the games from `../examples`, `/docs` renders `docs/*.md` directly, and
+`/docs/codex` renders `design/` — so the site can never drift from the repo.
+The map: [/play](https://hayao.dev/play/) (the verified games, running live),
+[/create](https://hayao.dev/create/) (quickstart · Design Codex · sound ·
+Workshop · from scratch), [/docs](https://hayao.dev/docs/) (the manual, plus
+[sandboxes](https://hayao.dev/docs/sandbox/) and
+[themes](https://hayao.dev/docs/themes/)), and
+[/play/coin](https://hayao.dev/play/coin/) (a real Coin to play, download, and
+re-prove).
 
 The official logo — the Regalia crown lockup above — is a pure-vector single
 source of truth: [hayao.dev/logo.svg](https://hayao.dev/logo.svg) (light) and
@@ -215,7 +240,7 @@ covers the most popular 2D indie genres end to end (platformer, metroidvania,
 Zelda-like, stealth, horde survival, bullet hell, tower defense, RTS, roguelike,
 deckbuilder, tactics, match-3, idle, farming, horror, city builder, rhythm,
 physics arcade, racing, narrative — plus the original Sokoban), and grows from
-there: js13k-benchmark reproductions (Seamfold, Gravewell), a deterministic
+there: single-file puzzle reproductions (Seamfold, Gravewell), a deterministic
 rigid-body physics wave (Rookspire demolition, Brasswick pinball), a netplay
 showcase (Fernclash — lockstep + rollback across tabs), a 2-player co-op survival
 (Kinfall), and the flagship metroidvania (Kintsugi). Every example under

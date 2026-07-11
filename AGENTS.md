@@ -73,6 +73,16 @@ scaffolds a runnable game whose starter already generates a solver-proven campai
 - `/retro` — end-of-session: log process friction to `docs/FRICTION.md` and
   land the doc/check fix that prevents a recurrence.
 
+## The Claude Code plugin (`plugin/`)
+For working on hayao games from ANY project (not just this repo), the repo
+ships a Claude Code plugin — skills (author-game, verify-determinism),
+commands (`/hayao:new-game`, `:verify`, `:inspect-api`, `:sprite`), build +
+verify subagents, and a Stop-hook **determinism gate** that runs the verify
+harness whenever a session changed hayao source and blocks until it passes.
+Install: `/plugin marketplace add hellojanpacan/hayao-js`. The plugin teaches
+workflow only and hardcodes no API shapes — the installed `.d.ts` /
+`docs/API.md` stays the reference. See `plugin/README.md`.
+
 ## Design from the mechanic, not from the corpus
 The examples exist to **prove the engine** and to **show conventions** — they are
 proof fixtures, not a catalogue of what a hayao game may be. They were built fast
@@ -92,20 +102,38 @@ Treat them accordingly:
   the last prototype in `examples/`.
 
 ## Before writing game code
-0. **If the game isn't designed yet** — the intent is high-level ("a polished
-   platformer with responsive controls", "an RTS with faction asymmetry and
-   impressive battles") — run the **[Design Codex](design/)** first, and start
-   with the **[spine](design/00-process/the-spine.md)**, not the twist:
-   intent → **spine** (the one tension: objective · superpower · scarcity ·
-   obstacle · renewal, and the gate "does using the superpower well create the
-   next problem?") → *twist only to give that tension a face* → compose → pillars
-   → loop, then hand off to the craft playbooks. The spine produces a *loop*; the
-   twist produces a *pitch* — lead with the loop. All game design lives in
-   **`design/`** — the *generative* Codex shelves (the spine method, reference DNA,
-   composable systems, the creative twist) and the craft playbooks
-   (`design/FUN.md`, `design/JUICE.md`, `design/JUDGE.md`) that make it fun, juicy,
-   and beautiful. `docs/` is the engineering manual; the steps below are the
-   *proof* half.
+0. **If the game isn't designed yet**, run the **[Design Codex](design/)** first.
+   It has **two lawful entries and one gate**:
+   - **Concept-first** — the intent is high-level ("a polished platformer with
+     responsive controls"): intent → **[spine](design/00-process/the-spine.md)**
+     (the one tension: objective · superpower · scarcity · obstacle · renewal,
+     and the gate "does using the superpower well create the next problem?") →
+     *twist only to give that tension a face* → compose → pillars → loop. The
+     spine produces a *loop*; the twist produces a *pitch* — lead with the loop.
+   - **Atom-first** — the project starts from something authored, not asked for
+     (a character, a motif, a card, a verb in a greybox): iterate the atom in
+     the project's `atoms/` until it's good *alone*, then run
+     **[the seed](design/00-process/the-seed.md)** — interrogate what it
+     radiates and run the spine *backwards* until the atom is load-bearing.
+     **Before loop assembly, atoms outrank concepts** (a pivot costs a
+     paragraph); after assembly, the spine outranks atoms.
+
+   Either way, nothing proceeds to loop assembly until a spine holds. The Codex
+   runs in the background — the user sees the concept you propose, never the
+   shelves. All game design lives in **`design/`** — the generative Codex
+   shelves and the craft playbooks (`design/FUN.md`, `design/JUICE.md`,
+   `design/JUDGE.md`). `docs/` is the engineering manual; the steps below are
+   the *proof* half.
+
+   **A project exists before its game does.** From day zero it carries a
+   `TIMELINE.md` (a dated log — the Original Concept is the first entry, pivots
+   are appended, never rewritten; `## Present` names what's being worked on and
+   what feedback is awaited) and an `atoms/` folder (each atom a `defineAtom`
+   module the Workshop shows the moment it exists). `game.ts` is OPTIONAL until
+   loop assembly begins — the Workshop is the project's face for its whole
+   life, and its tabs (Timeline · Visual · Scene · Audio · Play · Test) appear
+   as the project grows. See `docs/CONVENTIONS.md` (project anatomy) and
+   `docs/WORKSHOP.md`.
 1. Read `design/FUN.md` (the design playbook: universal laws, your genre's
    cheat sheet, and the before-you-author-content checklist).
 2. Read `docs/CONVENTIONS.md` (structure, house style, definition of done).
@@ -175,7 +203,8 @@ header derives its count live from the cards; elsewhere phrase it count-free
 
 ## The site
 The public marketing site is the Astro app under `web/` → **hayao.dev** (Vercel
-project `hayao-web`); developer docs live at **hayao.js.org**. The root static
+project `hayao-web`); developer docs render at **hayao.dev/docs** straight from
+this repo (hayao.js.org is retired). The root static
 pages (`index.html` + the auto-discovered `examples/`/`sandboxes/` pages) are the
 **local `npm run dev` hub** — a lean Regalia index for running example games and
 labs, not a deployed marketing surface. Current examples: `lumen`, `small-flame`,

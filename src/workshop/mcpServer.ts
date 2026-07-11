@@ -177,6 +177,56 @@ server.registerTool(
   },
 );
 
+/** Resolve a project directory: examples/<slug>, sandboxes/<slug>, or the root. */
+function projectDir(slug?: string): string | null {
+  if (!slug || slug === basename(root)) return root;
+  for (const parent of ['examples', 'sandboxes']) {
+    const dir = join(root, parent, slug);
+    if (existsSync(dir)) return dir;
+  }
+  return null;
+}
+
+server.registerTool(
+  'read_timeline',
+  {
+    description:
+      "A project's TIMELINE.md — the dated log (Original Concept first, pivots appended, ## Present = what's being worked on and what feedback is awaited). Update Present when you start or park work; APPEND to Past, never rewrite it.",
+    inputSchema: { project: z.string().optional().describe('project slug (examples/<slug>); omit for a flat create-hayao project') },
+  },
+  async ({ project }) => {
+    const dir = projectDir(project);
+    if (!dir) return text({ error: `no project '${project}'` });
+    const p = join(dir, 'TIMELINE.md');
+    if (!existsSync(p))
+      return text({ error: 'no TIMELINE.md yet', hint: 'write one when the concept (or the first pivot) exists — see docs/CONVENTIONS.md project anatomy' });
+    return text(readFileSync(p, 'utf8'));
+  },
+);
+
+server.registerTool(
+  'list_atoms',
+  {
+    description:
+      "A project's atoms (atoms/*.ts defineAtom modules): kind, title, and the radiates line — the seed hook for design/00-process/the-seed.md. Static scan; open the file for the iteration log in its header comment.",
+    inputSchema: { project: z.string().optional().describe('project slug; omit for a flat project') },
+  },
+  async ({ project }) => {
+    const dir = projectDir(project);
+    if (!dir) return text({ error: `no project '${project}'` });
+    const atomsDir = join(dir, 'atoms');
+    if (!existsSync(atomsDir)) return text([]);
+    const atoms = readdirSync(atomsDir)
+      .filter((f) => f.endsWith('.ts') && !f.endsWith('.test.ts'))
+      .map((f) => {
+        const src = readFileSync(join(atomsDir, f), 'utf8');
+        const grab = (key: string) => new RegExp(`${key}:\\s*'([^']*)'`).exec(src)?.[1];
+        return { file: `atoms/${f}`, kind: grab('kind') ?? null, title: grab('title') ?? null, radiates: grab('radiates') ?? null };
+      });
+    return text(atoms);
+  },
+);
+
 server.registerTool(
   'list_sessions',
   {

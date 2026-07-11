@@ -34,6 +34,8 @@ SoundFont of specs and lose nothing structural (`docs/ASSETS.md`).
 | **Match** | `src/audio/match.ts` | `featureDistance` / `matchReport` — compare a rendered track to a reference's feature vector. The engine of the AI-led improvement loop. |
 | **Adaptive/spatial** | `src/audio/adaptive.ts` | Pure RTPC curves, Web-Audio-exact distance-attenuation models, vertical-layer gains. FMOD/Wwise-in-miniature, deterministic. |
 | **Reverb** | `src/audio/reverb.ts` | Deterministic Freeverb (parallel combs → series allpass). Dry synths bloom into a room. |
+| **LoopDeck** | `src/audio/loopdeck.ts` | Vertical-layer loop playback (the Creaksbox/Incredibox model): a deck of equal-tempo, bar-multiple stem Songs that play as phase-locked loops, toggled on bar boundaries. The pure half is the bar clock + `lintDeck` (proves the phase-lock can never drift); playback is `AudioBus.startLoopDeck`. |
+| **Hayabox** | `src/audio/hayabox.ts` | The house LoopDeck: six courtiers (one per Regalia job), two moods each, every note in A minor pentatonic so ANY subset of awake stems harmonizes — a property of the data, proven in `hayabox.test.ts` (lintDeck + zero out-of-key + rendered-tutti gates). Live on the site at `/play/hayabox`. |
 | **Genre songbook** | `src/audio/genres.ts` | Six hand-composed reference tracks (electronic, lo-fi, piano, orchestral, jazz-funk, ambient-prologue) — a demo *and* a test fixture. |
 | **Drum loops** | `src/audio/loops.ts` | `LOOPS` — a rhythm songbook, the percussive cousin of `GENRES`. Loops are authored with the `stepPattern` grid helper (a tracker-style step string, `'X..x'`, instead of a `Note[]`) and scored on the `beat` profile (a drum loop judged on punch/crest, not a full band's loudness). Ships the "Kick, Snare & Bass" reference — a developed **eight-bar** funk phrase (AABA′) with a layered real-drum snare (`snareBody` + `snareWires`), a soft hat entering mid-phrase, and a silky legato E-minor bass on the round `smoothBass` voice that climbs to its octave before a turnaround. A worked example of arrangement (fills, dynamics, an arc), not a one-bar stamp. `npm run loops` renders it. |
 | **Audio card** | `src/verify/audioCard.ts` | `renderAudioCard(buf, meta)` — the polished, DEFAULT way to hand a track to a *human*: one self-contained HTML file with the WAV inlined as a data URI, a real transport (play/scrub/loop/download), the filmstrip, and the feature + quality spec sheet, Regalia-styled. Works as a Claude Artifact (`standalone: false`), a double-click file, or a static upload — no external requests. Closes the last mile the filmstrip left open (you can't press play on a folder). |
@@ -46,13 +48,24 @@ SoundFont of specs and lose nothing structural (`docs/ASSETS.md`).
 ### Expressive / arrangement features (what lifts it above a MIDI demo)
 
 The synth grew a **detuned 2nd oscillator** (`detune`, cents) and **sub-oscillator**
-(`sub`) for warmth/weight. `renderSong` grew, all deterministic:
+(`sub`) for warmth/weight, then two shape controls that kill the "synthetic" tell:
+- **`envCurve`** — bends the amp decay/release from linear toward **exponential**
+  (fast onset drop, long tail), the way struck/plucked/bell voices actually decay.
+  0 = linear (bit-identical default); ~2–4 reads as natural piano/mallet.
+- **`filterEnv`** — a **lowpass envelope** (octaves of cutoff offset at onset,
+  settling to the base over `filterEnvTime`): positive = a bright-attack pluck
+  that closes down, negative = a pad that blooms open from dark. 0 = static.
+
+`renderSong` grew, all deterministic:
 - **`swing`** — delays off-beat 8ths toward the triplet grid (lo-fi, jazz).
 - **`humanize`** — seeded micro timing/velocity jitter so it breathes.
 - **`velBrightness`** — velocity scales each voice's lowpass, so a velocity map
   reads as *phrasing* (soft = darker), not just loudness.
 - **`sidechain`** — a beat-synced ducking pump (the breath of electronic music).
-- **`reverb`** — per-song room.
+- **`reverb`** — a per-song room, or (when any track sets **`reverbSend`**) a
+  shared **send bus** on the mixing-desk model: the dry mix stays dry and only
+  the sends bloom, so a bone-dry bass and a washed lead coexist (front-to-back
+  depth a single whole-mix reverb can't give).
 And theory grew **`voiceLead`** / **`openVoicing`** so progressions move by small
 steps instead of leaping in parallel root position — the biggest single cure for
 the "procedural" sound. These were driven by adversarial music-producer critics

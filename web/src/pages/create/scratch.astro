@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Footer from "../../components/Footer.astro";
 import AgentPrompt from "../../components/AgentPrompt.astro";
+import PluginCallout from "../../components/PluginCallout.astro";
 
 const PROMPT = `Set up the Hayao game engine and build me a 2D game — my own direction, no template.
 
@@ -39,7 +40,7 @@ const contract = [
 
 const links = [
   { t: "Quickstart guide", d: "A complete, runnable game in ~40 lines", h: "https://github.com/hellojanpacan/hayao-js/blob/main/docs/QUICKSTART.md" },
-  { t: "Documentation", d: "Guides, API & conventions", h: "https://hayao.js.org" },
+  { t: "Documentation", d: "Guides, API & conventions", h: "/docs" },
   { t: "Example source", d: "Finished games, each with its proof", h: "/play" },
 ];
 ---
@@ -91,6 +92,7 @@ const links = [
     <!-- handoff -->
     <section class="mx-auto w-full max-w-3xl px-6 pb-20">
       <AgentPrompt prompt={PROMPT} />
+      <PluginCallout class="mt-4" />
     </section>
 
     <!-- go deeper -->

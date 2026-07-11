@@ -9,6 +9,7 @@
 import { INSTRUMENTS, type Song, type Note, type Track } from './music';
 import { progression, voiceLead, openVoicing, scaleMidis, noteToMidi } from './theory';
 import { dcos } from '../core/dmath';
+import { TAU } from '../core/math';
 
 const n = (pitch: Note['pitch'], beats: number, vel = 1): Note => ({ pitch, beats, vel });
 const rest = (beats: number): Note => ({ pitch: null, beats });
@@ -249,16 +250,21 @@ function jazzFunk(): Song {
 // grounded in the published "First Steps" analysis (E Mixolydian, ~90bpm).
 const PROLOGUE_VOICES = {
   // synth-piano ripple: triangle body + a whisper of FM, short ring so the
-  // overlapping 8ths read as distinct droplets, not a wash.
-  ripple: { wave: 'triangle' as const, attack: 0.004, decay: 0.34, sustainLevel: 0, release: 0.16, volume: 0.34, lowpass: 3700, detune: 7, fm: 0.8, fmFreq: 6 },
+  // overlapping 8ths read as distinct droplets, not a wash. `envCurve` gives it
+  // a struck-string decay (sharp onset, exponential tail) instead of a synthetic
+  // linear fade — the difference between "plucked" and "faded out".
+  ripple: { wave: 'triangle' as const, attack: 0.004, decay: 0.34, sustainLevel: 0, release: 0.16, envCurve: 3.5, volume: 0.34, lowpass: 3700, detune: 7, fm: 0.8, fmFreq: 6 },
   // a high glint answering across the stereo field; rounded so it shimmers, not pierces.
-  glint: { wave: 'sine' as const, attack: 0.006, decay: 0.5, sustainLevel: 0, release: 0.34, volume: 0.21, lowpass: 3400, fm: 1.6, fmFreq: 1300 },
+  glint: { wave: 'sine' as const, attack: 0.006, decay: 0.5, sustainLevel: 0, release: 0.34, envCurve: 3, volume: 0.21, lowpass: 3400, fm: 1.6, fmFreq: 1300 },
   // airy pad — a high wash (the low end is the sub's job; a low pad only muds).
-  pad: { wave: 'triangle' as const, attack: 0.7, decay: 0.3, sustainLevel: 0.85, release: 1.4, volume: 0.09, lowpass: 2100, detune: 12, vibrato: 0.05, vibratoFreq: 3.2 },
+  // `filterEnv` opens the lowpass from ~1.6 octaves down as the pad swells in, so
+  // each chord blooms brighter instead of arriving flat — the Celeste pad move.
+  pad: { wave: 'triangle' as const, attack: 0.7, decay: 0.3, sustainLevel: 0.85, release: 1.4, volume: 0.09, lowpass: 2100, filterEnv: -1.6, filterEnvTime: 0.7, detune: 12, vibrato: 0.05, vibratoFreq: 3.2 },
   // round sub — holds roots, owns the low band alone so it stays clean.
   sub: { wave: 'sine' as const, attack: 0.03, decay: 0.5, sustainLevel: 0.55, release: 0.6, volume: 0.36, lowpass: 440, sub: 0.4 },
-  // wistful lead — sine + light FM tine + slow vibrato.
-  lead: { wave: 'sine' as const, attack: 0.03, decay: 0.5, sustainLevel: 0.45, release: 0.85, volume: 0.3, lowpass: 2300, detune: 5, fm: 1.1, fmFreq: 5, vibrato: 0.035, vibratoFreq: 5 },
+  // wistful lead — sine + light FM tine + slow vibrato; a gentle exponential
+  // release so held notes taper naturally instead of cutting on a ramp.
+  lead: { wave: 'sine' as const, attack: 0.03, decay: 0.5, sustainLevel: 0.45, release: 0.85, envCurve: 2, volume: 0.3, lowpass: 2300, detune: 5, fm: 1.1, fmFreq: 5, vibrato: 0.035, vibratoFreq: 5 },
 };
 
 // Each change: a mid-register tone pool (for the ripple) + a pad voicing + a root.
@@ -279,7 +285,7 @@ function prologueRipple(pool: number[], phase: number, base = 0.36): Note[] {
   for (let i = 0; i < 8; i++) {
     const idx = (contour[i] + phase) % pool.length;
     const oct = Math.floor((contour[i] + phase) / pool.length) * 12;
-    const swell = 0.15 * dcos((i / 8) * Math.PI * 2);
+    const swell = 0.15 * dcos((i / 8) * TAU);
     const accent = i % 4 === 0 ? 0.1 : 0;
     const vel = Math.max(0.16, Math.min(0.8, base + swell + accent - (i % 2) * 0.05));
     out.push(n(pool[idx] + oct, 0.5, vel));
@@ -301,6 +307,11 @@ function ambientPrologue(): Song {
   const V = PROLOGUE_VOICES;
   const C = PROLOGUE_CHANGES;
   const seq = [0, 1, 2, 3, 0, 1, 2, 3];
+  // NB: this cue uses a whole-mix room (see `reverb` below), not per-track sends
+  // — for a lush ambient wash the whole-mix reverb is wider and more enveloping
+  // (sends keep the dry mix dry, which is drier/narrower than this style wants).
+  // reverbSends are the right tool for mixes where a bass must stay dry; see the
+  // engine feature + its test. Left here as the deliberate, measured choice.
   const ripple: Track = {
     name: 'ripple', instrument: V.ripple, gain: 0.62, pan: -0.24,
     patterns: C.map((c, i) => prologueRipple(c.pool, i)), sequence: seq,

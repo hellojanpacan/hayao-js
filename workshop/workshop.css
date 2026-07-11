@@ -326,6 +326,109 @@ button.hy.accept {
   pointer-events: none;
 }
 
+/* ── The project tabs: one per kind of content, only when it exists ── */
+nav.tabs {
+  display: flex;
+  gap: 2px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--washi-2);
+  overflow-x: auto;
+}
+.tab {
+  appearance: none;
+  border: 0;
+  background: none;
+  padding: 9px 14px 8px;
+  font: 600 13.5px 'Overpass', system-ui, sans-serif;
+  color: var(--sumi-soft);
+  border-bottom: 2.5px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.tab:hover {
+  color: var(--sumi);
+}
+.tab.active {
+  color: var(--sumi);
+  border-bottom-color: var(--shu);
+}
+
+/* atom sub-picker chips in the pane head */
+.hy.chip {
+  padding: 2px 10px;
+  border-radius: 999px;
+}
+.hy.chip.active {
+  background: var(--sumi);
+  color: var(--washi-2);
+}
+.pane-head .radiates {
+  margin-left: auto;
+  font-style: italic;
+}
+
+/* Test tab: the sessions surface as a full-width body, not a floating drawer */
+.drawer.inline {
+  position: static;
+  inset: auto;
+  z-index: auto;
+  background: var(--washi);
+  flex: 1;
+  min-height: 0;
+  align-items: stretch;
+}
+.drawer.inline .drawer-head,
+.drawer.inline .drawer-body {
+  width: 100%;
+}
+.drawer.inline .drawer-body {
+  border-left: none;
+}
+
+/* Timeline tab: the project's log, rendered for reading */
+.tab-body.timeline-doc {
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px clamp(16px, 6vw, 64px) 60px;
+  max-width: 860px;
+  line-height: 1.55;
+}
+.timeline-doc .clock {
+  margin-bottom: 10px;
+}
+.timeline-doc h2,
+.timeline-doc h3,
+.timeline-doc h4 {
+  margin: 18px 0 6px;
+}
+.timeline-doc ul {
+  margin: 4px 0;
+  padding-left: 22px;
+}
+.timeline-doc p {
+  margin: 6px 0;
+}
+.timeline-doc code {
+  font-family: var(--mono);
+  font-size: 0.92em;
+  background: var(--line);
+  padding: 1px 5px;
+  border-radius: 5px;
+}
+.timeline-doc section.tl-present {
+  background: var(--washi-2);
+  border: 1.5px solid var(--shu);
+  border-radius: 12px;
+  padding: 10px 16px 12px;
+  margin: 12px 0;
+}
+.timeline-doc section.tl-present > h3::after {
+  content: ' — now';
+  color: var(--shu);
+  font-size: 0.8em;
+}
+
 /* leva sits in a fixed panel; keep it clear of our action bar on phones. */
 @media (max-width: 720px) {
   main.panes {
@@ -337,5 +440,8 @@ button.hy.accept {
   }
   header.bar .build {
     display: none;
+  }
+  nav.tabs {
+    padding: 0 8px;
   }
 }

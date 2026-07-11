@@ -102,6 +102,8 @@ export * from './audio/music';
 export * from './audio/lint';
 export * from './audio/match';
 export * from './audio/adaptive';
+export * from './audio/loopdeck';
+export * from './audio/hayabox';
 export * from './audio/quality';
 export * from './audio/genres';
 export * from './audio/zzfx';
@@ -183,6 +185,8 @@ export * from './workshop/session';
 export * from './workshop/record';
 export * from './workshop/timeline';
 export * from './workshop/run';
+export * from './workshop/atom';
+export * from './workshop/project';
 
 /** Engine version. Must equal package.json — guarded by src/version.test.ts. */
 export const VERSION = '0.5.1';

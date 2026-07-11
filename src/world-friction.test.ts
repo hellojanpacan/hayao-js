@@ -90,6 +90,19 @@ describe('advance clamp warning', () => {
     expect(warn).toHaveBeenCalledTimes(1);
     expect(warn.mock.calls[0][0]).toMatch(/runSteps/);
   });
+
+  it('stays silent for a declared realtime driver, but still clamps', () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const world = new World({ seed: 1 });
+    world.setRoot(new Node({ name: 'root' }));
+    const steps = world.advance(1200, [], undefined, { realtime: true });
+    expect(warn).not.toHaveBeenCalled();
+    // clamp still applies: ~maxFrameMs worth of steps, nowhere near 1200ms worth
+    expect(steps).toBeLessThanOrEqual(Math.ceil(world.clock.maxFrameMs / world.clock.stepMs));
+    // a later NON-realtime overshoot on the same world still warns
+    world.advance(1200);
+    expect(warn).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe('guardDeterminism', () => {

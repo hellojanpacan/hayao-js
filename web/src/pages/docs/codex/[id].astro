@@ -1,0 +1,102 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "../../../layouts/Layout.astro";
+import Footer from "../../../components/Footer.astro";
+
+export async function getStaticPaths() {
+  const all = await getCollection("codex");
+  const paths = [];
+  for (const entry of all) {
+    // modules route by their frontmatter id (anchor-celeste, system-grace, …)
+    if (entry.data.id && entry.data.kind) paths.push({ params: { id: entry.data.id }, props: { entry } });
+    // the three craft playbooks route by filename (fun, juice, judge)
+    else if (/^(FUN|JUICE|JUDGE)$/i.test(entry.id)) paths.push({ params: { id: entry.id.toLowerCase() }, props: { entry } });
+  }
+  return paths;
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+const all = await getCollection("codex");
+const byId = new Map(all.filter((e) => e.data.id).map((e) => [e.data.id, e]));
+
+const d = entry.data;
+const isModule = Boolean(d.id && d.kind);
+const title = d.title ?? entry.id.replace(/^.*\//, "");
+const composes = (d["composes-with"] ?? []).filter((x: string) => byId.has(x));
+
+const srcFile = (entry.filePath ?? "").replace(/^.*?design\//, "design/");
+const srcUrl = `https://github.com/hellojanpacan/hayao-js/blob/main/${srcFile}`;
+
+const KIND_ACCENT: Record<string, string> = {
+  process: "text-orange bg-orange/10",
+  anchor: "text-blue bg-blue/10",
+  genre: "text-green bg-green/10",
+  system: "text-orange bg-orange/10",
+  mechanic: "text-blue bg-blue/10",
+  worldbuilding: "text-green bg-green/10",
+  pattern: "text-orange bg-orange/10",
+  antipattern: "text-rose bg-rose/10",
+  recipe: "text-blue bg-blue/10",
+};
+---
+
+<Layout title={`${title} — Design Codex · Hayao`} description={d.summary ?? `Hayao Design Codex: ${title}.`}>
+  <main class="mx-auto w-full max-w-3xl px-6">
+    <nav class="pt-24 md:pt-28">
+      <a
+        href="/docs/codex"
+        class="inline-flex items-center gap-1.5 font-body text-[0.85rem] font-semibold text-muted no-underline transition-colors hover:text-orange"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5" /><path d="m12 19-7-7 7-7" /></svg>
+        Design Codex
+      </a>
+    </nav>
+
+    {isModule && (
+      <header class="pt-8">
+        <span class:list={["inline-block rounded-full px-3 py-1 font-body text-[0.72rem] font-semibold uppercase tracking-[0.12em]", KIND_ACCENT[d.kind!] ?? "text-soft bg-mist"]}>
+          {d.kind}
+        </span>
+        {d["use-when"] && (
+          <div class="mt-5 rounded-2xl border border-hair bg-panel p-5">
+            <p class="font-body text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-green">Use when</p>
+            <p class="mt-1.5 font-body text-[0.92rem] font-light leading-relaxed text-soft">{d["use-when"]}</p>
+          </div>
+        )}
+      </header>
+    )}
+
+    <article class="doc-prose pt-8 pb-10">
+      <Content />
+    </article>
+
+    {composes.length > 0 && (
+      <aside class="pb-10">
+        <p class="mb-3 font-body text-[0.72rem] font-semibold uppercase tracking-[0.14em] text-muted">Composes with</p>
+        <div class="flex flex-wrap gap-2">
+          {composes.map((cid: string) => {
+            const m = byId.get(cid)!;
+            return (
+              <a
+                href={`/docs/codex/${cid}`}
+                title={m.data.summary}
+                class="rounded-full border border-hair bg-panel px-3.5 py-1.5 font-body text-[0.85rem] text-soft no-underline transition-colors hover:border-orange/60 hover:text-orange"
+              >
+                {m.data.title}
+              </a>
+            );
+          })}
+        </div>
+      </aside>
+    )}
+
+    <p class="border-t border-hair pb-24 pt-6 font-body text-[0.85rem] font-light text-muted">
+      This module renders
+      <a href={srcUrl} class="text-ink underline decoration-hair underline-offset-4 transition-colors hover:text-orange">the repo's markdown</a>
+      directly — edit it there, it changes here.
+    </p>
+  </main>
+
+  <Footer />
+</Layout>

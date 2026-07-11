@@ -1,10 +1,37 @@
-# WORKSHOP.md — the human/AI playtest loop
+# WORKSHOP.md — the project's face, from first atom to shipped game
 
 Hayao proves almost everything by machine — winnability, determinism, ramp,
-feel floors. The one channel no headless gate can close is **fun**, and that
-takes a human. Workshop is the instrument for that channel: it turns every human
-playtest into a machine-legible, bit-exactly replayable artifact, and gives the
-agent sanctioned verbs to act on it.
+feel floors. The one channel no headless gate can close is **taste**, and that
+takes a human. Workshop is the instrument for that channel — and it is the
+project's **single workspace for its whole life**: the same pane where you
+playtest a finished game is where, weeks earlier, you looked at the first
+sprite, listened to the first motif, and read the original concept. Pico-8's
+insight, kept: the workspace's table of contents *is* the project's anatomy.
+Crafting an atom — a sound, a sprite, a scene, or just a concept — is exactly
+where the Workshop is used for the *first* time in a project.
+
+## The tabs — a UI that grows with the project
+
+The Workshop shell shows a tab per kind of content, and **a tab exists only
+when its content does** — a day-zero project is one tab; the UI grows as the
+project grows. The tabs, in vocabulary order:
+
+| Tab | Shows | Appears when |
+|---|---|---|
+| **Timeline** | the project's `TIMELINE.md` — Original Concept, pivots, `## Present` (what's being worked on, what feedback is awaited) + a derived session clock | the file exists |
+| **Visual** | `kind: 'visual'` atoms — sprites, rigs, animation catalog sheets | first visual atom |
+| **Scene** | `kind: 'scene'` atoms — backgrounds, cards-on-table, palette moods | first scene atom |
+| **Audio** | `kind: 'audio'` atoms — cues and tracks, play-on-demand, quality scores | first audio atom |
+| **Play** | the running game (everything below this section) | `game.ts` exists |
+| **Test** | recorded sessions, reports, tapes, knob accept, A/B, phone play | first session |
+
+Atoms ride the same machinery as games: `defineAtom` compiles to a miniature
+world, so knobs, HMR carryover, scrubbing, and session recording work on a
+lone sprite sheet exactly as they do on a shipped game. **Pico's tabs edit;
+hayao's tabs behold** — every tab is a viewer with knobs, never an editor.
+The agent writes code; the pane is where human and agent look at the same
+thing. See `docs/CONVENTIONS.md` → *Project anatomy* for the file layout
+(`TIMELINE.md`, `atoms/`, optional `game.ts`).
 
 The design doctrine, in one line each:
 

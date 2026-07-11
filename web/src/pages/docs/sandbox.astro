@@ -1,0 +1,97 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
+
+// The de-anchoring shelf: one primitive per lab, knobs exposed, no genre.
+// Catalog mirrors sandboxes/README.md — add a lab there, add a card here.
+const GH = "https://github.com/hellojanpacan/hayao-js/tree/main/sandboxes";
+const labs = [
+  { slug: "physics-lab", t: "Physics", p: "createRigidWorld", d: "Rigid bodies, joints, raycasts. Spawn and drop bodies; tune gravity and restitution.", c: "green" },
+  { slug: "particle-workshop", t: "Particles", p: "Particles + PARTICLE_PRESETS", d: "Every preset, with count, gravity and spread on sliders.", c: "orange" },
+  { slug: "camera-lab", t: "Camera", p: "Camera2D + CameraController", d: "Deadzone, smoothing, shake and bounds — feel the follow rules directly.", c: "blue" },
+  { slug: "pathfinding-demo", t: "Pathfinding", p: "astarGrid / floodFill", d: "Paint walls, move the goal, toggle diagonals; watch the search respond.", c: "green" },
+  { slug: "juice-lab", t: "Juice", p: "EASINGS + AnimationPlayer + spring", d: "Every easing curve side by side — pick feel by eye, not by name.", c: "orange" },
+  { slug: "procgen-lab", t: "Procgen", p: "generateCave + valueNoise + autotile", d: "Re-roll the seed, tune fill and smoothing; same seed, same cave, every time.", c: "blue" },
+  { slug: "synth-lab", t: "Synth", p: "the audio bus", d: "Pitch, wave, envelope — hear a SoundSpec take shape as you drag.", c: "green" },
+  { slug: "anim-lab", t: "Animation", p: "Bone2D + ClipPlayer + Blend1D + IK", d: "Blend idle↔wave, reach for the pointer with IK, toggle the skeleton overlay.", c: "orange" },
+  { slug: "webgl-lab", t: "WebGL effects", p: "WebGL2Renderer + BLOOM_PIPELINE", d: "Cycle eight post-process effects; burst particles; stress-test the storm.", c: "blue" },
+  { slug: "card-lab", t: "Cards", p: "makeCard + resourceGlyph", d: "Four card anatomies from the slot-stack kit, in day and night themes.", c: "green" },
+  { slug: "hero-lab", t: "Hero rig", p: "the duotone hero + seven clips", d: "The whole cast sheet playing at once — jump, spawn and death on auto-replay.", c: "orange" },
+  { slug: "light-lab", t: "2D lighting", p: "LightLayer + PointLight + occluders", d: "Two lights carving pools out of ambient dark; drive one, the other orbits.", c: "blue" },
+];
+const dot = { green: "bg-green", blue: "bg-blue", orange: "bg-orange" } as const;
+---
+
+<Layout
+  title="Sandboxes — Hayao Docs"
+  description="Twelve single-mechanic labs — physics, particles, camera, pathfinding, procgen, synth, animation, lighting — each isolating one engine primitive with its knobs exposed."
+>
+  <main class="mx-auto w-full max-w-3xl px-6">
+    <section class="flex flex-col items-center pt-28 pb-12 text-center md:pt-36">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-green">Docs · Sandboxes</p>
+      <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
+        One mechanic, no genre
+      </h1>
+      <p class="mt-6 max-w-[50ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
+        A sandbox shows a single engine primitive in isolation, knobs exposed — how a part is
+        used, without smuggling in a whole game's design. Learn the API here; decide what to
+        build somewhere else entirely.
+      </p>
+    </section>
+
+    <!-- run locally -->
+    <section class="pb-12">
+      <div class="rounded-3xl border border-[#303a63] bg-[#141a30] p-6 text-left">
+        <p class="mb-3 font-body text-[0.72rem] uppercase tracking-[0.18em] text-orange">Run the shelf</p>
+        <pre class="overflow-x-auto font-mono text-[0.82rem] leading-relaxed text-[#eef1f9]"><code>git clone https://github.com/hellojanpacan/hayao-js && cd hayao-js
+npm install && npm run dev
+<span class="text-[#727b9c]"># then open http://localhost:5180/sandboxes/&lt;lab&gt;/</span></code></pre>
+      </div>
+    </section>
+
+    <!-- the labs -->
+    <section class="pb-14">
+      <div class="grid gap-4 sm:grid-cols-2">
+        {labs.map((l) => (
+          <a
+            href={`${GH}/${l.slug}`}
+            target="_blank"
+            rel="noreferrer"
+            class="group flex flex-col rounded-3xl border border-hair bg-panel p-6 text-left no-underline transition-colors hover:border-orange/50 hover:bg-orange/5"
+          >
+            <div class:list={["h-1 w-8 rounded-full", dot[l.c as keyof typeof dot]]}></div>
+            <div class="mt-4 flex items-baseline justify-between gap-3">
+              <h2 class="font-display text-[1.1rem] font-semibold text-ink">{l.t}</h2>
+              <span class="font-mono text-[0.68rem] text-muted">{l.slug}</span>
+            </div>
+            <p class="mt-1 font-mono text-[0.75rem] text-orange/90">{l.p}</p>
+            <p class="mt-2 grow font-body text-[0.88rem] font-light leading-relaxed text-soft">{l.d}</p>
+            <span class="mt-4 inline-flex items-center gap-1 font-body text-[0.82rem] font-semibold text-ink transition-colors group-hover:text-orange">
+              Source
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 7h10v10" /><path d="M7 17 17 7" /></svg>
+            </span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- the contract -->
+    <section class="pb-24">
+      <div class="rounded-[2.25rem] bg-navy px-6 py-14 md:px-14">
+        <p class="mb-4 text-center font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">The sandbox contract</p>
+        <h2 class="mx-auto max-w-[24ch] text-balance text-center font-display text-[clamp(1.6rem,4vw,2.2rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-white">
+          Lighter than an example, honest like one
+        </h2>
+        <ul class="mx-auto mt-8 max-w-xl space-y-3 font-body text-[0.95rem] font-light leading-relaxed text-white/70">
+          <li><span class="text-white">Import only from <code class="font-mono text-[0.85em]">@hayao</code></span> — same seam as everything else.</li>
+          <li><span class="text-white">Deterministic</span> — re-roll a seed and it re-derives identically.</li>
+          <li><span class="text-white">View nodes are cosmetic</span> — knob state is canonical, paint stays out of the hash.</li>
+          <li><span class="text-white">Headlessly inspectable</span> — every lab exposes a <code class="font-mono text-[0.85em]">probe(world)</code>.</li>
+          <li><span class="text-white">No win, no lose, no genre</span> — if it starts feeling like a game, it belongs in <code class="font-mono text-[0.85em]">examples/</code>.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
