@@ -1,0 +1,126 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
+import AgentPrompt from "../../components/AgentPrompt.astro";
+
+const PROMPT = `I want to grow a game from a spark, not a pitch. Set up an atom-first hayao project and iterate it with me.
+
+1. Scaffold a seed-stage project (a Timeline + atoms, NO game yet):
+   npm create hayao@latest my-spark -- --seed && cd my-spark && npm install
+2. Ask me what the spark is — a character, a sound, a look, a verb —
+   and replace atoms/first-light.ts with a real first atom for it.
+3. Run npm run dev and send me to /workshop/ — I'll look, listen, and
+   turn knobs there while you iterate the atom in code. Small steps;
+   my reactions drive the next change.
+4. When the atom is genuinely good ALONE, name what it radiates
+   (fantasy / verb / tension) and run the seed method:
+   https://github.com/hellojanpacan/hayao-js/blob/main/design/00-process/the-seed.md
+   — audition tensions until the atom is load-bearing, then propose the
+   concept to me and write it into TIMELINE.md as the Original Concept.
+5. Only then start game.ts — and prove it like any hayao game.
+
+If an atom stops radiating, say so plainly and we archive it. Pivots are
+cheap here; that's the point. Start by asking about my spark.`;
+
+const tabs = ["Timeline", "Visual", "Scene", "Audio", "Play", "Test"];
+
+const truths = [
+  {
+    t: "The concept comes last, not first",
+    d: "You iterate a real thing — a sprite, a chord, a card — until it starts suggesting a game. The design doc is written when there's something true to write down.",
+  },
+  {
+    t: "The Workshop shows it from day zero",
+    d: "A project is a Timeline and its atoms before it's a game. Tabs appear as content does — a day-zero project is one tab, and the UI grows as the project grows.",
+  },
+  {
+    t: "Pivots cost a paragraph",
+    d: "The Timeline is a log, not a contract. Change your mind, append an entry, keep the old one — before a game loop exists, following a better atom is cheap by design.",
+  },
+];
+---
+
+<Layout
+  title="Start from a spark — Hayao"
+  description="Grow a game from a single atom: iterate a character, a sound, or a scene in the Workshop until it tells you what game it wants to be."
+>
+  <main class="flex flex-col items-center text-center">
+    <!-- hero -->
+    <section class="mx-auto flex w-full max-w-2xl flex-col items-center px-6 pt-28 pb-16 md:pt-36">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-rose">Create · Atom first</p>
+      <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
+        Start from a spark you can touch
+      </h1>
+      <p class="mt-6 max-w-[46ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
+        Maybe it starts with a protagonist you can't stop flipping. A chord that sets a mood.
+        A card that reads right. Iterate the atom until it sings — then let it tell you what
+        game it wants to be.
+      </p>
+      <p class="mt-4 max-w-[46ch] font-body text-[0.9rem] font-light leading-relaxed text-muted">
+        Honestly: this is the slowest door to a running game — and the most likely to find an
+        original one.
+      </p>
+    </section>
+
+    <!-- the growing workshop -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-16">
+      <div class="flex flex-wrap items-center justify-center gap-2">
+        {
+          tabs.map((t, i) => (
+            <span
+              class:list={[
+                "rounded-full border px-4 py-2 font-body text-[0.82rem] font-semibold uppercase tracking-[0.08em]",
+                i < 2 ? "border-hair bg-panel text-ink" : "border-dashed border-hair bg-transparent text-muted",
+              ]}
+            >
+              {t}
+            </span>
+          ))
+        }
+      </div>
+      <p class="mt-5 font-body text-[0.9rem] font-light leading-relaxed text-muted">
+        The Workshop's tabs, on a project that's two days old: the solid ones exist, the dashed
+        ones don't yet. A tab appears the day its content does — Play arrives last, and that's fine.
+      </p>
+    </section>
+
+    <!-- how it holds together -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-20">
+      <div class="grid gap-4 md:grid-cols-3">
+        {
+          truths.map((x) => (
+            <div class="rounded-3xl border border-hair bg-panel p-5 text-left">
+              <h3 class="font-display text-[0.98rem] font-semibold text-ink">{x.t}</h3>
+              <p class="mt-2 font-body text-[0.83rem] font-light leading-relaxed text-soft">{x.d}</p>
+            </div>
+          ))
+        }
+      </div>
+      <p class="mx-auto mt-8 max-w-[52ch] font-body text-[0.95rem] font-light leading-relaxed text-soft">
+        The rigor doesn't go away — it moves. Behind the scenes your agent still runs the Design
+        Codex: an atom earns its game by becoming <em>load-bearing</em> in one tension, not by
+        being pretty. You see the concept it proposes, never the machinery.
+      </p>
+    </section>
+
+    <!-- handoff -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-20">
+      <AgentPrompt
+        prompt={PROMPT}
+        blurb="Paste this into Claude Code, Cursor, or any coding agent. It asks about your spark first — the concept comes when the atom earns it."
+      />
+    </section>
+
+    <!-- next door -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-28">
+      <p class="font-body text-[0.9rem] font-light text-muted">
+        Already know what the game is?
+        <a href="/create/concept" class="font-semibold text-ink no-underline transition-colors hover:text-orange">Design the concept</a>
+        — or
+        <a href="/create/quickstart" class="font-semibold text-ink no-underline transition-colors hover:text-orange">quickstart a working game</a>.
+      </p>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

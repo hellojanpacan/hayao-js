@@ -30,12 +30,21 @@ const doors = [
     accent: "text-blue",
     bar: "bg-blue",
   },
+  {
+    step: "04",
+    time: "Slow burn",
+    title: "Start from a spark",
+    desc: "No pitch, no plan — a character, a chord, a card you can't put down. Iterate the atom in the Workshop until it tells you what game it wants to be.",
+    href: "/create/seed",
+    accent: "text-rose",
+    bar: "bg-rose",
+  },
 ];
 ---
 
 <Layout
   title="Create — Hayao"
-  description="Three ways to start a game with Hayao: quickstart with the default style, design an original concept first, or start from scratch."
+  description="Four ways to start a game with Hayao: quickstart with the default style, design an original concept first, start from scratch, or grow a game from a single atom."
 >
   <main class="flex flex-col items-center text-center">
     <section class="mx-auto flex w-full max-w-2xl flex-col items-center px-6 pt-28 pb-16 md:pt-36">
@@ -50,7 +59,7 @@ const doors = [
     </section>
 
     <section class="mx-auto w-full max-w-3xl px-6 pb-28">
-      <div class="grid gap-4 md:grid-cols-3">
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         {
           doors.map((d) => (
             <a

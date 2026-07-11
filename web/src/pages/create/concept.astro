@@ -10,8 +10,9 @@ const PROMPT = `Help me design an original game with the Hayao Design Codex, the
    (start with design/INDEX.md)
 2. Interview me. Turn my intent into a one-page brief:
    player fantasy, scope, constraints, pillars.
-3. Compose the design: pick an anchor + a genre template + the systems
-   they imply, then apply one twist ("X but Y").
+3. Find the SPINE (design/00-process/the-spine.md): the one tension the
+   game is about. Then compose — anchor + genre template + the systems the
+   spine demands — with a twist ("X but Y") only to give it a fresh face.
    Check design/70-antipatterns/ before locking anything in.
 4. Show me the brief. Iterate until I sign off — the concept is mine,
    the composition is yours.
@@ -22,7 +23,7 @@ const PROMPT = `Help me design an original game with the Hayao Design Codex, the
 
 Start with the interview.`;
 
-const pipeline = ["Intent", "Anchor", "Compose", "Twist", "Shape", "Handoff"];
+const pipeline = ["Intent", "Spine", "Twist", "Compose", "Shape", "Handoff"];
 
 const shelves = [
   { n: "42", t: "Anchors", d: "The DNA of reference games — what makes each one tick, ready to borrow from." },
@@ -134,8 +135,10 @@ const sparks = [
       <p class="font-body text-[0.9rem] font-light text-muted">
         Concept already clear in your head?
         <a href="/create/quickstart" class="font-semibold text-ink no-underline transition-colors hover:text-orange">Take the quickstart</a>
-        — or go
-        <a href="/create/scratch" class="font-semibold text-ink no-underline transition-colors hover:text-orange">fully from scratch</a>.
+        — go
+        <a href="/create/scratch" class="font-semibold text-ink no-underline transition-colors hover:text-orange">fully from scratch</a>
+        — or, if all you have is something you made and can't put down,
+        <a href="/create/seed" class="font-semibold text-ink no-underline transition-colors hover:text-orange">start from a spark</a>.
       </p>
     </section>
   </main>
