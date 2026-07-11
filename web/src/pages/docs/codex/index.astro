@@ -1,0 +1,97 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../../layouts/Layout.astro";
+import Footer from "../../../components/Footer.astro";
+
+// The Design Codex, browsable. Modules carry frontmatter (id/kind/summary);
+// shelf READMEs and playbooks don't, so filtering on data.id gets exactly the 216.
+const all = await getCollection("codex");
+const modules = all.filter((e) => e.data.id && e.data.kind);
+
+const KINDS: { kind: string; label: string; d: string; accent: string }[] = [
+  { kind: "process", label: "Process", d: "Intent → brief → pillars → spine → loop — how a design gets assembled.", accent: "text-orange" },
+  { kind: "anchor", label: "Anchors", d: "Reference-game DNA: what made a proven game work, stated so you can borrow it.", accent: "text-blue" },
+  { kind: "genre", label: "Genres", d: "Playable templates — the skeleton each genre demands, plus its verify pattern.", accent: "text-green" },
+  { kind: "system", label: "Systems", d: "The organs: loops like economy, grace, mastery-curve, crafting.", accent: "text-orange" },
+  { kind: "mechanic", label: "Mechanics", d: "The verb library — dash, parry, merge, rewind. A game feels like its verbs.", accent: "text-blue" },
+  { kind: "worldbuilding", label: "Worldbuilding", d: "Setting, tone, and theme that pull mechanics into meaning.", accent: "text-green" },
+  { kind: "pattern", label: "Patterns", d: "Cross-cutting moves that recur across good designs.", accent: "text-orange" },
+  { kind: "antipattern", label: "Antipatterns", d: "The known traps — named so a design review can point at them.", accent: "text-rose" },
+  { kind: "recipe", label: "Recipes", d: "Worked “X but Y” designs, composed end-to-end from the shelves above.", accent: "text-blue" },
+];
+const byKind = new Map<string, typeof modules>();
+for (const k of KINDS) byKind.set(k.kind, modules.filter((m) => m.data.kind === k.kind).sort((a, b) => (a.data.title ?? "").localeCompare(b.data.title ?? "")));
+
+const playbooks = [
+  { id: "fun", t: "FUN.md", d: "The design/verification playbook — what proves a genre is fair." },
+  { id: "juice", t: "JUICE.md", d: "The game-feel cookbook — hit-stop, springs, screenshake, telegraphs." },
+  { id: "judge", t: "JUDGE.md", d: "The vision judge — how a headless render gets scored for looks." },
+];
+---
+
+<Layout
+  title="Design Codex — Hayao"
+  description={`The Hayao Design Codex: ${modules.length} cross-linked design modules — anchors, genres, systems, mechanics, patterns, antipatterns, recipes.`}
+>
+  <main class="mx-auto w-full max-w-3xl px-6">
+    <section class="flex flex-col items-center pt-28 pb-12 text-center md:pt-36">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-blue">Docs · Design Codex</p>
+      <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
+        {modules.length} modules of game-design memory
+      </h1>
+      <p class="mt-6 max-w-[50ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
+        Every module is tagged, cross-linked, and written to be composed: anchor to a proven
+        game, pick a genre skeleton, wire in systems and a verb, then twist. This is the library
+        your agent designs from — browse it the way it does.
+      </p>
+      <a
+        href="/create/design"
+        class="mt-8 inline-flex items-center rounded-full bg-orange px-6 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:bg-green"
+      >
+        See how a design gets composed
+      </a>
+    </section>
+
+    <!-- playbooks -->
+    <section class="pb-12">
+      <div class="grid gap-4 md:grid-cols-3">
+        {playbooks.map((p) => (
+          <a href={`/docs/codex/${p.id}`} class="rounded-3xl border border-hair bg-panel p-5 text-left no-underline transition-colors hover:border-orange/50 hover:bg-orange/5">
+            <h2 class="font-mono text-[0.9rem] font-semibold text-ink">{p.t}</h2>
+            <p class="mt-1.5 font-body text-[0.82rem] font-light leading-snug text-soft">{p.d}</p>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- shelves -->
+    <section class="pb-24">
+      {KINDS.map((k) => {
+        const mods = byKind.get(k.kind) ?? [];
+        return (
+          <div class="mb-12">
+            <div class="mb-4 flex items-baseline justify-between gap-4">
+              <h2 class="font-display text-[1.3rem] font-semibold text-ink">
+                {k.label} <span class:list={["font-body text-[0.85rem] font-semibold", k.accent]}>{mods.length}</span>
+              </h2>
+              <p class="hidden text-right font-body text-[0.82rem] font-light text-muted sm:block">{k.d}</p>
+            </div>
+            <div class="flex flex-wrap gap-2">
+              {mods.map((m) => (
+                <a
+                  href={`/docs/codex/${m.data.id}`}
+                  title={m.data.summary}
+                  class="rounded-full border border-hair bg-panel px-3.5 py-1.5 font-body text-[0.85rem] font-normal text-soft no-underline transition-colors hover:border-orange/60 hover:text-orange"
+                >
+                  {m.data.title}
+                </a>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

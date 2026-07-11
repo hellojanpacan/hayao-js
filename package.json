@@ -82,6 +82,7 @@
     "judge": "tsx scripts/judge.ts",
     "thumbs": "tsx scripts/site-thumbs.ts",
     "design:index": "node scripts/build-design-index.mjs",
+    "design:spine": "node scripts/compose-design.mjs spine",
     "design:spark": "node scripts/compose-design.mjs spark",
     "strike": "tsx src/coin/strike.ts"
   },

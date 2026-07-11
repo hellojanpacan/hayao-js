@@ -4,7 +4,7 @@ title: Auto-Battler
 kind: genre
 tags: [auto-battler, autochess, prep-then-watch, economy, synergy, positioning, rounds, shared-pool]
 summary: Prep-then-watch — spend an economy on units, position and synergise them, then watch the round resolve itself.
-use-when: The design is a prep-phase-then-auto-combat game (autochess-like): economy + positioning + synergy across rounds.
+use-when: "The design is a prep-phase-then-auto-combat game (autochess-like): economy + positioning + synergy across rounds."
 composes-with: [system-economy, system-build-diversity, system-unit-rosters, system-counter-systems, system-reward-schedules]
 anchors: [anchor-loop-hero]
 verify-with: design/FUN.md#12-·-turn-based-tactics

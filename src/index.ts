@@ -79,6 +79,9 @@ export * from './art/bitmapFont';
 export * from './art/autotile';
 export * from './art/duotone';
 export * from './art/hero';
+export * from './art/fontMetrics';
+export * from './art/cardGlyphs';
+export * from './art/card';
 
 // ── procgen: deterministic generators + stateless scatter ───────
 export * from './procgen/grid';
@@ -116,6 +119,8 @@ export * from './ui/menuNav';
 
 // ── verify: the AI-first harness ────────────────────────────────
 export * from './verify/solver';
+export * from './verify/ablation';
+export * from './verify/agency';
 export * from './verify/determinism';
 export * from './verify/playthrough';
 export * from './verify/capture';

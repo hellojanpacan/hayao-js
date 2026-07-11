@@ -1,0 +1,195 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
+import AgentPrompt from "../../components/AgentPrompt.astro";
+
+// The Workshop is a dev-server instrument (it needs the Vite middleware and the
+// .workshop/ session bus), so this page *stages* it faithfully instead of
+// embedding it: the knob panel, the timeline, and a playtest report are drawn
+// live in HTML from the same values the real pane shows.
+
+const loop = [
+  { n: "01", t: "A human plays", d: "In the browser, on a phone via QR — every run is recorded as (seed, tuning, inputs, knob events)." },
+  { n: "02", t: "Taste happens", d: "Knobs move mid-play. Feels-bad moments get annotated. The session forks when you scrub back and try again." },
+  { n: "03", t: "The agent reads it", d: "Via MCP verbs — list_sessions, inspect_moment, get_knob_state — the exact frame where a player hesitated, re-simulated in Node." },
+  { n: "04", t: "Values become code", d: "Accepted knob values get written back into the game's declared defaults. Text stays the source of truth." },
+];
+
+const verbs = ["list_games", "list_sessions", "get_playtest_report", "inspect_moment", "get_knob_state", "get_annotations", "build_variant", "run_verify"];
+
+const PROMPT = `Run a Hayao Workshop playtest loop with me.
+
+1. Clone and start the dev server:
+   git clone https://github.com/hellojanpacan/hayao-js && cd hayao-js
+   npm install && npm run dev    # then I'll open /workshop/
+2. Read docs/WORKSHOP.md — sessions are re-executable artifacts,
+   knobs are taste, text is the source of truth.
+3. I'll play. Afterwards, use the MCP sidecar (.mcp.json registers it)
+   to read my session: where I hesitated, where I died, what I annotated.
+4. Propose ONE tuning change, explain it from the data, and write the
+   accepted value back into the game's tuning defaults.
+5. Re-run npm run verify so the proofs still hold.
+
+Wait for my first session, then start with the report.`;
+---
+
+<Layout
+  title="Workshop — the playtest loop · Hayao"
+  description="Hayao Workshop turns human playtests into replayable, agent-readable artifacts: live knobs, session scrubbing, A/B variants, and MCP verbs so your AI acts on what you felt."
+>
+  <main class="flex flex-col items-center text-center">
+    <!-- hero -->
+    <section class="mx-auto flex w-full max-w-2xl flex-col items-center px-6 pt-28 pb-12 md:pt-36">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Create · Workshop</p>
+      <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
+        The machine proves it works.<br />You direct whether it's fun.
+      </h1>
+      <p class="mt-6 max-w-[48ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
+        Solvers prove winnable; hashes prove deterministic. The one channel no headless gate can
+        close is <em>fun</em> — so Hayao ships an instrument for it: every human playtest becomes
+        a bit-exactly replayable artifact your agent can read, inspect, and act on.
+      </p>
+    </section>
+
+    <!-- the staged pane -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-6">
+      <div class="overflow-hidden rounded-[1.5rem] border border-hair bg-panel text-left shadow-[0_24px_60px_-24px_rgba(41,51,92,0.35)]">
+        <!-- title bar -->
+        <div class="flex items-center justify-between border-b border-hair px-5 py-3">
+          <span class="font-display text-[0.85rem] font-semibold text-ink">Workshop — small-flame</span>
+          <span class="rounded-full bg-green/10 px-2.5 py-0.5 font-mono text-[0.65rem] font-semibold text-green">session 07 · recording</span>
+        </div>
+        <div class="grid md:grid-cols-[1.4fr_1fr]">
+          <!-- play pane + timeline -->
+          <div class="border-b border-hair p-5 md:border-b-0 md:border-r">
+            <div class="flex aspect-[16/10] items-center justify-center rounded-xl bg-[#141a30]">
+              <p class="px-6 font-body text-[0.8rem] font-light leading-relaxed text-white/50">
+                the game, live — playable here or on your phone via QR
+              </p>
+            </div>
+            <!-- timeline -->
+            <div class="mt-4">
+              <div class="relative h-2 rounded-full bg-mist">
+                <div class="absolute inset-y-0 left-0 w-[62%] rounded-full bg-blue/40"></div>
+                <div class="absolute top-1/2 left-[62%] size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-panel bg-blue"></div>
+                <div class="absolute top-1/2 left-[38%] h-3 w-0.5 -translate-y-1/2 bg-rose" title="annotation"></div>
+              </div>
+              <div class="mt-2 flex justify-between font-mono text-[0.65rem] text-muted">
+                <span>frame 1 843 / 2 970</span>
+                <span class="text-rose">“felt-bad” @ 1 121</span>
+                <span>scrub = time travel</span>
+              </div>
+            </div>
+          </div>
+          <!-- knobs + report -->
+          <div class="p-5">
+            <p class="mb-3 font-body text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-muted">Tuning knobs — live</p>
+            {[
+              { k: "gravity", v: "1400", pct: 62 },
+              { k: "coyoteMs", v: "90", pct: 45 },
+              { k: "fuelBurn", v: "0.84", pct: 71 },
+            ].map((r) => (
+              <div class="mb-3">
+                <div class="flex justify-between font-mono text-[0.7rem] text-soft">
+                  <span>{r.k}</span>
+                  <span class="text-orange">{r.v}</span>
+                </div>
+                <div class="mt-1 h-1.5 rounded-full bg-mist">
+                  <div class="h-full rounded-full bg-orange/70" style={`width:${r.pct}%`}></div>
+                </div>
+              </div>
+            ))}
+            <p class="mt-5 mb-2 font-body text-[0.65rem] font-semibold uppercase tracking-[0.16em] text-muted">Playtest report</p>
+            <div class="rounded-xl bg-mist p-3.5 font-mono text-[0.7rem] leading-relaxed text-soft">
+              <p>hesitation 4.2s @ gap-3</p>
+              <p>deaths cluster: room 2 (5×)</p>
+              <p class="text-rose">futile verb: jump ×11 vs ceiling</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="mx-auto mt-4 max-w-[46ch] font-body text-[0.85rem] font-light leading-relaxed text-muted">
+        A faithful staging of the pane — the real one runs on the dev server, records every
+        session, and hot-swaps the game under your hands as the agent edits it.
+      </p>
+    </section>
+
+    <!-- the loop -->
+    <section class="mx-auto w-full max-w-3xl px-6 py-16">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-green">The loop</p>
+      <h2 class="mx-auto max-w-[24ch] text-balance font-display text-[clamp(1.7rem,4vw,2.4rem)] font-semibold leading-[1.12] tracking-[-0.01em] text-ink">
+        Taste in, code out
+      </h2>
+      <div class="mt-10 grid gap-4 sm:grid-cols-2 md:grid-cols-4">
+        {
+          loop.map((s) => (
+            <div class="flex flex-col rounded-3xl border border-hair bg-panel p-5 text-left">
+              <p class="font-display text-[1.3rem] font-semibold text-orange">{s.n}</p>
+              <h3 class="mt-1 font-display text-[0.98rem] font-semibold text-ink">{s.t}</h3>
+              <p class="mt-2 grow font-body text-[0.82rem] font-light leading-relaxed text-soft">{s.d}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- what makes it different -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-16">
+      <div class="grid gap-4 md:grid-cols-3">
+        <div class="flex flex-col rounded-3xl border border-hair bg-panel p-6 text-left">
+          <h2 class="font-display text-[1.05rem] font-semibold text-ink">A session is re-executable</h2>
+          <p class="mt-2 grow font-body text-[0.88rem] font-light leading-relaxed text-soft">
+            Not a video — (seed, tuning, inputLog, knob events). Any metric is computable after the
+            fact; any tick can be re-inspected in Node, bit for bit.
+          </p>
+        </div>
+        <div class="flex flex-col rounded-3xl border border-hair bg-panel p-6 text-left">
+          <h2 class="font-display text-[1.05rem] font-semibold text-ink">Scrubbing forks time</h2>
+          <p class="mt-2 grow font-body text-[0.88rem] font-light leading-relaxed text-soft">
+            Drag the timeline to any recorded frame, resume, and the discarded future is truncated —
+            the artifact always replays as exactly what the player kept.
+          </p>
+        </div>
+        <div class="flex flex-col rounded-3xl border border-hair bg-panel p-6 text-left">
+          <h2 class="font-display text-[1.05rem] font-semibold text-ink">A/B is a URL</h2>
+          <p class="mt-2 grow font-body text-[0.88rem] font-light leading-relaxed text-soft">
+            Variants build side by side and carry your run across; tape mode replays any past
+            session read-only with <code class="font-mono text-[0.82em]">?session=&lt;id&gt;</code>.
+          </p>
+        </div>
+      </div>
+
+      <!-- MCP verbs -->
+      <div class="mt-4 rounded-3xl border border-[#303a63] bg-[#141a30] p-6 text-left">
+        <p class="mb-3 font-body text-[0.72rem] uppercase tracking-[0.18em] text-orange">The agent's verbs — an MCP sidecar, in the box</p>
+        <div class="flex flex-wrap gap-2">
+          {verbs.map((v) => (
+            <code class="rounded-full border border-white/15 bg-white/5 px-3 py-1 font-mono text-[0.75rem] text-[#eef1f9]">{v}</code>
+          ))}
+        </div>
+        <p class="mt-4 font-body text-[0.85rem] font-light leading-relaxed text-white/60">
+          Registered in <code class="font-mono text-[0.85em]">.mcp.json</code> — Claude Code, Cursor, or any MCP
+          client reads your playtests the moment the dev server runs. Bring your own agent.
+        </p>
+      </div>
+    </section>
+
+    <!-- handoff -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-20">
+      <AgentPrompt
+        prompt={PROMPT}
+        blurb="Paste this into your agent, play one session, and watch it turn what you felt into a reasoned tuning diff."
+      />
+    </section>
+
+    <!-- doc link -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-28">
+      <p class="font-body text-[0.9rem] font-light text-muted">
+        The full doctrine — sessions, scrub semantics, tape mode, invited playtesters —
+        <a href="/docs/workshop" class="font-semibold text-ink no-underline transition-colors hover:text-orange">docs/WORKSHOP.md</a>.
+      </p>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

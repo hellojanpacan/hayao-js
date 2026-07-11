@@ -29,6 +29,9 @@ imitation — is what gets learned.
 | `synth-lab` | `audio` bus + zzfx-style tones | pitch, wave, envelope, play |
 | `anim-lab` | `Bone2D` rig + `ClipPlayer` + `Blend1D` + `IkTarget` + `SkeletonDebug` | blend idle↔wave, reach pointer (IK), skeleton overlay, playback speed |
 | `webgl-lab` | `WebGL2Renderer` + `WEBGL_EFFECTS` + `BLOOM_PIPELINE` | cycle 8 post-process effects, adjust per-effect param, particle burst, storm stress |
+| `card-lab` | `makeCard` slot stack + `resourceGlyph` (the card kit) | four card anatomies side by side, day↔night theme |
+| `hero-lab` | the duotone hero rig + its seven authored clips | scheme, facing; jump/spawn/death auto-replay side by side |
+| `light-lab` | `LightLayer` + `PointLight` + `occludersFromTilemap` | drive one light (the other orbits), hard/soft shadows, ambient dark |
 
 ## The sandbox contract
 
@@ -59,4 +62,4 @@ Rules a sandbox must keep:
    `examples/`, not here.
 
 To add one: copy the nearest lab, swap the primitive, keep the contract. Then add
-a card to the **Sandboxes** shelf in [`play/index.html`](../play/index.html).
+a card to the catalog at [`web/src/pages/docs/sandbox.astro`](../web/src/pages/docs/sandbox.astro).

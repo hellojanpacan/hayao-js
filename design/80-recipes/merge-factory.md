@@ -5,8 +5,9 @@ kind: recipe
 tags: [merge, automation, factory, recipe, factorio]
 summary: Threes-style merging scaled into a Factorio automation loop — combine to ascend, then automate the combining.
 use-when: You want a merge toy that grows into a systemic automation game.
-composes-with: [mechanic-merge, anchor-factorio, system-resource-loops, genre-incremental]
+composes-with: [mechanic-merge, anchor-factorio, system-resource-loops, genre-incremental, process-the-spine]
 anchors: [anchor-factorio, anchor-katamari]
+spine: "Finite board space is the one scarcity, and the automation that clears cells by merging is the same automation that keeps flooding them — you must out-design your own throughput before the board jams."
 verify-with: design/FUN.md#14-·-incremental
 ---
 
@@ -27,6 +28,41 @@ bottleneck is the hook.
 Take the merge verb, keep it, then move it up a level of abstraction: the player
 stops merging and starts building **the thing that merges**. Factorio did this to
 crafting; do it to Threes.
+
+## The spine
+
+*Finite board space is the one scarcity, and the automation that clears cells by
+merging is the same automation that keeps flooding them — you must out-design your
+own throughput before the board jams.*
+
+| Part | This game |
+|---|---|
+| **Objective** | Keep the line running and climb the tiers — reach tier-8 without the board jamming |
+| **Superpower** | **Automate the merge** — place droppers, mergers, belts, sorters so the combining runs itself |
+| **Scarcity** | **Board space** — a finite grid of cells. Every merge frees a cell, but every dropper and every belt-tick *fills* one; throughput is spent against area you don't have |
+| **Obstacle** | Your own faster half: tier-N output outruns the tier-N+1 merger downstream, tiles pile, and unmerged stock crowds the cells the line needs to keep flowing |
+| **Renewal** | The bottleneck **moves** as you solve it (tier-3-limited → tier-4-limited, iron→copper→power); each new tier re-poses "throughput vs. space" one abstraction higher |
+
+## Resonance
+
+Every element traces to the spine — the coherence proof (see [[process-the-spine]]).
+
+| Element | Arrow back to the spine |
+|---|---|
+| Verb: [[mechanic-merge]] (two-of-a-kind → one-of-next-tier) | The unit of throughput and the only thing that *frees* a cell — the agency the whole board fights over |
+| **Power creates the problem** | Automating the merge is exactly what floods the board: the droppers and belts you place to clear cells are the same machines feeding new tiles in faster than the next tier can consume them *(passes the gate)* |
+| Scarcity: finite board space | Turns "more throughput" into a *trade* — you can't buy speed without spending the area the line runs on |
+| Renewal: the moving bottleneck ([[system-resource-loops]]) | Re-poses "out-run your own fill-rate" against a fresh binding constraint each tier; the loop narrows somewhere new every beat |
+| Manual first, then automate ([[mechanic-merge]] by hand) | Teaches the merge that costs a cell *before* the machine hides it — you feel the space you're spending before you scale it |
+| Ascension feel ([[anchor-katamari]]) | Climbing tiers is the objective made visceral; each tier is bigger stock competing for the same finite cells |
+| Tech tree spends ([[system-tech-tree]]) | Faster belts and higher tiers are *more throughput* — buying deeper into the very pressure the scarcity punishes |
+| Economy sink ([[system-economy]]) | Cashing out finished tiles is how you *reclaim* board space — the pressure-release valve priced on the spine, not free ([[antipattern-dissonance]] avoided) |
+| No-desert pacing ([[genre-incremental]]) | Every minute a *close* next unlock keeps the throughput-vs-space decision live; a wait with nothing to optimize would let the tension go slack |
+| Feel: juiced fuse — squash, pop, tier-color bump ([[pattern-juice-choreography]]) | Makes the one act that frees a cell *feel* like the relief it is, so the flood reads as pressure and the clear reads as reward ([[design/JUICE.md]]) |
+
+No row is decoration; no row fights the spine. The gate holds: **the automation that
+clears the board is the automation that floods it — you can only survive by
+out-designing your own throughput.**
 
 ## Anchors
 

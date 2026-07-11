@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { renderSong, songBeats, songDuration, INSTRUMENTS, type Song } from './music';
+import { renderSong, renderSongAsync, songBeats, songDuration, INSTRUMENTS, type Song } from './music';
 import { progression, noteToMidi } from './theory';
 import { peak, signalHash } from './pcm';
 import { estimateTempo, rms } from './analysis';
@@ -92,6 +92,17 @@ describe('music', () => {
     const b = renderSong(song);
     expect(signalHash(a.left)).toBe(signalHash(b.left));
     expect(signalHash(a.right)).toBe(signalHash(b.right));
+  });
+
+  it('renderSongAsync is byte-identical to renderSong (same generator, off the hot path)', async () => {
+    const sync = renderSong(demoSong(120));
+    // a tiny batch forces many real event-loop yields — output must not budge
+    const async1 = await renderSongAsync(demoSong(120), { yieldEvery: 1 });
+    const async2 = await renderSongAsync(demoSong(120), { yieldEvery: 500 });
+    expect(signalHash(async1.left)).toBe(signalHash(sync.left));
+    expect(signalHash(async1.right)).toBe(signalHash(sync.right));
+    // and independent of the yield granularity
+    expect(signalHash(async2.left)).toBe(signalHash(async1.left));
   });
 
   it('the rendered drum track carries a detectable tempo', () => {

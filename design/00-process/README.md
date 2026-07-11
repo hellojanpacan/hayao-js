@@ -3,30 +3,41 @@
 The **process** modules are the spine of the Codex: the ordered steps that turn a
 one-line request into a design that's *designed enough to build*. Where the other
 sections are a **parts bin** (anchors, genres, systems, worlds, patterns), these
-six are the **method** for using it. Run them in order — each stage names the
+are the **method** for using it. Run them in order — each stage names the
 sections it draws on and hands its output to the next.
 
 ```
-INTENT ──▶ ANCHOR ──▶ COMPOSE ──▶ TWIST ──▶ SHAPE ──▶ HANDOFF ──▶ (FUN/JUICE/JUDGE)
+INTENT ──▶ SPINE ──▶ (TWIST) ──▶ COMPOSE ──▶ SHAPE ──▶ HANDOFF ──▶ (FUN/JUICE/JUDGE)
 ```
 
-**Intent-to-brief** parses the ask. **Pillars** distill it into a three-way
-decision filter. **The twist** picks the creative bend and **composition** sources
-and blends the parts, scored against the pillars. **Core-loop** shapes the play
-into a nested stack. **Refine-and-handoff** converts the whole thing into a
-verification contract and passes it to the craft playbooks — the seam where the
-Codex shelves end and [FUN.md](../FUN.md), [JUICE.md](../JUICE.md),
-and [JUDGE.md](../JUDGE.md) begin (all three live alongside the shelves here in
-`design/`). The Codex never duplicates the playbooks; it *routes* to them.
+**Intent-to-brief** parses the ask. **The spine** is the primary generator: it
+names the one *tension* the game is about — objective · superpower · scarcity ·
+obstacle · renewal — runs the gate (*does using the superpower well create the next
+problem?*), then *derives* theme, setting, feel, and death-handling as expressions
+of that tension, audited by a resonance table. **The twist** is now a *sub-tool of
+the spine* — one way to find or refresh a spine's face ("X but Y"). **Pillars**
+distill the spine into a three-way decision filter; **composition** sources the
+parts the spine demands; **core-loop** shapes the play into a nested stack.
+**Refine-and-handoff** converts the whole thing into a verification contract and
+passes it to the craft playbooks — the seam where the Codex shelves end and
+[FUN.md](../FUN.md), [JUICE.md](../JUICE.md), and [JUDGE.md](../JUDGE.md) begin (all
+three live alongside the shelves here in `design/`). The Codex never duplicates the
+playbooks; it *routes* to them.
 
-## The six modules
+**Which generator?** Start from the **spine** — it produces a *loop* (a thing you
+do). Reach for the **twist** when you want a fresh *face* for a spine you already
+have, or when bending a proven game is how you'll *discover* the tension. Spine
+first, twist optionally — never twist-first, or you get a pitch in search of a loop.
+
+## The seven modules
 
 | id | title | summary |
 |---|---|---|
 | [process-intent-to-brief](intent-to-brief.md) | Intent → Brief | Parse a vague request into a one-page brief: player fantasy, one-line hook, scope, hard constraints, target session length. |
+| [process-the-spine](the-spine.md) | The Spine — tension-first design | Name the one tension, run the superpower-creates-problem gate, derive everything from it, and audit with a resonance table. *(the primary generator)* |
 | [process-pillars](pillars.md) | The Three Pillars | Derive exactly three pillars — evocative + testable — and use them as the scoring function for every later choice. |
 | [process-core-loop](core-loop.md) | The Core Loop Stack | Design the nested moment/encounter/session/meta loops and the verb→challenge→feedback→reward→growth cycle inside each. |
-| [process-the-twist](the-twist.md) | The Twist — "X but Y" | Anchor to a proven core, then bend it along one of six twist vectors so it's yours, not a clone. *(the quality exemplar)* |
+| [process-the-twist](the-twist.md) | The Twist — "X but Y" | The spine's sub-tool: bend a proven core along one of six vectors to find or refresh a tension's face. *(the composition exemplar)* |
 | [process-composition](composition.md) | Composition | Assemble the design from anchor + genre template + implied systems; blend genres by satisfying every parent's verify pattern. |
 | [process-refine-and-handoff](refine-and-handoff.md) | Refine & Handoff | Turn the finished design into a verification contract and hand off to FUN / JUICE / JUDGE / CONVENTIONS. |
 

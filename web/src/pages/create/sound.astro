@@ -1,0 +1,90 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
+import SoundLab from "../../components/SoundLab.tsx";
+
+const claims = [
+  {
+    t: "No samples, ever",
+    d: "SFX are one-line SoundSpecs; music is notes, instruments and a mix — all parameters. Nothing to license, nothing to fetch, nothing your agent can't write.",
+  },
+  {
+    t: "Six voices, six jobs",
+    d: "Sine, triangle and noise in disciplined roles — the same soft-synthesis voice across SFX and music, so a game never sounds like two products.",
+  },
+  {
+    t: "Machine-audited mixes",
+    d: "The soundtrack ships with asserted spectral centroid and crest-factor budgets — the tests prove the music stays out of the SFX's way.",
+  },
+];
+---
+
+<Layout
+  title="Sound, as code — Hayao"
+  description="Hayao's audio engine synthesises every sound from parameters — an SFX kit of one-line specs and a composed songbook, playing live on this page. No samples."
+>
+  <main class="flex flex-col items-center text-center">
+    <!-- hero -->
+    <section class="mx-auto flex w-full max-w-2xl flex-col items-center px-6 pt-28 pb-12 md:pt-36">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-blue">Create · Sound</p>
+      <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
+        Every sound on this page is code
+      </h1>
+      <p class="mt-6 max-w-[48ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
+        An AI can't record a foley session — but it can write synthesis. Hayao's audio engine
+        turns parameters into coins, lasers, and whole jazz records, deterministically, in the
+        browser. Tap anything below: it's synthesised the moment you ask.
+      </p>
+    </section>
+
+    <!-- the lab -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-16">
+      <SoundLab client:visible />
+    </section>
+
+    <!-- claims -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-20">
+      <div class="grid gap-4 md:grid-cols-3">
+        {
+          claims.map((c) => (
+            <div class="flex flex-col rounded-3xl border border-hair bg-panel p-6 text-left">
+              <h2 class="font-display text-[1.05rem] font-semibold text-ink">{c.t}</h2>
+              <p class="mt-2 grow font-body text-[0.88rem] font-light leading-relaxed text-soft">{c.d}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- for your game -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-28">
+      <div class="rounded-[2.25rem] bg-navy px-6 py-14 md:px-14">
+        <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">In your game</p>
+        <h2 class="mx-auto max-w-[24ch] text-balance font-display text-[clamp(1.6rem,4vw,2.2rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-white">
+          Your agent scores the game while it builds it
+        </h2>
+        <p class="mx-auto mt-5 max-w-[48ch] font-body text-[1rem] font-light leading-relaxed text-white/70">
+          Because sound is data, audio lives in the same diff as the mechanic it serves — a coin's
+          chime ships in the same commit as the coin. The full engine surface (voices, songs,
+          buses, the ZzFX bridge) is in the audio doc.
+        </p>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <a
+            href="/docs/audio"
+            class="inline-flex items-center rounded-full bg-orange px-6 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:bg-green"
+          >
+            Read docs/AUDIO.md
+          </a>
+          <a
+            href="https://github.com/hellojanpacan/hayao-js/tree/main/sound"
+            class="inline-flex items-center rounded-full border border-white/25 px-6 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:border-white/60"
+          >
+            The full Sound Workshop
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>
