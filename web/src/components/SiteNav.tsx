@@ -6,6 +6,7 @@ import {
   Puzzle,
   Box,
   Coins,
+  Shield,
   Zap,
   Sparkles,
   Music,
@@ -57,6 +58,7 @@ const PLAY: Item[] = [
   { icon: Puzzle, title: "Mobile Puzzle", desc: "Solver-proven, one-thumb play", href: "/play/puzzle" },
   { icon: Box, title: "Sokoban", desc: "The classic, as the reference example", href: "/play/sokoban" },
   { icon: Coins, title: "The Coin", desc: "A whole game as one self-proving file", href: "/play/coin" },
+  { icon: Shield, title: "Your Arms", desc: "Deterministic heraldry, drawn from your handle", href: "/arms" },
 ];
 const CREATE: Item[] = [
   { icon: Zap, title: "Quickstart with default style", desc: "Start with a library — a working prototype in minutes", href: "/create/quickstart" },

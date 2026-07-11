@@ -82,6 +82,7 @@ export * from './art/hero';
 export * from './art/fontMetrics';
 export * from './art/cardGlyphs';
 export * from './art/card';
+export * from './art/crest';
 
 // ── procgen: deterministic generators + stateless scatter ───────
 export * from './procgen/grid';

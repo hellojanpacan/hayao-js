@@ -1,0 +1,170 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Footer from "../components/Footer.astro";
+import { crestSvg, readCrest, blazon } from "@hayao";
+
+// A builder's arms are a pure, deterministic function of their handle — nobody
+// picks a crest, the handle draws it. This page renders that function live: the
+// initial view is built server-side; a client script re-draws it as you type.
+const DEFAULT = "@hayao";
+const initialSvg = crestSvg(DEFAULT, { size: 300 });
+const initialBlazon = blazon(readCrest(DEFAULT));
+
+// A roll of sample arms, struck at build time — click one to load it.
+const SAMPLES = ["@hayao", "@wren", "@aldric", "@juniper", "@iris", "@opal", "@harlow", "@fen"];
+const roll = SAMPLES.map((h) => ({ handle: h, svg: crestSvg(h, { size: 88 }) }));
+---
+
+<Layout
+  title="Arms — Hayao"
+  description="Every builder's arms are a pure, deterministic function of their handle — a soft, Bold-Duotone heraldic crest. Type a handle, get your arms, download the SVG."
+>
+  <main class="flex flex-col items-center text-center">
+    <!-- hero -->
+    <section class="mx-auto flex w-full max-w-2xl flex-col items-center px-6 pt-28 pb-8 md:pt-36">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Identity · Heraldry</p>
+      <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
+        Your arms, drawn from your handle
+      </h1>
+      <p class="mt-6 max-w-[50ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
+        The engine's soul is that a game is a <em>pure, deterministic function of its inputs</em>.
+        So is a builder's identity: <span class="font-mono text-[0.95rem] text-ink">@you</span> always
+        draws the same arms — nobody picks a crest, the handle blazons it. Every coin you strike bears them.
+      </p>
+    </section>
+
+    <!-- the live crest -->
+    <section class="mx-auto w-full max-w-xl px-6">
+      <div class="flex flex-col items-center rounded-[1.5rem] border border-hair bg-panel p-8 md:p-10">
+        <div
+          id="crest"
+          class="grid aspect-[120/132] w-[220px] place-items-center [&>svg]:h-full [&>svg]:w-full"
+          set:html={initialSvg}
+        >
+        </div>
+
+        <p id="blazon" class="mt-6 max-w-[42ch] font-mono text-[0.82rem] leading-relaxed text-soft">
+          {initialBlazon}
+        </p>
+
+        <!-- handle input -->
+        <label class="mt-7 flex w-full max-w-[22rem] items-center gap-2 rounded-full border border-hair bg-white px-4 py-2.5 focus-within:border-orange/60 dark:bg-[#141a30]">
+          <span class="font-mono text-[1.05rem] font-semibold text-muted">@</span>
+          <input
+            id="handle"
+            type="text"
+            inputmode="text"
+            autocomplete="off"
+            spellcheck="false"
+            value="hayao"
+            aria-label="Your handle"
+            class="w-full bg-transparent font-mono text-[1.05rem] text-ink outline-none placeholder:text-muted"
+            placeholder="your-handle"
+          />
+        </label>
+
+        <div class="mt-5 flex flex-wrap items-center justify-center gap-3">
+          <a
+            id="download"
+            href="#"
+            download="arms.svg"
+            class="inline-flex items-center rounded-full bg-orange px-6 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:bg-green"
+          >
+            Download SVG
+          </a>
+          <button
+            id="copy"
+            type="button"
+            class="inline-flex items-center rounded-full border border-hair bg-panel px-6 py-3 font-body text-[0.95rem] font-semibold text-ink transition-colors hover:border-orange/60 hover:text-orange"
+          >
+            Copy link
+          </button>
+        </div>
+      </div>
+      <p class="mx-auto mt-4 max-w-[46ch] font-body text-[0.85rem] font-light leading-relaxed text-muted">
+        Pure vector, self-contained, byte-identical every time. The handle is canonical with a
+        single leading <span class="font-mono">@</span> — case and spacing never change your arms.
+      </p>
+    </section>
+
+    <!-- a roll of arms -->
+    <section class="mx-auto w-full max-w-3xl px-6 py-16">
+      <p class="mb-5 font-body text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-muted">A roll of arms</p>
+      <div class="grid grid-cols-4 gap-4 sm:grid-cols-8">
+        {
+          roll.map((r) => (
+            <button
+              type="button"
+              class="roll-item flex flex-col items-center gap-2 rounded-2xl border border-hair bg-panel p-3 transition-colors hover:border-orange/60"
+              data-handle={r.handle}
+            >
+              <span class="grid aspect-[120/132] w-full place-items-center [&>svg]:h-full [&>svg]:w-full" set:html={r.svg} />
+              <span class="font-mono text-[0.68rem] text-muted">{r.handle}</span>
+            </button>
+          ))
+        }
+      </div>
+    </section>
+
+    <Footer />
+  </main>
+</Layout>
+
+<script>
+  import { crestSvg, readCrest, blazon, canonicalHandle } from "@hayao";
+
+  const input = document.getElementById("handle") as HTMLInputElement;
+  const crest = document.getElementById("crest")!;
+  const blazonEl = document.getElementById("blazon")!;
+  const download = document.getElementById("download") as HTMLAnchorElement;
+  const copy = document.getElementById("copy") as HTMLButtonElement;
+
+  function render(raw: string, pushUrl = true) {
+    const handle = canonicalHandle(raw); // "@you", locked
+    const svg = crestSvg(handle, { size: 300 });
+    crest.innerHTML = svg;
+    blazonEl.textContent = blazon(readCrest(handle));
+
+    const data = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+    download.href = data;
+    download.setAttribute("download", `arms-${handle.slice(1)}.svg`);
+
+    document.title = `Arms of ${handle} — Hayao`;
+    if (pushUrl) {
+      const url = new URL(location.href);
+      url.searchParams.set("h", handle);
+      history.replaceState(null, "", url);
+    }
+  }
+
+  input.addEventListener("input", () => render(input.value));
+
+  copy.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(location.href);
+      const was = copy.textContent;
+      copy.textContent = "Copied";
+      setTimeout(() => (copy.textContent = was), 1200);
+    } catch {
+      /* clipboard blocked — no-op */
+    }
+  });
+
+  for (const el of document.querySelectorAll<HTMLElement>(".roll-item")) {
+    el.addEventListener("click", () => {
+      const h = el.dataset.handle ?? "";
+      input.value = h.replace(/^@/, "");
+      render(input.value);
+      input.focus();
+    });
+  }
+
+  // Deep link: /arms?h=@wren (or #wren) loads that handle on arrival.
+  const fromUrl = new URL(location.href).searchParams.get("h") ?? location.hash.slice(1);
+  if (fromUrl) {
+    input.value = fromUrl.replace(/^@/, "");
+    render(input.value, false);
+  } else {
+    render(input.value, false); // wire up the download link for the default
+  }
+</script>

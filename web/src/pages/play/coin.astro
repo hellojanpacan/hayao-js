@@ -1,6 +1,13 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Footer from "../../components/Footer.astro";
+import { crestSvg, readCrest, blazon } from "@hayao";
+
+// The maker's arms — the real deterministic crest for the coin's maker, drawn
+// live from the handle (see /arms). No hardcoded blazon to drift out of date.
+const MAKER = "@janpacan";
+const makerArms = crestSvg(MAKER, { size: 72 });
+const makerBlazon = blazon(readCrest(MAKER));
 
 // A real coin, struck from examples/sokoban by `hayao strike` and committed as
 // a static asset. Re-strike: npm run strike -- examples/sokoban/game.ts
@@ -66,11 +73,15 @@ const SEAL = { seed: 1, steps: 120, hash: "982dcaec9376e67e", size: "183 KB" };
         <div class="flex flex-col rounded-3xl border border-hair bg-panel p-7 text-left">
           <p class="font-body text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-orange">Heads</p>
           <h2 class="mt-2 font-display text-[1.2rem] font-semibold text-ink">The face</h2>
-          <p class="mt-2 grow font-body text-[0.9rem] font-light leading-relaxed text-soft">
-            Title, maker, and the maker's <em>arms</em> — a deterministic heraldic crest derived
-            from the handle. This one bears <span class="font-mono text-[0.82rem] text-ink">@janpacan</span>:
-            green field · bark leaf · triad · chief. Same handle, same arms, on every coin you strike.
-          </p>
+          <div class="mt-2 flex items-start gap-4">
+            <span class="w-[54px] shrink-0 [&>svg]:h-auto [&>svg]:w-full" set:html={makerArms} />
+            <p class="grow font-body text-[0.9rem] font-light leading-relaxed text-soft">
+              Title, maker, and the maker's <em>arms</em> — a deterministic heraldic crest
+              <a href="/arms" class="text-orange no-underline hover:underline">drawn from the handle</a>.
+              This one bears <span class="font-mono text-[0.82rem] text-ink">{MAKER}</span>:
+              <span class="font-mono text-[0.8rem] text-ink">{makerBlazon}</span>. Same handle, same arms, on every coin.
+            </p>
+          </div>
         </div>
         <div class="flex flex-col rounded-3xl border border-hair bg-panel p-7 text-left">
           <p class="font-body text-[0.72rem] font-semibold uppercase tracking-[0.16em] text-blue">Tails</p>
