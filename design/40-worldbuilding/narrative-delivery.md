@@ -87,11 +87,11 @@ Match delivery to the game's shape ([[system-session-structure]]):
 ## Aesthetic hook
 
 Environmental storytelling *is* [[world-aesthetic-direction]] doing double duty:
-the **Kentō** frame that passes the JUDGE's depth axis (a real fore/mid/back,
+the **Regalia** frame that passes the JUDGE's depth axis (a real fore/mid/back,
 a focal point) is also the frame that *narrates* — a snuffed lantern reads as
 loss only if the scene has the depth and contrast to show it. Because text is a
-DOM overlay and the palette carries the mood, you can tell a whole story in ink,
-washi, and one *ko* glow going out. Keep embedded text set in the serif the JUDGE
+DOM overlay and the palette carries the mood, you can tell a whole story in the
+ink line, a paper ground, and one `gold` glow going out. Keep embedded text set in the serif the JUDGE
 renders true (`design/JUDGE.md`), and let restraint here reinforce the house voice
 ([[world-naming-and-tone]]): the systems and the light say it; the words just
 confirm it.

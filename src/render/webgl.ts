@@ -18,7 +18,7 @@
 // consumer. Wall-clock (u_time) is host-only and never enters world.hash().
 
 import type { DrawCommand } from './commands';
-import { clientToDesign, fitViewport, type Renderer, type RendererConfig, type Viewport } from './renderer';
+import { viewBoxToDesign, safeViewport, type Renderer, type RendererConfig, type Viewport, type ViewBox } from './renderer';
 import { drawToCanvas2D } from './canvas2d-core';
 import type { Vec2 } from '../core/math';
 
@@ -399,6 +399,7 @@ export interface WebGLRendererConfig extends RendererConfig {
 export class WebGL2Renderer implements Renderer {
   readonly width: number;
   readonly height: number;
+  private view: ViewBox;
   private background: string;
 
   private glCanvas: HTMLCanvasElement;
@@ -426,6 +427,7 @@ export class WebGL2Renderer implements Renderer {
   constructor(config: WebGLRendererConfig) {
     this.width = config.width;
     this.height = config.height;
+    this.view = { minX: 0, minY: 0, width: this.width, height: this.height };
     this.background = config.background ?? '#ffffff';
 
     this.glCanvas = document.createElement('canvas');
@@ -469,8 +471,8 @@ export class WebGL2Renderer implements Renderer {
 
   private resize(): void {
     this.dpr = Math.min(3, globalThis.devicePixelRatio || 1);
-    const w = Math.round(this.width * this.dpr);
-    const h = Math.round(this.height * this.dpr);
+    const w = Math.round(this.view.width * this.dpr);
+    const h = Math.round(this.view.height * this.dpr);
     this.glCanvas.width = w;
     this.glCanvas.height = h;
     this.offscreen.width = w;
@@ -483,10 +485,15 @@ export class WebGL2Renderer implements Renderer {
     }
   }
 
+  setViewBox(view: ViewBox): void {
+    this.view = { ...view };
+    this.resize();
+  }
+
   private buildPipeline(passes: PostProcessPass[]): void {
     const gl = this.gl;
-    const w = this.glCanvas.width || Math.round(this.width * this.dpr);
-    const h = this.glCanvas.height || Math.round(this.height * this.dpr);
+    const w = this.glCanvas.width || Math.round(this.view.width * this.dpr);
+    const h = this.glCanvas.height || Math.round(this.view.height * this.dpr);
 
     // Release old resources.
     for (const p of this.programs) gl.deleteProgram(p);
@@ -514,7 +521,7 @@ export class WebGL2Renderer implements Renderer {
     const h = this.glCanvas.height;
 
     // 1. Rasterize the display list onto the offscreen Canvas2D.
-    drawToCanvas2D(this.ctx2d, commands, this.width, this.height, this.background, this.dpr);
+    drawToCanvas2D(this.ctx2d, commands, this.view.width, this.view.height, this.background, this.dpr, this.view.minX, this.view.minY);
 
     // 2. Upload the rasterized frame to the scene texture (TEXTURE0).
     gl.activeTexture(gl.TEXTURE0);
@@ -627,11 +634,11 @@ export class WebGL2Renderer implements Renderer {
   get element(): HTMLCanvasElement { return this.glCanvas; }
 
   toDesign(clientX: number, clientY: number): Vec2 {
-    return clientToDesign(this.glCanvas.getBoundingClientRect(), this.width, this.height, clientX, clientY);
+    return viewBoxToDesign(this.glCanvas.getBoundingClientRect(), this.view, clientX, clientY);
   }
 
   viewport(): Viewport {
-    return fitViewport(this.glCanvas.getBoundingClientRect(), this.width, this.height);
+    return safeViewport(this.glCanvas.getBoundingClientRect(), this.view, this.width, this.height);
   }
 
   dispose(): void {

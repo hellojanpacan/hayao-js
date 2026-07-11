@@ -52,7 +52,7 @@ The unit of environmental story is the **staged tableau** — a frozen moment th
 
 ## Aesthetic hook
 
-The Kentō woodblock palette is *made* for this — flat registered shapes, few colors, hard edges. A single accent color is your spotlight: paint the one clue-prop in the warm accent and let the ruined room stay in muted meadow/dusk. **Silhouette does the narrating** at woodblock scale; a slumped shape reads as a body before any detail resolves. Stage tableaux as static, deterministic, cosmetic set-pieces — the story is in the layout, so the layout must be legible headless. The vision judge scores exactly this "what happened here" read; see design/JUDGE.md. Compose with [[world-mood-and-atmosphere]], [[world-soundscape]], and recurring [[world-motif-and-symbol]] so a symbol seen in Room 1 pays off in Room 9.
+The Regalia palette is *made* for this — flat duotone shapes, few colors, a clean ink edge. A single accent color is your spotlight: paint the one clue-prop in the warm accent and let the ruined room stay in muted `green`/`blue` night. **Silhouette does the narrating** at duotone scale; a slumped shape reads as a body before any detail resolves. Stage tableaux as static, deterministic, cosmetic set-pieces — the story is in the layout, so the layout must be legible headless. The vision judge scores exactly this "what happened here" read; see design/JUDGE.md. Compose with [[world-mood-and-atmosphere]], [[world-soundscape]], and recurring [[world-motif-and-symbol]] so a symbol seen in Room 1 pays off in Room 9.
 
 ## Traps
 

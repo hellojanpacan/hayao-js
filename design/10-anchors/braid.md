@@ -46,7 +46,7 @@ verify-with: design/FUN.md#1-·-grid-puzzle
 
 - **The ambiguous prose narrative.** The between-world text is evocative but load-bearing to *nobody's* puzzle. Keep your worlds if the story dissolves. Ship the mechanic; theme it later with [[world-theme-vectors]].
 - **The "profound meaning" framing.** Players remember the rewind, not the epilogue. Don't design puzzles to serve a message.
-- **Painterly art specifically.** The elegance is structural, not stylistic — a woodblock or neon skin proves the same DNA. See [[world-aesthetic-direction]].
+- **Painterly art specifically.** The elegance is structural, not stylistic — a pixel-art or neon skin proves the same DNA. See [[world-aesthetic-direction]].
 - **Melancholy tone.** The one-idea-per-world engine is tone-agnostic; a bright, playful skin works identically.
 
 ## Composes into

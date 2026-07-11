@@ -41,7 +41,12 @@ Tiebreakers this settles:
 
 The precise rules for bringing ANY outside asset (art, sound, fonts) as a
 first-class citizen are the four clauses of `docs/ASSETS.md` — the asset
-contract.
+contract. `docs/AUDIO.md` is the same promise for sound: how the deterministic
+synth, theory, composition, and analysis layers make audio a *verifiable*
+subsystem, and how the soft-synthesis house voices sit on that neutral surface.
+`docs/STYLE.md` is the reproducible visual house style — the Regalia palette and
+the duotone "draw anything in five rules" recipe — so art lands in-house by
+default without surveying the corpus.
 
 ## Commands
 - `npm run dev` — dev server (hub + all examples; MPA, honest 404s)
@@ -89,13 +94,18 @@ Treat them accordingly:
 ## Before writing game code
 0. **If the game isn't designed yet** — the intent is high-level ("a polished
    platformer with responsive controls", "an RTS with faction asymmetry and
-   impressive battles") — run the **[Design Codex](design/)** first:
-   intent→anchor→compose→twist→pillars→loop, then hand off to the craft
-   playbooks. All game design lives in **`design/`** — the *generative* Codex
-   shelves (concept, reference DNA, composable systems, the creative twist) and
-   the craft playbooks (`design/FUN.md`, `design/JUICE.md`, `design/JUDGE.md`)
-   that make it fun, juicy, and beautiful. `docs/` is the engineering manual;
-   the steps below are the *proof* half.
+   impressive battles") — run the **[Design Codex](design/)** first, and start
+   with the **[spine](design/00-process/the-spine.md)**, not the twist:
+   intent → **spine** (the one tension: objective · superpower · scarcity ·
+   obstacle · renewal, and the gate "does using the superpower well create the
+   next problem?") → *twist only to give that tension a face* → compose → pillars
+   → loop, then hand off to the craft playbooks. The spine produces a *loop*; the
+   twist produces a *pitch* — lead with the loop. All game design lives in
+   **`design/`** — the *generative* Codex shelves (the spine method, reference DNA,
+   composable systems, the creative twist) and the craft playbooks
+   (`design/FUN.md`, `design/JUICE.md`, `design/JUDGE.md`) that make it fun, juicy,
+   and beautiful. `docs/` is the engineering manual; the steps below are the
+   *proof* half.
 1. Read `design/FUN.md` (the design playbook: universal laws, your genre's
    cheat sheet, and the before-you-author-content checklist).
 2. Read `docs/CONVENTIONS.md` (structure, house style, definition of done).
@@ -163,10 +173,12 @@ header derives its count live from the cards; elsewhere phrase it count-free
 ("browse the full store", "a growing portfolio"). Per-game facts (Kintsugi's
 30 rooms, lanternfold's 42 levels) are fixed and fine.
 
-## The site (three doors)
-The website is split by audience: `index.html` is the marketing landing
-(hayao.dev), `play/index.html` is the example store, `roadmap/index.html` is the
-public roadmap + js13k benchmark ladder, and developer docs live at hayao.js.org.
-Art-finished flagships (currently `lanternway`, `rootward`, `tarnholm`) get a
-still-frame thumbnail under `public/shots/<slug>.svg`; regenerate them with
-`npm run thumbs` after changing their art.
+## The site
+The public marketing site is the Astro app under `web/` → **hayao.dev** (Vercel
+project `hayao-web`); developer docs live at **hayao.js.org**. The root static
+pages (`index.html` + the auto-discovered `examples/`/`sandboxes/` pages) are the
+**local `npm run dev` hub** — a lean Regalia index for running example games and
+labs, not a deployed marketing surface. Current examples: `lumen`, `small-flame`,
+`sokoban`. Art-finished games can get a still-frame thumbnail under
+`public/shots/<slug>.svg`; regenerate them with `npm run thumbs` after changing
+their art.

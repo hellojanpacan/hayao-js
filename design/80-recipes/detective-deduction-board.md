@@ -5,8 +5,9 @@ kind: recipe
 tags: [deduction, puzzle, notebook, recipe, obra-dinn]
 summary: Obra Dinn's reasoning loop on a grid puzzle — gather clues, fill a deduction board, and the game trusts your logic.
 use-when: You want a deduction game where the player reasons, not brute-forces.
-composes-with: [anchor-return-of-the-obra-dinn, genre-grid-puzzle, system-quests-and-objectives, pattern-fairness-and-trust]
+composes-with: [anchor-return-of-the-obra-dinn, genre-grid-puzzle, system-quests-and-objectives, pattern-fairness-and-trust, process-the-spine]
 anchors: [anchor-return-of-the-obra-dinn]
+spine: "Deduce a whole mystery by cross-referencing clues, where every fact you lock into the board narrows the space for the rest — and a confident wrong lock-in silently poisons the chain."
 verify-with: design/FUN.md#1-·-grid-puzzle
 ---
 
@@ -25,6 +26,43 @@ Three concrete "X but Y" seams to pick from:
 - **Obra Dinn but you never brute-force** *(constraint)* — the board only accepts a full, self-consistent assignment; no partial-credit guessing, so the win is the deduction, not the poke.
 - **A logic-grid puzzle but the clues are diegetic** *(tonal)* — instead of "Alice is not next to the plumber," clues are testimony, ledger entries, a bloodstain's angle. Same constraint engine, mystery-novel skin.
 - **Papers, Please but the ruleset is the clue set** *(mechanic-swap)* — you cross-check documents against each other rather than a fixed manual; contradictions *are* the deductions.
+
+## The spine
+
+*Deduce a whole mystery by cross-referencing clues, where every fact you lock into
+the board narrows the space for the rest — and a confident wrong lock-in silently
+poisons the chain.*
+
+| Part | This game |
+|---|---|
+| **Objective** | Solve the case — fill the whole board with the one self-consistent assignment (identify all N unknowns: who/how/where) |
+| **Superpower** | **Lock in a deduction** — commit a cell by cross-referencing scattered clues, forcing a value the way three half-facts snap the fourth into place |
+| **Scarcity** | The **shrinking space of still-consistent assignments** — every lock-in spends it (constrains every other cell), and confirmation is *deferred* (the game confirms in sets, never per-cell), so you can't buy certainty back one guess at a time |
+| **Obstacle** | Clues are indirect and scattered — diegetic testimony, ledger entries, a bloodstain's angle; contradictions are hidden, and the solution must be *uniquely* forced, never brute-forceable |
+| **Renewal** | Each committed cell reshapes the constraint field, re-posing the *remaining* board as a fresh, tighter deduction; onboarding opens with a gimme that resolves one way, then chains lengthen |
+
+## Resonance
+
+Every element traces to the spine — this table **is** the coherence proof (see
+[[process-the-spine]]).
+
+| Element | Arrow back to the spine |
+|---|---|
+| Verb: lock in a deduction | The single agency — commit a cell by cross-referencing; the whole game is snapping forced facts into the board |
+| **Power creates the problem** | Every lock-in narrows the space for every other cell → a correct commit *enables* the next deduction, and a confident *wrong* commit silently poisons the whole downstream chain, unseen until it contradicts *(passes the gate)* |
+| Scarcity: shrinking consistent-assignment space + deferred confirmation | Makes each commit a *real* trade — you spend certainty you can't refund per-cell, so *when* you dare to lock in is the whole decision |
+| Renewal: each lock-in re-poses the remaining board | The same "read-and-commit" tension returns fresh against a tighter constraint set every beat — why it's a game, not one puzzle solved once |
+| Failure-handling: no per-cell "correct?", confirm in sets, **Submit** checks the full assignment | Derived from the spine — per-cell feedback would *refund* the scarcity and let you brute-force; letting wrong reasoning sit is what keeps the deduction load-bearing (cheap hints would be **dissonant**, see [[antipattern-dissonance]]) |
+| Setting: the notebook grid of diegetic clues (testimony, ledger, bloodstain angle) | The objective made physical — the board *is* the space of assignments; the solved matrix is the trophy of your own reasoning |
+| Theme: *you* are the one who figured it out | The mechanic (force facts from cross-reference) is the metaphor (the click of a chain closing) — trust in the reasoner is the point |
+| Feel: no hint arrows, contradiction highlights, silence until you catch your own error | Mastery demands the deduction be *yours*; the game is honest so it can afford to withhold, making a locked chain feel earned ([[pattern-fairness-and-trust]]) |
+| System [[genre-grid-puzzle]]: solvable state + uniqueness proof | The scarcity only bites if the case is *actually* forced by logic and has *one* answer — machine-proven, so a correct chain is never luck |
+| System [[system-quests-and-objectives]]: the case as objectives | Gives the shrinking assignment-space a spine and a done-state — "identify all N" is the tension's finish line |
+| System [[system-inventory-and-ui]]: the notebook/board | The board *is* the scarcity made legible — the fillable grid is where you *see* the space narrow with each lock-in |
+| Onboarding: one gimme deduction that resolves one way | Teaches the clue *grammar* — the commit-narrows-the-space verb — before the hard chain, so the first lock-in can't mislead ([[system-onboarding]]) |
+
+No row is decoration; no row fights the spine. The gate holds: **you cannot narrow
+the mystery without committing a fact that could just as easily poison it.**
 
 ## Anchors
 

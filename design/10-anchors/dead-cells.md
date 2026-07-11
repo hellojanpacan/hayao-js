@@ -120,6 +120,6 @@ loss-heavy.
   [[system-combat-model]]
 - `design/FUN.md#3-·-metroidvania` — negative gate proofs (ungated maneuver must
   fail).
-- `examples/kintsugi/` — the metroidvania reference: gate-and-branch world
-  graph.
+- `examples/sokoban/` — the logic/view split for modeling a gate-and-branch
+  world graph as a proven pure structure.
 - `sandboxes/procgen-lab/` — seeded biome-branch generation.

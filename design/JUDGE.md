@@ -12,7 +12,7 @@ below. It is the one judge that can't be a pure function — so it's the one an
 AI-first engine is uniquely built to run in a loop (deterministic sim + headless
 render make "render → look → fix → re-render" cheap and reproducible).
 
-> Real example: updrift passed the salience *and* camera gates, yet the judge saw
+> Real example: a game passed the salience *and* camera gates, yet the judge saw
 > its parallax mountains were invisible (colored a shade off the sky, and anchored
 > off-screen). The fix — a pinned, graded night sky with a moon and layered ridges
 > — turned an empty void into an atmospheric ascent. No mechanical gate caught it.
@@ -64,9 +64,9 @@ Score each 1–5. A game is "shipped" when every axis is ≥ 4 and nothing is a 
    with *depth* — pools carve a focal point out of ambient darkness and shadows
    ground the geometry, not a flat scrim; the lit-scene feel-gate
    `lightingIssues` (`npm run feel`) OWNS lit-scene readability, since multiply
-   lowers post-hoc palette contrast (the Kentō AA guarantee holds only
+   lowers post-hoc palette contrast (the Regalia AA guarantee holds only
    PRE-lighting) — so judge lit contrast from the rendered PNG, never the hexes.
-3. **Palette harmony** — do the colors belong to one world (the Kentō woodblock
+3. **Palette harmony** — do the colors belong to one world (the Regalia
    set), or clash? Is there a controlled range of value (not all mid-tone)?
 4. **Juice restraint** — is feedback present but not noise? Particles/shake that
    *punctuate*, not smother. (In motion strips: do impacts read? is anything

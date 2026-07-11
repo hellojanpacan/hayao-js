@@ -52,7 +52,7 @@ The **two-senses contract**: every consequential action lands on at least two se
 
 ## Aesthetic hook
 
-The Kentō woodblock palette prizes **restraint and register** — few colors, exact placement. Score to match: a *small* kit, precisely voiced. A woodblock print doesn't shout in every hue; your soundscape shouldn't fill every millisecond. Choose two or three timbres that "print" cleanly — a warm pad, a dry percussive tap, one bright accent — and let negative space carry weight. The dry *tok* of a placed stone is more Kentō than an orchestral hit. Consistency of voice over volume of assets; the same discipline JUDGE applies to the frame.
+The Regalia palette prizes **restraint and register** — few colors, exact placement. Score to match: a *small* kit, precisely voiced. A duotone frame doesn't shout in every hue; your soundscape shouldn't fill every millisecond. Choose two or three timbres that "print" cleanly — a warm pad, a dry percussive tap, one bright accent — and let negative space carry weight. The dry *tok* of a placed stone is more on-register than an orchestral hit. Consistency of voice over volume of assets; the same discipline JUDGE applies to the frame.
 
 ## Traps
 

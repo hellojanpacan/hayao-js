@@ -63,7 +63,7 @@ Most games layer several: a resumable main spine, a scatter of side threads, and
 ## How it wires to Hayao
 
 - **Objective state is model, chrome is chrome.** The active-objective set, completion flags, and journal entries are part of world state — they belong in the deterministic model and must survive `hash()`. The panel that *draws* them is DOM/`showScreen()` menu chrome or a `cosmetic` view node.
-- **Progression-as-graph.** When quests gate each other (prereqs, branches), model the objective graph as a pure structure the way `examples/kintsugi` models its world graph. Machine-prove that a completable path to the ending exists — no soft-locks.
+- **Progression-as-graph.** When quests gate each other (prereqs, branches), model the objective graph as a pure `Puzzle<State, Move>` structure — the same logic/view split `examples/sokoban` uses to machine-prove its levels. Prove that a completable path to the ending exists — no soft-locks.
 - **Emergent objectives ride the director.** A sim that *raises* goals (a raid incoming, a resource crisis) is a spawn-director concern — see [[system-spawn-directors]] and the physics/procgen `sandboxes/` labs for how one mechanic is exercised in isolation. Keep every roll on the world RNG so an emergent quest replays identically from a seed.
 - **Reveal-by-doing** reads world state and shows the *consequence*, never a scripted "objective updated" toast the fiction can't justify.
 

@@ -205,7 +205,7 @@ function lightBuffers(ctx: Ctx2D, w: number, h: number): LightBuffers | null {
  * finally multiplied over the frame. Returns false when no buffer is available
  * (headless / no OffscreenCanvas + no document) so the caller flat-blends.
  */
-function compositeLightRun(ctx: Ctx2D, parsed: ParsedLightRun, width: number, height: number, scale: number): boolean {
+function compositeLightRun(ctx: Ctx2D, parsed: ParsedLightRun, width: number, height: number, scale: number, originX: number, originY: number): boolean {
   const w = Math.max(1, Math.round(width * scale));
   const h = Math.max(1, Math.round(height * scale));
   const bufs = lightBuffers(ctx, w, h);
@@ -213,26 +213,30 @@ function compositeLightRun(ctx: Ctx2D, parsed: ParsedLightRun, width: number, he
   const bctx = bufs.buffer.getContext('2d') as Ctx2D | null;
   const sctx = bufs.scratch.getContext('2d') as Ctx2D | null;
   if (!bctx || !sctx) return false;
+  // Every buffer shares the design→device transform of the main frame (scale +
+  // the view-box origin) so the multiply at the end lands pixel-aligned.
+  const ox = -originX * scale;
+  const oy = -originY * scale;
 
   // Buffer starts as the ambient darkness (the level the pools lift out of).
   bctx.setTransform(1, 0, 0, 1, 0, 0);
   bctx.globalCompositeOperation = 'source-over';
   bctx.clearRect(0, 0, w, h);
-  bctx.setTransform(scale, 0, 0, scale, 0, 0);
+  bctx.setTransform(scale, 0, 0, scale, ox, oy);
   paintOne(bctx, { ...parsed.ambient, blend: undefined });
 
   for (const light of parsed.lights) {
     sctx.setTransform(1, 0, 0, 1, 0, 0);
     sctx.globalCompositeOperation = 'source-over';
     sctx.clearRect(0, 0, w, h);
-    sctx.setTransform(scale, 0, 0, scale, 0, 0);
+    sctx.setTransform(scale, 0, 0, scale, ox, oy);
     // Pool without the screen blend — we accumulate into the buffer with 'lighter'.
     paintOne(sctx, { ...light.circle, blend: undefined });
     // Shadow quads erase the pool where the light is occluded.
     for (const q of light.shadows) {
       sctx.save();
       const t = q.transform;
-      sctx.setTransform(scale, 0, 0, scale, 0, 0);
+      sctx.setTransform(scale, 0, 0, scale, ox, oy);
       sctx.transform(t.a, t.b, t.c, t.d, t.e, t.f);
       sctx.globalCompositeOperation = 'destination-out';
       sctx.globalAlpha = (q as Paint).opacity ?? 1;
@@ -252,7 +256,7 @@ function compositeLightRun(ctx: Ctx2D, parsed: ParsedLightRun, width: number, he
   ctx.globalAlpha = 1;
   ctx.drawImage(bufs.buffer as CanvasImageSource, 0, 0);
   ctx.restore();
-  ctx.setTransform(scale, 0, 0, scale, 0, 0);
+  ctx.setTransform(scale, 0, 0, scale, ox, oy);
   ctx.globalCompositeOperation = 'source-over';
   return true;
 }
@@ -273,11 +277,18 @@ export function drawToCanvas2D(
   height: number,
   background: string,
   scale: number,
+  originX = 0,
+  originY = 0,
 ): void {
-  ctx.setTransform(scale, 0, 0, scale, 0, 0);
+  // `width×height` is the painted VIEW box; `origin` is its top-left in design
+  // space (non-zero only under `fit: 'bleed'`, where the safe box is centered in
+  // a larger view). The translate maps design coords → device pixels for all passes.
+  const ox = -originX * scale;
+  const oy = -originY * scale;
+  ctx.setTransform(scale, 0, 0, scale, ox, oy);
   ctx.globalCompositeOperation = 'source-over';
   ctx.fillStyle = background;
-  ctx.fillRect(0, 0, width, height);
+  ctx.fillRect(originX, originY, width, height);
 
   const sorted = sortCommands(commands);
   const { below, light, above } = splitByLightLayer(sorted);
@@ -290,16 +301,16 @@ export function drawToCanvas2D(
   // so no command is ever dropped.
   if (light.length) {
     const parsed = parseLightRun(light);
-    const composited = parsed ? compositeLightRun(ctx, parsed, width, height, scale) : false;
+    const composited = parsed ? compositeLightRun(ctx, parsed, width, height, scale, originX, originY) : false;
     if (!composited) {
-      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      ctx.setTransform(scale, 0, 0, scale, ox, oy);
       for (const c of light) paintOne(ctx, c);
-      ctx.setTransform(scale, 0, 0, scale, 0, 0);
+      ctx.setTransform(scale, 0, 0, scale, ox, oy);
       ctx.globalCompositeOperation = 'source-over';
     }
   }
 
   // HUD pass (above the light layer) — never darkened.
-  ctx.setTransform(scale, 0, 0, scale, 0, 0);
+  ctx.setTransform(scale, 0, 0, scale, ox, oy);
   for (const c of above) paintOne(ctx, c);
 }

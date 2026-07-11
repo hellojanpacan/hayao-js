@@ -79,4 +79,4 @@ The whole family is anti-frustration design: remove the *undeserved* loss withou
 
 ## Verify / guard
 
-Feel is proven, not asserted — see [[design/JUICE.md]] for the input-honesty and grace-window gates, and reference the `updrift` golden platformer as the honest-controls floor. Guard rule: any death or miss must be reconstructable as *fair* from the replay alone. If a human says "unfair" and the replay agrees with them, the lie is in your input layer — fix it before handoff, per [[process-refine-and-handoff]].
+Feel is proven, not asserted — see [[design/JUICE.md]] for the input-honesty and grace-window gates, and reference the `small-flame` precision platformer as the honest-controls floor. Guard rule: any death or miss must be reconstructable as *fair* from the replay alone. If a human says "unfair" and the replay agrees with them, the lie is in your input layer — fix it before handoff, per [[process-refine-and-handoff]].

@@ -109,8 +109,8 @@ for how a movement toolset builds a ceiling.
   cosmetic. Study [`sandboxes/juice-lab`](../../sandboxes/juice-lab) for the trail /
   squash vocabulary and [`sandboxes/camera-lab`](../../sandboxes/camera-lab) for the
   slight lead the camera should give a fast mover. None of it touches `world.hash()`.
-- [`examples/updrift`](../../examples/updrift) is the golden platformer reference for
-  how a momentum verb + grace windows are wired and feel-gated end to end.
+- [`examples/small-flame`](../../examples/small-flame) is the precision-platformer
+  reference for how a momentum verb + grace windows are wired and feel-gated end to end.
 
 ## Fails when…
 

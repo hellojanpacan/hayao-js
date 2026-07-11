@@ -85,7 +85,7 @@ lost because you were *read*, not out-rolled.
   resolves; a duel of pure prediction with no execution at all. Bridges the
   read-heavy honesty of [[genre-tactics]] onto the strike-throw-block triangle.
 - **Fighter but the stage is the third character** *(theme + mechanic-swap)* —
-  a Kentō courtyard whose hazards, wind, and shifting floor edit both fighters'
+  a windswept courtyard whose hazards, wind, and shifting floor edit both fighters'
   ranges each round; positioning gains a second axis. Pairs
   [[system-hazards-and-environment]].
 - **Fighter but health is shared and shrinking** *(structure)* — one bar between

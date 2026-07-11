@@ -70,8 +70,8 @@ unsurvivable resolves into one obvious gap you slide through at the last frame.
   you author the enemy's next pattern from a hand, then dodge your own design.
 - **Bullet hell but time only moves when you do** *(constraint)* — SuperHot for
   danmaku; density becomes a spatial puzzle instead of a reflex test.
-- **Bullet hell but the gap is drawn in ink** *(theme + tonal)* — Kentō
-  woodblock; every wave is a brushstroke, grazing "wets" the paper for score.
+- **Bullet hell but the gap is drawn in ink** *(theme + tonal)* — a duotone
+  ink-brush look; every wave is a brushstroke, grazing "wets" the paper for score.
 - **Bullet hell but co-op share one hitbox** *(perspective)* — two players, one
   ship's life pool; threading requires reading each other. Pairs
   [[system-coop-and-competition]].

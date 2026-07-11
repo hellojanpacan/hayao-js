@@ -51,11 +51,11 @@ Pick the axis your contrast lives on:
 - **Cozy loop but quietly apocalyptic stakes** *(tonal)* — the [[genre-farming-sim]] / [[system-session-structure]] daily rhythm stays warm while a slow clock runs out underneath. *Frostpunk* wears this openly; a *Stardew*-shaped loop can hide it. The [[system-resource-loops]] carry the doom; the [[world-soundscape]] and palette carry the comfort. Compose with [[pattern-pacing-and-tension]] so the dread accrues instead of announcing itself.
 - **Brutal mechanics wrapped in a children's-book skin** *(tonal)* — *Cuphead*'s rubber-hose grins over [[genre-soulslike]]-grade [[system-boss-design]]; *Baba Is You*'s crayon tiles over rule-bending logic. The [[world-character-design]] and [[world-aesthetic-direction]] promise gentle; the [[system-combat-model]] / [[system-telegraphs]] deliver merciless. The skin sets *false* expectations — then [[pattern-fairness-and-trust]] keeps the mechanics scrupulously fair so the clash reads as style, not betrayal.
 
-## Aesthetic hook (Kentō woodblock)
+## Aesthetic hook (Regalia)
 
-Woodblock is a strong **register** engine — flat inked shapes, warm paper, hand-cut edges all read as craft and calm. That makes it a ready base tone to *contradict*:
+Regalia is a strong **register** engine — flat duotone shapes, a warm paper ground, a confident ink line all read as craft and calm. That makes it a ready base tone to *contradict*:
 
-- Let the **palette** stay Kentō-warm (KENTO/MEADOW/DUSK) while the fiction turns cold. Warm ink over lethal stakes is the whole trick.
+- Let the **palette** stay Regalia-warm (`REGALIA`/`REGALIA_DAY`/`REGALIA_NIGHT`) while the fiction turns cold. A warm ground over lethal stakes is the whole trick.
 - Push the clash into **motif**, not chaos — see [[world-motif-and-symbol]]. A recurring gentle icon that slowly acquires a grim second meaning does more than a tonal whiplash.
 - Keep it **static and deterministic** so the judge can read the contrast from a single frame. The vision judge scores whether the gap is legible in one still — [[world-tonal-juxtaposition]]'s proof is that both tones survive a screenshot. See `design/JUDGE.md`.
 

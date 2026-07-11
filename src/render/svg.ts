@@ -3,42 +3,78 @@
 // browser verification trivial: querySelector IS the probe.
 
 import type { DrawCommand } from './commands';
-import { clientToDesign, fitViewport, type Renderer, type RendererConfig, type Viewport } from './renderer';
+import { viewBoxToDesign, safeViewport, type Renderer, type RendererConfig, type Viewport, type ViewBox } from './renderer';
 import { commandsToSVGInner } from './svgString';
 import type { Vec2 } from '../core/math';
 
 const SVGNS = 'http://www.w3.org/2000/svg';
 
+// Per-instance clip-path ids so two SvgRenderers on one page never collide
+// (Math.random is banned engine-wide; a module counter is deterministic enough
+// for a DOM id and never enters the sim).
+let clipSeq = 0;
+
 export class SvgRenderer implements Renderer {
   readonly width: number;
   readonly height: number;
+  private view: ViewBox;
   private background: string;
   private svg: SVGSVGElement;
   private bg: SVGRectElement;
   private layer: SVGGElement;
+  private clipRect: SVGRectElement;
 
   constructor(config: RendererConfig) {
     this.width = config.width;
     this.height = config.height;
+    this.view = { minX: 0, minY: 0, width: this.width, height: this.height };
     this.background = config.background ?? '#ffffff';
 
     this.svg = document.createElementNS(SVGNS, 'svg');
-    this.svg.setAttribute('viewBox', `0 0 ${this.width} ${this.height}`);
     this.svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
     this.svg.style.width = '100%';
     this.svg.style.height = '100%';
     this.svg.style.display = 'block';
 
+    // Clip everything to the view box so content authored outside it (scenery
+    // spilling past a bleed margin, or anything beyond the safe box under
+    // contain) never leaks into the letterbox — the fair play-field stays exact.
+    // Canvas2D/WebGL clip for free (the buffer IS the view box); SVG needs this.
+    const clipId = `hy-view-clip-${clipSeq++}`;
+    const defs = document.createElementNS(SVGNS, 'defs');
+    const clip = document.createElementNS(SVGNS, 'clipPath');
+    clip.setAttribute('id', clipId);
+    clip.setAttribute('clipPathUnits', 'userSpaceOnUse');
+    this.clipRect = document.createElementNS(SVGNS, 'rect');
+    clip.appendChild(this.clipRect);
+    defs.appendChild(clip);
+    this.svg.appendChild(defs);
+
     this.bg = document.createElementNS(SVGNS, 'rect');
-    this.bg.setAttribute('x', '0');
-    this.bg.setAttribute('y', '0');
-    this.bg.setAttribute('width', String(this.width));
-    this.bg.setAttribute('height', String(this.height));
     this.bg.setAttribute('fill', this.background);
     this.svg.appendChild(this.bg);
 
     this.layer = document.createElementNS(SVGNS, 'g');
+    this.layer.setAttribute('clip-path', `url(#${clipId})`);
     this.svg.appendChild(this.layer);
+    this.applyView();
+  }
+
+  /** Sync the SVG viewBox + background + clip rect to the current view box. */
+  private applyView(): void {
+    const v = this.view;
+    this.svg.setAttribute('viewBox', `${v.minX} ${v.minY} ${v.width} ${v.height}`);
+    for (const r of [this.bg, this.clipRect]) {
+      r.setAttribute('x', String(v.minX));
+      r.setAttribute('y', String(v.minY));
+      r.setAttribute('width', String(v.width));
+      r.setAttribute('height', String(v.height));
+    }
+  }
+
+  setViewBox(view: ViewBox): void {
+    this.view = { ...view };
+    this.applyView();
   }
 
   mount(parent: HTMLElement): void {
@@ -60,13 +96,13 @@ export class SvgRenderer implements Renderer {
     return this.svg;
   }
 
-  /** Map a pointer event's clientX/Y into design space (undoes the letterbox). */
+  /** Map a pointer event's clientX/Y into design space (undoes the letterbox/bleed). */
   toDesign(clientX: number, clientY: number): Vec2 {
-    return clientToDesign(this.svg.getBoundingClientRect(), this.width, this.height, clientX, clientY);
+    return viewBoxToDesign(this.svg.getBoundingClientRect(), this.view, clientX, clientY);
   }
 
   viewport(): Viewport {
-    return fitViewport(this.svg.getBoundingClientRect(), this.width, this.height);
+    return safeViewport(this.svg.getBoundingClientRect(), this.view, this.width, this.height);
   }
 
   dispose(): void {

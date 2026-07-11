@@ -201,7 +201,7 @@ import { forgivenessIssues, graceWindowIssues, feedbackIssues,
 1. **Forgiveness.** `forgivenessIssues(cfg)` audits the grace windows (coyote,
    jump-buffer, corner-nudge) against a floor; `graceWindowIssues(label, W, accepts)`
    *behaviourally* proves a window accepts an input `0..W` frames late and refuses
-   `W+1` — the exact edge FUN law 5 demands. (updrift proves a 4-frame coyote window
+   `W+1` — the exact edge FUN law 5 demands. (small-flame proves its coyote window
    by walking a rig off a lip and jumping D frames later.)
 2. **Feedback completeness.** Declare a `FeedbackContract` (event → channels +
    shake/hit-stop), then `feedbackIssues(contract, events)` proves every significant
@@ -217,8 +217,10 @@ import { forgivenessIssues, graceWindowIssues, feedbackIssues,
    proves it leads the motion rather than trailing. Sample the *follow* position
    (exclude screen shake), and drop the pre-start frame (no camera exists yet).
 
-The full four-gate suite wired on a real game lives in
-[`examples/updrift/verify.ts`](../examples/updrift/verify.ts); the authoring side is
+The feel gates wired on a real game live in
+[`examples/small-flame/verify.ts`](../examples/small-flame/verify.ts) — forgiveness,
+feedback, and salience (its single-screen chamber holds a fixed camera, so the
+camera gate applies to scrolling games); the authoring side is
 [design/JUICE.md](../design/JUICE.md). Gate on the fundamentals; the *soul* above the floor
 stays authored (a director, not a proof) — but the floor no amateur clears is now
 machine-enforced.

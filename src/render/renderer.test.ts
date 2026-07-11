@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { clientToDesign } from './renderer';
+import { clientToDesign, bleedViewBox, viewBoxToDesign, safeViewport, BLEED_MAX } from './renderer';
 import { drawToCanvas2D } from './canvas2d-core';
 import { LAYER_HUD, LAYER_LIGHT, type CircleCommand, type DrawCommand, type RectCommand } from './commands';
 
@@ -100,5 +100,51 @@ describe('clientToDesign (letterbox inverse)', () => {
     const rect = { left: 100, top: 50, width: 640, height: 360 };
     expect(clientToDesign(rect, 1280, 720, 100, 50)).toEqual({ x: 0, y: 0 });
     expect(clientToDesign(rect, 1280, 720, 420, 230)).toEqual({ x: 640, y: 360 });
+  });
+});
+
+describe('bleedViewBox (fit: bleed view region)', () => {
+  it('is the plain safe box when the container already matches the design ratio', () => {
+    // 1800×1040 == 900×520 aspect → no growth, no offset.
+    expect(bleedViewBox(1800, 1040, 900, 520)).toEqual({ minX: 0, minY: 0, width: 900, height: 520 });
+  });
+
+  it('grows width (and centers the safe box) for a wider container', () => {
+    // 2.5 aspect: view width = 520×2.5 = 1300, safe box centered → minX −200.
+    expect(bleedViewBox(1000, 400, 900, 520)).toEqual({ minX: -200, minY: 0, width: 1300, height: 520 });
+  });
+
+  it('grows height for a taller (portrait) container', () => {
+    // Portrait, but past the cap → height stops at 520×BLEED_MAX, centered vertically.
+    const vb = bleedViewBox(400, 800, 900, 520);
+    expect(vb.width).toBe(900);
+    expect(vb.height).toBeCloseTo(520 * BLEED_MAX, 6);
+    expect(vb.minY).toBeCloseTo(-(520 * BLEED_MAX - 520) / 2, 6);
+    expect(vb.minX).toBe(0);
+  });
+
+  it('caps growth at BLEED_MAX rather than stretch to a scenery desert', () => {
+    const vb = bleedViewBox(3000, 400, 900, 520); // absurdly wide
+    expect(vb.width).toBeCloseTo(900 * BLEED_MAX, 6);
+  });
+});
+
+describe('viewBoxToDesign / safeViewport (offset view)', () => {
+  const view = { minX: -200, minY: 0, width: 1300, height: 520 };
+  const rect = { left: 0, top: 0, width: 1300, height: 520 };
+
+  it('maps client px back through an offset bleed view', () => {
+    expect(viewBoxToDesign(rect, view, 200, 0)).toEqual({ x: 0, y: 0 }); // safe-box top-left
+    expect(viewBoxToDesign(rect, view, 1100, 520)).toEqual({ x: 900, y: 520 }); // safe-box bottom-right
+    expect(viewBoxToDesign(rect, view, 0, 0)).toEqual({ x: -200, y: 0 }); // out in the scenery margin
+  });
+
+  it('reports the centered safe-box rect for overlay anchoring under bleed', () => {
+    expect(safeViewport(rect, view, 900, 520)).toEqual({ x: 200, y: 0, width: 900, height: 520, scale: 1 });
+  });
+
+  it('reduces to the letterbox rect under contain (view == safe box)', () => {
+    const contain = { minX: 0, minY: 0, width: 1280, height: 720 };
+    expect(safeViewport({ width: 1440, height: 720 }, contain, 1280, 720)).toEqual({ x: 80, y: 0, width: 1280, height: 720, scale: 1 });
   });
 });

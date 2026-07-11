@@ -12,7 +12,7 @@ git show corpus-v0:examples/<name>/game.ts     # inspect without restoring
 Why archived: the new website promises three games — a 2D platformer, a tiny RTS,
 and a mobile puzzle — each to be rebuilt at flagship polish on a shared Regalia
 game kit (shared components, art, sound, animation). Rather than re-theme 33
-Kentō-era prototypes, we reset and rebuild. See `docs/REGALIA-MIGRATION.md`.
+Kentō-era prototypes, we reset and rebuild on Regalia (`docs/STYLE.md`).
 
 ## Example games archived (33)
 

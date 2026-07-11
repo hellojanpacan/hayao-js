@@ -215,11 +215,11 @@ segments, fed via `layer.setOccluders(segs)`; the layer culls to each light's
 reach (`cullSegments`) and extrudes `shadowQuads` per frame.
 
 ```ts
-import { LightLayer, PointLight, occludersFromTilemap, DUSK, KENTO } from '@hayao';
+import { LightLayer, PointLight, occludersFromTilemap, REGALIA_NIGHT, REGALIA } from '@hayao';
 
-const lights = new LightLayer({ ambient: { color: DUSK.bg, level: 0.16 }, softShadows: true });
+const lights = new LightLayer({ ambient: { color: REGALIA_NIGHT.bg, level: 0.16 }, softShadows: true });
 lights.setOccluders(occludersFromTilemap(map));   // shadows off the solid tiles
-lights.addChild(new PointLight({ radius: 260, color: KENTO.gofun, intensity: 1,
+lights.addChild(new PointLight({ radius: 260, color: REGALIA.gold, intensity: 1,
   falloff: 1, flicker: { amount: 0.12, speed: 9 }, seed: 11 }));
 world.root.addChild(lights);                       // world space, at the origin
 ```

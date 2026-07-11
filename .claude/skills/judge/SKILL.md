@@ -37,7 +37,7 @@ Apply every **high**-severity finding (a 1–2 on any axis). The hard rule:
   HUD. Never touch `world.state`, the pure logic, the input map, or the sim.
 - All view nodes are `cosmetic`, so **the golden replay hash must be unchanged**
   after your pass. If it changed, you edited the sim — revert and redo.
-- Prefer the house woodblock palette (`KENTO`) and the juice kit (see
+- Prefer the house Regalia palette (`REGALIA`) and the juice kit (see
   `design/JUICE.md`): parallax/pinned backdrops for depth, `AmbientField` for
   atmosphere, `Particles`/`Shaker` for punctuation, `gradient()` for skies.
 

@@ -33,12 +33,12 @@ is legible; when they clash, it's noise.
 |---|---|---|
 | **Silhouette** | Could you name the faction from a black shape? | Yes — shape is the fastest read |
 | **Values** | What does this people believe / fear / want? | Slower — read through behaviour & lore |
-| **Colour** | Which Kentō hue *owns* this faction? | Yes — one accent per side |
+| **Colour** | Which Regalia hue *owns* this faction? | Yes — one accent per side |
 | **Motif** | The repeated visual/verbal signature (a shape, a word, a ritual) | Yes — the thing that recurs |
 
 The strongest factions **map a value onto a mechanic onto a look** in one line:
 *the disciplined line* believes in order → fights in formation (mechanic) →
-straight silhouettes, indigo *ai* (look). Change any one and the other two feel
+straight silhouettes, the `ink` navy (look). Change any one and the other two feel
 wrong.
 
 ## Vectors / options — where to source contrast
@@ -48,7 +48,7 @@ Pick a *primary axis of difference* and let all four channels express it:
 | Contrast axis | Faction A pole | Faction B pole | Expresses through |
 |---|---|---|---|
 | **Order ↔ chaos** | rigid, geometric, few | teeming, organic, many | silhouette density; formation vs swarm |
-| **Growth ↔ decay** | living, verdant, *matsu* | rusted, salvaged, *kaki*/*ko* | material & motif |
+| **Growth ↔ decay** | living, verdant, `green` | rusted, salvaged, `bark` | material & motif |
 | **Sky ↔ earth** | tall, pale, airy | low, heavy, grounded | silhouette height; ground vs flight |
 | **Old ↔ new** | weathered, ritual, ink | sharp, forged, bright | tone & naming register |
 | **Predator ↔ prey** | angular, forward, few | rounded, defensive, many | shape language; posture |
@@ -64,7 +64,7 @@ on order↔chaos↔hybrid; each is a clean silhouette and a clean fantasy.
    few elites, your axis is *chaos ↔ order* — build fiction on that.
 2. **Write each faction's value in one sentence** — what they believe and fear.
    This drives naming ([[world-naming-and-tone]]) and behaviour.
-3. **Assign one owning hue per faction** from the Kentō set. One accent each,
+3. **Assign one owning hue per faction** from the Regalia set. One accent each,
    never shared — colour is the fastest faction read (see hook).
 4. **Design the silhouette rule.** A shape language each faction obeys:
    straight-and-tall vs low-and-organic. Test it as black shapes — if you can't
@@ -83,7 +83,7 @@ on order↔chaos↔hybrid; each is a clean silhouette and a clean fantasy.
 |---|---|---|
 | **Value** | *keep the light; hold the line* | *take what the sea gives; owe nothing* |
 | **Silhouette** | tall, straight lanterns & robes | low, hunched, jury-rigged hulls |
-| **Colour** | indigo *ai* + shell *gofun* | persimmon *kaki* + rust *ko* |
+| **Colour** | `ink` navy + `paper` | `bark` + `gold` |
 | **Motif** | the unbroken flame | the scavenged hook |
 | **Mechanic** | few, durable, defensive (holds ground) | many, cheap, opportunistic (swarms wrecks) |
 
@@ -93,9 +93,9 @@ hue; and each look *is* the mechanic. That's a legible pair.
 ## Aesthetic hook
 
 Colour is the fastest faction read the JUDGE has an axis for (palette harmony).
-Give each faction **one owning accent** from Kentō's eight — indigo *ai* reads as
-disciplined and cool, persimmon *kaki* and rust *ko* as desperate and warm, pine
-*matsu* as living, vermilion *shu* as aggressive. Because all eight belong to one
+Give each faction **one owning accent** from the Regalia set — `ink` reads as
+disciplined and cool, `bark` and `gold` as desperate and warm, `green` as living,
+`rose` as aggressive. Because they all belong to one
 harmonised set (`npm run palette`, AA-gated), factions can be *distinct* without
 *clashing* — the whole frame stays one world, which is exactly the JUDGE's
 palette-harmony bar (`design/JUDGE.md` axis 3). Keep silhouette contrast doing the

@@ -25,7 +25,7 @@ attention lands where it should; nothing important hides. Confidence, not confus
 
 - **The avatar must be the brightest, highest-contrast thing on screen.** It's the
   one object the player tracks every frame; lose it and every input becomes a guess
-  (JUICE.md Part 2: updrift's ochre lantern on a twilight cliff). This is the
+  (JUICE.md Part 2: a bright lantern avatar on a twilight cliff). This is the
   **salience gate**.
 - **Perception is a hierarchy.** The eye goes to contrast, motion, and saturation
   first. Spend that budget on what matters (avatar > threat > pickup > scenery); a
@@ -41,7 +41,7 @@ attention lands where it should; nothing important hides. Confidence, not confus
 
 | Lever | Tool | Example |
 |---|---|---|
-| **Value contrast** | Salience | Bright avatar over a low-key ground (updrift) |
+| **Value contrast** | Salience | Bright avatar over a low-key ground |
 | **Colour role** | Palette convention | Red = threat, gold = reward, blue = safe (kept consistent) |
 | **Silhouette** | Shape reads before colour | Distinct enemy silhouettes; contour/autotile terrain masses |
 | **Motion** | Draws the eye | The one thing moving is the thing to watch ([[pattern-juice-choreography]]) |
@@ -80,11 +80,11 @@ Readability has a **mechanical floor and a taste ceiling** — both are gated:
 
 - **Salience gate (floor).** `salienceIssues(world.render(), avatarFill, background)
   .length === 0` (JUICE.md Part 3, `npm run feel`) proves the avatar out-contrasts
-  the scenery *pre-lighting*. Note the Kentō AA contrast guarantee holds pre-lighting
+  the scenery *pre-lighting*. Note the Regalia AA contrast guarantee holds pre-lighting
   only — judge lit contrast from the rendered PNG, never the hexes (JUDGE.md rubric 2).
 - **The vision judge (ceiling).** `npm run judge` — a multimodal model looks at the
   actual pixels and scores **Readability** (rubric 1) and **Depth & composition**
-  (rubric 2). The gates can pass while the image still reads empty (updrift's
+  (rubric 2). The gates can pass while the image still reads empty (one game's
   invisible parallax mountains passed both gates; only the judge caught it).
 - **Telegraph honesty** ([[system-telegraphs]], FUN.md §4/§12) — the read must arrive
   *in time*: assert the tell precedes the hit by the reaction window.
@@ -94,13 +94,13 @@ Readability has a **mechanical floor and a taste ceiling** — both are gated:
 *"A twilight-cliff platformer where the player never loses themselves."* The ground is
 low-key by design (mood), which is exactly the trap — the avatar can vanish into it.
 Fix it with a salience budget: (1) the avatar is the single **brightest, highest-
-contrast** token (updrift's ochre lantern), so the eye locks to it every frame; (2)
+contrast** token (a bright lantern on the dark cliff), so the eye locks to it every frame; (2)
 threats own **red**, pickups own **gold**, kept consistent so the colour language
 never lies; (3) a real **background layer** (a graded night sky, a moon, layered
 ridges) gives depth so nothing floats in a void. Prove it two ways:
 `salienceIssues(...)` passes *pre-lighting* (the mechanical floor), then `npm run
 judge` looks at the pixels and scores Readability and Depth ≥ 4 — the gate that caught
-updrift's invisible mountains the salience check couldn't.
+those invisible mountains the salience check couldn't.
 
 ## Composes with
 

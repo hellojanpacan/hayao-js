@@ -43,24 +43,16 @@
   },
   "files": [
     "dist",
-    "dist-workshop",
     "bin/create-hayao.mjs",
     "bin/hayao-mcp-cli.mjs",
     "bin/hayao.mjs",
     "design",
     "sandboxes",
     "examples",
+    "recipes",
+    "docs",
     "AGENTS.md",
-    "CLAUDE.md",
-    "docs/QUICKSTART.md",
-    "docs/ERRORS.md",
-    "docs/API.md",
-    "docs/VERIFICATION.md",
-    "docs/CONVENTIONS.md",
-    "docs/EMBED.md",
-    "docs/WORKSHOP.md",
-    "docs/ENGINE.md",
-    "docs/COIN.md"
+    "CLAUDE.md"
   ],
   "engines": {
     "node": ">=18"
@@ -90,6 +82,7 @@
     "judge": "tsx scripts/judge.ts",
     "thumbs": "tsx scripts/site-thumbs.ts",
     "design:index": "node scripts/build-design-index.mjs",
+    "design:spine": "node scripts/compose-design.mjs spine",
     "design:spark": "node scripts/compose-design.mjs spark",
     "strike": "tsx src/coin/strike.ts"
   },

@@ -10,7 +10,7 @@ import { TAU } from '../core/math';
 import { dexp, dexp2, dpow } from '../core/dmath';
 import { renderSound, type SoundSpec } from './synth';
 import { pitchToFreq } from './theory';
-import { applyReverb, type ReverbOptions } from './reverb';
+import { reverbSteps, type ReverbOptions } from './reverb';
 import { createStereo, mixMono, normalize, softClipInPlace, type StereoBuffer, SAMPLE_RATE } from './pcm';
 
 /** A voice: everything a SoundSpec has except pitch, which each note supplies. */
@@ -100,13 +100,63 @@ export function songDuration(song: Song): number {
   return (songBeats(song) * 60) / song.bpm;
 }
 
+/** Options shared by the sync and cooperative renderers. */
+export interface RenderSongOptions {
+  sampleRate?: number;
+  normalizePeak?: number;
+}
+
+/** Extra knob for the cooperative renderer: yield to the event loop after this
+ * many synthesis units (notes/passes). Lower = smoother host, slightly slower. */
+export interface RenderSongAsyncOptions extends RenderSongOptions {
+  yieldEvery?: number;
+}
+
 /**
  * Render a Song to a stereo buffer. Deterministic: a per-track seeded Rng feeds
  * any noise voices, so the same Song always produces the same mix. Notes are
  * synthesized via renderSound with the track's instrument, the note's pitch and
  * velocity, and a sustain sized to the note's beat length.
+ *
+ * SYNCHRONOUS and CPU-bound — a full soundtrack cue is a multi-second block on a
+ * phone. Fine headlessly (tests, offline analysis) and off any interactive
+ * frame, but NEVER call it during a step/render. To start music in a running
+ * game, pre-render off the hot path with {@link renderSongAsync} (or
+ * `AudioBus.prepareSong`) and play the prepared buffer.
  */
-export function renderSong(song: Song, opts: { sampleRate?: number; normalizePeak?: number } = {}): StereoBuffer {
+export function renderSong(song: Song, opts: RenderSongOptions = {}): StereoBuffer {
+  const it = renderSongSteps(song, opts);
+  let step = it.next();
+  while (!step.done) step = it.next();
+  return step.value;
+}
+
+/**
+ * Cooperative render: identical output to {@link renderSong} — same generator
+ * drives both — but it yields to the event loop between synthesis units, so it
+ * never blocks the main thread for more than a work batch. This is the path a
+ * running game uses to build a cue without a visible hitch (input and rendering
+ * keep flowing while it works). Deterministic; the yielding never touches output.
+ */
+export async function renderSongAsync(song: Song, opts: RenderSongAsyncOptions = {}): Promise<StereoBuffer> {
+  const batch = Math.max(1, Math.floor(opts.yieldEvery ?? 1));
+  const it = renderSongSteps(song, opts);
+  let units = 0;
+  let step = it.next();
+  while (!step.done) {
+    if (++units % batch === 0) await yieldToScheduler();
+    step = it.next();
+  }
+  return step.value;
+}
+
+/**
+ * The single source of truth for a render, expressed as a generator so the sync
+ * and async drivers share one code path (byte-identical output). It `yield`s
+ * once per synthesized note and once per master-bus pass — the coarse units a
+ * cooperative driver pauses on.
+ */
+function* renderSongSteps(song: Song, opts: RenderSongOptions): Generator<void, StereoBuffer, void> {
   const sr = opts.sampleRate ?? SAMPLE_RATE;
   const a4 = song.a4 ?? 440;
   const secPerBeat = 60 / song.bpm;
@@ -118,7 +168,8 @@ export function renderSong(song: Song, opts: { sampleRate?: number; normalizePea
   const humanize = Math.max(0, Math.min(1, song.humanize ?? 0));
   const velBright = Math.max(0, Math.min(1, song.velBrightness ?? 0.5));
 
-  song.tracks.forEach((track, ti) => {
+  for (let ti = 0; ti < song.tracks.length; ti++) {
+    const track = song.tracks[ti];
     const gain = track.gain ?? 0.7;
     const pan = track.pan ?? 0;
     const rng = new Rng(0x50c1a1 ^ (ti + 1) * 0x9e3779b9);
@@ -158,23 +209,51 @@ export function renderSong(song: Song, opts: { sampleRate?: number; normalizePea
             const sig = renderSound(spec, { rng, sampleRate: sr });
             mixMono(bus, sig, Math.max(0, startSample), gain, pan);
           }
+          yield; // one synthesized note = one cooperative work unit
         }
         beat += note.beats;
       }
     }
-  });
+  }
 
   if (song.sidechain) {
     const depth = Math.max(0, Math.min(1, song.sidechain.depth ?? 0.5));
     const cycleSec = (song.sidechain.beatsPerCycle ?? 1) * secPerBeat;
-    applyPump(bus, cycleSec, depth);
+    yield* pumpSteps(bus, cycleSec, depth);
   }
-  if (song.reverb) applyReverb(bus, song.reverb);
-  if (song.master) applyMasterEq(bus, song.master);
-  if (song.master?.compress) applyCompressor(bus, song.master.compress);
+  if (song.reverb) yield* reverbSteps(bus, song.reverb, RENDER_WINDOW);
+  if (song.master) yield* masterEqSteps(bus, song.master);
+  if (song.master?.compress) yield* compressorSteps(bus, song.master.compress);
   softClipInPlace(bus);
   normalize(bus, opts.normalizePeak ?? 0.89);
   return bus;
+}
+
+/** Samples processed per cooperative window in the per-sample master passes.
+ * Sized so one window is a small fraction of a frame even on a phone. */
+const RENDER_WINDOW = 8192;
+
+/**
+ * Hand control back to the host so input and rendering can run between render
+ * batches. Prefers a MessageChannel macrotask (not clamped like setTimeout, and
+ * it lets the browser paint), then setTimeout, then a microtask as a last resort.
+ * Never affects render output — only when the work happens.
+ */
+function yieldToScheduler(): Promise<void> {
+  return new Promise<void>((resolve) => {
+    if (typeof MessageChannel !== 'undefined') {
+      const ch = new MessageChannel();
+      ch.port1.onmessage = () => {
+        ch.port1.close();
+        resolve();
+      };
+      ch.port2.postMessage(0);
+    } else if (typeof setTimeout !== 'undefined') {
+      setTimeout(resolve, 0);
+    } else {
+      queueMicrotask(resolve);
+    }
+  });
 }
 
 /**
@@ -183,7 +262,7 @@ export function renderSong(song: Song, opts: { sampleRate?: number; normalizePea
  * out dynamics and lifts perceived loudness — the mastering move that keeps a
  * sparse ballad from sounding weak next to a dense funk cut. Deterministic.
  */
-function applyCompressor(bus: StereoBuffer, amount: number): void {
+function* compressorSteps(bus: StereoBuffer, amount: number): Generator<void, void, void> {
   const amt = Math.max(0, Math.min(1, amount));
   const sr = bus.sampleRate;
   const threshold = dbToLin(-20); // dB → linear
@@ -208,6 +287,7 @@ function applyCompressor(bus: StereoBuffer, amount: number): void {
     const g = gain * makeup;
     L[i] *= g;
     R[i] *= g;
+    if ((i + 1) % RENDER_WINDOW === 0) yield;
   }
 }
 
@@ -222,7 +302,7 @@ function dbToLin(db: number): number {
  * shelves (subtract a lowpassed copy for the cut, add highpassed copies for the
  * lifts). Deterministic — pure per-sample arithmetic.
  */
-function applyMasterEq(bus: StereoBuffer, m: { lowCut?: number; presence?: number; air?: number }): void {
+function* masterEqSteps(bus: StereoBuffer, m: { lowCut?: number; presence?: number; air?: number }): Generator<void, void, void> {
   const sr = bus.sampleRate;
   const lowCut = Math.max(0, m.lowCut ?? 0);
   const presence = Math.max(0, m.presence ?? 0);
@@ -248,6 +328,7 @@ function applyMasterEq(bus: StereoBuffer, m: { lowCut?: number; presence?: numbe
       hpA = aAir * (hpA + x - hpAx);
       hpAx = x;
       ch[i] = x - lowCut * lp + presence * hpP + air * hpA;
+      if ((i + 1) % RENDER_WINDOW === 0) yield; // suspension preserves the filter state
     }
   }
 }
@@ -257,7 +338,7 @@ function applyMasterEq(bus: StereoBuffer, m: { lowCut?: number; presence?: numbe
  * cycle start and recovers over the cycle. Deterministic — a pure function of
  * sample index. The classic "four-on-the-floor breathing" without a compressor.
  */
-function applyPump(bus: StereoBuffer, cycleSec: number, depth: number): void {
+function* pumpSteps(bus: StereoBuffer, cycleSec: number, depth: number): Generator<void, void, void> {
   const sr = bus.sampleRate;
   const period = Math.max(1, cycleSec * sr);
   for (let i = 0; i < bus.left.length; i++) {
@@ -266,6 +347,7 @@ function applyPump(bus: StereoBuffer, cycleSec: number, depth: number): void {
     const duck = 1 - depth * recover * recover; // sharp dip, quick recover
     bus.left[i] *= duck;
     bus.right[i] *= duck;
+    if ((i + 1) % RENDER_WINDOW === 0) yield;
   }
 }
 

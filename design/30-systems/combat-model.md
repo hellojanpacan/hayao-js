@@ -72,7 +72,7 @@ Derive TTK/TTD from the fight length you want, not by eyeballing (FUN.md law 3).
 - **Turn-based reuses the real-time stack** — an input edge is one world step
   (FUN.md §10). Pure state gives clone-and-score bots for free: run the intended
   line vs a null line and assert the gap (FUN.md law 2).
-- Reference wiring: [`examples/updrift`](../../examples/updrift) for reactive feel;
+- Reference wiring: [`examples/small-flame`](../../examples/small-flame) for reactive feel;
   the top-down §4 pattern for hit-stop + i-frames buffering inputs through the freeze.
 
 ## Fails when…

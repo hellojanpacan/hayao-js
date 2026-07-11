@@ -54,7 +54,7 @@ spec). In brief:
 - **process** → The step · Inputs → outputs · How to run it · Worked example ·
   Traps.
 - **worldbuilding** → The kit · Vectors / options · Method · Hayao/aesthetic hook
-  (Kentō palette) · Traps.
+  (Regalia palette) · Traps.
 - **pattern** → The principle · Why it works · Levers · Applied across genres ·
   Overdone when… · Verify/feel-gate link.
 - **mechanic** → The verb (what the player *does*) · How it feels / why it's fun ·

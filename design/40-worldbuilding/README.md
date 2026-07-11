@@ -6,9 +6,9 @@ the systems, the minimum viable lore that holds it together, factions that read
 at a glance, names in the house register, an art brief that survives the vision
 judge, and a way to tell the story with almost no text. Design here; **prove the
 look** in [`design/JUDGE.md`](../JUDGE.md) and the `npm run palette` /
-`npm run feel` gates. The house aesthetic is **Kentō woodblock / Miyazaki-16** —
-elegant ink-and-washi craft, AA-verified — a consistent starting point, never a
-cage.
+`npm run feel` gates. The house aesthetic is **Regalia** — a bold, warm duotone
+set (one hue at two opacities, a confident ink line), AA-verified — a consistent
+starting point, never a cage.
 
 The golden rule of the section: **the fiction must rhyme with the mechanic.** A
 theme, faction, or name that could be swapped out with zero mechanical change is
@@ -19,8 +19,8 @@ a skin — bend deeper.
 | [world-theme-vectors](theme-vectors.md) | Theme Vectors | Choosing a setting that *recolours* the systems, not skins them; theme as a twist vector — pick where fiction and mechanic rhyme. |
 | [world-worldbuilding-scaffold](worldbuilding-scaffold.md) | Worldbuilding Scaffold | From a setting to a coherent world — premise, rules, stakes, role, fantasy; the minimum viable lore a small game needs. |
 | [world-faction-identity](faction-identity.md) | Faction Identity | Making sides feel distinct in fiction — silhouette, values, colour, motif; the fiction companion to `system-faction-asymmetry`. |
-| [world-naming-and-tone](naming-and-tone.md) | Naming & Tone | Names, voice, register; the Kentō one-word restraint (lanternway, rootward, tarnholm, kintsugi) and text that trusts the player. |
-| [world-aesthetic-direction](aesthetic-direction.md) | Aesthetic Direction | Briefing the Kentō woodblock look — palette, contrast, depth, silhouette — to pass the readability + six-axis JUDGE bars. |
+| [world-naming-and-tone](naming-and-tone.md) | Naming & Tone | Names, voice, register; the house one-word restraint (lumen, small-flame) and text that trusts the player. |
+| [world-aesthetic-direction](aesthetic-direction.md) | Aesthetic Direction | Briefing the Regalia look — palette, contrast, depth, silhouette — to pass the readability + six-axis JUDGE bars. |
 | [world-narrative-delivery](narrative-delivery.md) | Narrative Delivery | Environmental / systemic / embedded storytelling with little text; show-don't-tell; let the systems author the story. |
 
 ## The through-line
@@ -45,5 +45,5 @@ story. Every arrow ends where the proof playbook begins.
   mechanical partner to `world-faction-identity`.
 - [`50-patterns/readability`](../50-patterns/readability.md) — the salience floor
   every aesthetic brief must clear.
-- [`design/JUDGE.md`](../JUDGE.md) · `docs/CONVENTIONS.md` (Kentō palette) —
+- [`design/JUDGE.md`](../JUDGE.md) · `docs/CONVENTIONS.md` (Regalia palette) —
   where the look is proven.

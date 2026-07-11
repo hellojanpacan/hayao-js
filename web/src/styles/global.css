@@ -130,10 +130,10 @@ astro-island {
   display: contents;
 }
 
-/* ── Woodblock lattice — brand-tinted "zigzag" background ──
+/* ── Regalia lattice — brand-tinted "zigzag" background ──
    Four repeating line-gradients (horizontal, vertical, and two diagonals)
-   cross to form a fine kentō-style lattice. Tinted with the Hayao palette
-   at a whisper of opacity so it reads as printed washi, not a tech grid. */
+   cross to form a fine lattice. Tinted with the Regalia palette at a whisper
+   of opacity so it reads as a soft printed weave, not a tech grid. */
 .site-bg {
   position: fixed;
   inset: 0;

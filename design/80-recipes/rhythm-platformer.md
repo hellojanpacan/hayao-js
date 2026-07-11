@@ -5,8 +5,9 @@ kind: recipe
 tags: [rhythm, platformer, beat-as-time, recipe, music]
 summary: Precision platforming where the beat IS the simulation clock — jumps land on rhythm, the level plays like a song.
 use-when: You want movement and music fused so the soundtrack drives the platforming.
-composes-with: [genre-rhythm, genre-precision-platformer, mechanic-double-jump, world-soundscape]
+composes-with: [genre-rhythm, genre-precision-platformer, mechanic-double-jump, world-soundscape, process-the-spine]
 anchors: [anchor-celeste]
+spine: "Ride a hand-built room where nothing moves between beats, so your only agency is a move committed on the window — and every commitment locks you to the beat grid the next hazard is timed against."
 verify-with: design/FUN.md#18-·-rhythm
 ---
 
@@ -19,6 +20,42 @@ verify-with: design/FUN.md#18-·-rhythm
 **Celeste but the beat is sim time** *(mechanic-swap — replace the free-running clock with a quantized beat clock)*.
 
 Take Celeste's tight moveset and its trust in the player, then swap the substrate: nothing advances between beats. See [[process-the-twist]] for the vector, [[process-intent-to-brief]] for the shape.
+
+## The spine
+
+*Ride a hand-built room where nothing moves between beats, so your only agency is a
+move committed on the window — and every commitment locks you to the beat grid the
+next hazard is timed against.*
+
+| Part | This game |
+|---|---|
+| **Objective** | Clear the room — reach the end of the track, the level *played* like a song |
+| **Superpower** | A **quantized move** (run / jump / dash) — precise Celeste-grade traversal, but it only *resolves* on the beat |
+| **Scarcity** | The **beat-window**: the narrow legal tolerance band around each beat is all you get to act. Spend it — hesitate, and momentum dies waiting for the next one; commit, and you can't recall the move mid-air |
+| **Obstacle** | Hazards *derived from the track* — spikes that extend on the downbeat, gaps spaced a beat of travel apart, a syncopated bassline authoring a syncopated jump pattern |
+| **Renewal** | The track is the level: each new phrase re-poses "read the pulse, commit on the window" against a fresh hazard timed to a fresh beat pattern |
+
+## Resonance
+
+Every element traces to the spine. This table **is** the coherence proof — see
+[[process-the-spine]].
+
+| Element | Arrow back to the spine |
+|---|---|
+| Verb: quantized move (run/jump/dash) | The single agency; traversal and timing fused — every input is a bet placed *on* a beat |
+| **Power creates the problem** | Committing a move locks you to the grid of beats, and its arc lands you one beat later where the *next* track-timed hazard is already waiting → moving well is what strands you on-rhythm into the next window *(passes the gate)* |
+| Scarcity: the beat-window | Turns the move into a *choice of when*, not a spam — the tolerance band is the whole decision, and it's the whole difficulty dial ([[system-grace]]) |
+| Renewal: the track authors the room | Re-poses "read-and-commit in one beat" against a fresh hazard each phrase — a syncopated line writes a syncopated challenge ([[process-composition]]) |
+| Hazards derived from the track (spike retracts on the downbeat) | The obstacle is *the beat made lethal*; a hazard bolted on off-grid would be **dissonant** ([[antipattern-dissonance]]) |
+| Grace budget: visible tolerance + coyote frames + input buffer | Makes the window *honest* — a near-miss reads as near, never cheated; without it the tight scarcity becomes an [[antipattern-input-lie]] |
+| Death-handling: off-beat presses buffer, respawn is instant and cheap | Spine is *ride-the-song mastery*; punishing a mistimed press would be **dissonant** — the loop says "fall back into the groove," not "fear the beat" |
+| Setting / structure: the level *is* the song | Objective made physical — clearing the room *is* performing the track, so the soundscape is the spine, not scenery ([[world-soundscape]]) |
+| Theme: stop fighting the music, start riding it | The mechanic (act only on the pulse) is the metaphor (flow-state surrender to the beat) — [[pattern-mastery-and-flow]] |
+| Feel: a visible pulse + every effect landing *on* the beat | Makes the window legible *before* you need it and the timing a *look*, not a count ([[pattern-readability]], [[pattern-juice-choreography]]) |
+
+No row is decoration; no row fights the spine. The gate holds: **committing your move
+is what locks you to the grid and drops you into the next track-timed hazard — you
+cannot traverse without betting your momentum on the beat.**
 
 ## Anchors
 

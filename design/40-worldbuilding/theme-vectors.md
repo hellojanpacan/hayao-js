@@ -45,12 +45,12 @@ Theme is a *space* to choose within, not a single lever. Move along these axes:
 | **Agency** | steward ↔ conqueror | Do you *tend* the system or *bend* it? Recolours win conditions |
 | **Time** | one night ↔ generations | Frames the session container; a run vs a campaign vs a lineage |
 | **Tone** | dread ↔ cosy ↔ elegiac | The tonal twist rides here; recolours feedback (menace vs warmth) |
-| **Material** | ink/wood/stone ↔ neon/chrome | Ties directly to [[world-aesthetic-direction]] and the Kentō set |
+| **Material** | ink/wood/stone ↔ neon/chrome | Ties directly to [[world-aesthetic-direction]] and the Regalia set |
 
-The Hayao example corpus lives near one corner of this space on purpose:
-*lanternway*, *rootward*, *tarnholm*, *kintsugi* are **mundane-register,
-small-scale, steward-agency, elegiac** worlds rendered in wood and ink. That's a
-house lean, not a law — see the aesthetic hook below.
+The Hayao example corpus leans toward one corner of this space on purpose:
+**mundane-register, small-scale, steward-agency, elegiac** worlds carried by an
+ink line and a warm accent. That's a house lean, not a law — see the aesthetic
+hook below.
 
 ## Method
 
@@ -84,21 +84,22 @@ more, lose it all if you overreach ([[pattern-risk-reward]]).
   the "bank" becomes *turning back*, which the fiction makes a real cost, not a
   menu button. Progression is the path itself.
 - **World line:** *"A lantern-keeper climbing into the dusk, deciding how far
-  the light will reach before the dark takes the path."* (This is *lanternway*'s
-  neighbourhood — arrived at from the mechanic, not copied from it.)
+  the light will reach before the dark takes the path."* (This is the house
+  register's neighbourhood — arrived at from the mechanic, not copied from it.)
 
 ## Aesthetic hook
 
-The house look is **Kentō woodblock / Miyazaki-16** (`KENTO`, `MEADOW`, `DUSK`
+The house look is **Regalia** (`REGALIA`, `REGALIA_DAY`, `REGALIA_NIGHT`
 in [`docs/API.md`](../../docs/API.md); see [[world-aesthetic-direction]]). Its
-eight named hues — vermilion *shu*, persimmon *kaki*, ochre *ko*, pine *matsu*,
-teal *asagi*, indigo *ai*, wisteria *fuji*, dusty-rose *saku* — read as *elegant
-Japanese craft*, so themes in that register (folk myth, seasonal ritual, quiet
-stewardship, weathered wood and ink) come pre-harmonised. A **neon-cyberpunk**
-or **candy-arcade** theme fights the palette; if your mechanic truly wants it,
-say so early and swap the palette deliberately — Kentō is a starting point, not a
-cage (`docs/CONVENTIONS.md`). But a theme chosen *near* the house register gets
-its art direction and its AA guarantee (`npm run palette`) close to free.
+core-of-four — `gold` (marks, joy), `ink` (line, structure), `green` (growth),
+`blue` (sky, calm), grown by the job with `rose` (vitality) and `bark` (wood,
+earth) — reads as *bold, warm, hand-drawn craft*, so themes in that register
+(folk myth, seasonal ritual, quiet stewardship, weathered wood and ink) come
+pre-harmonised. A **neon-cyberpunk** or **candy-arcade** theme fights the palette;
+if your mechanic truly wants it, say so early and swap the palette deliberately —
+Regalia is a starting point, not a cage (`docs/CONVENTIONS.md`). But a theme
+chosen *near* the house register gets its art direction and its AA guarantee
+(`npm run palette`) close to free.
 
 ## Traps
 
@@ -112,7 +113,8 @@ its art direction and its AA guarantee (`npm run palette`) close to free.
 - **Over-lore.** A rich setting with no mechanical rhyme is a wiki, not a game.
   Minimum viable lore only — [[world-worldbuilding-scaffold]].
 - **Fighting the palette by accident.** Reskinning to a clashing world without
-  swapping `MEADOW`/`DUSK` yields muddy, off-brand frames the JUDGE flags.
+  swapping `REGALIA_DAY`/`REGALIA_NIGHT` yields muddy, off-brand frames the JUDGE
+  flags.
 
 ## Composes with
 
@@ -128,7 +130,7 @@ its art direction and its AA guarantee (`npm run palette`) close to free.
 
 - [`design/JUDGE.md`](../JUDGE.md) — palette harmony (axis 3): does the
   world's colour belong to *one* set?
-- `docs/CONVENTIONS.md` "Default palette is Kentō" — the house register and the
+- `docs/CONVENTIONS.md` "Default palette is Regalia" — the house register and the
   AA gate.
-- Example worlds *lanternway*, *rootward*, *tarnholm*, *kintsugi* — as
-  *convention references* for register, never a menu to copy (AGENTS.md).
+- The example corpus — as *convention references* for register, never a menu to
+  copy (AGENTS.md).

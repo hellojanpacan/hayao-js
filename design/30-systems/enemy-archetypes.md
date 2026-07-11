@@ -72,7 +72,7 @@ The five roles and what each *demands*:
   so `pollDirector(waves, state, world.time, world.rng)` (grep `docs/API.md`) can
   roll "2 swarm + 1 support" per firing, deterministically. See
   [`src/content/dsl.ts`](../../src/content/dsl.ts).
-- **Silhouette & palette** carry the read — distinct shapes and Kentō-palette
+- **Silhouette & palette** carry the read — distinct shapes and Regalia-palette
   hues per role ([[world-aesthetic-direction]], JUDGE). The player must name the
   role from the silhouette alone.
 - **Roster legibility** shares the design of [[system-unit-rosters]] — the enemy

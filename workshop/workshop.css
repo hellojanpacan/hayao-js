@@ -1,15 +1,16 @@
-/* Hayao Workshop — kentō woodblock chrome, 380px-first. The play pane is the
+/* Hayao Workshop — Regalia chrome, 380px-first. The play pane is the
    hero; controls live in a bottom sheet on phones and a side rail on laptops. */
 :root {
-  --washi: #f1ebdd;
-  --washi-2: #f8f3e9;
-  --sumi: #242019;
-  --sumi-soft: #4f473b;
-  --stone: #6f6555;
-  --ai: #2b4257;
-  --shu: #b5442d;
-  --matsu: #4a7a3a;
-  --line: #ddd3bf;
+  /* Regalia — the house palette (docs/STYLE.md) */
+  --washi: #f4f6fb;
+  --washi-2: #ffffff;
+  --sumi: #29335c;
+  --sumi-soft: #5a6072;
+  --stone: #8b90a6;
+  --ai: #669bbc;
+  --shu: #e59500;
+  --matsu: #337357;
+  --line: #e7e8ee;
   --mono: ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
   color-scheme: light;
 }
@@ -22,7 +23,7 @@ body {
   height: 100%;
   background: var(--washi);
   color: var(--sumi);
-  font-family: 'Iowan Old Style', Palatino, Georgia, serif;
+  font-family: 'Overpass', system-ui, -apple-system, 'Segoe UI', sans-serif;
   overscroll-behavior: none;
 }
 #root {
