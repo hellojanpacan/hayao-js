@@ -10,7 +10,7 @@ import { TAU } from '../core/math';
 import { dexp, dexp2, dpow } from '../core/dmath';
 import { renderSound, type SoundSpec } from './synth';
 import { pitchToFreq } from './theory';
-import { applyReverb, type ReverbOptions } from './reverb';
+import { applyReverb, applyReverbSend, type ReverbOptions } from './reverb';
 import { createStereo, mixMono, normalize, softClipInPlace, type StereoBuffer, SAMPLE_RATE } from './pcm';
 
 /** A voice: everything a SoundSpec has except pitch, which each note supplies. */
@@ -40,6 +40,14 @@ export interface Track {
   gain?: number;
   /** Stereo position -1..1 (default 0). */
   pan?: number;
+  /**
+   * Reverb send 0..1 — how much of this track feeds the shared reverb bus (the
+   * mixing-desk model). When ANY track sets this, `song.reverb` switches from a
+   * whole-mix room to a send bus: the dry mix stays dry and only the sends
+   * bloom, so e.g. a bass can be bone-dry and a lead washed in space. Omit on
+   * every track (the default) to keep the classic whole-mix reverb.
+   */
+  reverbSend?: number;
 }
 
 export interface Song {
@@ -118,9 +126,16 @@ export function renderSong(song: Song, opts: { sampleRate?: number; normalizePea
   const humanize = Math.max(0, Math.min(1, song.humanize ?? 0));
   const velBright = Math.max(0, Math.min(1, song.velBrightness ?? 0.5));
 
+  // Per-track reverb sends (mixing-desk model): if any track opts in, we build a
+  // parallel send bus and bloom only that, leaving the dry mix dry. Otherwise
+  // sendBus stays null and reverb is the classic whole-mix pass (bit-identical).
+  const useSends = song.tracks.some((t) => t.reverbSend !== undefined);
+  const sendBus = useSends ? createStereo(durSec, sr) : null;
+
   song.tracks.forEach((track, ti) => {
     const gain = track.gain ?? 0.7;
     const pan = track.pan ?? 0;
+    const send = Math.max(0, Math.min(1, track.reverbSend ?? 0));
     const rng = new Rng(0x50c1a1 ^ (ti + 1) * 0x9e3779b9);
     let beat = 0;
     for (const idx of track.sequence) {
@@ -156,7 +171,9 @@ export function renderSong(song: Song, opts: { sampleRate?: number; normalizePea
               ...(lp !== undefined ? { lowpass: lp } : {}),
             };
             const sig = renderSound(spec, { rng, sampleRate: sr });
-            mixMono(bus, sig, Math.max(0, startSample), gain, pan);
+            const at = Math.max(0, startSample);
+            mixMono(bus, sig, at, gain, pan);
+            if (sendBus && send > 0) mixMono(sendBus, sig, at, gain * send, pan);
           }
         }
         beat += note.beats;
@@ -169,7 +186,10 @@ export function renderSong(song: Song, opts: { sampleRate?: number; normalizePea
     const cycleSec = (song.sidechain.beatsPerCycle ?? 1) * secPerBeat;
     applyPump(bus, cycleSec, depth);
   }
-  if (song.reverb) applyReverb(bus, song.reverb);
+  if (song.reverb) {
+    if (sendBus) applyReverbSend(bus, sendBus, song.reverb);
+    else applyReverb(bus, song.reverb);
+  }
   if (song.master) applyMasterEq(bus, song.master);
   if (song.master?.compress) applyCompressor(bus, song.master.compress);
   softClipInPlace(bus);

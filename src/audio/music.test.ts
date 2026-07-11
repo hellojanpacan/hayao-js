@@ -70,6 +70,30 @@ describe('music', () => {
     expect(songDuration(demoSong(180))).toBeLessThan(songDuration(demoSong(90)));
   });
 
+  it('per-track reverb sends are opt-in and deterministic', () => {
+    // Same song, one with a reverb send on the pad: the send path must engage
+    // (a different, wetter render) and stay bit-stable.
+    const dry: Song = { ...demoSong(120), reverb: { wet: 0.5, roomSize: 0.8, damp: 0.4 } };
+    const wet: Song = {
+      ...dry,
+      tracks: dry.tracks.map((t) => (t.name === 'pad' ? { ...t, reverbSend: 0.8 } : { ...t, reverbSend: 0 })),
+    };
+    const a = renderSong(wet);
+    const b = renderSong(wet);
+    expect(signalHash(a.left)).toBe(signalHash(b.left)); // deterministic
+    expect(signalHash(renderSong(wet).left)).not.toBe(signalHash(renderSong(dry).left)); // send path changed it
+  });
+
+  it('a song without any reverbSend is byte-identical to the whole-mix path', () => {
+    // Back-compat guard: absence of reverbSend must not perturb the classic
+    // whole-mix reverb render at all.
+    const song: Song = { ...demoSong(120), reverb: { wet: 0.3, roomSize: 0.7, damp: 0.5 } };
+    const a = renderSong(song);
+    const b = renderSong(song);
+    expect(signalHash(a.left)).toBe(signalHash(b.left));
+    expect(signalHash(a.right)).toBe(signalHash(b.right));
+  });
+
   it('the rendered drum track carries a detectable tempo', () => {
     // A 4-on-the-floor kick at 120 BPM should read ~120 (or a related metric level).
     const song: Song = {
