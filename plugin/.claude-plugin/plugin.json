@@ -1,0 +1,9 @@
+{
+  "name": "hayao",
+  "description": "AI-native game authoring for the hayao engine: inspect-first API discovery, design-from-the-mechanic authoring, and a hook-enforced determinism gate that verified work cannot ship past.",
+  "author": { "name": "Jan Pacan", "url": "https://hayao.dev" },
+  "homepage": "https://hayao.dev",
+  "repository": "https://github.com/hellojanpacan/hayao-js",
+  "license": "MIT",
+  "keywords": ["game-engine", "deterministic", "headless", "verification", "hayao"]
+}
