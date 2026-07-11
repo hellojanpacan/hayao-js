@@ -1,0 +1,51 @@
+---
+import { getCollection, render } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
+
+export async function getStaticPaths() {
+  const entries = await getCollection("docs");
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await render(entry);
+
+// Title: first `# heading` of the doc, minus any "FILE.md — " prefix.
+const raw = entry.body ?? "";
+const h1 = raw.match(/^#\s+(.+)$/m)?.[1] ?? entry.id;
+const title = h1.replace(/^[A-Z0-9-]+\.md\s+—\s+/, "");
+
+// The real source file (glob loader keeps the original path, casing intact).
+const srcFile = (entry.filePath ?? `docs/${entry.id}.md`).replace(/^.*?docs\//, "docs/");
+const srcUrl = `https://github.com/hellojanpacan/hayao-js/blob/main/${srcFile}`;
+---
+
+<Layout title={`${title} — Hayao Docs`} description={`Hayao documentation: ${title}.`}>
+  <main class="mx-auto w-full max-w-3xl px-6">
+    <nav class="pt-24 md:pt-28">
+      <a
+        href="/docs"
+        class="inline-flex items-center gap-1.5 font-body text-[0.85rem] font-semibold text-muted no-underline transition-colors hover:text-orange"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5" /><path d="m12 19-7-7 7-7" /></svg>
+        All docs
+      </a>
+    </nav>
+
+    <article class="doc-prose pt-8 pb-20">
+      <Content />
+    </article>
+
+    <p class="border-t border-hair pb-24 pt-6 font-body text-[0.85rem] font-light text-muted">
+      This page renders
+      <a
+        href={srcUrl}
+        class="text-ink underline decoration-hair underline-offset-4 transition-colors hover:text-orange"
+      >the repo's markdown</a>
+      directly — edit it there, it changes here.
+    </p>
+  </main>
+
+  <Footer />
+</Layout>

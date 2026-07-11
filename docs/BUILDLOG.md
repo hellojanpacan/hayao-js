@@ -97,7 +97,7 @@ stitch) is a clean pattern for any grid-slide mechanic that wants obstacles.
 
 ### B2 · Gravewell — benchmark reproduction of Black Hole Square (js13k 2021, #9) ✅
 
-Second rung of the [BENCHMARK](BENCHMARK.md) ladder. Target: a 6×6 tap-puzzle
+Second rung of the benchmark ladder. Target: a 6×6 tap-puzzle
 — X squares vanish, neutron stars collapse into black holes, arrows slide
 contiguous runs of debris, holes swallow whatever slides in; every level has
 a hard tap budget (par).
@@ -114,7 +114,7 @@ cursor model with 0 taps to spare on every level; deterministic + golden;
 finale feel probes (monotone cleanup, ≥1 positioning tap, last tap lands at
 0); filmstrip + taxonomy still judged readable.
 
-**Fidelity score (rubric in BENCHMARK.md):** mechanics 10/10 M-checks green ·
+**Fidelity score (rubric in the retired BENCHMARK doc):** mechanics 10/10 M-checks green ·
 content parity: teaching arc ✓, volume 5 vs original's ~40 puzzles (arc ✓,
 volume ✗) · feel/look ✓ · learning yield: no engine gap, two findings below.
 
@@ -228,7 +228,7 @@ loopback and agree bit-for-bit**; real-socket relay covered in
 
 ### B1 · Seamfold — benchmark reproduction of Edge Not Found (js13k 2020, #2) ✅
 
-First rung of the [BENCHMARK](BENCHMARK.md) ladder: reproduce a human-ranked
+First rung of the benchmark ladder: reproduce a human-ranked
 game under the house discipline. Target: Sokoban on a *twisted torus* — no
 outside, seams that shift you along the other axis (`xOff`/`yOff`).
 
@@ -242,7 +242,7 @@ replayed through the scene view; deterministic + golden; timeline probes show
 exactly one visible box seam-jump in the level-1 solve; filmstrip + stills
 judged readable.
 
-**Fidelity score (rubric in BENCHMARK.md):** mechanics 8/8 M-checks green ·
+**Fidelity score (rubric in the retired BENCHMARK doc):** mechanics 8/8 M-checks green ·
 content parity: teaching arc matches, volume 4 vs the original's 20+ levels
 (arc ✓, volume ✗) · feel/look ✓ (3 timeline metrics + judged artifacts) ·
 learning yield: no engine gap (see below) + one new lesson + one friction fix.
@@ -1048,7 +1048,7 @@ bell 0.4s, ball lives 5.2s, max lull 4.7s).
 ### E1 · Engine primitives — FSM, weighted tables, graph search (js13k-mined) ✅
 
 Not a game — the "engine gaps first" step run standalone, filling the cleanest
-pure-logic wins from [JS13K-MINING.md](JS13K-MINING.md) (rows #4/#5/#6, and an
+pure-logic wins from JS13K-MINING (rows #4/#5/#6, and an
 assessment of #17). One new module dir, `src/logic/`, three files, 19 tests,
 all deterministic and hash-safe (no `cosmetic` concerns — pure logic only).
 
@@ -1100,7 +1100,7 @@ surface. (Row #17 marked *evaluated → declined* in JS13K-MINING.)
 
 ### E2 · Procgen generators + color engine + ambient particles (js13k-mined) ✅
 
-Second "engine gaps first" batch — [JS13K-MINING.md](JS13K-MINING.md) rows #7,
+Second "engine gaps first" batch — JS13K-MINING rows #7,
 #8, #14. Unlike E1 (pure logic only), this batch spans the whole determinism
 spectrum, and the discipline was drawing the line **per output**: logical
 structure is hash-relevant and runs off `world.rng`; decoration and view are
@@ -1161,7 +1161,7 @@ would be cosmetic weight for no gameplay dependency. Declined on purpose.
 
 ### E3 · Presentation / game-feel primitives (js13k-mined) ✅
 
-Third "engine gaps first" batch — [JS13K-MINING.md](JS13K-MINING.md) rows #9,
+Third "engine gaps first" batch — JS13K-MINING rows #9,
 #11, #12, #16. All four are **view/juice**: transitions, spring-smoothed values,
 damage popups, and UI frames. The whole batch is cosmetic-by-construction —
 nothing here enters `world.hash()` — and every effect runs off the fixed clock
@@ -1224,7 +1224,7 @@ prevent. `FloatingText` seeds its own `Rng` like `Particles`/`Shaker`.
 
 ### E4 · Persistence & content-engine primitives (js13k-mined) ✅
 
-Fourth "engine gaps first" batch — [JS13K-MINING.md](JS13K-MINING.md) rows #1
+Fourth "engine gaps first" batch — JS13K-MINING rows #1
 (save/load — the single most-frequent gap, ~12/17 games), #13 (undo /
 record-replay), #15 (data-driven content DSL). The unifying theme is *plain-data
 over the existing snapshot seam*: save/load, undo, and the wave director all
@@ -1290,7 +1290,7 @@ nothing here reinvents serialization or escapes the hash. New `persist/storage.t
 
 ### E5 · Art-from-code primitives — procedural sprites, bitmap text, autotiling (js13k-mined) ✅
 
-Fifth "engine gaps first" batch — [JS13K-MINING.md](JS13K-MINING.md) rows #2
+Fifth "engine gaps first" batch — JS13K-MINING rows #2
 (procedural sprite/texture generation, 6 games), #3 (bitmap/pixel font + rich
 text layout, 6 games), #10 (autotiling — bitmask Wang + marching squares). The
 unifying theme is *view over data*: every module is a **pure function to a
