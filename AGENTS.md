@@ -60,7 +60,7 @@ default without surveying the corpus.
   ramp · feel · generated · code-as-art) + the overall verified rate
 - `npm run build` — production build
 
-To start a NEW project outside this repo: `npm create hayao@latest my-game`
+To start a NEW project outside this repo: `npx hayao@latest create my-game`
 scaffolds a runnable game whose starter already generates a solver-proven campaign.
 
 ## Skills (Claude Code)

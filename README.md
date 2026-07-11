@@ -66,7 +66,7 @@ and is a `defineGame()` call. See [docs/CONVENTIONS.md](https://github.com/hello
 ## Start a new game in one command
 
 ```sh
-npm create hayao@latest my-game   # scaffolds a runnable project
+npx hayao@latest create my-game   # scaffolds a runnable project
 cd my-game && npm install
 npm run verify                    # prove every level winnable — no browser
 npm run dev                       # play it
