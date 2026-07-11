@@ -190,4 +190,4 @@ export * from './workshop/atom';
 export * from './workshop/project';
 
 /** Engine version. Must equal package.json — guarded by src/version.test.ts. */
-export const VERSION = '0.5.2';
+export const VERSION = '0.5.3';
