@@ -102,6 +102,8 @@ export * from './audio/music';
 export * from './audio/lint';
 export * from './audio/match';
 export * from './audio/adaptive';
+export * from './audio/loopdeck';
+export * from './audio/hayabox';
 export * from './audio/quality';
 export * from './audio/genres';
 export * from './audio/zzfx';
