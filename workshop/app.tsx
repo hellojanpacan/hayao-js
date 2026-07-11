@@ -630,6 +630,9 @@ export function App() {
     ...(manifest ? [manifest.project, ...manifest.atoms.map((at) => at.title)] : []),
     ...(a.handle ? [a.handle.title()] : []),
   ]);
+  // Desktop docks the tuning panel as a layout column so it can never cover
+  // the game; phones keep leva's collapsed floating panel.
+  const isPhone = window.innerWidth < 720;
 
   return (
     <>
@@ -748,6 +751,11 @@ export function App() {
               <iframe key={`b-${slug}-${seed}-${variantB}-${nonce}`} ref={b.frameRef} src={paneUrl(game, seed, variantB)} title="pane B" />
             </section>
           )}
+          {!isPhone && (
+            <aside className="knob-dock">
+              <Leva fill flat titleBar={false} collapsed={false} />
+            </aside>
+          )}
         </main>
       )}
 
@@ -773,10 +781,9 @@ export function App() {
       )}
 
       {framed && a.handle && !tape && <Knobs key={`${slug}-${variantA}-${nonce}`} handle={a.handle} onDirty={() => setDirty(true)} />}
-      <Leva
-        titleBar={{ title: 'tuning', position: window.innerWidth < 720 ? { x: 0, y: 56 } : undefined }}
-        collapsed={window.innerWidth < 720}
-      />
+      {(isPhone || !framed) && (
+        <Leva titleBar={{ title: 'tuning', position: isPhone ? { x: 0, y: 56 } : undefined }} collapsed={isPhone} hidden={!framed} />
+      )}
       {toast && <div className="toast">{toast}</div>}
     </>
   );
