@@ -183,6 +183,8 @@ export * from './workshop/session';
 export * from './workshop/record';
 export * from './workshop/timeline';
 export * from './workshop/run';
+export * from './workshop/atom';
+export * from './workshop/project';
 
 /** Engine version. Must equal package.json — guarded by src/version.test.ts. */
 export const VERSION = '0.5.1';

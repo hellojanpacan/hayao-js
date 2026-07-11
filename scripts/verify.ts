@@ -43,6 +43,13 @@ for (const slug of slugs) {
   const suite = join(examplesDir, slug, 'verify.ts');
   console.log(`\nhayao verify — ${slug}`);
   if (!existsSync(suite)) {
+    // Seed-stage projects (TIMELINE.md + atoms/, no game.ts — CONVENTIONS
+    // "project anatomy") are held to the lighter layer: check + invariants +
+    // per-kind gates. The full contract activates the day game.ts appears.
+    if (!existsSync(join(examplesDir, slug, 'game.ts')) && existsSync(join(examplesDir, slug, 'TIMELINE.md'))) {
+      console.log('  ○ seed-stage (atoms + timeline, no game yet) — full contract not yet due');
+      continue;
+    }
     console.error(`  ✗ no verify.ts — every example must prove its content`);
     failures++;
     continue;

@@ -2,6 +2,7 @@
 import Layout from "../../layouts/Layout.astro";
 import Footer from "../../components/Footer.astro";
 import AgentPrompt from "../../components/AgentPrompt.astro";
+import PluginCallout from "../../components/PluginCallout.astro";
 import SparkWidget from "../../components/SparkWidget.tsx";
 import modules from "../../../../design/index.json";
 
@@ -175,6 +176,7 @@ Start with the interview.`;
         prompt={PROMPT}
         blurb="Paste this into Claude Code, Cursor, or any coding agent. It interviews you first — the building comes after the brief."
       />
+      <PluginCallout class="mt-4" />
     </section>
 
     <!-- next door -->
@@ -182,8 +184,10 @@ Start with the interview.`;
       <p class="font-body text-[0.9rem] font-light text-muted">
         Concept already clear in your head?
         <a href="/create/quickstart" class="font-semibold text-ink no-underline transition-colors hover:text-orange">Take the quickstart</a>
-        — or go
-        <a href="/create/scratch" class="font-semibold text-ink no-underline transition-colors hover:text-orange">fully from scratch</a>.
+        — go
+        <a href="/create/scratch" class="font-semibold text-ink no-underline transition-colors hover:text-orange">fully from scratch</a>
+        — or, if all you have is something you made and can't put down,
+        <a href="/create/seed" class="font-semibold text-ink no-underline transition-colors hover:text-orange">start from a spark</a>.
       </p>
     </section>
   </main>

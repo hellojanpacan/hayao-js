@@ -178,9 +178,10 @@ export function hayaoWorkshop(opts: WorkshopPluginOptions = {}): Plugin {
           }
 
           if (req.method === 'GET' && url === '/__workshop/games') {
-            // Playable pages for the Workshop picker. Titles/knobs come from the
-            // iframe's window.__workshop once a game loads — this only lists URLs.
-            const games: Array<{ slug: string; kind: string; url: string }> = [];
+            // Playable pages for the Workshop picker. Titles/knobs/atom manifests
+            // come from the iframe's window once a page loads — this lists URLs
+            // plus the one thing only the fs knows: whether a TIMELINE.md exists.
+            const games: Array<{ slug: string; kind: string; url: string; timeline: boolean }> = [];
             for (const [parent, kind, prefix] of [
               ['examples', 'example', '/examples/'],
               ['sandboxes', 'gym', '/sandboxes/'],
@@ -188,12 +189,19 @@ export function hayaoWorkshop(opts: WorkshopPluginOptions = {}): Plugin {
               const dir = resolve(projectRoot, parent);
               if (!existsSync(dir)) continue;
               for (const slug of readdirSync(dir)) {
-                if (existsSync(join(dir, slug, 'index.html'))) games.push({ slug, kind, url: `${prefix}${slug}/` });
+                if (existsSync(join(dir, slug, 'index.html')))
+                  games.push({ slug, kind, url: `${prefix}${slug}/`, timeline: existsSync(join(dir, slug, 'TIMELINE.md')) });
               }
             }
-            // create-hayao flat layout: the game IS the project root page.
-            if (games.length === 0 && existsSync(join(projectRoot, 'index.html')) && existsSync(join(projectRoot, 'game.ts'))) {
-              games.push({ slug: projectRoot.split('/').pop() ?? 'game', kind: 'project', url: '/' });
+            // create-hayao flat layout: the project IS the root page. A project
+            // exists before its game does — index.html alone is enough.
+            if (games.length === 0 && existsSync(join(projectRoot, 'index.html'))) {
+              games.push({
+                slug: projectRoot.split('/').pop() ?? 'project',
+                kind: 'project',
+                url: '/',
+                timeline: existsSync(join(projectRoot, 'TIMELINE.md')),
+              });
             }
             return json(res, 200, games);
           }

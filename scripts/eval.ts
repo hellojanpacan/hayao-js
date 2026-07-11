@@ -23,11 +23,19 @@ const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const examplesDir = join(root, 'examples');
 const only = process.argv.slice(2).filter((a) => !a.startsWith('-'));
 
-const slugs = readdirSync(examplesDir, { withFileTypes: true })
+const allSlugs = readdirSync(examplesDir, { withFileTypes: true })
   .filter((d) => d.isDirectory())
   .map((d) => d.name)
   .filter((n) => only.length === 0 || only.includes(n))
   .sort();
+
+// Seed-stage projects (a TIMELINE.md, no game.ts — CONVENTIONS "project
+// anatomy") are not games yet: list them, never score them, so the verified
+// rate stays a KPI about GAMES and atoms can't game it.
+const isSeed = (slug: string): boolean =>
+  !existsSync(join(examplesDir, slug, 'game.ts')) && existsSync(join(examplesDir, slug, 'TIMELINE.md'));
+const seeds = allSlugs.filter(isSeed);
+const slugs = allSlugs.filter((s) => !isSeed(s));
 
 /** A proof channel and the source markers that evidence it. */
 const CHANNELS: { key: string; label: string; re: RegExp }[] = [
@@ -96,6 +104,10 @@ for (const s of scores) {
   const green = s.ran && s.failed === 0;
   const cov = CHANNELS.map((c) => (s.channels.includes(c.key) ? c.label : `·`)).join(' ');
   console.log(`  ${pad(s.slug, 16)} ${pad(green ? 'PASS' : 'FAIL', 10)} ${pad(`${s.passed}/${s.passed + s.failed}`, 8)}  ${cov}`);
+}
+
+if (seeds.length > 0) {
+  console.log(`\n  seed-stage (atoms + timeline, no game yet — listed, not scored): ${seeds.join(', ')}`);
 }
 
 const verified = scores.filter((s) => s.ran && s.failed === 0).length;

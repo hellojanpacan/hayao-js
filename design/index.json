@@ -121,6 +121,31 @@
     "file": "design/00-process/refine-and-handoff.md"
   },
   {
+    "id": "process-the-seed",
+    "title": "The Seed — atom-first design",
+    "kind": "process",
+    "tags": [
+      "seed",
+      "atom",
+      "entry",
+      "pivot",
+      "timeline",
+      "radiates",
+      "prototyping",
+      "inspiration"
+    ],
+    "summary": "Enter the pipeline from an authored atom — a character, a motif, a look, a verb — instead of an intent; interrogate what it radiates, then run the spine backwards until the atom is load-bearing.",
+    "use-when": "The project starts from something you can already see, hear, or feel — a sprite you can't stop flipping, a chord that sets a mood, a mechanic that's fun in a grey box — and no concept exists yet. Run this instead of intent-to-brief.",
+    "composes-with": [
+      "process-intent-to-brief",
+      "process-the-spine",
+      "process-the-twist",
+      "process-refine-and-handoff"
+    ],
+    "verify-with": "design/FUN.md",
+    "file": "design/00-process/the-seed.md"
+  },
+  {
     "id": "process-the-spine",
     "title": "The Spine — tension-first design",
     "kind": "process",
@@ -140,6 +165,7 @@
       "process-pillars",
       "process-core-loop",
       "process-the-twist",
+      "process-the-seed",
       "process-refine-and-handoff"
     ],
     "verify-with": "design/FUN.md",

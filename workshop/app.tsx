@@ -7,12 +7,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Leva, useControls } from 'leva';
 import QRCode from 'qrcode';
-import type { WorkshopHandle } from '@hayao';
+import type { WorkshopHandle, ProjectManifest } from '@hayao';
 
 interface GameEntry {
   slug: string;
   kind: string;
   url: string;
+  /** The project has a TIMELINE.md (fs fact from the dev server). */
+  timeline?: boolean;
 }
 
 interface SessionEntry {
@@ -48,9 +50,18 @@ interface Report {
   knobEvents: Array<{ frame: number; key: string; value: number | string }>;
 }
 
-/** Poll a same-origin iframe until the game inside publishes window.__workshop. */
-function useFrameHandle(nonce: number): { frameRef: (el: HTMLIFrameElement | null) => void; handle: WorkshopHandle | null } {
+/**
+ * Poll a same-origin iframe until the game inside publishes window.__workshop —
+ * and, when the page runs runProject(), the __hayaoProject manifest that tells
+ * this shell which tabs exist (atoms by kind, whether a game exists).
+ */
+function useFrameHandle(nonce: number): {
+  frameRef: (el: HTMLIFrameElement | null) => void;
+  handle: WorkshopHandle | null;
+  manifest: ProjectManifest | null;
+} {
   const [handle, setHandle] = useState<WorkshopHandle | null>(null);
+  const [manifest, setManifest] = useState<ProjectManifest | null>(null);
   const el = useRef<HTMLIFrameElement | null>(null);
   const frameRef = useCallback((node: HTMLIFrameElement | null) => {
     el.current = node;
@@ -58,20 +69,103 @@ function useFrameHandle(nonce: number): { frameRef: (el: HTMLIFrameElement | nul
   }, []);
   useEffect(() => {
     setHandle(null);
+    setManifest(null);
     const t = window.setInterval(() => {
-      const w = el.current?.contentWindow as (Window & { __workshop?: WorkshopHandle }) | null | undefined;
+      const w = el.current?.contentWindow as (Window & { __workshop?: WorkshopHandle; __hayaoProject?: ProjectManifest }) | null | undefined;
       if (w?.__workshop) {
         setHandle(w.__workshop);
+        setManifest(w.__hayaoProject ?? null);
         window.clearInterval(t);
       }
     }, 150);
     return () => window.clearInterval(t);
   }, [nonce]);
-  return { frameRef, handle };
+  return { frameRef, handle, manifest };
 }
 
-function paneUrl(game: GameEntry, seed: number, variant: string, replay?: { id: string; at?: number }): string {
+// ── Timeline tab: a micro markdown renderer (headings, lists, bold/em/code) ──
+const escapeHtml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+function inlineMd(s: string): string {
+  return escapeHtml(s)
+    .replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>')
+    .replace(/\*([^*]+)\*/g, '<em>$1</em>')
+    .replace(/`([^`]+)`/g, '<code>$1</code>');
+}
+/** Render TIMELINE.md to HTML; the `## Present` section gets the spotlight. */
+function timelineHtml(md: string): string {
+  const out: string[] = [];
+  let list = false;
+  let section = '';
+  const closeList = () => {
+    if (list) out.push('</ul>');
+    list = false;
+  };
+  for (const raw of md.split('\n')) {
+    const line = raw.trimEnd();
+    const h = /^(#{1,3}) (.*)$/.exec(line);
+    if (h) {
+      closeList();
+      if (section) out.push('</section>');
+      const level = h[1].length;
+      const title = h[2].trim();
+      section = title.toLowerCase();
+      out.push(`<section class="tl-${escapeHtml(section.replace(/[^a-z]+/g, '-'))}">`);
+      out.push(`<h${level + 1}>${inlineMd(title)}</h${level + 1}>`);
+      continue;
+    }
+    if (/^[-*] /.test(line)) {
+      if (!list) out.push('<ul>');
+      list = true;
+      out.push(`<li>${inlineMd(line.slice(2))}</li>`);
+      continue;
+    }
+    if (line === '---') {
+      closeList();
+      out.push('<hr/>');
+      continue;
+    }
+    if (line === '') {
+      closeList();
+      continue;
+    }
+    closeList();
+    out.push(`<p>${inlineMd(line)}</p>`);
+  }
+  closeList();
+  if (section) out.push('</section>');
+  return out.join('\n');
+}
+
+/** The Timeline tab: the project's log + a session clock derived from .workshop/. */
+function TimelinePane({ url, sessions, titles }: { url: string; sessions: SessionEntry[]; titles: Set<string> }) {
+  const [html, setHtml] = useState<string | null>(null);
+  const [missing, setMissing] = useState(false);
+  useEffect(() => {
+    setHtml(null);
+    setMissing(false);
+    void fetch(`${url}TIMELINE.md`).then(async (r) => {
+      const text = await r.text();
+      // Vite's SPA fallback answers 404s with HTML — treat that as missing.
+      if (!r.ok || /^\s*</.test(text)) setMissing(true);
+      else setHtml(timelineHtml(text));
+    });
+  }, [url]);
+  const mine = sessions.filter((s) => titles.size === 0 || titles.has(s.game));
+  const minutes = Math.round(mine.reduce((a, s) => a + s.frames / 60, 0) / 60);
+  return (
+    <div className="tab-body timeline-doc">
+      <div className="clock note">
+        {mine.length} session{mine.length === 1 ? '' : 's'} · ~{minutes} min in the workshop
+      </div>
+      {missing && <p className="note">No TIMELINE.md yet — the log begins when the concept (or the first pivot) is written down.</p>}
+      {html && <div dangerouslySetInnerHTML={{ __html: html }} />}
+    </div>
+  );
+}
+
+function paneUrl(game: GameEntry, seed: number, variant: string, replay?: { id: string; at?: number }, atom?: string): string {
   const q = new URLSearchParams({ seed: String(seed) });
+  if (atom) q.set('atom', atom); // runProject routes ?atom= to that atom's world
   if (replay) {
     // Watch a past session: the pane loads the artifact and scrubs to `at`.
     q.set('session', replay.id);
@@ -261,11 +355,14 @@ function SessionsDrawer({
   onClose,
   onWatch,
   onImported,
+  inline = false,
 }: {
   sessions: SessionEntry[];
   onClose: () => void;
   onWatch: (entry: SessionEntry, at?: number) => void;
   onImported: () => void;
+  /** Render as the Test tab's body instead of a floating drawer. */
+  inline?: boolean;
 }) {
   const [openId, setOpenId] = useState<string | null>(null);
   const [report, setReport] = useState<Report | null>(null);
@@ -302,8 +399,8 @@ function SessionsDrawer({
   const secs = (frames: number) => `${Math.round(frames / 60)}s`;
   return (
     <div
-      className="drawer"
-      role="dialog"
+      className={inline ? 'drawer inline tab-body' : 'drawer'}
+      role={inline ? undefined : 'dialog'}
       aria-label="sessions"
       onDragOver={(e) => e.preventDefault()}
       onDrop={(e) => {
@@ -318,9 +415,11 @@ function SessionsDrawer({
           ⬆ import
           <input type="file" accept=".json" multiple hidden onChange={(e) => void importSessions(e.target.files)} />
         </label>
-        <button className="hy" onClick={onClose} aria-label="close">
-          ✕
-        </button>
+        {!inline && (
+          <button className="hy" onClick={onClose} aria-label="close">
+            ✕
+          </button>
+        )}
       </div>
       <div className="drawer-body">
         {[...sessions].reverse().map((s) => (
@@ -420,6 +519,13 @@ function SessionsDrawer({
   );
 }
 
+/**
+ * The tab vocabulary — a tab EXISTS only when its content does, so a day-zero
+ * project is one tab and the UI grows exactly as the project grows.
+ */
+type Tab = 'timeline' | 'visual' | 'scene' | 'audio' | 'play' | 'test';
+const TAB_LABEL: Record<Tab, string> = { timeline: 'Timeline', visual: 'Visual', scene: 'Scene', audio: 'Audio', play: 'Play', test: 'Test' };
+
 export function App() {
   const [games, setGames] = useState<GameEntry[]>([]);
   const [state, setState] = useState<ServerState | null>(null);
@@ -430,9 +536,10 @@ export function App() {
   const [nonce, setNonce] = useState(0); // bumps to re-hook after iframe reloads
   const [dirty, setDirty] = useState(false);
   const [toast, setToast] = useState('');
-  const [showSessions, setShowSessions] = useState(false);
   const [showPhone, setShowPhone] = useState(false);
   const [tape, setTape] = useState<{ id: string; at?: number } | null>(null); // pane A watches a past session
+  const [tab, setTab] = useState<Tab>('play');
+  const [atomSel, setAtomSel] = useState<string | null>(null); // which atom within a kind tab
 
   const refreshState = () => void fetch('/__workshop/state').then(async (r) => setState((await r.json()) as ServerState));
   const a = useFrameHandle(nonce);
@@ -474,13 +581,67 @@ export function App() {
     say('accepted — ask the agent to write these into the source defaults');
   };
 
+  // ── The growing tab bar: a tab exists only when its content does ──────────
+  // The manifest is CACHED here: Timeline/Test tabs unmount the iframe, and the
+  // tab bar must not collapse when its source of truth goes away with it.
+  const [projManifest, setProjManifest] = useState<ProjectManifest | null>(null);
+  useEffect(() => {
+    if (a.manifest) setProjManifest(a.manifest);
+  }, [a.manifest]);
+  useEffect(() => {
+    setProjManifest(null); // a different project = a different anatomy
+  }, [slug]);
+  const manifest = projManifest;
+  const atomsOf = (kind: 'visual' | 'scene' | 'audio') => (manifest?.atoms ?? []).filter((at) => at.kind === kind);
+  const hasGame = manifest ? manifest.hasGame : true; // legacy pages (no runProject) are all game
+  const tabs: Tab[] = [
+    ...(game?.timeline ? (['timeline'] as const) : []),
+    ...(atomsOf('visual').length ? (['visual'] as const) : []),
+    ...(atomsOf('scene').length ? (['scene'] as const) : []),
+    ...(atomsOf('audio').length ? (['audio'] as const) : []),
+    ...(hasGame ? (['play'] as const) : []),
+    ...((state?.sessions.length ?? 0) > 0 ? (['test'] as const) : []),
+  ];
+  // Snap to a lawful tab when the manifest reveals what this project actually is.
+  useEffect(() => {
+    if (!manifest) return;
+    if (tab === 'play' && !manifest.hasGame) {
+      const shown = manifest.atoms.find((at) => at.id === manifest.showing);
+      setTab(shown ? shown.kind : manifest.atoms[0] ? manifest.atoms[0].kind : 'timeline');
+      setAtomSel(shown?.id ?? manifest.atoms[0]?.id ?? null);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [manifest]);
+
+  const kindTab = tab === 'visual' || tab === 'scene' || tab === 'audio';
+  const kindAtoms = kindTab ? atomsOf(tab) : [];
+  const activeAtom = kindTab ? (kindAtoms.find((at) => at.id === atomSel) ?? kindAtoms[0]) : undefined;
+  const framed = tab === 'play' || (kindTab && !!activeAtom); // tabs that show the iframe
+  const selectTab = (t: Tab) => {
+    setTab(t);
+    if (t === 'visual' || t === 'scene' || t === 'audio') {
+      const pool = atomsOf(t);
+      if (!pool.some((at) => at.id === atomSel)) setAtomSel(pool[0]?.id ?? null);
+    }
+    setTape(null);
+    setNonce((n) => n + 1);
+  };
+  const projectTitles = new Set<string>([
+    ...(manifest ? [manifest.project, ...manifest.atoms.map((at) => at.title)] : []),
+    ...(a.handle ? [a.handle.title()] : []),
+  ]);
+
   return (
     <>
       <header className="bar">
         <a className="brand" href="/">
           hayao<span className="js"> workshop</span>
         </a>
-        <select value={slug} onChange={(e) => (setSlug(e.target.value), setVariantB(null), setVariantA(''), setNonce((n) => n + 1))} aria-label="game">
+        <select
+          value={slug}
+          onChange={(e) => (setSlug(e.target.value), setVariantB(null), setVariantA(''), setTab('play'), setAtomSel(null), setTape(null), setNonce((n) => n + 1))}
+          aria-label="game"
+        >
           {games.map((g) => (
             <option key={g.slug} value={g.slug}>
               {g.kind === 'gym' ? '🏋 ' : ''}
@@ -496,18 +657,29 @@ export function App() {
         <button className="hy" onClick={() => setShowPhone(true)} aria-label="play on phone">
           📱
         </button>
-        <button className="hy" onClick={() => setShowSessions(true)}>
-          ▤ {state ? state.sessions.length : '…'} playtests
-        </button>
         <span className="build">{state ? `build ${state.buildRef}` : ''}</span>
       </header>
 
+      {tabs.length > 1 && (
+        <nav className="tabs" aria-label="project tabs">
+          {tabs.map((t) => (
+            <button key={t} className={`tab${tab === t ? ' active' : ''}`} onClick={() => selectTab(t)}>
+              {TAB_LABEL[t]}
+              {t === 'test' && state ? ` · ${state.sessions.length}` : ''}
+            </button>
+          ))}
+        </nav>
+      )}
+
       {showPhone && state && <PhoneModal urls={state.urls} onClose={() => setShowPhone(false)} />}
 
-      {showSessions && state && (
+      {tab === 'timeline' && game && state && <TimelinePane url={game.url} sessions={state.sessions} titles={projectTitles} />}
+
+      {tab === 'test' && state && (
         <SessionsDrawer
+          inline
           sessions={state.sessions}
-          onClose={() => setShowSessions(false)}
+          onClose={() => selectTab(hasGame ? 'play' : (tabs[0] ?? 'test'))}
           onImported={refreshState}
           onWatch={(entry, at) => {
             // Route the tape to the right game page (title → slug convention).
@@ -515,65 +687,92 @@ export function App() {
             if (target) setSlug(target.slug);
             setTape({ id: entry.id, ...(at !== undefined ? { at } : {}) });
             setVariantB(null);
-            setShowSessions(false);
+            setTab('play');
             setNonce((n) => n + 1);
           }}
         />
       )}
 
-      <main className="panes">
-        {game && (
-          <section className="pane">
-            <div className="pane-head">
-              A · {a.handle?.title() ?? slug} ·{' '}
-              {tape ? (
-                <>
-                  <span className="tape">⏵ tape</span>
-                  <button className="hy" onClick={() => (setTape(null), setNonce((n) => n + 1))}>
-                    back to live
-                  </button>
-                </>
-              ) : (
-                `${variantA || 'baseline'} · seed ${seed}`
-              )}
-            </div>
-            <iframe
-              key={`a-${slug}-${seed}-${variantA}-${nonce}-${tape?.id ?? ''}`}
-              ref={a.frameRef}
-              src={paneUrl(game, seed, variantA, tape ?? undefined)}
-              title="pane A"
-            />
-          </section>
-        )}
-        {game && variantB !== null && (
-          <section className="pane">
-            <div className="pane-head">
-              B · {variantB || 'baseline'} · seed {seed}
-              <select value={variantB} onChange={(e) => setVariantB(e.target.value)} aria-label="variant B">
-                <VariantOptions moduleVariants={variantNames} worktrees={state?.variants ?? {}} />
-              </select>
-            </div>
-            <iframe key={`b-${slug}-${seed}-${variantB}-${nonce}`} ref={b.frameRef} src={paneUrl(game, seed, variantB)} title="pane B" />
-          </section>
-        )}
-      </main>
+      {framed && (
+        <main className="panes">
+          {game && (
+            <section className="pane">
+              <div className="pane-head">
+                {kindTab && activeAtom ? (
+                  <>
+                    {activeAtom.title}
+                    {kindAtoms.length > 1 &&
+                      kindAtoms.map((at) => (
+                        <button
+                          key={at.id}
+                          className={`hy chip${at.id === activeAtom.id ? ' active' : ''}`}
+                          onClick={() => (setAtomSel(at.id), setNonce((n) => n + 1))}
+                        >
+                          {at.title}
+                        </button>
+                      ))}
+                    {activeAtom.radiates && <span className="note radiates">radiates: {activeAtom.radiates}</span>}
+                  </>
+                ) : (
+                  <>
+                    A · {a.handle?.title() ?? slug} ·{' '}
+                    {tape ? (
+                      <>
+                        <span className="tape">⏵ tape</span>
+                        <button className="hy" onClick={() => (setTape(null), setNonce((n) => n + 1))}>
+                          back to live
+                        </button>
+                      </>
+                    ) : (
+                      `${variantA || 'baseline'} · seed ${seed}`
+                    )}
+                  </>
+                )}
+              </div>
+              <iframe
+                key={`a-${slug}-${seed}-${variantA}-${nonce}-${tape?.id ?? ''}-${kindTab ? (activeAtom?.id ?? '') : 'game'}`}
+                ref={a.frameRef}
+                src={paneUrl(game, seed, variantA, tape ?? undefined, kindTab ? activeAtom?.id : undefined)}
+                title="pane A"
+              />
+            </section>
+          )}
+          {game && tab === 'play' && variantB !== null && (
+            <section className="pane">
+              <div className="pane-head">
+                B · {variantB || 'baseline'} · seed {seed}
+                <select value={variantB} onChange={(e) => setVariantB(e.target.value)} aria-label="variant B">
+                  <VariantOptions moduleVariants={variantNames} worktrees={state?.variants ?? {}} />
+                </select>
+              </div>
+              <iframe key={`b-${slug}-${seed}-${variantB}-${nonce}`} ref={b.frameRef} src={paneUrl(game, seed, variantB)} title="pane B" />
+            </section>
+          )}
+        </main>
+      )}
 
-      {a.handle && <Timeline key={`tl-${slug}-${variantA}-${nonce}`} handle={a.handle} />}
+      {framed && a.handle && <Timeline key={`tl-${slug}-${variantA}-${nonce}`} handle={a.handle} />}
 
-      <div className="actions">
-        <button className="hy feel" onClick={() => annotate(a.handle)}>
-          ✗ felt bad
-        </button>
-        <button className="hy accept" onClick={() => void accept()} disabled={!dirty}>
-          ✓ accept knobs
-        </button>
-        <button className="hy" onClick={() => setVariantB(variantB === null ? '' : null)}>
-          {variantB === null ? '⊞ compare A/B' : '⊟ single pane'}
-        </button>
-        <span className="note">knobs drive pane A · same seed both panes · sessions record automatically</span>
-      </div>
+      {framed && (
+        <div className="actions">
+          <button className="hy feel" onClick={() => annotate(a.handle)}>
+            ✗ felt bad
+          </button>
+          <button className="hy accept" onClick={() => void accept()} disabled={!dirty}>
+            ✓ accept knobs
+          </button>
+          {tab === 'play' && (
+            <button className="hy" onClick={() => setVariantB(variantB === null ? '' : null)}>
+              {variantB === null ? '⊞ compare A/B' : '⊟ single pane'}
+            </button>
+          )}
+          <span className="note">
+            {kindTab ? 'knobs drive the atom · every look is recorded' : 'knobs drive pane A · same seed both panes · sessions record automatically'}
+          </span>
+        </div>
+      )}
 
-      {a.handle && !tape && <Knobs key={`${slug}-${variantA}-${nonce}`} handle={a.handle} onDirty={() => setDirty(true)} />}
+      {framed && a.handle && !tape && <Knobs key={`${slug}-${variantA}-${nonce}`} handle={a.handle} onDirty={() => setDirty(true)} />}
       <Leva
         titleBar={{ title: 'tuning', position: window.innerWidth < 720 ? { x: 0, y: 56 } : undefined }}
         collapsed={window.innerWidth < 720}
