@@ -66,6 +66,19 @@ function bank(sr: number, feedback: number, damp: number, spread: number): { com
  * the dry signal. Deterministic — pure delay-line arithmetic.
  */
 export function applyReverb(buf: StereoBuffer, opts: ReverbOptions = {}): void {
+  const it = reverbSteps(buf, opts);
+  while (!it.next().done) {
+    /* drain synchronously */
+  }
+}
+
+/**
+ * Reverb as a cooperative generator: identical output to {@link applyReverb},
+ * but it `yield`s every `window` samples so a long render can hand control back
+ * to the host between windows. Reverb is the heaviest master pass (24 delay-line
+ * ops per sample), so windowing it is what keeps a cued render off a frame.
+ */
+export function* reverbSteps(buf: StereoBuffer, opts: ReverbOptions = {}, window = 8192): Generator<void, void, void> {
   const wet = clamp(opts.wet ?? 0.25, 0, 1);
   const room = clamp(opts.roomSize ?? 0.7, 0, 1);
   const damp = clamp(opts.damp ?? 0.5, 0, 1) * 0.4;
@@ -75,6 +88,7 @@ export function applyReverb(buf: StereoBuffer, opts: ReverbOptions = {}): void {
   const L = bank(sr, feedback, damp, 0);
   const R = bank(sr, feedback, damp, STEREO_SPREAD);
   const n = buf.left.length;
+  const win = Math.max(1, window);
 
   for (let i = 0; i < n; i++) {
     const send = (buf.left[i] + buf.right[i]) * FIXED_GAIN;
@@ -86,5 +100,6 @@ export function applyReverb(buf: StereoBuffer, opts: ReverbOptions = {}): void {
     for (const a of R.aps) wr = a.process(wr);
     buf.left[i] = buf.left[i] * (1 - wet) + wl * wet;
     buf.right[i] = buf.right[i] * (1 - wet) + wr * wet;
+    if ((i + 1) % win === 0) yield; // window boundary — a cooperative pause point
   }
 }

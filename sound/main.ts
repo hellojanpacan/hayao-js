@@ -10,6 +10,7 @@ import {
   renderSong,
   renderAudioFilmstrip,
   type Song,
+  type SongHandle,
   type SoundSpec,
 } from '@hayao';
 
@@ -28,7 +29,7 @@ const stVizEl = document.getElementById('st-viz')!;
 const stConceptEl = document.getElementById('st-concept')!;
 const stDesignEl = document.getElementById('st-designnote')!;
 
-let stopCurrent: (() => void) | null = null;
+let stopCurrent: SongHandle | null = null;
 let activeId: string | null = null;
 const filmstripCache = new Map<string, string>();
 
@@ -61,14 +62,14 @@ function playGenre(id: string, song: Song, btn: HTMLButtonElement) {
   audio.start();
   if (activeId === id) {
     // toggle off
-    stopCurrent?.();
+    stopCurrent?.stop();
     stopCurrent = null;
     activeId = null;
     clearActive();
     nowEl.textContent = '';
     return;
   }
-  stopCurrent?.();
+  stopCurrent?.stop();
   clearActive();
   stopCurrent = audio.playSong(song, { loop: true });
   activeId = id;
@@ -96,14 +97,14 @@ for (const t of ALBUM.tracks) {
   li.addEventListener('click', () => {
     audio.start();
     if (activeId === t.id) {
-      stopCurrent?.();
+      stopCurrent?.stop();
       stopCurrent = null;
       activeId = null;
       clearActive();
       nowEl.textContent = '';
       return;
     }
-    stopCurrent?.();
+    stopCurrent?.stop();
     clearActive();
     stopCurrent = audio.playSong(song, { loop: true });
     activeId = t.id;
@@ -130,14 +131,14 @@ for (const t of SOUNDTRACK.cues) {
   li.addEventListener('click', () => {
     audio.start();
     if (activeId === t.id) {
-      stopCurrent?.();
+      stopCurrent?.stop();
       stopCurrent = null;
       activeId = null;
       clearActive();
       nowEl.textContent = '';
       return;
     }
-    stopCurrent?.();
+    stopCurrent?.stop();
     clearActive();
     stopCurrent = audio.playSong(song, { loop: true });
     activeId = t.id;

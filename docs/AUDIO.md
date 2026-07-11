@@ -132,9 +132,52 @@ src.connect(audio.musicBus!);   // volume/mute apply; sfxBus for one-shots
 src.start();
 ```
 
-Native loops need no recipe: `audio.playSong(song, { loop: true })` loops the
-musical body (excluding the ring-out tail) and returns a stop handle;
-`audio.startAmbient()` starts the evolving pad on the music bus.
+### Playing a Song without freezing the game
+
+`renderSong` is a synchronous, CPU-bound synthesis loop — a full cue is a
+multi-second block on a phone. **Never call `renderSong` (or the old blocking
+`playSong`) during a step/frame.** Rendering a `title` cue inline froze games at
+the worst moment: the menu→play swap (issue #104). The rule of thumb:
+
+- **`audio.prepareSong(song)` → `Promise<PreparedSong>`** renders OFF the hot
+  path (cooperative, event-loop-yielding) and works headlessly — no
+  `AudioContext` needed. Pre-render every cue at load, hold the results.
+- **`audio.playPrepared(prepared, { loop })`** is cheap and re-loopable — state
+  swaps and restarts just re-wire a buffer, never re-render. Returns a
+  `SongHandle` (`stop(fadeSec?)`, `playing`, `ready`).
+- **`audio.playSong(song, { loop })`** is the convenience path: it returns a
+  `SongHandle` immediately and renders in the background, starting playback when
+  ready (`await handle.ready` if you need that timing). Non-blocking, but it
+  re-renders each call — prefer `prepareSong` + `playPrepared` for cues you
+  restart.
+
+```ts
+// at load — pay the cost once, off any frame
+const cues = new Map<string, PreparedSong>();
+for (const cue of SOUNDTRACK.cues) cues.set(cue.state, await audio.prepareSong(cue.make()));
+
+// on a state swap — cheap, no hitch, no re-render
+let music: SongHandle | null = null;
+function scoreState(state: 'title' | 'explore' | 'tension' | 'reward') {
+  music?.stop(0.4);
+  music = audio.playPrepared(cues.get(state)!, { loop: true });
+}
+```
+
+`audio.startAmbient()` starts the evolving pad on the music bus (a live
+oscillator bed — no render, always hitch-free).
+
+The `songRenderCost(song)` lint (`src/audio/lint.ts`) is the deterministic gate:
+it flags a cue whose synchronous render would blow a frame budget
+(`blockingRisk`), so "render this inline" is caught before a player feels it.
+
+Under the hood, `renderSongAsync` shares one generator with `renderSong` (so the
+output is byte-identical) and `yield`s per note and per windowed master pass
+(reverb/EQ/compressor/pump are chunked). The only work it can't subdivide is a
+single note's synthesis — one `renderSound` call is atomic — so a cue with an
+unusually long sustained note (e.g. a 20 s room-tone pad) has that one note as
+its worst block. Keep individual notes reasonable, and always `prepareSong` at
+load rather than mid-play.
 
 ## Roadmap (honest gaps)
 
