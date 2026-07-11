@@ -102,20 +102,38 @@ Treat them accordingly:
   the last prototype in `examples/`.
 
 ## Before writing game code
-0. **If the game isn't designed yet** — the intent is high-level ("a polished
-   platformer with responsive controls", "an RTS with faction asymmetry and
-   impressive battles") — run the **[Design Codex](design/)** first, and start
-   with the **[spine](design/00-process/the-spine.md)**, not the twist:
-   intent → **spine** (the one tension: objective · superpower · scarcity ·
-   obstacle · renewal, and the gate "does using the superpower well create the
-   next problem?") → *twist only to give that tension a face* → compose → pillars
-   → loop, then hand off to the craft playbooks. The spine produces a *loop*; the
-   twist produces a *pitch* — lead with the loop. All game design lives in
-   **`design/`** — the *generative* Codex shelves (the spine method, reference DNA,
-   composable systems, the creative twist) and the craft playbooks
-   (`design/FUN.md`, `design/JUICE.md`, `design/JUDGE.md`) that make it fun, juicy,
-   and beautiful. `docs/` is the engineering manual; the steps below are the
-   *proof* half.
+0. **If the game isn't designed yet**, run the **[Design Codex](design/)** first.
+   It has **two lawful entries and one gate**:
+   - **Concept-first** — the intent is high-level ("a polished platformer with
+     responsive controls"): intent → **[spine](design/00-process/the-spine.md)**
+     (the one tension: objective · superpower · scarcity · obstacle · renewal,
+     and the gate "does using the superpower well create the next problem?") →
+     *twist only to give that tension a face* → compose → pillars → loop. The
+     spine produces a *loop*; the twist produces a *pitch* — lead with the loop.
+   - **Atom-first** — the project starts from something authored, not asked for
+     (a character, a motif, a card, a verb in a greybox): iterate the atom in
+     the project's `atoms/` until it's good *alone*, then run
+     **[the seed](design/00-process/the-seed.md)** — interrogate what it
+     radiates and run the spine *backwards* until the atom is load-bearing.
+     **Before loop assembly, atoms outrank concepts** (a pivot costs a
+     paragraph); after assembly, the spine outranks atoms.
+
+   Either way, nothing proceeds to loop assembly until a spine holds. The Codex
+   runs in the background — the user sees the concept you propose, never the
+   shelves. All game design lives in **`design/`** — the generative Codex
+   shelves and the craft playbooks (`design/FUN.md`, `design/JUICE.md`,
+   `design/JUDGE.md`). `docs/` is the engineering manual; the steps below are
+   the *proof* half.
+
+   **A project exists before its game does.** From day zero it carries a
+   `TIMELINE.md` (a dated log — the Original Concept is the first entry, pivots
+   are appended, never rewritten; `## Present` names what's being worked on and
+   what feedback is awaited) and an `atoms/` folder (each atom a `defineAtom`
+   module the Workshop shows the moment it exists). `game.ts` is OPTIONAL until
+   loop assembly begins — the Workshop is the project's face for its whole
+   life, and its tabs (Timeline · Visual · Scene · Audio · Play · Test) appear
+   as the project grows. See `docs/CONVENTIONS.md` (project anatomy) and
+   `docs/WORKSHOP.md`.
 1. Read `design/FUN.md` (the design playbook: universal laws, your genre's
    cheat sheet, and the before-you-author-content checklist).
 2. Read `docs/CONVENTIONS.md` (structure, house style, definition of done).

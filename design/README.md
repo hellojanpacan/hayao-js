@@ -35,21 +35,39 @@ Run these in order. Each stage names the modules that drive it. Do **not** open
 and the fantasy, using this library as your parts bin.
 
 ```
-INTENT ──▶ ANCHOR ──▶ COMPOSE ──▶ TWIST ──▶ SHAPE ──▶ HANDOFF ──▶ (FUN/JUICE/JUDGE)
+INTENT ──┐
+         ├──▶ SPINE ──▶ (TWIST) ──▶ COMPOSE ──▶ SHAPE ──▶ HANDOFF ──▶ (FUN/JUICE/JUDGE)
+SEED  ───┘
 ```
 
-1. **INTENT → brief.** Parse the request into a design brief: player fantasy,
-   the one-sentence hook, scope, hard constraints. → [`00-process/intent-to-brief`](00-process/intent-to-brief.md)
-2. **ANCHOR.** Name the 1–3 touchstone games this *is*. Pull their design DNA —
-   the load-bearing structures, not the theme. "This is Overcooked-like" imports
-   a solved core loop for free. → [`10-anchors/`](10-anchors/)
-3. **COMPOSE.** Assemble the design from modular pieces — genre template + the
-   systems it needs (progression, economy, combat, factions…). Genres blend;
-   satisfy every parent. → [`20-genres/`](20-genres/) · [`30-systems/`](30-systems/)
-4. **TWIST.** Add the creative bend that makes it *not* a clone. Apply a twist
-   vector (theme, mechanic-swap, structure, perspective, constraint, tonal). The
-   verb is where a twist bites hardest — reach into [`60-mechanics/`](60-mechanics/).
-   *Unrailed = Overcooked + voxel + roguelite + train.* → [`00-process/the-twist`](00-process/the-twist.md)
+Two lawful entries, one gate: enter from a *request* (INTENT) or from an
+*authored atom* (SEED — a character, a motif, a look that already exists and
+radiates a game); either way nothing proceeds past the SPINE until one tension
+holds. The Codex runs in the background — the player of this library is the
+agent; what a user sees is the concept it proposes, not the shelves.
+
+1. **INTENT → brief** *(entry 1)*. Parse the request into a design brief: player
+   fantasy, the one-sentence hook, scope, hard constraints.
+   → [`00-process/intent-to-brief`](00-process/intent-to-brief.md)
+   **— or — SEED → spine-backwards** *(entry 2)*. Start from an atom you've
+   already iterated; interrogate what it radiates, audition tensions until the
+   atom is load-bearing, log the concept in the project Timeline.
+   → [`00-process/the-seed`](00-process/the-seed.md)
+2. **SPINE.** The primary generator and the gate both entries pass through:
+   name the one tension — objective · superpower · scarcity · obstacle ·
+   renewal — run the *superpower-creates-the-next-problem* gate, then derive
+   theme, feel, and structure from it, audited by a resonance table.
+   → [`00-process/the-spine`](00-process/the-spine.md)
+3. **TWIST** *(optional, a sub-tool of the spine)*. Bend a proven core along a
+   vector (theme, mechanic-swap, structure, perspective, constraint, tonal) to
+   find or refresh the tension's face. The verb is where a twist bites hardest
+   — reach into [`60-mechanics/`](60-mechanics/). *Unrailed = Overcooked +
+   voxel + roguelite + train.* → [`00-process/the-twist`](00-process/the-twist.md)
+4. **COMPOSE.** Anchor on the 1–3 touchstone games this *is* (their load-bearing
+   DNA, not their theme), then assemble genre template + the systems the spine
+   demands (progression, economy, combat, factions…). Genres blend; satisfy
+   every parent. → [`10-anchors/`](10-anchors/) · [`20-genres/`](20-genres/) ·
+   [`30-systems/`](30-systems/)
 5. **SHAPE.** Derive pillars, the loop stack, the world, the verbs, and the
    aesthetic; check every choice against the pillars. → [`00-process/pillars`](00-process/pillars.md) ·
    [`00-process/core-loop`](00-process/core-loop.md) · [`60-mechanics/`](60-mechanics/) ·

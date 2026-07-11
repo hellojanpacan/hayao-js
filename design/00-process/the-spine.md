@@ -5,7 +5,7 @@ kind: process
 tags: [tension, spine, coupling, resonance, core-loop, coherence, decisions, scarcity]
 summary: Find the one tension a game is about, then derive every element as an expression of it — and audit that each one traces back with a resonance table.
 use-when: You want a game whose loop, theme, feel, and setting all pull the same direction — a coupled design, not an assembled one. Run this before (or instead of) the twist.
-composes-with: [process-pillars, process-core-loop, process-the-twist, process-refine-and-handoff]
+composes-with: [process-pillars, process-core-loop, process-the-twist, process-the-seed, process-refine-and-handoff]
 verify-with: design/FUN.md
 ---
 
@@ -190,8 +190,11 @@ as the primary generator — it produces the loop. Use [[process-the-twist]] as 
 way to discover or sharpen a spine*: bending a proven game along a vector often
 *reveals* a new tension (Loop Hero's "no map, one loop" constraint surfaced a
 fresh attrition spine). The order is: **spine first (what is the tension?), twist
-optionally (what bend gives it a fresh face?)** — never twist-first, or you get a
-pitch in search of a loop.
+optionally (what bend gives it a fresh face?)** — never *pitch*-first, or you get
+a pitch in search of a loop. An authored, iterated **atom** is not a pitch — it is
+felt evidence, and [[process-the-seed]] is its lawful entry: run the spine
+*backwards* from the atom until it is load-bearing. Same gate, either direction of
+travel.
 
 ## Traps
 
@@ -205,8 +208,9 @@ pitch in search of a loop.
   [[antipattern-decoration]]. Cut it; it's not free.
 - **Dissonance.** An element that *fights* the spine (punishing death in a retry
   game) drains the tension — see [[antipattern-dissonance]]. Worse than cutting.
-- **Twist-first.** Starting from "X but Y" and hoping a loop appears. The pitch is
-  the last step, not the first.
+- **Pitch-first.** Starting from an unfelt sentence ("X but Y", "a game where…")
+  and hoping a loop appears. The pitch is the last step, not the first. (An
+  *atom* — authored, iterated, felt — is not a pitch; see [[process-the-seed]].)
 
 ## Composes with
 

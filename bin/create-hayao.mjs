@@ -14,7 +14,12 @@
 import { mkdirSync, writeFileSync, existsSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 
-const name = process.argv[2] || 'my-hayao-game';
+const args = process.argv.slice(2);
+// --seed: scaffold a SEED-STAGE project — a Timeline and a first atom, NO game
+// yet. The Workshop shows it from day zero; the game grows out of the atoms
+// (design/00-process/the-seed.md). The default stays the full proven game.
+const seedMode = args.includes('--seed');
+const name = args.filter((a) => !a.startsWith('-'))[0] || (seedMode ? 'my-hayao-project' : 'my-hayao-game');
 const dir = resolve(process.cwd(), name);
 const slug = name.replace(/[^a-z0-9-]/gi, '-').toLowerCase();
 
@@ -372,16 +377,115 @@ content is composed by \`composeCampaign\` (see \`game.ts\`), not hand-authored.
   '.gitignore': `node_modules\ndist\n*.log\n.workshop/\n`,
 };
 
+/**
+ * --seed: the atom-first anatomy. Shares the toolchain files with the full
+ * scaffold; swaps the game for a TIMELINE.md + one starter atom. game.ts (and
+ * the whole proof contract) arrives later, when the atoms find their spine.
+ */
+const today = new Date().toISOString().slice(0, 10);
+const seedFiles = {
+  'package.json': files['package.json'].replace('"verify": "tsx verify.ts",\n    ', ''),
+  'tsconfig.json': files['tsconfig.json'],
+  'vite.config.ts': files['vite.config.ts'],
+  'hayao-env.d.ts': files['hayao-env.d.ts'],
+  '.mcp.json': files['.mcp.json'],
+  'index.html': files['index.html'],
+  '.gitignore': files['.gitignore'],
+
+  'TIMELINE.md': `# ${slug} — Timeline
+
+## Future
+
+- What might this become? Loosely held bullets only.
+
+## Present
+
+- Day zero: iterating the first atom. Awaiting: nothing yet.
+
+## Past
+
+### ${today} · Project opened
+
+No concept yet — on purpose. This project starts from an ATOM (something you
+can see, hear, or feel), not a pitch. When an atom starts radiating a game,
+write the Original Concept here as a new dated entry. Old entries are never
+edited; pivots are appended. Staleness is a feature.
+`,
+
+  'atoms/first-light.ts': `// The first atom — replace me. Iteration log:
+//   v1: a placeholder mark, so the Workshop has something to behold on day zero.
+// Radiates: nothing yet — that's the work. Iterate until it does, or archive.
+import { defineAtom, Node, Sprite, REGALIA, duotone } from '@hayao';
+
+export const firstLight = defineAtom({
+  kind: 'visual',
+  title: 'First Light',
+  build: () => {
+    const s = duotone(REGALIA.gold);
+    const g = new Node({ name: 'first-light' });
+    g.cosmetic = true;
+    g.addChild(new Sprite({ pos: { x: 640, y: 340 }, shape: { kind: 'circle', radius: 60 }, fill: s.base, stroke: s.ink, strokeWidth: 3 }));
+    g.addChild(new Sprite({ pos: { x: 640, y: 340 }, shape: { kind: 'circle', radius: 26 }, fill: s.light }));
+    return g;
+  },
+});
+`,
+
+  'main.ts': `import { runProject } from '@hayao';
+import { firstLight } from './atoms/first-light';
+
+// A seed-stage project: no game yet, lawfully. The Workshop shows the Timeline
+// and the atoms; add \`game\` to runProject when loop assembly begins.
+runProject({ title: '${slug}', atoms: [firstLight] }, document.getElementById('app')!, { hot: import.meta.hot });
+import.meta.hot?.accept();
+`,
+
+  'AGENTS.md': `# AGENTS.md — working in this seed-stage hayao project
+
+This project has NO GAME YET, by design. It is a Timeline + atoms, visible in
+the Workshop (\`npm run dev\` → /workshop/) from day zero.
+
+- **Atoms** live in \`atoms/\`, one \`defineAtom\` per file — visual | scene |
+  audio. The file's header comment is its iteration log. Everything an atom
+  renders is cosmetic; knobs use the same \`tuning\` system as games.
+- **TIMELINE.md** is a dated log, not a contract. Keep \`## Present\` honest
+  (what you're doing, what feedback you await); APPEND to Past, never rewrite.
+- **The method** is the seed: iterate an atom until it's good ALONE, name what
+  it \`radiates:\`, then audition tensions until the atom is load-bearing —
+  then write the Original Concept into the Timeline and start \`game.ts\`.
+  Before loop assembly, atoms outrank concepts; a pivot costs a paragraph.
+- When \`game.ts\` lands, the full hayao proof contract activates (solver or
+  scripted playthrough, determinism, verify) — scaffold it from the docs:
+  https://raw.githubusercontent.com/hellojanpacan/hayao-js/main/AGENTS.md
+`,
+
+  'README.md': `# ${slug}
+
+A seed-stage [hayao](https://hayao.dev) project: a Timeline and atoms, no game
+yet — the game grows out of whichever atom starts radiating one.
+
+\`npm install\`, \`npm run dev\`, open \`/workshop/\`.
+`,
+};
+
 mkdirSync(dir, { recursive: true });
-for (const [rel, content] of Object.entries(files)) {
+for (const [rel, content] of Object.entries(seedMode ? seedFiles : files)) {
   const p = join(dir, rel);
   mkdirSync(join(p, '..'), { recursive: true });
   writeFileSync(p, content);
 }
 
-console.log(`\n✨ Scaffolded a hayao game in ${name}/\n`);
-console.log(`  cd ${name}`);
-console.log('  npm install');
-console.log('  npm run verify   # prove it correct — no browser');
-console.log('  npm run dev      # play it\n');
-console.log('An agent working here should read AGENTS.md first.\n');
+if (seedMode) {
+  console.log(`\n✨ Scaffolded a seed-stage hayao project in ${name}/\n`);
+  console.log(`  cd ${name}`);
+  console.log('  npm install');
+  console.log('  npm run dev      # open /workshop/ — Timeline + your first atom\n');
+  console.log('Iterate atoms until one radiates a game; AGENTS.md has the method.\n');
+} else {
+  console.log(`\n✨ Scaffolded a hayao game in ${name}/\n`);
+  console.log(`  cd ${name}`);
+  console.log('  npm install');
+  console.log('  npm run verify   # prove it correct — no browser');
+  console.log('  npm run dev      # play it\n');
+  console.log('An agent working here should read AGENTS.md first.\n');
+}
