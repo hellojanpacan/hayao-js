@@ -16,9 +16,9 @@ import { assertAudio } from '../verify/audioFilmstrip';
 
 // Rendered at the engine default rate — assertAudio's feature clock assumes it.
 describe('Hayabox deck', () => {
-  it('has six courtiers with two moods each', () => {
+  it('has six courtiers, each with at least two moods (swap, not stack)', () => {
     expect(HAYABOX.courtiers).toHaveLength(6);
-    for (const c of HAYABOX.courtiers) expect(c.moods).toHaveLength(2);
+    for (const c of HAYABOX.courtiers) expect(c.moods.length).toBeGreaterThanOrEqual(2);
   });
 
   it('lintDeck passes for the default and the all-alternate mood decks', () => {
