@@ -1,0 +1,99 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
+import HayaboxPlay from "../../components/HayaboxPlay.tsx";
+
+const features = [
+  {
+    t: "Joins that always land",
+    d: "Waking a courtier doesn't play a sound — it schedules one. Every entrance and exit is quantised to the next bar boundary by the engine's LoopDeck, so whatever you mash, the mix only ever changes on a downbeat.",
+  },
+  {
+    t: "No combination can clash",
+    d: "Every note in the room is A minor pentatonic — a pitch pool with no semitone in it. “Any subset harmonizes” isn't mixing luck; it's a property of the data, proven by the linter in the test suite.",
+  },
+  {
+    t: "No audio files, anywhere",
+    d: "All twelve loops are synthesised in your browser from plain TypeScript data — the same deterministic renderer the test suite hashes headlessly. What you hear is byte-identical to what the proofs measured.",
+  },
+];
+---
+
+<Layout
+  title="Hayabox — Hayao"
+  description="Hayabox — the consort in a box. Six synthesised courtiers, one groove: wake any of them and the joins land on the next downbeat. A Creaksbox-style music toy built on Hayao's deterministic sound engine."
+>
+  <main class="flex flex-col items-center text-center">
+    <!-- hero -->
+    <section class="mx-auto flex w-full max-w-2xl flex-col items-center px-6 pt-28 pb-10 md:pt-36">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Play · Music toy</p>
+      <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
+        Hayabox
+      </h1>
+      <p class="mt-6 max-w-[48ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
+        The consort in a box. Six courtiers, six loops of the same eight bars —
+        wake any of them, in any order, and it grooves. Every voice is synthesised
+        live from data; nothing here was ever a recording.
+      </p>
+    </section>
+
+    <!-- the live toy -->
+    <section class="mx-auto w-full max-w-2xl px-6 pb-6">
+      <HayaboxPlay client:visible />
+    </section>
+
+    <p class="mb-16 max-w-[44ch] px-6 font-body text-[0.85rem] font-light leading-relaxed text-muted">
+      Tap a courtier to wake or hush them — the change waits for the downbeat. Swap a courtier's
+      mood mid-groove and the trade lands on the same bar line.
+    </p>
+
+    <!-- what makes it tick -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-20">
+      <div class="grid gap-4 md:grid-cols-3">
+        {
+          features.map((f) => (
+            <div class="flex flex-col rounded-3xl border border-hair bg-panel p-7 text-left">
+              <h2 class="font-display text-[1.05rem] font-semibold text-ink">{f.t}</h2>
+              <p class="mt-2 grow font-body text-[0.88rem] font-light leading-relaxed text-soft">{f.d}</p>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <!-- build your own -->
+    <section class="mx-auto w-full max-w-3xl px-6 pb-28">
+      <div class="rounded-[2.25rem] bg-navy px-6 py-14 md:px-14">
+        <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">The seam underneath</p>
+        <h2 class="mx-auto max-w-[24ch] text-balance font-display text-[clamp(1.6rem,4vw,2.2rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-white">
+          A LoopDeck is four calls
+        </h2>
+        <p class="mx-auto mt-5 max-w-[48ch] font-body text-[1rem] font-light leading-relaxed text-white/70">
+          Author stems as plain Songs, prove the deck with <code class="font-mono text-[0.9em] text-white/90">lintDeck</code>,
+          pre-render, and toggle. Adaptive game music — layers that swell with tension — is the same seam.
+        </p>
+        <div class="mx-auto mt-7 inline-block max-w-full overflow-x-auto rounded-2xl border border-white/15 bg-black/25 px-6 py-4 text-left">
+          <code class="font-mono text-[0.85rem] leading-relaxed text-white/90"
+            >const deck = audio.startLoopDeck(stems, &#123; secPerBar &#125;);<br />deck.setStem('herald/call', true); // lands on the next downbeat</code
+          >
+        </div>
+        <div class="mt-8 flex flex-wrap justify-center gap-3">
+          <a
+            href="/create/sound"
+            class="inline-flex items-center rounded-full bg-orange px-6 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:bg-green"
+          >
+            Meet the sound engine
+          </a>
+          <a
+            href="/play"
+            class="inline-flex items-center rounded-full border border-white/25 px-6 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:border-white/60"
+          >
+            Back to the games
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

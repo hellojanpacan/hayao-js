@@ -11,6 +11,7 @@ import { renderSound, type SoundSpec } from './synth';
 import { renderSongAsync, songDuration, type Song } from './music';
 import { SAMPLE_RATE } from './pcm';
 import { midiToFreq } from './theory';
+import { barPhase, nextBarBoundary } from './loopdeck';
 
 export interface Volumes {
   master: number;
@@ -58,6 +59,43 @@ export interface SongHandle {
    * resolves after its off-thread render. Await it only if you need that timing.
    */
   readonly ready: Promise<void>;
+}
+
+/** One stem handed to {@link AudioBus.startLoopDeck}: an id + its pre-rendered loop. */
+export interface PreparedStem {
+  id: string;
+  prepared: PreparedSong;
+  /**
+   * Playback mix level for this stem (default 1). renderSong normalizes every
+   * render to full scale, so a stem rendered ALONE loses its place in the
+   * ensemble balance — this gain puts it back (author it with the stem).
+   */
+  gain?: number;
+}
+
+/**
+ * A live LoopDeck (see src/audio/loopdeck.ts for the pure half). All stems
+ * loop phase-locked from one shared start; `setStem` raises/lowers a stem's
+ * gain on the NEXT BAR BOUNDARY so every join lands in the pocket.
+ */
+export interface LoopDeckHandle {
+  /**
+   * Wake or sleep a stem. The change is scheduled for the next bar boundary;
+   * returns the deck-elapsed time (seconds) it will land at, or null for an
+   * unknown id / stopped deck. Toggling an already-pending stem re-targets it.
+   */
+  setStem(id: string, on: boolean): number | null;
+  /** True if the stem is audible or scheduled to become audible. */
+  stemOn(id: string): boolean;
+  /** Position in the current bar 0..1 — the animation/UI sync signal. */
+  phase(): number;
+  /** Deck-elapsed seconds since the shared start instant. */
+  elapsed(): number;
+  /** Seconds in one bar (the toggle grid). */
+  readonly secPerBar: number;
+  /** Fade everything out and release the sources. */
+  stop(fadeSec?: number): void;
+  playing: boolean;
 }
 
 /** A single zzfx-ish tone spec. */
@@ -302,6 +340,89 @@ export class AudioBus {
         else pendingFade = fadeSec;
       },
     };
+  }
+
+  /**
+   * Start a LoopDeck: every prepared stem becomes a looping source on the
+   * music bus, all started at the SAME context instant (phase-locked), each
+   * behind its own gain — silent until woken. `setStem(id, true)` schedules
+   * the gain rise on the next bar boundary; sleeping schedules the fall the
+   * same way, so the mix only ever changes on downbeats. Stems must come from
+   * a deck that passed `lintDeck` (equal-tempo, bar-multiple, divisor-length
+   * loops) — this method trusts, it does not re-check.
+   *
+   * No-op without an AudioContext (returns a dead handle) — playback is a
+   * cosmetic observer, never sim state.
+   */
+  startLoopDeck(stems: PreparedStem[], opts: { secPerBar: number; gain?: number; rampSec?: number }): LoopDeckHandle {
+    const deadDeck: LoopDeckHandle = {
+      setStem: () => null,
+      stemOn: () => false,
+      phase: () => 0,
+      elapsed: () => 0,
+      secPerBar: opts.secPerBar,
+      stop() {},
+      playing: false,
+    };
+    if (!this._ctx || !this.musicGain) return deadDeck;
+    const ctx = this._ctx;
+    const stemGain = opts.gain ?? 1;
+    // A short ramp centred on the boundary reads as a musical join, not a click.
+    const ramp = Math.max(0.005, opts.rampSec ?? 0.03);
+    const master = ctx.createGain();
+    master.gain.value = 1;
+    master.connect(this.musicGain);
+    const voices = new Map<string, { src: AudioBufferSourceNode; g: GainNode; on: boolean; level: number }>();
+    // Start slightly in the future so every source begins at the same instant.
+    const t0 = ctx.currentTime + 0.06;
+    for (const stem of stems) {
+      // No defensive copies: PreparedSong channels are already Float32Arrays,
+      // and a deck of many stems makes the duplicate allocation real memory.
+      const buf = ctx.createBuffer(2, stem.prepared.left.length, stem.prepared.sampleRate);
+      buf.copyToChannel(stem.prepared.left as Float32Array<ArrayBuffer>, 0);
+      buf.copyToChannel(stem.prepared.right as Float32Array<ArrayBuffer>, 1);
+      const src = ctx.createBufferSource();
+      src.buffer = buf;
+      src.loop = true;
+      src.loopStart = 0;
+      src.loopEnd = stem.prepared.loopEndSec; // loop the body, not the tail
+      const g = ctx.createGain();
+      g.gain.value = 0;
+      src.connect(g);
+      g.connect(master);
+      src.start(t0);
+      voices.set(stem.id, { src, g, on: false, level: (stem.gain ?? 1) * stemGain });
+    }
+    const handle: LoopDeckHandle = {
+      playing: true,
+      secPerBar: opts.secPerBar,
+      elapsed: () => Math.max(0, ctx.currentTime - t0),
+      phase: () => barPhase(Math.max(0, ctx.currentTime - t0), opts.secPerBar),
+      setStem(id, on) {
+        const v = voices.get(id);
+        if (!v || !handle.playing) return null;
+        v.on = on;
+        const at = nextBarBoundary(Math.max(0, ctx.currentTime - t0), opts.secPerBar);
+        const when = Math.max(ctx.currentTime, t0 + at);
+        v.g.gain.cancelScheduledValues(when);
+        v.g.gain.setValueAtTime(v.g.gain.value, when);
+        v.g.gain.linearRampToValueAtTime(on ? v.level : 0, when + ramp);
+        return at;
+      },
+      stemOn: (id) => voices.get(id)?.on ?? false,
+      stop(fadeSec = 0) {
+        if (!handle.playing) return;
+        handle.playing = false;
+        const t = ctx.currentTime;
+        try {
+          if (fadeSec > 0) master.gain.setTargetAtTime(0, t, fadeSec / 3);
+          for (const v of voices.values()) v.src.stop(t + fadeSec + 0.1);
+        } catch {
+          /* already stopped */
+        }
+      },
+    };
+    return handle;
   }
 
   // ── Sample playback (recorded audio files) ─────────────────────

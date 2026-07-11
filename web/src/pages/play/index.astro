@@ -24,6 +24,15 @@ const games = [
     accent: "text-blue",
   },
   {
+    href: "/play/hayabox",
+    genre: "Music toy",
+    title: "Hayabox",
+    d: "The consort in a box: six synthesised courtiers, one groove. Wake any subset and every join lands on the downbeat — no combination can clash, and that's proven, not hoped.",
+    proof: "linter-proven · zero audio files",
+    bar: "bg-rose",
+    accent: "text-rose",
+  },
+  {
     href: "/play/sokoban",
     genre: "The classic",
     title: "Sokoban",
@@ -54,7 +63,7 @@ const games = [
 
     <!-- the games -->
     <section class="pb-4">
-      <div class="grid gap-4 md:grid-cols-3">
+      <div class="grid gap-4 md:grid-cols-2">
         {games.map((g) => (
           <a
             href={g.href}
