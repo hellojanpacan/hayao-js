@@ -1,0 +1,110 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import Footer from "../../../components/Footer.astro";
+
+// Themes are complete looks — palette, sprites, UI, audio voice — built on the
+// asset contract (docs/ASSETS.md): a default, not a wall. Regalia ships today;
+// this page is the shelf the next ones land on.
+---
+
+<Layout
+  title="Themes — Hayao Docs"
+  description="Complete looks for Hayao games. Regalia — bold duotone vectors, a core-of-four palette, soft synthesis — ships today; the theme contract is built for more."
+>
+  <main class="mx-auto w-full max-w-3xl px-6">
+    <section class="flex flex-col items-center pt-28 pb-12 text-center md:pt-36">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Docs · Themes</p>
+      <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
+        A complete look, ready to inherit
+      </h1>
+      <p class="mt-6 max-w-[50ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
+        A theme is everything a game looks and sounds like — palette, sprites, UI chrome,
+        the audio voice — authored as code so your agent can use it, bend it, or replace it.
+        A default, not a wall.
+      </p>
+    </section>
+
+    <section class="pb-14">
+      <div class="grid gap-4 md:grid-cols-2">
+        <!-- Regalia — live -->
+        <a
+          href="/docs/themes/regalia"
+          class="group relative flex flex-col overflow-hidden rounded-3xl border border-hair bg-panel p-7 text-left no-underline transition-colors hover:border-orange/50"
+        >
+          <!-- swatch strip -->
+          <div class="flex h-2.5 w-full overflow-hidden rounded-full">
+            <span class="flex-1 bg-orange"></span>
+            <span class="flex-1 bg-navy"></span>
+            <span class="flex-1 bg-green"></span>
+            <span class="flex-1 bg-blue"></span>
+            <span class="flex-1 bg-rose"></span>
+            <span class="flex-1 bg-bark"></span>
+          </div>
+          <div class="mt-5 flex items-center justify-between">
+            <h2 class="font-display text-[1.4rem] font-semibold text-ink">Regalia</h2>
+            <span class="rounded-full bg-green/10 px-3 py-1 font-body text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-green">Ships today</span>
+          </div>
+          <p class="mt-2 grow font-body text-[0.92rem] font-light leading-relaxed text-soft">
+            Bold duotone vectors — one hue at two weights, no outlines. A core-of-four palette
+            grown by the job, a rigged hero with seven clips, soft-synthesis audio, and a UI kit
+            cut from the same cloth. Day and night, role for role.
+          </p>
+          <span class="mt-5 inline-flex items-center gap-1 font-body text-[0.88rem] font-semibold text-orange">
+            See the full brand sheet
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+          </span>
+        </a>
+
+        <!-- the next theme — an honest empty slot -->
+        <div class="flex flex-col rounded-3xl border border-dashed border-hair p-7 text-left">
+          <div class="flex h-2.5 w-full overflow-hidden rounded-full bg-mist"></div>
+          <div class="mt-5 flex items-center justify-between">
+            <h2 class="font-display text-[1.4rem] font-semibold text-muted">The second theme</h2>
+            <span class="rounded-full bg-mist px-3 py-1 font-body text-[0.72rem] font-semibold uppercase tracking-[0.12em] text-muted">In design</span>
+          </div>
+          <p class="mt-2 grow font-body text-[0.92rem] font-light leading-relaxed text-muted">
+            The theme seam exists so Regalia never becomes a house style you can't leave.
+            A second look — different palette discipline, different audio voice, same
+            contract — is on the bench.
+          </p>
+          <span class="mt-5 font-body text-[0.88rem] font-light text-muted">Watch this shelf.</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- what a theme is made of -->
+    <section class="pb-24">
+      <div class="rounded-[2.25rem] bg-navy px-6 py-14 md:px-14">
+        <p class="mb-4 text-center font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">The theme contract</p>
+        <h2 class="mx-auto max-w-[24ch] text-balance text-center font-display text-[clamp(1.6rem,4vw,2.2rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-white">
+          Everything a look needs, all of it code
+        </h2>
+        <div class="mx-auto mt-10 grid max-w-2xl gap-x-10 gap-y-6 text-left sm:grid-cols-2">
+          <div>
+            <h3 class="font-display text-[1rem] font-semibold text-white">Palette</h3>
+            <p class="mt-1 font-body text-[0.88rem] font-light leading-relaxed text-white/65">Named roles, not loose hexes — contrast-checked, with a day/night mirror the UI inherits.</p>
+          </div>
+          <div>
+            <h3 class="font-display text-[1rem] font-semibold text-white">Art kit</h3>
+            <p class="mt-1 font-body text-[0.88rem] font-light leading-relaxed text-white/65">Sprites, textures, autotile and a rigged hero — drawn from shapes, crisp at any scale.</p>
+          </div>
+          <div>
+            <h3 class="font-display text-[1rem] font-semibold text-white">Audio voice</h3>
+            <p class="mt-1 font-body text-[0.88rem] font-light leading-relaxed text-white/65">SFX and music synthesised from parameters, tuned to the theme's temperament.</p>
+          </div>
+          <div>
+            <h3 class="font-display text-[1rem] font-semibold text-white">UI chrome</h3>
+            <p class="mt-1 font-body text-[0.88rem] font-light leading-relaxed text-white/65">Menus, HUD, buttons and badges in the same hand — the game never breaks character.</p>
+          </div>
+        </div>
+        <p class="mx-auto mt-10 max-w-[52ch] text-center font-body text-[0.9rem] font-light leading-relaxed text-white/60">
+          The seam that makes themes swappable is the asset contract —
+          <a href="/docs/assets" class="text-white underline decoration-white/30 underline-offset-4 transition-colors hover:text-orange">docs/ASSETS.md</a> —
+          four clauses that make any outside art, sound or font first-class.
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

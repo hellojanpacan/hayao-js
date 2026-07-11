@@ -185,7 +185,8 @@ header derives its count live from the cards; elsewhere phrase it count-free
 
 ## The site
 The public marketing site is the Astro app under `web/` → **hayao.dev** (Vercel
-project `hayao-web`); developer docs live at **hayao.js.org**. The root static
+project `hayao-web`); developer docs render at **hayao.dev/docs** straight from
+this repo (hayao.js.org is retired). The root static
 pages (`index.html` + the auto-discovered `examples/`/`sandboxes/` pages) are the
 **local `npm run dev` hub** — a lean Regalia index for running example games and
 labs, not a deployed marketing surface. Current examples: `lumen`, `small-flame`,

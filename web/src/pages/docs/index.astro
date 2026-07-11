@@ -1,0 +1,118 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../../components/Footer.astro";
+
+// The manual lives in the repo (docs/*.md) and renders here — one source of
+// truth, no second docs site to drift. Curated titles + grouping; anything new
+// in docs/ shows up automatically under "More".
+const entries = await getCollection("docs");
+const known: Record<string, { t: string; d: string }> = {
+  quickstart: { t: "Quickstart", d: "Install from npm, define a game, prove it correct headlessly — a complete runnable example." },
+  errors: { t: "Errors & gotchas", d: "The common newcomer mistakes and what each [hayao] guard message means." },
+  conventions: { t: "Conventions", d: "How games are structured, the house style, and the definition of done." },
+  api: { t: "API digest", d: "The full public surface — every export and signature, greppable in one page." },
+  architecture: { t: "Architecture", d: "The authoritative design and the determinism contract." },
+  engine: { t: "Engine internals", d: "Why a custom engine, the simulation kernel in depth — and when not to use one." },
+  verification: { t: "Verification", d: "The proof harness: solvers, bots, golden replays, and the two verification channels." },
+  networking: { t: "Networking", d: "Deterministic multiplayer — lockstep and rollback over a pluggable transport." },
+  embed: { t: "Embedding", d: "Ship a game as one self-contained HTML file — Artifacts, itch.io, CodePen." },
+  style: { t: "Style", d: "The Regalia palette and typography — the default theme's source of truth." },
+  assets: { t: "Asset contract", d: "The four clauses that make any outside asset first-class. A default, not a wall." },
+  audio: { t: "Audio", d: "Procedural sound and music: SoundSpec, songs, the six voices, the mix bus." },
+  workshop: { t: "Workshop", d: "The human/AI playtest loop — sessions, live knobs, A/B variants, the MCP sidecar." },
+  gallery: { t: "The verified gallery", d: "What “machine-proven” means per game, and how to run the proof yourself." },
+  coin: { t: "Coin", d: "A whole game as one self-proving HTML file — Heads, Tails, and the Seal." },
+  buildlog: { t: "Build log", d: "The Build-Measure-Learn campaign, game by game." },
+  lessons: { t: "Lessons", d: "Transferable lessons from real LLM-authored game builds." },
+  friction: { t: "Friction log", d: "What fought an AI session, and the check or doc that now prevents it." },
+  archive: { t: "Archive", d: "The corpus-v0 prototype set — 33 games, archived, recoverable by git tag." },
+  "triage-2026-07-recreations": { t: "Triage — July 2026", d: "The recreation-friction triage that shaped 0.4.0." },
+};
+const groups: { name: string; slugs: string[] }[] = [
+  { name: "Start here", slugs: ["quickstart", "errors", "conventions", "api"] },
+  { name: "The engine", slugs: ["architecture", "engine", "verification", "networking", "embed"] },
+  { name: "Art & sound", slugs: ["style", "assets", "audio"] },
+  { name: "The instruments", slugs: ["workshop", "gallery", "coin"] },
+  { name: "The build record", slugs: ["buildlog", "lessons", "friction", "archive", "triage-2026-07-recreations"] },
+];
+const listed = new Set(groups.flatMap((g) => g.slugs));
+const extra = entries.filter((e) => !listed.has(e.id)).map((e) => e.id).sort();
+if (extra.length) groups.push({ name: "More", slugs: extra });
+const have = new Set(entries.map((e) => e.id));
+
+// The explore tier — sections of the manual that are pages, not markdown.
+const explore = [
+  { href: "/docs/sandbox", t: "Sandboxes", d: "Twelve single-mechanic labs — physics, particles, lighting, synth — one primitive each, with knobs.", accent: "text-green", bar: "bg-green" },
+  { href: "/docs/themes", t: "Themes", d: "Complete looks for your game. Regalia ships today; the contract is built for more.", accent: "text-orange", bar: "bg-orange" },
+  { href: "/docs/codex", t: "Design Codex", d: "216 design modules — anchors, genres, systems, mechanics — the library your agent composes games from.", accent: "text-blue", bar: "bg-blue" },
+];
+---
+
+<Layout
+  title="Documentation — Hayao"
+  description="The Hayao manual: quickstart, API, architecture, verification, themes, sandboxes, and the Design Codex — rendered straight from the repo."
+>
+  <main class="mx-auto w-full max-w-3xl px-6">
+    <section class="flex flex-col items-center pt-28 pb-14 text-center md:pt-36">
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Docs</p>
+      <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
+        One manual, straight from the repo
+      </h1>
+      <p class="mt-6 max-w-[48ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
+        Everything here renders from the same markdown your agent reads in the monorepo —
+        the site can't drift from the docs, because it <em>is</em> the docs.
+      </p>
+    </section>
+
+    <!-- explore tier -->
+    <section class="pb-14">
+      <div class="grid gap-4 md:grid-cols-3">
+        {explore.map((x) => (
+          <a
+            href={x.href}
+            class="group flex flex-col rounded-3xl border border-hair bg-panel p-6 text-left no-underline transition-colors hover:border-orange/50 hover:bg-orange/5"
+          >
+            <div class:list={["h-1 w-8 rounded-full", x.bar]}></div>
+            <h2 class="mt-4 font-display text-[1.15rem] font-semibold text-ink">{x.t}</h2>
+            <p class="mt-2 grow font-body text-[0.88rem] font-light leading-relaxed text-soft">{x.d}</p>
+            <span class:list={["mt-4 inline-flex items-center gap-1 font-body text-[0.85rem] font-semibold transition-colors group-hover:text-orange", x.accent]}>
+              Explore
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14" /><path d="m12 5 7 7-7 7" /></svg>
+            </span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <!-- the manual -->
+    <section class="pb-24">
+      {groups.map((g) => (
+        <div class="mb-10">
+          <p class="mb-4 font-body text-[0.72rem] uppercase tracking-[0.18em] text-muted">{g.name}</p>
+          <div class="overflow-hidden rounded-3xl border border-hair bg-panel">
+            {g.slugs.filter((s) => have.has(s)).map((s, i, arr) => (
+              <a
+                href={`/docs/${s}`}
+                class:list={[
+                  "flex items-baseline justify-between gap-6 px-6 py-4 no-underline transition-colors hover:bg-mist",
+                  i !== arr.length - 1 && "border-b border-hair",
+                ]}
+              >
+                <span class="shrink-0 font-display text-[0.98rem] font-semibold text-ink">{known[s]?.t ?? s}</span>
+                <span class="hidden text-right font-body text-[0.85rem] font-light leading-snug text-muted sm:block">{known[s]?.d ?? ""}</span>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+      <p class="font-body text-[0.85rem] font-light text-muted">
+        Working with an agent? Point it at
+        <a href="https://github.com/hellojanpacan/hayao-js/blob/main/AGENTS.md" class="text-ink underline decoration-hair underline-offset-4 transition-colors hover:text-orange">AGENTS.md</a>
+        — the operating manual an AI author reads first.
+      </p>
+    </section>
+  </main>
+
+  <Footer />
+</Layout>

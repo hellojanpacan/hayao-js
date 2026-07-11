@@ -44,13 +44,24 @@ SoundFont of specs and lose nothing structural (`docs/ASSETS.md`).
 ### Expressive / arrangement features (what lifts it above a MIDI demo)
 
 The synth grew a **detuned 2nd oscillator** (`detune`, cents) and **sub-oscillator**
-(`sub`) for warmth/weight. `renderSong` grew, all deterministic:
+(`sub`) for warmth/weight, then two shape controls that kill the "synthetic" tell:
+- **`envCurve`** — bends the amp decay/release from linear toward **exponential**
+  (fast onset drop, long tail), the way struck/plucked/bell voices actually decay.
+  0 = linear (bit-identical default); ~2–4 reads as natural piano/mallet.
+- **`filterEnv`** — a **lowpass envelope** (octaves of cutoff offset at onset,
+  settling to the base over `filterEnvTime`): positive = a bright-attack pluck
+  that closes down, negative = a pad that blooms open from dark. 0 = static.
+
+`renderSong` grew, all deterministic:
 - **`swing`** — delays off-beat 8ths toward the triplet grid (lo-fi, jazz).
 - **`humanize`** — seeded micro timing/velocity jitter so it breathes.
 - **`velBrightness`** — velocity scales each voice's lowpass, so a velocity map
   reads as *phrasing* (soft = darker), not just loudness.
 - **`sidechain`** — a beat-synced ducking pump (the breath of electronic music).
-- **`reverb`** — per-song room.
+- **`reverb`** — a per-song room, or (when any track sets **`reverbSend`**) a
+  shared **send bus** on the mixing-desk model: the dry mix stays dry and only
+  the sends bloom, so a bone-dry bass and a washed lead coexist (front-to-back
+  depth a single whole-mix reverb can't give).
 And theory grew **`voiceLead`** / **`openVoicing`** so progressions move by small
 steps instead of leaping in parallel root position — the biggest single cure for
 the "procedural" sound. These were driven by adversarial music-producer critics

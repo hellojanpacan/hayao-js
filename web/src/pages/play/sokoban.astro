@@ -1,49 +1,49 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import Footer from "../../components/Footer.astro";
-import PuzzlePlay from "../../components/PuzzlePlay.tsx";
+import SokobanPlay from "../../components/SokobanPlay.tsx";
 
 const features = [
   {
-    t: "Rated like chess puzzles",
-    d: "Every board carries a difficulty rating and you carry one too. A 60-second clock, and an Elo that moves with each result — the stream never ends and always fits you.",
+    t: "The reference example",
+    d: "This is the game every new Hayao project is copied from — pure logic in one module, the scene tree as its view, tests and a golden replay beside it.",
   },
   {
-    t: "One-thumb chain-fire",
-    d: "Drag a spark onto a lattice of directional prisms. It fires a chain reaction of light — and a live preview shows the whole cascade before you commit.",
+    t: "Pure rules, machine proof",
+    d: "The push/undo rules are a pure Puzzle module, so the solver walks every level to the end before it ships. No level is winnable on faith.",
   },
   {
-    t: "Every board machine-proven",
-    d: "No board ships unless the solver proves it winnable in its exact spark budget. Deterministic, seeded, and endlessly generated — never hand-drawn.",
+    t: "Undo is a snapshot",
+    d: "State is serialized, so undo is just a snapshot stack and the whole session replays bit-for-bit — the determinism harness verifies it.",
   },
 ];
 ---
 
 <Layout
-  title="Mobile Puzzle — Lumen · Hayao"
-  description="Lumen — a touch-first puzzle that plays like chess puzzles: drag a spark, set off a chain reaction of light, and climb an Elo ladder of solver-proven boards. Built on Hayao."
+  title="Sokoban — Hayao"
+  description="The classic box-pusher as Hayao's reference example: pure logic, solver-proven levels, snapshot undo — playable in the browser."
 >
   <main class="flex flex-col items-center text-center">
     <!-- hero -->
     <section class="mx-auto flex w-full max-w-2xl flex-col items-center px-6 pt-28 pb-10 md:pt-36">
-      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Play · Mobile Puzzle</p>
+      <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Play · The classic</p>
       <h1 class="text-balance font-display text-[clamp(2.2rem,6vw,3.5rem)] font-semibold leading-[1.06] tracking-[-0.015em] text-ink">
-        Lumen
+        Sokoban
       </h1>
       <p class="mt-6 max-w-[48ch] font-body text-[1.1rem] font-light leading-relaxed text-soft">
-        Chess puzzles, but every solution is a chain reaction of light you set off with one drag.
-        Solver-proven boards, one thumb, an Elo ladder that never ends.
+        The 1982 classic, rebuilt as the repo's reference example — the cleanest possible
+        showing of pure rules, a scene-tree view, and a solver that proves every level.
       </p>
     </section>
 
     <!-- the live game -->
-    <section class="mx-auto w-full max-w-md px-6 pb-6">
-      <PuzzlePlay client:visible />
+    <section class="mx-auto w-full max-w-xl px-6 pb-6">
+      <SokobanPlay client:visible />
     </section>
 
     <p class="mb-16 max-w-[42ch] px-6 font-body text-[0.85rem] font-light leading-relaxed text-muted">
-      This isn't a video — it's the engine running the real game on this page. Drag a spark from the
-      tray; light every prism before the clock runs out.
+      This isn't a video — it's the engine running the real example on this page.
+      Arrows push, U undoes.
     </p>
 
     <!-- what makes it tick -->
@@ -60,30 +60,30 @@ const features = [
       </div>
     </section>
 
-    <!-- how it was made -->
+    <!-- start from it -->
     <section class="mx-auto w-full max-w-3xl px-6 pb-28">
       <div class="rounded-[2.25rem] bg-navy px-6 py-14 md:px-14">
-        <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Designed, then proven</p>
+        <p class="mb-4 font-body text-[0.75rem] uppercase tracking-[0.2em] text-orange">Copy this to start</p>
         <h2 class="mx-auto max-w-[24ch] text-balance font-display text-[clamp(1.6rem,4vw,2.2rem)] font-semibold leading-[1.1] tracking-[-0.01em] text-white">
-          Composed from a mechanic, verified before it shipped
+          Every new game begins as this one
         </h2>
         <p class="mx-auto mt-5 max-w-[48ch] font-body text-[1rem] font-light leading-relaxed text-white/70">
-          Lumen was designed with the Hayao Design Codex — an anchor, a genre, and one twist — then
-          built in the default Regalia style. Its rules are a pure module the solver can prove, so
-          every generated board is winnable and the whole game replays deterministically.
+          logic.ts holds the pure rules, game.ts the view, verify.ts the proof, golden.json the
+          replay hash. Copy the folder, swap the rules, keep the proofs — that's the whole
+          workflow.
         </p>
         <div class="mt-8 flex flex-wrap justify-center gap-3">
           <a
-            href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/lumen"
+            href="https://github.com/hellojanpacan/hayao-js/tree/main/examples/sokoban"
             class="inline-flex items-center rounded-full bg-orange px-6 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:bg-green"
           >
             Read the source
           </a>
           <a
-            href="/create/design"
+            href="/create"
             class="inline-flex items-center rounded-full border border-white/25 px-6 py-3 font-body text-[0.95rem] font-semibold text-white no-underline transition-colors hover:border-white/60"
           >
-            Design your own
+            Build your own
           </a>
         </div>
       </div>

@@ -3,13 +3,18 @@ import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import * as Dialog from "@radix-ui/react-dialog";
 import {
   Gamepad2,
-  Swords,
   Puzzle,
+  Box,
+  Coins,
   Zap,
   Sparkles,
+  Music,
+  SlidersHorizontal,
   FileCode2,
   BookOpen,
   FlaskConical,
+  Palette,
+  Library,
   Star,
   Package,
   ChevronDown,
@@ -49,17 +54,22 @@ type Item = { icon: LucideIcon; title: string; desc: string; href: string; exter
 
 const PLAY: Item[] = [
   { icon: Gamepad2, title: "2D Platformer", desc: "Momentum, coyote-time, tight feel", href: "/play/platformer" },
-  { icon: Swords, title: "Tiny RTS", desc: "Faction asymmetry, wall-aware units", href: "/play/rts" },
   { icon: Puzzle, title: "Mobile Puzzle", desc: "Solver-proven, one-thumb play", href: "/play/puzzle" },
+  { icon: Box, title: "Sokoban", desc: "The classic, as the reference example", href: "/play/sokoban" },
+  { icon: Coins, title: "The Coin", desc: "A whole game as one self-proving file", href: "/play/coin" },
 ];
 const CREATE: Item[] = [
   { icon: Zap, title: "Quickstart with default style", desc: "Start with a library — a working prototype in minutes", href: "/create/quickstart" },
-  { icon: Sparkles, title: "Design an original concept", desc: "Start with the game design engine, then prototype in Regalia", href: "/create/concept" },
+  { icon: Sparkles, title: "Design with the Codex", desc: "Compose an original concept from 216 design modules", href: "/create/design" },
+  { icon: Music, title: "Sound, as code", desc: "SFX and whole scores synthesised from parameters", href: "/create/sound" },
+  { icon: SlidersHorizontal, title: "Workshop — the playtest loop", desc: "Human taste in, agent-written tuning out", href: "/create/workshop" },
   { icon: FileCode2, title: "Start from scratch", desc: "An empty, solver-ready project — fully your way", href: "/create/scratch" },
 ];
 const DOCS: Item[] = [
-  { icon: BookOpen, title: "Documentation", desc: "Guides, API & conventions", href: "https://hayao.js.org", external: true },
-  { icon: FlaskConical, title: "Sandbox", desc: "Single-mechanic labs", href: "/docs/sandbox" },
+  { icon: BookOpen, title: "Documentation", desc: "The whole manual, straight from the repo", href: "/docs" },
+  { icon: FlaskConical, title: "Sandboxes", desc: "Twelve single-mechanic labs", href: "/docs/sandbox" },
+  { icon: Palette, title: "Themes", desc: "Regalia — the default look, and the shelf for more", href: "/docs/themes" },
+  { icon: Library, title: "Design Codex", desc: "216 composable design modules", href: "/docs/codex" },
   { icon: Star, title: "Star on GitHub", desc: "hellojanpacan/hayao-js", href: "https://github.com/hellojanpacan/hayao-js", external: true },
   { icon: Package, title: "npm package", desc: "npm i hayao", href: "https://www.npmjs.com/package/hayao", external: true },
 ];
@@ -294,7 +304,7 @@ export default function SiteNav() {
               <Trigger>Play</Trigger>
               <NavigationMenu.Content className="p-4">
                 <div className="w-[560px]">
-                  <div className="grid grid-cols-3 gap-3">
+                  <div className="grid grid-cols-2 gap-3">
                     {PLAY.map((t) => (
                       <NavigationMenu.Link asChild key={t.title}>
                         <a
